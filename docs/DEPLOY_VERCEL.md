@@ -97,3 +97,8 @@ node tools/build.js
 PREVIEW_CREDENTIALS="demo:ganti-password-ini" node tools/serve-local.js 8788   # http://localhost:8788
 node tests/deploy.test.js
 ```
+
+## Saklar akses publik (opsional, keputusan Owner)
+
+- `PREVIEW_PUBLIC = true` (persis "true") di Vercel › Settings › Environment Variables (Production) → preview terbuka tanpa login. Header `noindex` tetap aktif. Isi hanya data DEMO.
+- Untuk mengunci lagi: hapus variabel itu lalu **Redeploy**. Login `PREVIEW_CREDENTIALS` kembali berlaku.
