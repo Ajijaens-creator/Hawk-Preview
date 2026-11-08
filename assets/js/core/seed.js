@@ -94,7 +94,7 @@
       { id: 'U-SPV2', name: 'Ni Luh Sari', role: 'SUPERVISOR', title: 'Supervisor Outlet Spa Ubud', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-UBD'] },
       { id: 'U-RCP', name: 'Kadek Rina', role: 'STAFF', title: 'Receptionist Spa Shanti', dept: 'Receptionist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
       { id: 'U-SEC', name: 'Nengah Budi', role: 'STAFF', title: 'Security Spa Shanti', dept: 'Security', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
-      { id: 'U-AOM', name: 'Made Wirawan', role: 'HEAD_DIV', title: 'Asisten Operational Manager — Divisi Operasional Spa', dept: 'Manajemen Operasional', reportsTo: 'U-HOD', scope: ['DV-SPA-OPS'] },
+      { id: 'U-AOM', name: 'Made Wirawan', role: 'HEAD_DIV', title: 'Asisten Operational Manager — Divisi Operasional Spa', dept: 'Manajemen Operasional', position: 'ASST_OM', reportsTo: 'U-HOD', scope: ['DV-SPA-OPS'] },
       { id: 'U-ATD', name: 'Wayan Sari', role: 'STAFF', title: 'Attendant Spa Shanti', dept: 'Attendant', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
     ];
 
@@ -102,9 +102,9 @@
     s.approvalRules = [
       // MRF tiers adopted from Visual Board B (NV-09 Matriks Approval — Material Request)
       { id: 'AR-01', doc: 'MRF', name: 'MRF ≤ Rp 1 jt', condition: 'Nilai estimasi ≤ Rp 1.000.000', min: 0, max: 1000000, chain: ['SUPERVISOR'], escalateTo: 'HEAD_DIV', slaHours: 24, active: true },
-      { id: 'AR-02', doc: 'MRF', name: 'MRF Rp 1–5 jt', condition: 'Rp 1.000.001 – Rp 5.000.000', min: 1000000, max: 5000000, chain: ['SUPERVISOR', 'HEAD_DIV'], escalateTo: 'BU_MANAGER', slaHours: 24, active: true },
-      { id: 'AR-03', doc: 'MRF', name: 'MRF Rp 5–25 jt', condition: 'Rp 5.000.001 – Rp 25.000.000', min: 5000000, max: 25000000, chain: ['SUPERVISOR', 'HEAD_DIV', 'BU_MANAGER'], escalateTo: 'OWNER', slaHours: 48, active: true },
-      { id: 'AR-04', doc: 'MRF', name: 'MRF > Rp 25 jt', condition: '> Rp 25.000.000', min: 25000000, max: null, chain: ['SUPERVISOR', 'HEAD_DIV', 'BU_MANAGER', 'OWNER'], escalateTo: null, slaHours: 72, active: true },
+      { id: 'AR-02', doc: 'MRF', name: 'MRF Rp 1–5 jt', condition: 'Rp 1.000.001 – Rp 5.000.000 (unit di bawah Asisten Operational Manager: lewat Asisten OM dulu sebelum Head of Division / Operational Manager)', min: 1000000, max: 5000000, chain: ['SUPERVISOR', 'HEAD_DIV'], escalateTo: 'BU_MANAGER', slaHours: 24, active: true },
+      { id: 'AR-03', doc: 'MRF', name: 'MRF Rp 5–25 jt', condition: 'Rp 5.000.001 – Rp 25.000.000 (unit di bawah Asisten Operational Manager: lewat Asisten OM dulu sebelum Head of Division / Operational Manager)', min: 5000000, max: 25000000, chain: ['SUPERVISOR', 'HEAD_DIV', 'BU_MANAGER'], escalateTo: 'OWNER', slaHours: 48, active: true },
+      { id: 'AR-04', doc: 'MRF', name: 'MRF > Rp 25 jt', condition: '> Rp 25.000.000 (unit di bawah Asisten Operational Manager: lewat Asisten OM dulu sebelum Head of Division / Operational Manager)', min: 25000000, max: null, chain: ['SUPERVISOR', 'HEAD_DIV', 'BU_MANAGER', 'OWNER'], escalateTo: null, slaHours: 72, active: true },
       { id: 'AR-05', doc: 'MRF_EXCEPTION', name: 'MRF melebihi budget item / non-rutin', condition: 'Proyeksi > 100% budget item bulanan ATAU non-rutin → tambah BU Manager', min: 0, max: null, chain: ['BU_MANAGER'], escalateTo: 'OWNER', slaHours: 48, active: true },
       { id: 'AR-06', doc: 'PO', name: 'PO standar', condition: 'Total ≤ Rp 10 jt', min: 0, max: 10000000, chain: ['PURCHASING'], escalateTo: 'BU_MANAGER', slaHours: 24, active: true },
       { id: 'AR-07', doc: 'PO', name: 'PO besar', condition: 'Total > Rp 10 jt', min: 10000000, max: null, chain: ['PURCHASING', 'BU_MANAGER'], escalateTo: 'OWNER', slaHours: 48, active: true },

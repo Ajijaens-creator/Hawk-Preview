@@ -177,14 +177,22 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   r = call('mrf.decide', { id: 'PR20261100004', decision: 'APPROVE' }, 'BU_MANAGER');
   check('BU Manager approve → fulfillment', r.ok && r.data.status === 'IN_FULFILLMENT');
   const big = call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-004', qty: 30 }] }, 'STAFF').data;
-  check('MRF Rp 4,35 jt → Supervisor + Head Divisi', big.chain.join() === 'SUPERVISOR,HEAD_DIV,BU_MANAGER' || big.chain.join() === 'SUPERVISOR,HEAD_DIV', big.chain.join());
+  check('MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Operational Manager → Operational Manager (Head Div)', big.chain.join() === 'SUPERVISOR,ASST_OM,HEAD_DIV,BU_MANAGER' || big.chain.join() === 'SUPERVISOR,ASST_OM,HEAD_DIV', big.chain.join());
+  {
+    const ap = (role, id) => call('mrf.decide', { id: big.id, decision: 'APPROVE', note: 'ok' }, role, id);
+    check('Operational Manager tidak bisa melompati Asisten OM', ap('SUPERVISOR', 'U-SPV').ok && !ap('HEAD_DIV', 'U-HOD').ok);
+    check('Asisten OM menyetujui langkahnya, lalu tidak bisa menyetujui lagi sebagai Operational Manager', ap('HEAD_DIV', 'U-AOM').ok && !ap('HEAD_DIV', 'U-AOM').ok && S.mrfNextApprover(s(), s().mrfs.find((x) => x.id === big.id)) === 'HEAD_DIV');
+    check('Operational Manager menyetujui setelah Asisten OM; jejak approval mencatat langkah ASST_OM', ap('HEAD_DIV', 'U-HOD').ok && s().mrfs.find((x) => x.id === big.id).approvals.map((a) => a.role).slice(0, 3).join() === 'SUPERVISOR,ASST_OM,HEAD_DIV');
+    const ess = call('mrf.create', { branch: 'DV-ESS-PRD', lines: [{ item: 'BHP-004', qty: 30 }] }, 'ADMIN').data;
+    check('Unit di luar Divisi Operasional Spa (Essence) tidak lewat Asisten OM', ess && !ess.chain.includes('ASST_OM'), ess && ess.chain.join());
+  }
   const rev = call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-006', qty: 2 }] }, 'STAFF').data;
   r = call('mrf.decide', { id: rev.id, decision: 'REVISION', note: 'Qty perlu dicek' }, 'SUPERVISOR');
   check('Minta revisi', r.ok && r.data.status === 'REVISION');
   r = call('mrf.submitDraft', { id: rev.id, lines: [{ item: 'BHP-006', qty: 3 }] }, 'STAFF');
   check('Staff kirim ulang revisi', r.ok && r.data.status === 'SUBMITTED' && r.data.lines[0].qty === 3);
   r = call('mrf.decide', { id: rev.id, decision: 'ESCALATE', note: 'Butuh keputusan' }, 'SUPERVISOR');
-  check('Eskalasi → ESCALATED, approver berikut Head Div', r.ok && r.data.status === 'ESCALATED' && S.mrfNextApprover(s(), r.data) === 'HEAD_DIV', r.data && r.data.chain.join());
+  check('Eskalasi Supervisor outlet → ESCALATED, approver berikut Asisten Operational Manager', r.ok && r.data.status === 'ESCALATED' && S.mrfNextApprover(s(), r.data) === 'ASST_OM', r.data && r.data.chain.join());
 })();
 
 /* ============ T3. Partial receipt, backorder, damage, mismatch, duplicate ============ */

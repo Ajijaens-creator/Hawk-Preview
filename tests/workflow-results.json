@@ -1,5 +1,5 @@
 {
- "pass": 370,
+ "pass": 374,
  "fail": 0,
  "results": [
   {
@@ -353,7 +353,27 @@
    "info": ""
   },
   {
-   "name": "MRF Rp 4,35 jt → Supervisor + Head Divisi",
+   "name": "MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Operational Manager → Operational Manager (Head Div)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Operational Manager tidak bisa melompati Asisten OM",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Asisten OM menyetujui langkahnya, lalu tidak bisa menyetujui lagi sebagai Operational Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Operational Manager menyetujui setelah Asisten OM; jejak approval mencatat langkah ASST_OM",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Unit di luar Divisi Operasional Spa (Essence) tidak lewat Asisten OM",
    "ok": true,
    "info": ""
   },
@@ -368,7 +388,7 @@
    "info": ""
   },
   {
-   "name": "Eskalasi → ESCALATED, approver berikut Head Div",
+   "name": "Eskalasi Supervisor outlet → ESCALATED, approver berikut Asisten Operational Manager",
    "ok": true,
    "info": ""
   },

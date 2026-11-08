@@ -351,7 +351,7 @@
   /* ---------- decision helper shared by NV-29 / NV-30 ---------- */
   function decisionButtons(ctx, m) {
     const step = S.mrfNextApprover(ctx.s, m);
-    const mine = step === ctx.role && (ctx.role !== 'SUPERVISOR' || ctx.user.scope.includes(m.branch));
+    const mine = S.canApproveStep(ctx.s, ctx.user, step, m) && !(m.approvals || []).some((a) => a.by === ctx.user.id);
     if (!step) return `<p class="small muted">Tidak menunggu keputusan (${ui.statusLabel(m.status)}).</p>`;
     if (!mine) return `<div class="alert info">Menunggu ${esc(HAWK.ROLE_LABEL[step])}. Ganti role untuk memutuskan.</div>`;
     return `<div class="row"><button class="btn ghost" data-a="decide" data-d="REVISION" data-m="${m.id}">Minta revisi</button><button class="btn ghost" data-a="decide" data-d="ESCALATE" data-m="${m.id}">Eskalasi</button><button class="btn bad" data-a="decide" data-d="REJECT" data-m="${m.id}">Tolak</button><button class="btn ok" data-a="decide" data-d="APPROVE" data-m="${m.id}">${ui.icon('check')} Setujui</button></div>`;

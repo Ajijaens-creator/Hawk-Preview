@@ -67,4 +67,19 @@ BU JAENS Spa
 
 - Outlet sekarang berada di bawah node organisasi **Divisi Operasional Spa** (`DV-SPA-OPS`), bukan langsung di bawah BU. Budget, cost center, dan laporan per BU tetap sama karena BU dicari dengan menelusuri ke atas.
 - Departemen disimpan di profil akun (`dept`) dan atasan langsung di `reportsTo`. Keduanya ikut tercatat otomatis saat memesan dan menerima barang.
-- Asisten Operational Manager memakai role Head of Division yang sudah ada, dengan cakupan Divisi Operasional Spa. Rantai approval belum diubah (TO VERIFY: apakah approval MRF bernilai menengah harus lewat Asisten OM sebelum Operational Manager).
+- Asisten Operational Manager memakai role Head of Division dengan posisi `ASST_OM` dan cakupan Divisi Operasional Spa.
+
+### Approval MRF lewat Asisten Operational Manager (Owner, 8 Nov 2026)
+
+| Nilai MRF (aturan NV-09) | Rantai untuk outlet Spa |
+|---|---|
+| ≤ Rp 1 jt (AR-01) | Supervisor outlet |
+| Rp 1–5 jt (AR-02) | Supervisor → **Asisten OM** → Operational Manager |
+| Rp 5–25 jt (AR-03) | Supervisor → **Asisten OM** → Operational Manager → BU Manager |
+| > Rp 25 jt (AR-04) | Supervisor → **Asisten OM** → Operational Manager → BU Manager → Owner |
+
+- Langkah Asisten OM disisipkan otomatis bila ada akun Asisten OM yang mencakup unit MRF itu (dibaca dari struktur organisasi, tidak di-hardcode). Unit Essence / Office tidak berubah.
+- Operational Manager tidak bisa melompati Asisten OM; Asisten OM tidak bisa menyetujui lagi sebagai Operational Manager; satu orang tidak bisa menyetujui dua langkah di MRF yang sama.
+- Eskalasi dari Supervisor outlet naik ke Asisten OM.
+- Asisten OM tidak ikut Head Review budget tahunan (tetap Operational Manager / BU Manager).
+- Di HAWK produksi: perlu "posisi" pada akun atau langkah approval per jabatan (TO VERIFY / NEW INTEGRATION REQUIRED bila HAWK hanya mendukung approval per role).

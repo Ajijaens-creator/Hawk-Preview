@@ -83,4 +83,6 @@
   };
   // Rule-engine actor (Order Sederhana, AR-13). Non-enumerable: never offered as a login role or assignable role.
   Object.defineProperty(HAWK.ROLE_LABEL, 'SYSTEM', { value: 'Sistem (aturan otomatis)', enumerable: false });
+  // Approval step held by a position (not a login role): Assistant Operational Manager (role HEAD_DIV + position ASST_OM).
+  Object.defineProperty(HAWK.ROLE_LABEL, 'ASST_OM', { value: 'Asisten Operational Manager', enumerable: false });
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -106,7 +106,7 @@
   const baseSeed = HAWK.seed;
   HAWK.seed = function () {
     const s = baseSeed();
-    s.meta.schema = 8;
+    s.meta.schema = 9;
     F.seedConfig(s);
     F.seedHistory(s);
     F.sync(s, { user: { id: 'SYS-RULE', role: 'SYSTEM' }, now: F.now(s) });

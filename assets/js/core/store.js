@@ -121,6 +121,18 @@
     return { lines, status: worst };
   };
 
+  S.ancestors = (s, orgId) => { const out = []; let o = S.org(s, orgId); while (o) { out.push(o.id); o = S.org(s, o.parent); } return out; };
+  /* Assistant Operational Manager covering this unit (Owner 8 Nov 2026: Spa MRF goes via the Assistant OM before the Operational Manager) */
+  S.asstOmFor = (s, orgId) => { const up = S.ancestors(s, orgId); return s.users.find((u) => u.position === 'ASST_OM' && u.active !== false && (u.scope || []).some((x) => up.includes(x))) || null; };
+  /* Can this user act on this approval step of this MRF? One rule for engine, inbox and buttons. */
+  S.canApproveStep = (s, u, step, m) => {
+    if (!u || !step) return false;
+    if (step === 'ASST_OM') return u.position === 'ASST_OM' && (u.scope || []).some((x) => S.ancestors(s, m.branch).includes(x));
+    if (step === 'HEAD_DIV' && u.position === 'ASST_OM') return false; // the assistant does not also sign as Operational Manager
+    if (step !== u.role) return false;
+    if (u.role === 'SUPERVISOR') return (u.scope || []).includes(m.branch);
+    return true;
+  };
   /* Approval chain from the configurable approval matrix (NV-09) */
   S.mrfChain = (s, m) => {
     const v = S.mrfValue(s, m);
@@ -130,6 +142,8 @@
     const bc = S.mrfBudgetCheck(s, m);
     const exc = s.approvalRules.find((r) => r.doc === 'MRF_EXCEPTION' && r.active);
     if (exc && (bc.status === 'OVER' || bc.status === 'EXCEPTION')) exc.chain.forEach((r) => !chain.includes(r) && chain.push(r));
+    const hd = chain.indexOf('HEAD_DIV');
+    if (hd >= 0 && S.asstOmFor(s, m.branch)) chain.splice(hd, 0, 'ASST_OM');
     return { chain, rule: tier.id, exception: bc.status === 'OVER' || bc.status === 'EXCEPTION' };
   };
   S.mrfNextApprover = (s, m) => {
@@ -635,7 +649,7 @@
     need(b.status === 'SUBMITTED', 'STATE', 'Budget belum diajukan');
     const chain = s.approvalRules.find((r) => r.doc === 'BUDGET').chain;
     const step = chain[(b.approvals || []).length];
-    const ok = step === ctx.user.role || (step === 'HEAD_DIV' && ctx.user.role === 'BU_MANAGER');
+    const ok = (step === ctx.user.role && !(step === 'HEAD_DIV' && ctx.user.position === 'ASST_OM')) || (step === 'HEAD_DIV' && ctx.user.role === 'BU_MANAGER');
     need(ok, 'FORBIDDEN', `Menunggu approval ${step}`);
     need(p.decision !== 'REJECT' || (p.note && p.note.length >= 5), 'VALIDATION', 'Alasan pengembalian wajib (min. 5 karakter)');
     (b.history = b.history || []).push({ ts: ctx.now, by: ctx.user.id, action: p.decision === 'REJECT' ? 'RETURN' : 'APPROVE_' + step, note: p.note || '' });
@@ -750,8 +764,8 @@
     }
     const step = S.mrfNextApprover(s, m);
     need(step, 'STATE', 'MRF tidak menunggu approval');
-    need(step === ctx.user.role, 'FORBIDDEN', `Langkah approval saat ini: ${step}`);
-    if (ctx.user.role === 'SUPERVISOR') need(ctx.user.scope.includes(m.branch), 'FORBIDDEN', 'Di luar unit supervisor');
+    need(S.canApproveStep(s, ctx.user, step, m), 'FORBIDDEN', `Langkah approval saat ini: ${(HAWK.ROLE_LABEL || {})[step] || step}`);
+    need(!(m.approvals || []).some((a) => a.by === ctx.user.id), 'FORBIDDEN', 'Satu orang tidak boleh menyetujui dua langkah pada MRF yang sama');
     const d = p.decision;
     need(['APPROVE', 'REJECT', 'REVISION', 'ESCALATE'].includes(d), 'VALIDATION', 'Keputusan tidak dikenal');
     if (d !== 'APPROVE') need(p.note && p.note.trim().length >= 3, 'VALIDATION', 'Catatan wajib untuk tolak / revisi / eskalasi');
@@ -762,10 +776,11 @@
       m.approvals = [];
     } else if (d === 'ESCALATE') {
       m.status = 'ESCALATED';
-      const esc = (s.approvalRules.find((r) => r.id === m.rule) || {}).escalateTo || 'BU_MANAGER';
+      let esc = (s.approvalRules.find((r) => r.id === m.rule) || {}).escalateTo || 'BU_MANAGER';
+      if (esc === 'HEAD_DIV' && ctx.user.position !== 'ASST_OM' && S.asstOmFor(s, m.branch) && !m.chain.includes('ASST_OM')) esc = 'ASST_OM'; // outlet supervisor escalates to the Assistant OM first
       m.chain = m.chain.slice(0, m.approvals.length).concat([esc], m.chain.slice(m.approvals.length + 1).filter((r) => r !== esc));
     } else {
-      m.approvals.push({ by: ctx.user.id, role: ctx.user.role, ts: ctx.now, note: p.note || '' });
+      m.approvals.push({ by: ctx.user.id, role: step, ts: ctx.now, note: p.note || '' });
       if (m.approvals.length >= m.chain.length) {
         m.status = 'APPROVED';
         H['mrf.planFulfillment'](s, { id: m.id }, ctx); // Workflow 04 — automatic fulfillment path

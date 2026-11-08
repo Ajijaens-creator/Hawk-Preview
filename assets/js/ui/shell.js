@@ -102,7 +102,7 @@
     const role = u.role;
     s.mrfs.forEach((m) => {
       const step = S.mrfNextApprover(s, m);
-      if (step && step === role && (role !== 'SUPERVISOR' || u.scope.includes(m.branch)))
+      if (step && S.canApproveStep(s, u, step, m))
         add({ type: 'MRF', ref: m.id, unit: S.orgName(s, m.branch), title: m.lines.map((l) => `${S.itemName(s, l.item)} × ${l.qty}`).join(', '), value: S.mrfValue(s, m), status: m.status, nv: 29, kind: 'approval', budget: S.mrfBudgetCheck(s, m).status });
       if (m.status === 'IN_FULFILLMENT' && ['WAREHOUSE'].includes(role)) {
         const f = S.mrfFulfillment(s, m);
