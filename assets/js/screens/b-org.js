@@ -99,16 +99,26 @@
   V[7] = {
     render(ctx) {
       const { s, L } = ctx;
-      const pool = s.sharedAllocations.find((a) => a.pool === L.pool) || s.sharedAllocations[0];
+      const pool = s.sharedAllocations.find((a) => a.pool === (L.pool || ctx.q.pool)) || s.sharedAllocations[0];
       const bus = s.org.filter((o) => o.type === 'BU' && o.scope === 'IN' && o.status === 'ACTIVE');
-      const can = ctx.can('cc.updateAllocation');
+      const can = ctx.can('cc.updateAllocation') && !pool.locked;
+      const rv = pool.reviews || {};
+      const splitBus = bus.filter((b) => (pool.splits[b.id] || 0) > 0);
+      const canReview = (b) => ctx.can('cc.reviewAllocation') && !pool.locked && (ctx.role === 'OWNER' || ctx.user.scope.includes(b.id));
+      const allOk = splitBus.length && splitBus.every((b) => rv[b.id] && rv[b.id].decision === 'AGREE');
+      const flow = `<div class="card" style="align-self:start"><h3>Review BU & kunci periode ${ui.intBadge('NEW INTEGRATION REQUIRED')}</h3>
+          <p class="tiny muted" style="margin:0 0 8px">Finance menetapkan porsi → tiap BU meninjau → Finance mengunci periode. Tidak ada jurnal yang diposting di sini; porsi dipakai laporan NV-52.</p>
+          ${splitBus.map((b) => { const r = rv[b.id]; return `<div class="row between" style="padding:8px 0;border-top:1px solid var(--line-2);gap:8px"><span><b>${esc(b.name)}</b> · ${Math.round(pool.splits[b.id] * 1000) / 10}%<br><span class="tiny muted">${r ? `${r.decision === 'AGREE' ? 'Setuju' : 'Keberatan'} · ${esc(S.userName(s, r.by))} · ${esc(U.datetime(r.at))}${r.note ? ' — ' + esc(r.note) : ''}` : 'Belum direview'}</span></span>
+            ${r ? `<span class="badge ${r.decision === 'AGREE' ? 'ok' : 'bad'}">${r.decision === 'AGREE' ? 'Setuju' : 'Keberatan'}</span>` : canReview(b) ? `<span class="row" style="gap:6px"><button class="btn sm ok" data-a="reviewAlloc" data-pool="${pool.pool}" data-bu="${b.id}">Setuju</button><button class="btn sm ghost" data-a="disputeAlloc" data-pool="${pool.pool}" data-bu="${b.id}">Keberatan</button></span>` : '<span class="badge">Menunggu</span>'}</div>`; }).join('')}
+          ${pool.locked ? `<div class="dx-msg ok">Dikunci periode <b>${esc(pool.locked.period)}</b> oleh ${esc(S.userName(s, pool.locked.by))} · ${esc(U.datetime(pool.locked.at))}</div>` : ctx.can('cc.lockAllocation') ? `<button class="btn block dark" data-a="lockAlloc" data-pool="${pool.pool}" ${allOk ? '' : 'disabled title="Menunggu semua BU setuju"'} style="margin-top:8px">Kunci periode ${esc(s.meta.demoDate.slice(0, 7))}</button>` : ''}
+          ${(pool.history || []).length ? `<details class="small" style="margin-top:8px"><summary>Riwayat (${pool.history.length})</summary>${pool.history.map((h) => `<div class="tiny">${esc(U.datetime(h.ts))} · ${esc(S.userName(s, h.by))} · ${esc(h.action)} ${esc(h.note || '')}</div>`).join('')}</details>` : ''}</div>`;
       return `<div class="stack"><div class="grid g-2-1"><div class="card"><h3>Cost center</h3>${ui.table([{ h: 'Kode', f: (c) => `<span class="mono">${c.id}</span>` }, { h: 'Nama', f: (c) => esc(c.name) }, { h: 'Unit', f: (c) => esc(S.orgName(s, c.org)) }, { h: 'BU', f: (c) => esc(S.orgName(s, S.buOf(s, c.org))) }, { h: 'Jenis', f: (c) => (c.shared ? '<span class="badge gold">Shared HQ</span>' : '<span class="badge">Langsung</span>') }], s.costCenters, { maxH: 420 })}<p class="tiny muted" style="margin:8px 0 0">Setara kolom JOB [+] di PR/PO HAWK ${ui.intBadge('TO VERIFY')}. Setiap MRF, ledger & jurnal membawa cost center.</p></div>
         <div class="card" style="align-self:start"><h3>Formula alokasi kantor bersama</h3><div class="field"><label>Pool biaya</label><select class="inp" data-ch="pool">${s.sharedAllocations.map((a) => `<option value="${a.pool}" ${a.pool === pool.pool ? 'selected' : ''}>${esc((s.costCenters.find((c) => c.id === a.pool) || {}).name || a.pool)}</option>`).join('')}</select></div>
           <div class="field" style="margin-top:8px"><label>Dasar alokasi</label><input class="inp" id="al-basis" value="${esc(pool.basis)}" ${can ? '' : 'readonly'}></div>
           ${bus.map((b) => `<div class="field" style="margin-top:8px"><label>${esc(b.name)} (%)</label><input class="inp" type="number" min="0" max="100" step="0.5" id="al-${b.id}" value="${Math.round((pool.splits[b.id] || 0) * 1000) / 10}" ${can ? '' : 'readonly'}></div>`).join('')}
           <p class="small">Biaya pool: <b>${U.rp(pool.monthlyCost)}</b> / bulan (DEMO)</p>
-          ${can ? '<button class="btn block" data-a="save">Simpan formula</button>' : '<p class="small muted">Hanya Admin / Finance yang dapat mengubah.</p>'}
-          <p class="tiny muted">Validasi: total 100%. Board B menampilkan porsi "Proyek/Cadangan" — tidak diadopsi karena alokasi hanya antar-BU dalam lingkup (lihat DESIGN_CONFLICTS).</p></div></div></div>`;
+          ${can ? `<button class="btn block" data-a="save" data-pool="${pool.pool}">Simpan formula</button>` : `<p class="small muted">${pool.locked ? 'Periode sudah dikunci Finance.' : 'Hanya Admin / Finance yang dapat mengubah.'}</p>`}
+          <p class="tiny muted">Validasi: total 100%. Board B menampilkan porsi "Proyek/Cadangan" — tidak diadopsi karena alokasi hanya antar-BU dalam lingkup (lihat DESIGN_CONFLICTS).</p></div></div>${flow}</div>`;
     },
     actions: {
       pool(el, ctx) {
@@ -119,7 +129,20 @@
         const pool = ctx.s.sharedAllocations.find((a) => a.pool === ctx.L.pool) || ctx.s.sharedAllocations[0];
         const splits = {};
         ctx.s.org.filter((o) => o.type === 'BU' && o.scope === 'IN' && o.status === 'ACTIVE').forEach((b) => (splits[b.id] = (+ctx.val('al-' + b.id) || 0) / 100));
-        ctx.act('cc.updateAllocation', { pool: pool.pool, basis: ctx.val('al-basis'), splits }, 'Formula alokasi disimpan — NV-52 diperbarui');
+        ctx.act('cc.updateAllocation', { pool: pool.pool, basis: ctx.val('al-basis'), splits }, 'Formula alokasi disimpan — review BU dimulai ulang');
+      },
+      reviewAlloc(el, ctx) {
+        ctx.act('cc.reviewAllocation', { pool: el.dataset.pool, bu: el.dataset.bu, decision: 'AGREE' }, 'Porsi BU disetujui');
+      },
+      disputeAlloc(el, ctx) {
+        ui.openModal('Keberatan atas porsi alokasi', `<div class="field"><label>Alasan keberatan *</label><textarea class="inp" id="al-dispute" rows="3"></textarea></div>`, '<button class="btn ghost" data-close-modal>Batal</button><button class="btn" id="al-dispute-ok">Kirim keberatan</button>');
+        document.getElementById('al-dispute-ok').onclick = () => {
+          const r = ctx.act('cc.reviewAllocation', { pool: el.dataset.pool, bu: el.dataset.bu, decision: 'DISPUTE', note: ctx.val('al-dispute') }, 'Keberatan dicatat');
+          if (r.ok) ui.closeModal();
+        };
+      },
+      lockAlloc(el, ctx) {
+        ctx.act('cc.lockAllocation', { pool: el.dataset.pool }, (a) => 'Alokasi dikunci periode ' + a.locked.period);
       },
     },
   };

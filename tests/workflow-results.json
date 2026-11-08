@@ -1,5 +1,5 @@
 {
- "pass": 318,
+ "pass": 357,
  "fail": 0,
  "results": [
   {
@@ -1589,6 +1589,201 @@
   },
   {
    "name": "Catat alasan lalu selesaikan isu (manual)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Katalog: 6 skenario wajib, setiap langkah punya user, layar & target ID stabil yang terdaftar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5 role demo = Finance, Purchasing, BU Manager, Supervisor, Staff (desktop/desktop/desktop/iPad/mobile)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setiap layar target dapat dibuka oleh role langkahnya (tanpa memperluas hak akses)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario MRF: 16 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario MRF: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: 4 lokal + 3 transfer + 3 PO, 10/10 terpenuhi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: janji vendor asli tetap, ETA revisi tercatat, isu tertutup otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: penerimaan ≠ faktur ≠ AP ≠ bayar; 1 tagihan, ≤1 jurnal pengakuan, 1 pembayaran (tanpa posting ganda)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: AP disetujui orang berbeda dari verifikator faktur (maker ≠ checker)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah yang sudah selesai tidak bisa dijalankan dua kali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario NOTA: 6 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario NOTA: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NOTA: sumber = AI SIMULATION, koreksi manusia tersimpan terpisah, SETTLED dengan bukti asli",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario SLA: 5 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario SLA: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario BUDGET: 6 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario BUDGET: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "BUDGET: reforecast disetujui Owner; Original tidak berubah, Revised berubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario ASSET: 8 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario ASSET: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ASSET: WO selesai, suku cadang lewat MRF+PO, jurnal pemeliharaan diposting Finance",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario OFFICE: 4 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario OFFICE: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "OFFICE: 60/40, review Spa + Essence, dikunci Finance; tidak ada jurnal baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "OFFICE: setelah dikunci, porsi tidak bisa diubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: Finance tidak dapat mereview, BU Manager tidak dapat mengunci",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: BU Manager Spa tidak dapat mereview porsi Essence",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: keberatan wajib alasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: kunci ditolak sebelum semua BU review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: ada keberatan → tidak bisa dikunci",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: porsi diubah → review BU direset (harus ditinjau ulang)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah terdeteksi selesai dari tombol asli (UI) dan variabel terikat ke dokumen yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah tinjauan tidak bisa ditandai dari langkah transaksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "BLOCKED wajib catatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Hasil uji: FAIL tanpa catatan ditolak; PASS tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "dx.start tanpa skenario valid ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan UAT: langkah, role, layar, target, hasil, bukti, disclaimer",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "State bersama: jendela B melihat MRF dari jendela A sebelum bertindak (tanpa kehilangan data)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "State bersama: jendela A sinkron dari penyimpanan",
    "ok": true,
    "info": ""
   }

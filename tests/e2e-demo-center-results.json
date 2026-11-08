@@ -1,0 +1,214 @@
+{
+  "at": "2026-11-08T15:06:36.429Z",
+  "pass": 35,
+  "fail": 0,
+  "summary": {
+    "MRF": {
+      "done": true,
+      "total": 16,
+      "ok": 16
+    },
+    "NOTA": {
+      "done": true,
+      "total": 6,
+      "ok": 6
+    },
+    "SLA": {
+      "done": true,
+      "total": 5,
+      "ok": 5
+    },
+    "BUDGET": {
+      "done": true,
+      "total": 6,
+      "ok": 6
+    },
+    "ASSET": {
+      "done": true,
+      "total": 8,
+      "ok": 8
+    },
+    "OFFICE": {
+      "done": true,
+      "total": 4,
+      "ok": 4
+    }
+  },
+  "results": [
+    {
+      "name": "Route #/dx tampil dengan hero, tab mode, dan panel tutor",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Menu samping punya tautan Demo Center",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "FINANCE: layar asli tampil sebagai U-FIN di desktop",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "PURCHASING: layar asli tampil sebagai U-PUR di desktop",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "BU_MANAGER: layar asli tampil sebagai U-BUM di desktop",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "SUPERVISOR: layar asli tampil sebagai U-SPV di ipad",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "STAFF: layar asli tampil sebagai U-STF di mobile",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Kartu pintasan role muncul di dashboard Staff (ikon besar, tanpa jargon keuangan)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Skenario dimulai pada sandbox yang di-reset (langkah 1 = Staff)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "MRF-01 selesai, nomor MRF terikat ke skenario",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Tooltip menyorot kontrol asli (target ID stabil) di layar Supervisor",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Klik asli di layar Supervisor terdeteksi tutor (via UI) dan langkah maju",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Satu aksi → state yang sama di kelima layar (Finance, Purchasing, BU Manager, Supervisor, Staff)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Feed aktivitas bersama mencatat aksi tersebut",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Staff mobile melihat status MRF-nya (NV-27) tanpa reload",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Tombol maksimalkan memperbesar satu layar",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "BLOCKED tanpa catatan ditolak oleh kontrak",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Hasil uji PASS tercatat",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Export laporan UAT JSON (langkah, role, layar, target, hasil, bukti)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "MRF: 16/16 langkah selesai, semua target ditemukan, jurnal seimbang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "NOTA: 6/6 langkah selesai, semua target ditemukan, jurnal seimbang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "SLA: 5/5 langkah selesai, semua target ditemukan, jurnal seimbang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "BUDGET: 6/6 langkah selesai, semua target ditemukan, jurnal seimbang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "ASSET: 8/8 langkah selesai, semua target ditemukan, jurnal seimbang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "OFFICE: 4/4 langkah selesai, semua target ditemukan, jurnal seimbang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Login role DEMO satu klik: Finance membuka workspace lengkap",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Navigasi sesuai porsi role: Staff jauh lebih ringkas dari Finance",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Ganti device lab → mobile (390px)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Ganti device lab → ipad (834px)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Ganti device lab → desktop (1280px)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Mulai ulang = reset sandbox: langkah kembali ke 1 dan data skenario lama hilang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "mobile: tidak ada scroll horizontal halaman (0px)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "ipad: tidak ada scroll horizontal halaman (0px)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "desktop: tidak ada scroll horizontal halaman (0px)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "0 error halaman / console",
+      "ok": true,
+      "info": ""
+    }
+  ]
+}

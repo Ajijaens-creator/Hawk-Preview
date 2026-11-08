@@ -80,6 +80,8 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `org.upsertUnit` | tulis |  |  |  |  |  |  |  |  |  | E |
 | `org.setStatus` | tulis |  |  |  |  |  |  |  |  |  | E |
 | `cc.updateAllocation` | tulis |  |  |  |  |  |  |  | E |  | E |
+| `cc.reviewAllocation` | tulis | E | E |  |  |  |  |  |  |  |  |
+| `cc.lockAllocation` | tulis |  |  |  |  |  |  |  | E |  |  |
 | `user.assignRole` | tulis |  |  |  |  |  |  |  |  |  | E |
 | `approval.updateRule` | tulis |  |  |  |  |  |  |  |  |  | E |
 | `approval.publishRule` | tulis | E |  |  |  |  |  |  |  |  |  |
@@ -166,6 +168,9 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `flow.resolve` | tulis | E | E | E | E |  | E | E | E | E | E |
 | `flow.updateSla` | tulis | E | E |  |  |  |  |  |  |  | E |
 | `flow.setWeights` | tulis | E |  |  |  |  |  |  |  |  | E |
+| `dx.start` | tulis | E | E | E | E | E | E | E | E | E | E |
+| `dx.step` | tulis | E | E | E | E | E | E | E | E | E | E |
+| `dx.verdict` | tulis | E | E | E | E | E | E | E | E | E | E |
 | `demo.advanceClock` | tulis | E | E | E | E | E | E | E | E | E | E |
 | `audit.list` | baca | B |  |  |  |  |  |  | B |  | B |
 | `search.global` | baca | B | B | B | B | B | B | B | B | B | B |

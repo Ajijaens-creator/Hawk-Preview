@@ -377,11 +377,49 @@
   H['cc.updateAllocation'] = (s, p, ctx) => {
     const a = s.sharedAllocations.find((x) => x.pool === p.pool);
     need(a, 'NOT_FOUND', 'Pool tidak ditemukan');
+    need(!a.locked, 'LOCKED', 'Alokasi periode ini sudah dikunci Finance — buka kunci lewat prosedur koreksi (belum disimulasikan)');
     const total = U.sum(Object.values(p.splits));
     need(Math.abs(total - 1) < 0.0001, 'VALIDATION', 'Total persentase alokasi harus 100%');
+    const before = JSON.stringify(a.splits);
     a.splits = p.splits;
     a.basis = p.basis || a.basis;
+    a.reviews = {}; // a changed split must be reviewed again by every BU
+    a.history = a.history || [];
+    a.history.unshift({ ts: ctx.now, by: ctx.user.id, action: 'UPDATE', before, after: JSON.stringify(p.splits), note: p.note || '' });
     log(s, ctx, 'cc.updateAllocation', p.pool, JSON.stringify(p.splits));
+    return a;
+  };
+  /* Shared office allocation workflow (MP-HAWK-09 scenario 6): Finance sets split → each BU reviews → Finance locks the period.
+     No journal is posted here: the allocation basis feeds NV-52 reports only (posting rule TO VERIFY with HAWK Finance). */
+  H['cc.reviewAllocation'] = (s, p, ctx) => {
+    const a = s.sharedAllocations.find((x) => x.pool === p.pool);
+    need(a, 'NOT_FOUND', 'Pool tidak ditemukan');
+    need(!a.locked, 'LOCKED', 'Alokasi sudah dikunci');
+    const bu = p.bu || ctx.user.scope.find((x) => a.splits[x] !== undefined);
+    need(bu && a.splits[bu] !== undefined, 'VALIDATION', 'BU tidak termasuk dalam alokasi ini');
+    if (ctx.user.role === 'BU_MANAGER') need(ctx.user.scope.includes(bu), 'FORBIDDEN', 'Hanya BU Manager unit terkait');
+    need(['AGREE', 'DISPUTE'].includes(p.decision), 'VALIDATION', 'Pilih setuju atau keberatan');
+    if (p.decision === 'DISPUTE') need(p.note && p.note.length >= 5, 'VALIDATION', 'Keberatan wajib disertai alasan');
+    a.reviews = a.reviews || {};
+    a.reviews[bu] = { by: ctx.user.id, at: ctx.now, decision: p.decision, note: p.note || '' };
+    a.history = a.history || [];
+    a.history.unshift({ ts: ctx.now, by: ctx.user.id, action: 'REVIEW_' + p.decision, note: `${bu}: ${p.note || ''}` });
+    log(s, ctx, 'cc.reviewAllocation', p.pool, `${bu} ${p.decision}`);
+    return a;
+  };
+  H['cc.lockAllocation'] = (s, p, ctx) => {
+    const a = s.sharedAllocations.find((x) => x.pool === p.pool);
+    need(a, 'NOT_FOUND', 'Pool tidak ditemukan');
+    need(!a.locked, 'STATE', 'Sudah dikunci');
+    const bus = Object.keys(a.splits).filter((k) => a.splits[k] > 0);
+    const rv = a.reviews || {};
+    const missing = bus.filter((b) => !rv[b]);
+    need(!missing.length, 'VALIDATION', 'Menunggu review BU: ' + missing.join(', '));
+    need(!bus.some((b) => rv[b].decision === 'DISPUTE'), 'VALIDATION', 'Ada keberatan BU — selesaikan dulu sebelum dikunci');
+    a.locked = { by: ctx.user.id, at: ctx.now, period: p.period || s.meta.demoDate.slice(0, 7) };
+    a.history = a.history || [];
+    a.history.unshift({ ts: ctx.now, by: ctx.user.id, action: 'LOCK', note: 'Periode ' + a.locked.period });
+    log(s, ctx, 'cc.lockAllocation', p.pool, 'Dikunci periode ' + a.locked.period);
     return a;
   };
   H['user.assignRole'] = (s, p, ctx) => {
@@ -1568,6 +1606,7 @@
 
   /* ======================= STORE ======================= */
   const KEY = 'hawk-jaens-demo-state-v3';
+  HAWK.STATE_KEY = KEY;
   HAWK.createStore = function (opts = {}) {
     let storage = null;
     try {
@@ -1589,7 +1628,26 @@
       get state() {
         return state;
       },
+      /* revision tag: lets several app windows (Demo Experience Center frames) share ONE sandbox state */
+      get rev() {
+        return (state.meta && state.meta.rev) || '';
+      },
+      /* reload when another window saved a newer state (same browser origin only — not multi-user sync) */
+      sync() {
+        try {
+          const raw = storage && storage.getItem(KEY);
+          if (!raw) return false;
+          const next = JSON.parse(raw);
+          if (!next || !next.meta || next.meta.schema !== state.meta.schema || next.meta.rev === state.meta.rev) return false;
+          state = next;
+          subs.forEach((f) => f('sync'));
+          return true;
+        } catch (e) {
+          return false;
+        }
+      },
       save() {
+        state.meta.rev = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
         try {
           storage && storage.setItem(KEY, JSON.stringify(state));
         } catch (e) {
@@ -1609,6 +1667,7 @@
       exec(op, payload, user) {
         const h = H[op];
         if (!h) throw new HawkError('NO_HANDLER', 'Operasi belum disimulasikan: ' + op);
+        store.sync(); // never act on a stale copy when another window changed the shared sandbox
         const snapshot = JSON.stringify(state);
         try {
           const ctx = { user, now: U.now(state) };

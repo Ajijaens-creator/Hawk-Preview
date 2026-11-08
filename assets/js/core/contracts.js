@@ -21,6 +21,10 @@
       transition: 'ACTIVE ⇄ ARCHIVED', validation: 'Tolak arsip bila ada MRF/PO terbuka atau sub-unit aktif; aktivasi butuh parent aktif; tanpa hard delete', audit: 'ORG_UNIT_STATUS' }),
     c('cc.updateAllocation', { module: 'B', hawk: 'Accounts (job/cost center — kolom JOB[+] di PR/PO)', status: 'NEW INTEGRATION REQUIRED', roles: ['ADMIN', 'FINANCE'],
       input: '{ pool, basis, splits: {buId: ratio} }', output: 'SharedAllocation', transition: 'Formula alokasi baru berlaku periode berikutnya', validation: 'Total = 100%', audit: 'COST_ALLOC_RULE_CHANGE' }),
+    c('cc.reviewAllocation', { module: 'B/H', hawk: '— (alur review alokasi bersama belum terlihat di HAWK v2.11.6)', status: 'NEW INTEGRATION REQUIRED', roles: ['BU_MANAGER', 'OWNER'],
+      input: '{ pool, bu?, decision AGREE|DISPUTE, note }', output: 'SharedAllocation.reviews[bu]', transition: 'Tiap BU memberi persetujuan / keberatan', validation: 'BU Manager hanya untuk BU-nya; keberatan wajib alasan; tidak bisa setelah dikunci', audit: 'COST_ALLOC_REVIEW' }),
+    c('cc.lockAllocation', { module: 'B/H', hawk: '— (tutup periode alokasi — TO VERIFY dengan HAWK Finance)', status: 'NEW INTEGRATION REQUIRED', roles: ['FINANCE'],
+      input: '{ pool, period? }', output: 'SharedAllocation.locked', transition: 'REVIEWED → LOCKED (formula tidak bisa diubah lagi)', validation: 'Semua BU sudah review, tidak ada keberatan', audit: 'COST_ALLOC_LOCK' }),
     c('user.assignRole', { module: 'B', hawk: 'User/Privilege (header menampilkan PRIVILEGE: Super Admin)', status: 'TO VERIFY', roles: ['ADMIN'],
       input: '{ id, role, scope[] }', output: 'User', transition: 'Role berubah, sesi aktif harus di-refresh', validation: 'Role terdaftar; scope ≥ 1 unit', audit: 'USER_ROLE_CHANGE (keamanan — wajib)' }),
     c('approval.updateRule', { module: 'B', hawk: 'Approval di PR/PO (field APPROVE STATUS / APPROVED BY)', status: 'TO VERIFY', roles: ['ADMIN'],
@@ -148,6 +152,9 @@
     c('flow.resolve', { module: 'K', hawk: '—', status: 'NEW INTEGRATION REQUIRED', roles: ALL.filter((r) => r !== 'STAFF'), input: '{ id, note }', output: 'FlowIssue RESOLVED', transition: '→ RESOLVED (riwayat SLA tetap)', validation: 'Alasan wajib bila tidak otomatis; catatan penyelesaian', audit: 'FLOW_RESOLVE' }),
     c('flow.updateSla', { module: 'K', hawk: '—', status: 'NEW INTEGRATION REQUIRED', roles: ['OWNER', 'ADMIN', 'BU_MANAGER'], input: '{ id, hours?, warn?, active?, note }', output: 'SlaPolicy v(n+1)', transition: 'Versi baru berlaku untuk evaluasi berikutnya; jatuh tempo isu lama tidak ditimpa', validation: 'Jam 1–720; ambang 0–1; alasan wajib', audit: 'SLA_POLICY_CHANGE (before/after)' }),
     c('flow.setWeights', { module: 'K', hawk: '—', status: 'UI-ONLY SIMULATION', roles: ['OWNER', 'ADMIN'], input: '{ weights{onTime,activeSla,p90,data}, note }', output: 'FlowConfig v(n+1)', transition: '—', validation: 'Total 100%; alasan wajib', audit: 'PFHI_WEIGHTS_CHANGE' }),
+    c('dx.start', { module: 'DX', hawk: '— (Demo Experience Center — hanya sandbox demo)', status: 'UI-ONLY SIMULATION', roles: ALL, input: '{ scenario }', output: 'state.dx', transition: 'Mulai skenario terpandu pada data demo yang baru di-reset', validation: 'ID skenario terdaftar', audit: 'DX_START' }),
+    c('dx.step', { module: 'DX', hawk: '— (hasil uji demo, bukan transaksi HAWK)', status: 'UI-ONLY SIMULATION', roles: ALL, input: '{ step, result DONE|REVIEWED|BLOCKED, note? }', output: 'state.dx.steps[step]', transition: 'Catat hasil langkah tutorial', validation: 'Langkah ada di skenario aktif', audit: 'DX_STEP' }),
+    c('dx.verdict', { module: 'DX', hawk: '— (laporan UAT demo)', status: 'UI-ONLY SIMULATION', roles: ALL, input: '{ verdict PASS|FAIL|BLOCKED, note }', output: 'state.dx.verdict', transition: 'Catat hasil uji skenario', validation: 'FAIL/BLOCKED wajib catatan', audit: 'DX_VERDICT' }),
     c('demo.advanceClock', { module: 'K', hawk: '— (hanya demo)', status: 'UI-ONLY SIMULATION', roles: ALL, input: '{ hours }', output: '{ now }', transition: 'Jam demo maju', validation: '1–240 jam', audit: 'DEMO_CLOCK' }),
 
     /* ---------- cross-cutting ---------- */

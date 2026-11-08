@@ -86,7 +86,7 @@
       const ids = assets.map((a) => a.id);
       const mts = s.maintenance.filter((m) => ids.includes(m.asset));
       const wos = s.workOrders.filter((w) => ids.includes(w.asset));
-      const cur = L.t || 'REQ';
+      const cur = L.t || (ctx.q.tab === 'WO' ? 'WO' : 'REQ');
       const parts = s.items.filter((i) => i.cat === 'Suku Cadang');
       const reqT = ui.table(
         [

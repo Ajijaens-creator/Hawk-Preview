@@ -3,7 +3,7 @@
    and checks quantities, statuses, financial classifications and references.  Usage: node tests/workflow.test.js */
 'use strict';
 const path = require('path');
-['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
+['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'adapter', 'ai', 'registry', 'dx'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
 const H = globalThis.HAWK;
 const S = H.selectors;
 
@@ -715,6 +715,102 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
     if (needR) check('Isu tanpa alasan otomatis tidak bisa diselesaikan sebelum alasan dicatat', call('flow.resolve', { id: seedIs.id, note: 'Sudah beres' }, 'OWNER').error.code === 'VALIDATION');
     check('Catat alasan lalu selesaikan isu (manual)', call('flow.recordReason', { id: seedIs.id, code: 'CAPACITY', note: 'Antrian PO menumpuk akhir bulan' }, 'PURCHASING').ok && call('flow.resolve', { id: seedIs.id, note: 'PO sudah dibuat' }, 'PURCHASING').ok);
   }
+})();
+
+/* ============ T11. MP-HAWK-09 Demo Experience Center — 6 skenario terpandu lewat operasi HAWK yang sama ============ */
+(function demoCenter() {
+  console.log('T11 Demo Experience Center — 6 skenario, state bersama, tanpa posting ganda');
+  const { store, api, call, s } = fresh();
+  const DX = H.dx;
+  check('Katalog: 6 skenario wajib, setiap langkah punya user, layar & target ID stabil yang terdaftar', DX.SCENARIOS.map((x) => x.id).join() === 'MRF,NOTA,SLA,BUDGET,ASSET,OFFICE' && DX.SCENARIOS.every((sc) => sc.steps.every((st) => st.as && DX.TARGETS[st.tid] && DX.TARGETS[st.tid].nv && (st.review || (st.run && st.check)))));
+  check('5 role demo = Finance, Purchasing, BU Manager, Supervisor, Staff (desktop/desktop/desktop/iPad/mobile)', DX.ROLE5.map((r) => r.key + ':' + r.device).join() === 'FINANCE:desktop,PURCHASING:desktop,BU_MANAGER:desktop,SUPERVISOR:ipad,STAFF:mobile');
+  check('Setiap layar target dapat dibuka oleh role langkahnya (tanpa memperluas hak akses)', DX.SCENARIOS.every((sc) => sc.steps.every((st) => H.canSee(s().users.find((u) => u.id === st.as).role, DX.TARGETS[st.tid].nv))));
+  const counts = {};
+  DX.SCENARIOS.forEach((sc) => {
+    const r = DX.start(store, api, sc.id);
+    let guard = 0;
+    let fail = null;
+    while (!DX.current(s()).done && guard++ < 40) {
+      const c = DX.current(s());
+      const x = c.step.review ? DX.review(store, api) : DX.runStep(store, api);
+      if (!x.ok) {
+        fail = c.step.id + ' ' + JSON.stringify(x.error);
+        break;
+      }
+    }
+    counts[sc.id] = Object.values(s().dx.steps).filter((x) => ['DONE', 'REVIEWED'].includes(x.result)).length;
+    check(`Skenario ${sc.id}: ${sc.steps.length} langkah selesai end-to-end, setup tanpa error`, !fail && r.trail.every((t) => t.ok) && counts[sc.id] === sc.steps.length, fail);
+    const bal = s().journals.every((j) => Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)));
+    check(`Skenario ${sc.id}: semua jurnal seimbang`, bal);
+    if (sc.id === 'MRF') {
+      const v = s().dx.vars;
+      const m = s().mrfs.find((x) => x.id === v.mrf);
+      const f = H.selectors.mrfFulfillment(s(), m);
+      const al = m.lines[0].alloc;
+      check('MRF: 4 lokal + 3 transfer + 3 PO, 10/10 terpenuhi', [['LOCAL', 4], ['TRANSFER', 3], ['PURCHASE', 3]].every(([p, q]) => al.filter((a) => a.path === p).reduce((t, a) => t + a.qty, 0) === q) && f.issued === 10 && m.status === 'FULFILLED');
+      const p = s().pos.find((x) => x.id === v.po);
+      check('MRF: janji vendor asli tetap, ETA revisi tercatat, isu tertutup otomatis', p.etaHistory.length === 1 && p.promised && s().flowIssues.find((i) => i.id === v.issue).status === 'RESOLVED');
+      const bills = s().bills.filter((b) => b.po === v.po);
+      const rec = s().journals.filter((j) => j.kind === 'INVOICE_RECOGNITION' && j.source === v.bill).length;
+      const pays = s().payments.filter((x) => x.bill === v.bill);
+      check('MRF: penerimaan ≠ faktur ≠ AP ≠ bayar; 1 tagihan, ≤1 jurnal pengakuan, 1 pembayaran (tanpa posting ganda)', bills.length === 1 && bills[0].status === 'PAID' && rec <= 1 && pays.length === 1 && s().grns.filter((g) => g.po === v.po).length === 2);
+      check('MRF: AP disetujui orang berbeda dari verifikator faktur (maker ≠ checker)', bills[0].history.some((h) => h.by === 'U-BUM'));
+      const before = s().payments.length;
+      check('Langkah yang sudah selesai tidak bisa dijalankan dua kali', !DX.runStep(store, api).ok && s().payments.length === before);
+    }
+    if (sc.id === 'NOTA') {
+      const sp = H.selectors.spend(s(), s().dx.vars.sp);
+      check('NOTA: sumber = AI SIMULATION, koreksi manusia tersimpan terpisah, SETTLED dengan bukti asli', sp.source === 'SIMULATED_AI_EXTRACTION' && sp.corrections.length >= 1 && sp.status === 'SETTLED' && !!sp.evidence);
+    }
+    if (sc.id === 'BUDGET') {
+      const rev = s().budgetRevisions.find((x) => x.id === s().dx.vars.rev);
+      const b = s().budgets.find((x) => x.id === 'BGT-2026-SPA');
+      const pr = b.lines.find((l) => l.p === 'PROMOTION' && l.cls !== 'CAPEX' && l.cls !== 'OUTCOME');
+      check('BUDGET: reforecast disetujui Owner; Original tidak berubah, Revised berubah', rev.status === 'APPROVED' && rev.decidedBy === 'U-OWN' && pr.original !== pr.revised);
+    }
+    if (sc.id === 'ASSET') {
+      const w = s().workOrders.find((x) => x.id === s().dx.vars.wo);
+      check('ASSET: WO selesai, suku cadang lewat MRF+PO, jurnal pemeliharaan diposting Finance', w.status === 'COMPLETED' && w.parts.length === 1 && s().journals.find((j) => j.id === s().dx.vars.jv).status === 'POSTED');
+    }
+    if (sc.id === 'OFFICE') {
+      const a = s().sharedAllocations.find((x) => x.pool === 'CC-OFC-FIN');
+      check('OFFICE: 60/40, review Spa + Essence, dikunci Finance; tidak ada jurnal baru', a.splits['BU-SPA'] === 0.6 && a.reviews['BU-SPA'].decision === 'AGREE' && a.reviews['BU-ESS'] && a.locked && a.locked.by === 'U-FIN');
+      check('OFFICE: setelah dikunci, porsi tidak bisa diubah', call('cc.updateAllocation', { pool: 'CC-OFC-FIN', splits: { 'BU-SPA': 0.5, 'BU-ESS': 0.5 } }, 'FINANCE').error.code === 'LOCKED');
+    }
+  });
+  // allocation workflow guards
+  store.reset();
+  check('Alokasi: Finance tidak dapat mereview, BU Manager tidak dapat mengunci', !call('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-SPA', decision: 'AGREE' }, 'FINANCE').ok && !call('cc.lockAllocation', { pool: 'CC-OFC-FIN' }, 'BU_MANAGER').ok);
+  check('Alokasi: BU Manager Spa tidak dapat mereview porsi Essence', call('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-ESS', decision: 'AGREE' }, 'BU_MANAGER').error.code === 'FORBIDDEN');
+  check('Alokasi: keberatan wajib alasan', call('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-SPA', decision: 'DISPUTE' }, 'BU_MANAGER').error.code === 'VALIDATION');
+  check('Alokasi: kunci ditolak sebelum semua BU review', call('cc.lockAllocation', { pool: 'CC-OFC-FIN' }, 'FINANCE').error.code === 'VALIDATION');
+  call('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-SPA', decision: 'DISPUTE', note: 'Porsi Spa terlalu besar' }, 'BU_MANAGER');
+  call('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-ESS', decision: 'AGREE' }, 'OWNER');
+  check('Alokasi: ada keberatan → tidak bisa dikunci', call('cc.lockAllocation', { pool: 'CC-OFC-FIN' }, 'FINANCE').error.code === 'VALIDATION');
+  check('Alokasi: porsi diubah → review BU direset (harus ditinjau ulang)', call('cc.updateAllocation', { pool: 'CC-OFC-FIN', splits: { 'BU-SPA': 0.7, 'BU-ESS': 0.3 } }, 'FINANCE').ok && !Object.keys(s().sharedAllocations[0].reviews).length);
+  // tutor state & detection of a REAL button press (UI path, not the tutor)
+  DX.start(store, api, 'MRF');
+  const m = call('mrf.create', { branch: 'BR-SHN', memo: 'lewat layar asli', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF').data;
+  check('Langkah terdeteksi selesai dari tombol asli (UI) dan variabel terikat ke dokumen yang sama', DX.detect(store, api) === 'MRF-01' && s().dx.vars.mrf === m.id && s().dx.steps['MRF-01'].via === 'UI');
+  check('Langkah tinjauan tidak bisa ditandai dari langkah transaksi', !DX.review(store, api).ok);
+  check('BLOCKED wajib catatan', !call('dx.step', { step: 'MRF-02', result: 'BLOCKED' }, 'OWNER').ok && call('dx.step', { step: 'MRF-02', result: 'BLOCKED', note: 'Tombol tidak ada' }, 'OWNER').ok);
+  check('Hasil uji: FAIL tanpa catatan ditolak; PASS tercatat', !call('dx.verdict', { verdict: 'FAIL' }, 'OWNER').ok && call('dx.verdict', { verdict: 'PASS' }, 'OWNER').ok && s().dx.verdict.verdict === 'PASS');
+  check('dx.start tanpa skenario valid ditolak', !call('dx.start', { scenario: 'NOPE' }, 'OWNER').ok);
+  const rep = DX.report(s());
+  check('Laporan UAT: langkah, role, layar, target, hasil, bukti, disclaimer', rep.steps.length === 16 && rep.steps[0].screen === 'NV-26' && rep.steps[0].evidence.includes(m.id) && rep.steps[1].result === 'BLOCKED' && /sintetis/.test(rep.disclaimer));
+  // one sandbox shared by several windows (storage) — no lost update
+  const mem = {};
+  const fake = { getItem: (k) => (k in mem ? mem[k] : null), setItem: (k, v) => (mem[k] = String(v)) };
+  const A = H.createStore({ storage: fake });
+  const B = H.createStore({ storage: fake });
+  const aApi = H.createApi(A);
+  const bApi = H.createApi(B);
+  const uS = A.state.users.find((u) => u.id === 'U-STF');
+  const uP = A.state.users.find((u) => u.id === 'U-SPV');
+  const r1 = aApi.call('mrf.create', { branch: 'BR-SHN', memo: 'jendela A', lines: [{ item: 'BHP-001', qty: 2, reason: 'Pemakaian rutin' }] }, uS);
+  const r2 = bApi.call('mrf.decide', { id: r1.data.id, decision: 'APPROVE', note: 'jendela B' }, uP);
+  check('State bersama: jendela B melihat MRF dari jendela A sebelum bertindak (tanpa kehilangan data)', r2.ok && B.state.mrfs.find((x) => x.id === r1.data.id).status !== 'SUBMITTED');
+  check('State bersama: jendela A sinkron dari penyimpanan', A.sync() && A.state.meta.rev === B.state.meta.rev && A.state.mrfs.find((x) => x.id === r1.data.id).status !== 'SUBMITTED');
 })();
 
 console.log(`\n${pass} lulus, ${failN} gagal`);

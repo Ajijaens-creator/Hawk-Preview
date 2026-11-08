@@ -26,16 +26,28 @@
     }
   })();
   const savePrefs = () => {
+    if (HAWK.EMBED) return; // frames never overwrite the main window's preferences
     try {
       localStorage.setItem('hawk-ui-prefs', JSON.stringify(prefs));
     } catch (e) {}
   };
+  /* Embedded mode (Demo Experience Center frames): ?embed=1&as=U-XXX — the frame's DEMO user lives in memory only,
+     never in shared prefs, so five frames can show five roles at once. This is a demo role switch, NOT a login. */
+  const qs = new URLSearchParams(location.search);
+  const EMBED = qs.get('embed') === '1';
+  HAWK.EMBED = EMBED;
   prefs.user = prefs.user || 'U-OWN';
   prefs.bu = prefs.bu || 'ALL';
   prefs.branch = prefs.branch || 'ALL';
   prefs.dev = prefs.dev !== undefined ? prefs.dev : true;
   prefs.tour = prefs.tour !== undefined ? prefs.tour : true;
   prefs.visited = prefs.visited || {};
+  if (EMBED) {
+    const embedPrefs = { user: /^U-[A-Z0-9]+$/.test(qs.get('as') || '') ? qs.get('as') : prefs.user, bu: 'ALL', branch: 'ALL', dev: false, tour: false, visited: {} };
+    Object.keys(prefs).forEach((k) => delete prefs[k]);
+    Object.assign(prefs, embedPrefs);
+    document.documentElement.classList.add('embed');
+  }
 
   const user = () => store.state.users.find((u) => u.id === prefs.user) || store.state.users[0];
   HAWK.currentUser = () => user();
@@ -207,7 +219,8 @@
         <div class="nav-items">${items.map((s) => `<a href="#/nv/${s.nv}" class="${s.nv === nv ? 'cur' : ''}"><span class="nvc">${s.code}</span><span>${esc(s.name)}</span></a>`).join('')}</div></div>`;
       })
       .join('');
-    $('#nav').innerHTML = mods;
+    const dx = EMBED ? '' : `<a class="nav-dx ${isDx() ? 'cur' : ''}" href="#/dx">${ui.icon('play', 16)}<span><b>Demo Experience Center</b><small>Test Lab · 5 layar · 6 skenario</small></span></a>`;
+    $('#nav').innerHTML = dx + mods;
   }
 
   /* ---------- topbar ---------- */
@@ -435,7 +448,24 @@
   let loadTimer = null;
   const loadingState = () => `<div class="stack" aria-busy="true" aria-live="polite"><div class="tiny muted">${ui.icon('clock', 14)} Memuat data dari adapter…</div><div class="grid g4">${'<div class="card skel" style="height:86px"></div>'.repeat(4)}</div><div class="card skel" style="height:220px"></div></div>`;
   const errorState = (scr) => `<div class="card state-err" role="alert" style="max-width:680px"><h3>${ui.icon('alert', 16)} Data ${scr.code} tidak dapat dimuat</h3><p class="small">Adapter mengembalikan <span class="mono">NETWORK_ERROR</span> (simulasi). Tidak ada data yang berubah; transaksi yang sedang diisi tidak dikirim. Backend HAWK sebenarnya harus mengembalikan kode error terstruktur + <i>retryable</i>, dan operasi tulis wajib idempoten agar aman diulang.</p><div class="row" style="gap:8px"><button class="btn sm" data-retry>Coba lagi</button><button class="btn sm ghost" data-net-reset>Kembalikan ke Normal</button></div></div>`;
+  const isDx = () => !EMBED && /^#\/dx/.test(location.hash);
   function render() {
+    document.documentElement.classList.toggle('dx-page', isDx());
+    if (isDx() && HAWK.dxCenter) {
+      const u = user();
+      renderSidebar(0, u);
+      renderTopbar(u);
+      if (!$('#view').querySelector('[data-dx-root]')) {
+        $('#view').innerHTML = HAWK.dxCenter.render(makeCtx(0, {}));
+        $('#view').dataset.nv = 'dx';
+        HAWK.dxCenter.mount(makeCtx(0, {}));
+      } else HAWK.dxCenter.refresh();
+      document.title = 'Demo Experience Center — HAWK × JAENS (DEMO)';
+      $('#mode-label').textContent = api.mode === 'MOCK' ? 'Mock Adapter' : 'HAWK API (tidak terhubung)';
+      renderTour();
+      $('#sidebar').classList.remove('on');
+      return;
+    }
     const { nv, q } = parseHash();
     const u = user();
     const scr = HAWK.screen(nv) || HAWK.screen(1);
@@ -702,6 +732,47 @@
     if (e.target.dataset.in && view && view.actions && view.actions[e.target.dataset.in]) view.actions[e.target.dataset.in](e.target, makeCtx(nv, parseHash().q), e);
   });
   window.addEventListener('hashchange', render);
+  /* one sandbox shared by every window of this origin (Demo Experience Center frames) */
+  window.addEventListener('storage', (e) => {
+    if (e.key !== HAWK.STATE_KEY) return;
+    if (!store.sync()) return;
+    if (isDx() && HAWK.dxCenter) {
+      HAWK.dxCenter.onSync();
+      renderTopbar(user());
+    } else if (!document.querySelector('#modal.on')) render();
+    else renderTopbar(user());
+  });
+  /* tutor highlight inside THIS window: stamps the stable target ID on the real control */
+  HAWK.dxFocus = function (sel, label, tid) {
+    HAWK.dxClear();
+    let el = null;
+    try {
+      el = document.querySelector('#view ' + sel) || document.querySelector(sel);
+    } catch (e) {
+      el = null;
+    }
+    if (!el) return false;
+    el.classList.add('dx-hl');
+    el.setAttribute('data-dx-target', tid || '1');
+    const tip = document.createElement('div');
+    tip.className = 'dx-tip';
+    tip.textContent = label || 'Tekan di sini';
+    document.body.appendChild(tip);
+    // scroll THIS window only (scrollIntoView would also scroll the Demo Center page that hosts the frame)
+    const r0 = el.getBoundingClientRect();
+    window.scrollTo(0, Math.max(0, r0.top + window.scrollY - window.innerHeight / 2));
+    const r = el.getBoundingClientRect();
+    tip.style.top = Math.max(6, r.top + window.scrollY - 34) + 'px';
+    tip.style.left = Math.max(6, Math.min(window.innerWidth - 260, r.left + window.scrollX)) + 'px';
+    return true;
+  };
+  HAWK.dxClear = function () {
+    document.querySelectorAll('.dx-hl').forEach((x) => {
+      x.classList.remove('dx-hl');
+      x.removeAttribute('data-dx-target');
+    });
+    document.querySelectorAll('.dx-tip').forEach((x) => x.remove());
+  };
 
   HAWK.resetDemo = function () {
     ui.openModal('Reset data demo?', '<p>Semua transaksi yang dibuat selama demo akan dihapus dan data kembali ke kondisi awal (DEMO). Preferensi tampilan tetap.</p>', '<button class="btn ghost" data-close-modal>Batal</button><button class="btn bad" id="reset-ok">Reset data demo</button>');

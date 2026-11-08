@@ -19,7 +19,7 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
   const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
   ok('dist/index.html tanpa inline script (CSP script-src self)', !/<script>(?!<\/script>)/.test(html) && html.includes('assets/js/boot.js?v='));
   const refs = [...html.matchAll(/(?:src|href)="(assets\/[^"?]+)\?v=/g)].map((m) => m[1]);
-  ok('Semua 26 aset (CSS + 25 JS) direferensikan & ada di dist', refs.length === 26 && refs.every((r) => fs.existsSync(path.join(dist, r))), refs.length);
+  ok('Semua 28 aset (CSS + 27 JS) direferensikan & ada di dist', refs.length === 28 && refs.every((r) => fs.existsSync(path.join(dist, r))), refs.length);
   ok('noindex meta + robots.txt', html.includes('noindex') && fs.readFileSync(path.join(dist, 'robots.txt'), 'utf8').includes('Disallow: /'));
   ok('Tidak ada URL eksternal di build', !/https?:\/\//.test(html + fs.readFileSync(path.join(dist, 'assets/css/hawk.css'), 'utf8')));
   ok('Tidak ada kredensial di source/build', !/PREVIEW_CREDENTIALS\s*=\s*"[^"<]/.test(fs.readFileSync(path.join(root, 'wrangler.toml'), 'utf8')) && !fs.readFileSync(path.join(root, 'vercel.json'), 'utf8').includes('PREVIEW_CREDENTIALS'));
@@ -36,7 +36,7 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
   ok('Vercel-ready: output = public, tanpa build command, tanpa script build', rvj.outputDirectory === 'public' && !rvj.buildCommand && !(rpk.scripts && rpk.scripts.build));
   { const rc = ['blurry', 'duplicate', 'emergency', 'handwritten', 'overbudget', 'po-invoice', 'printed', 'reimburse', 'unpaid'].map((k) => 'assets/img/receipts/' + k + '.svg');
     ok('9 nota contoh DEMO ikut di dist & paket Vercel', rc.every((r) => fs.existsSync(path.join(dist, r)) && fs.existsSync(path.join(rel, 'public', r)))); }
-  ok('Vercel-ready: public/ = build dist (index + 26 aset)', fs.readFileSync(path.join(rel, 'public/index.html'), 'utf8') === fs.readFileSync(path.join(dist, 'index.html'), 'utf8') && refs.every((r) => fs.existsSync(path.join(rel, 'public', r))));
+  ok('Vercel-ready: public/ = build dist (index + 28 aset)', fs.readFileSync(path.join(rel, 'public/index.html'), 'utf8') === fs.readFileSync(path.join(dist, 'index.html'), 'utf8') && refs.every((r) => fs.existsSync(path.join(rel, 'public', r))));
   ok('Vercel-ready: middleware sama dengan source, runtime nodejs, CSP sama', fs.readFileSync(path.join(rel, 'middleware.js'), 'utf8') === fs.readFileSync(path.join(root, 'middleware.js'), 'utf8') && /runtime: 'nodejs'/.test(fs.readFileSync(path.join(rel, 'middleware.js'), 'utf8')) && rvj.headers[0].headers.find((h) => h.key === 'Content-Security-Policy').value === CSP);
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
   const leak = walk(rel).filter((f) => /\.(js|json|html|css|md)$/.test(f)).filter((f) => /(api[_-]?key|secret[_-]?key|sk-[A-Za-z0-9]{16}|password\s*[:=]\s*["'][^"'<]{6,}|@gmail\.com|supabase\.co)/i.test(fs.readFileSync(f, 'utf8')));

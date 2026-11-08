@@ -8,8 +8,8 @@ _Dibuat otomatis oleh `node tools/gen-docs.js` dari `assets/js/core/contracts.js
 |---|---|---|
 | CONFIRMED EXISTING | 0 | Hanya dengan dokumentasi/verifikasi engine — belum ada |
 | TO VERIFY | 51 | UI HAWK v2.11.6 menunjukkan kemampuan terkait (screenshot 7 Nov 2026), API belum terdokumentasi |
-| NEW INTEGRATION REQUIRED | 35 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
-| UI-ONLY SIMULATION | 6 | Hanya prototipe (AI/OCR/skenario); tidak boleh disajikan sebagai live |
+| NEW INTEGRATION REQUIRED | 37 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
+| UI-ONLY SIMULATION | 9 | Hanya prototipe (AI/OCR/skenario); tidak boleh disajikan sebagai live |
 
 Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi, skema request/response, permission di server, state workflow, audit event, **idempotency key** untuk operasi tulis, error terstruktur (`code`, `message`, `retryable`), dan bukti tes.
 
@@ -23,6 +23,14 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `user.assignRole` | `permissions.canAccess` | User/Privilege (header menampilkan PRIVILEGE: Super Admin) | **TO VERIFY** | System Administrator | `{ id, role, scope[] }` | User | Role berubah, sesi aktif harus di-refresh | Role terdaftar; scope ≥ 1 unit | USER_ROLE_CHANGE (keamanan — wajib) |
 | `approval.updateRule` | — | Approval di PR/PO (field APPROVE STATUS / APPROVED BY) | **TO VERIFY** | System Administrator | `{ id, min?, max?, chain?, active?, slaHours?, note? }` | ApprovalRule (+pending draft) | ACTIVE v(n) tetap berlaku → DRAFT revisi menunggu terbit | min ≥ 0; max > min; SLA > 0; rantai ≥ 1 role; harus ada perubahan | APPROVAL_RULE_DRAFT |
 | `approval.publishRule` | — | Approval di PR/PO | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif | `{ id, decision: APPROVE\|REJECT }` | ApprovalRule v(n+1) | DRAFT → ACTIVE v(n+1) \| dibuang | Maker ≠ checker (SoD); dokumen berjalan tetap pakai rantai saat diajukan | APPROVAL_RULE_PUBLISH (before/after) |
+
+## Modul B/H
+
+| Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
+|---|---|---|---|---|---|---|---|---|---|
+| `cc.reviewAllocation` | — | — (alur review alokasi bersama belum terlihat di HAWK v2.11.6) | **NEW INTEGRATION REQUIRED** | BU Manager, Owner / Eksekutif | `{ pool, bu?, decision AGREE\|DISPUTE, note }` | SharedAllocation.reviews[bu] | Tiap BU memberi persetujuan / keberatan | BU Manager hanya untuk BU-nya; keberatan wajib alasan; tidak bisa setelah dikunci | COST_ALLOC_REVIEW |
+| `cc.lockAllocation` | — | — (tutup periode alokasi — TO VERIFY dengan HAWK Finance) | **NEW INTEGRATION REQUIRED** | Finance / Accounting | `{ pool, period? }` | SharedAllocation.locked | REVIEWED → LOCKED (formula tidak bisa diubah lagi) | Semua BU sudah review, tidak ada keberatan | COST_ALLOC_LOCK |
+| `autoOrder.update` | — | — (pengaturan aturan baru) | **NEW INTEGRATION REQUIRED** | Finance / Accounting, System Administrator, Owner / Eksekutif | `{ active?, max?, note }` | ApprovalRule AR-13 v(n+1) | Berlaku untuk pesanan BARU; pesanan berjalan tidak berubah | Role Finance / Super Admin / Owner; batas Rp0–25 jt; alasan wajib; harus ada perubahan | AUTO_ORDER_RULE_CHANGE (before/after, alasan) |
 
 ## Modul C
 
@@ -72,12 +80,6 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `mrf.planFulfillment` | — | PO Request register — tombol TRANSFER dan PO, kolom TRANSFER ID / PO ID | **TO VERIFY** | Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif, Gudang / Receiving | `{ id }` | MRF.lines[].alloc[] { path LOCAL\|TRANSFER\|PURCHASE, qty, ref } | APPROVED → IN_FULFILLMENT (+ reservasi stok, + Transfer REQUESTED) | Σ alloc.qty = qty diminta (invarian) | PR_FULFILLMENT_PLAN |
 | `mrf.issue` | `mrf.getFulfillment / inventory.issue` | Inventory — pengeluaran stok (belum terlihat di screenshot) | **TO VERIFY** | Gudang / Receiving, Supervisor Outlet | `{ id }` | MRF + StockLedger ISSUE + Journal CONSUMPTION | IN_FULFILLMENT → FULFILLED saat issued = requested | onHand & reserved cukup | STOCK_ISSUE |
 | `order.receive` | — | Receiving + Inventory issue (engine yang sama) | **NEW INTEGRATION REQUIRED** | Staff / Therapist / Housekeeping, Supervisor Outlet, Gudang / Receiving, Head of Division, BU Manager, Asset / Facility PIC, System Administrator | `{ id (MRF), lines?:[{item, received, damaged}], note? }` | MRF (+ GRN POSTED/STORED, transfer RECEIVED, tagihan otomatis, issue) | Transfer IN_TRANSIT → RECEIVED; PO SENT → PARTIAL\|RECEIVED; GRN RECEIVED → POSTED → STORED (SYS-RULE); tagihan APPROVED; MRF → FULFILLED bila lengkap | Hanya pemesan/staf unit; qty ≤ sisa; rusak ≤ diterima; harus ada barang yang ditunggu | GOODS_PHYSICAL_RECEIPT (manusia) + POST/PUTAWAY/AUTO_BILL/ISSUE (SYS-RULE) |
-
-## Modul B/H
-
-| Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
-|---|---|---|---|---|---|---|---|---|---|
-| `autoOrder.update` | — | — (pengaturan aturan baru) | **NEW INTEGRATION REQUIRED** | Finance / Accounting, System Administrator, Owner / Eksekutif | `{ active?, max?, note }` | ApprovalRule AR-13 v(n+1) | Berlaku untuk pesanan BARU; pesanan berjalan tidak berubah | Role Finance / Super Admin / Owner; batas Rp0–25 jt; alasan wajib; harus ada perubahan | AUTO_ORDER_RULE_CHANGE (before/after, alasan) |
 
 ## Modul E/F
 
@@ -187,6 +189,14 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `flow.updateSla` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, System Administrator, BU Manager | `{ id, hours?, warn?, active?, note }` | SlaPolicy v(n+1) | Versi baru berlaku untuk evaluasi berikutnya; jatuh tempo isu lama tidak ditimpa | Jam 1–720; ambang 0–1; alasan wajib | SLA_POLICY_CHANGE (before/after) |
 | `flow.setWeights` | — | — | **UI-ONLY SIMULATION** | Owner / Eksekutif, System Administrator | `{ weights{onTime,activeSla,p90,data}, note }` | FlowConfig v(n+1) | — | Total 100%; alasan wajib | PFHI_WEIGHTS_CHANGE |
 | `demo.advanceClock` | — | — (hanya demo) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ hours }` | { now } | Jam demo maju | 1–240 jam | DEMO_CLOCK |
+
+## Modul DX
+
+| Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
+|---|---|---|---|---|---|---|---|---|---|
+| `dx.start` | — | — (Demo Experience Center — hanya sandbox demo) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ scenario }` | state.dx | Mulai skenario terpandu pada data demo yang baru di-reset | ID skenario terdaftar | DX_START |
+| `dx.step` | — | — (hasil uji demo, bukan transaksi HAWK) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ step, result DONE\|REVIEWED\|BLOCKED, note? }` | state.dx.steps[step] | Catat hasil langkah tutorial | Langkah ada di skenario aktif | DX_STEP |
+| `dx.verdict` | — | — (laporan UAT demo) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ verdict PASS\|FAIL\|BLOCKED, note }` | state.dx.verdict | Catat hasil uji skenario | FAIL/BLOCKED wajib catatan | DX_VERDICT |
 
 ## Modul A/B
 

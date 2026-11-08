@@ -13,7 +13,7 @@ const crypto = require('crypto');
 const root = path.join(__dirname, '..');
 const dist = path.join(root, 'dist');
 const DOMAIN = process.env.PREVIEW_DOMAIN || 'preview.hawk.jaens.id';
-const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
+const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'";
 module.exports = { CSP };
 if (require.main === module) build();
 
@@ -54,7 +54,7 @@ fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 /* Security headers — identical policy is also declared in vercel.json (tests/deploy.test.js checks they match) */
 fs.writeFileSync(
   path.join(dist, '_headers'),
-  `/*\n  Content-Security-Policy: ${CSP}\n  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n  Strict-Transport-Security: max-age=31536000\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-cache\n/assets/*\n  Cache-Control: private, max-age=31536000, immutable\n`
+  `/*\n  Content-Security-Policy: ${CSP}\n  X-Frame-Options: SAMEORIGIN\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n  Strict-Transport-Security: max-age=31536000\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-cache\n/assets/*\n  Cache-Control: private, max-age=31536000, immutable\n`
 );
 fs.writeFileSync(path.join(dist, '_redirects'), '/index.html / 301\n');
 

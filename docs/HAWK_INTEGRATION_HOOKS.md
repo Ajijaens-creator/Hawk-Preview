@@ -11,14 +11,16 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | Status | Jumlah |
 |---|---|
 | TO VERIFY | 51 |
-| NEW INTEGRATION REQUIRED | 35 |
-| UI-ONLY SIMULATION | 6 |
+| NEW INTEGRATION REQUIRED | 37 |
+| UI-ONLY SIMULATION | 9 |
 
 | Operasi | Jenis | Modul HAWK existing (perkiraan) | Hook paket Owner (placeholder) | Status | Diuji di engine |
 |---|---|---|---|---|---|
 | `org.upsertUnit` | tulis | Settings / Locations (ikon ⚙) — lokasi muncul di dropdown Source/Request Location PR | `organization.manageUnit` | TO VERIFY | ya |
 | `org.setStatus` | tulis | Settings / Locations | `organization.manageUnit` | TO VERIFY | ya |
 | `cc.updateAllocation` | tulis | Accounts (job/cost center — kolom JOB[+] di PR/PO) | — | NEW INTEGRATION REQUIRED | ya |
+| `cc.reviewAllocation` | tulis | — (alur review alokasi bersama belum terlihat di HAWK v2.11.6) | — | NEW INTEGRATION REQUIRED | ya |
+| `cc.lockAllocation` | tulis | — (tutup periode alokasi — TO VERIFY dengan HAWK Finance) | — | NEW INTEGRATION REQUIRED | ya |
 | `user.assignRole` | tulis | User/Privilege (header menampilkan PRIVILEGE: Super Admin) | `permissions.canAccess` | TO VERIFY | ya |
 | `approval.updateRule` | tulis | Approval di PR/PO (field APPROVE STATUS / APPROVED BY) | — | TO VERIFY | ya |
 | `approval.publishRule` | tulis | Approval di PR/PO | — | NEW INTEGRATION REQUIRED | ya |
@@ -105,6 +107,9 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | `flow.resolve` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
 | `flow.updateSla` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
 | `flow.setWeights` | tulis | — | — | UI-ONLY SIMULATION | ya |
+| `dx.start` | tulis | — (Demo Experience Center — hanya sandbox demo) | — | UI-ONLY SIMULATION | ya |
+| `dx.step` | tulis | — (hasil uji demo, bukan transaksi HAWK) | — | UI-ONLY SIMULATION | ya |
+| `dx.verdict` | tulis | — (laporan UAT demo) | — | UI-ONLY SIMULATION | ya |
 | `demo.advanceClock` | tulis | — (hanya demo) | — | UI-ONLY SIMULATION | ya |
 | `audit.list` | baca | Riwayat (ikon jam di toolbar HAWK) | — | TO VERIFY | — (baca) |
 | `search.global` | baca | Purchases › FIND tab | — | TO VERIFY | — (baca) |

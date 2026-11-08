@@ -34,6 +34,10 @@ Sebagai **Nyoman Dewi (Staff Spa Shanti)**, Beranda › **🛒 Pesan barang** (N
 
 Sebagai Owner buka menu **Control Tower › NV-61**: PFHI (provisional), tepat waktu, P90, lewat SLA, kritis P0, heatmap, Action & Escalation Center, performa supplier, dan insight AI (simulasi). Tekan **⏩ Simulasi +24 jam** (DEMO) untuk melihat SLA berubah. Klik KPI/tahap/heatmap untuk drill-down, lalu **Perjalanan ›** untuk NV-62 (timeline 12 tahap, analisis keterlambatan, dokumen & bukti, keuangan). Widget peran ada di NV-01 (Supervisor), 27, 31, 38, 41, 47, 57, 58. Lihat `docs/CONTROL_TOWER.md`.
 
+## Mencoba Demo Experience Center (#/dx)
+
+Buka menu **Demo Experience Center** (paling atas di menu samping) atau `#/dx`. **Option 1 · Scenario Test Lab**: login role DEMO satu klik, ganti device, tutor langkah demi langkah. **Option 2 · Simulator 5 Layar**: dashboard asli Finance, Purchasing, BU Manager, Supervisor (iPad) dan Staff (HP) berdampingan di satu sandbox; tekan tombol di satu layar dan lihat layar lain ikut berubah. Pilih salah satu dari 6 skenario (MRF 10 botol, nota tulisan tangan, SLA vendor, budget 7P, AC rusak, Shared Office 60/40). Butuh http(s): `npm run preview` atau URL Vercel. Lihat `docs/DEMO_EXPERIENCE_CENTER.md`.
+
 ## Struktur
 
 ```
@@ -63,6 +67,7 @@ docs/                      dokumen serah-terima (lihat daftar di bawah)
 | [docs/SCREEN_MATRIX_60NV.md](docs/SCREEN_MATRIX_60NV.md) | 62 NV + status implementasi & cakupan uji per layar (E2E / Engine / Render) |
 | [docs/ROLE_PERMISSION_MATRIX.md](docs/ROLE_PERMISSION_MATRIX.md) | Akses layar & izin operasi per role |
 | [docs/HAWK_INTEGRATION_HOOKS.md](docs/HAWK_INTEGRATION_HOOKS.md) | Titik sambung ke HAWK, 81 operasi, status integrasi (belum ada yang terhubung) |
+| [docs/DEMO_EXPERIENCE_CENTER.md](docs/DEMO_EXPERIENCE_CENTER.md) | MP-HAWK-09: 2 mode, 6 skenario, kontrak Target ID, sesi demo server-side (usulan), batasan |
 | [docs/CONTROL_TOWER.md](docs/CONTROL_TOWER.md) | NV-61/62: timeline 12 tahap, kebijakan SLA, definisi KPI, PFHI provisional, isu & eskalasi, widget peran |
 | [docs/PROCESS_EVENT_ADAPTER.md](docs/PROCESS_EVENT_ADAPTER.md) | Spesifikasi Process Event Tracking Adapter: field minimum, status TO VERIFY, urutan integrasi |
 | [docs/SMART_SPEND_WORKFLOW.md](docs/SMART_SPEND_WORKFLOW.md) | Smart Spend Money & AI Receipt (NV-48, subview NV-M1..M6): 4 alur, kontrol, jurnal, skenario, kontrak |
@@ -97,6 +102,7 @@ node tests/e2e-walkthrough.js        # 14 langkah lewat klik UI di Chromium (but
 node tests/e2e-smart-spend.js        # Smart Spend 15 langkah di 390 px + screenshot M1–M6
 node tests/e2e-simple-order.js       # Order Sederhana 33 cek di 390 px + 20 dashboard + screenshot
 node tests/e2e-control-tower.js      # Control Tower: skenario Massage Oil Shanti 32 cek + screenshot
+node tests/e2e-demo-center.js        # Demo Center: 5 layar, klik asli lintas layar, 6 skenario, 35 cek
 node tests/browser-all.js            # 12 pengguna × 62 layar: render, akses, error runtime
 node tests/responsive.js             # 62 layar × 1440 / 834 / 390 px: overflow & screenshot
 node tests/deploy.test.js            # build, login Cloudflare & Vercel, CSP, desktop/iPad/mobile

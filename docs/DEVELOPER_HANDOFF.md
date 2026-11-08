@@ -118,3 +118,11 @@ Detail di `docs/CONTROL_TOWER.md` (SLA, KPI, PFHI, isu) dan `docs/PROCESS_EVENT_
 - **Operasi baru (modul K):** `flow.sync`, `flow.review`, `flow.assign`, `flow.requestUpdate`, `flow.escalate`, `flow.recordReason`, `flow.changeEta`, `flow.resolve`, `flow.updateSla`, `flow.setWeights`, `demo.advanceClock` (DEMO saja, jangan dibawa ke produksi).
 - **UI:** `assets/js/screens/k-flow.js` (NV-61, NV-62, widget peran yang dibungkus ke NV-01/27/31/38/41/47/57/58). Registry: modul K; NV-62 `navHide: ['STAFF']` (staf membuka lewat widget NV-27).
 - **Keputusan Owner yang dibutuhkan:** target SLA per tahap, ambang P0, bobot PFHI final, kalender kerja & libur per unit, siapa boleh mengubah SLA, apakah revisi ETA perlu bukti dari supplier.
+
+## 10. Demo Experience Center (MP-HAWK-09, `#/dx`)
+
+- Lapisan demo di atas aplikasi yang sama: frame `index.html?embed=1&as=U-XXX#/nv/N` (mode embed: prefs di memori, tidak menyimpan pilihan user) berbagi satu sandbox `localStorage`. `state.meta.rev` + `store.sync()` + event `storage` menjaga semua jendela sinkron; `exec` sinkron sebelum menulis.
+- Skenario, Target ID, dan runner ada di `assets/js/core/dx.js`; halaman di `assets/js/screens/x-demo.js`. Tutor hanya menulis lewat operasi kontrak (`dx.start/step/verdict`, UI-ONLY SIMULATION) dan menjalankan langkah lewat operasi bisnis yang sama dengan tombolnya (cek role, audit).
+- **Target ID = kontrak stabil.** Bila markup HAWK berubah, ubah selector di `HAWK.dx.TARGETS`; `tests/e2e-demo-center.js` gagal bila ada target yang tidak ditemukan.
+- Operasi baru: `cc.reviewAllocation`, `cc.lockAllocation` (NEW INTEGRATION REQUIRED). `cc.updateAllocation` kini menolak pool yang terkunci dan mereset review.
+- Staging: ganti pergantian role frontend dengan sesi demo server-side (lihat `docs/DEMO_EXPERIENCE_CENTER.md` §7). Jangan memakai password bersama atau proteksi yang hanya di JavaScript.

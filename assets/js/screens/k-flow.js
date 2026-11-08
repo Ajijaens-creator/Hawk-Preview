@@ -393,11 +393,13 @@
       const { s, L, q } = ctx;
       const rows = inScopeRows(ctx);
       if (!rows.length) return `<div class="card">${ui.empty('Belum ada pesanan dalam cakupan Anda.')}</div>`;
-      const pick = rows.find((r) => r.id === (L.mrf || q.mrf)) || rows.filter((r) => r.open).sort((a, b) => (a.priority || 'P9').localeCompare(b.priority || 'P9') || b.ageH - a.ageH)[0] || rows[0];
-      if (q.mrf && L.mrfQ !== q.mrf) {
-        L.mrfQ = q.mrf;
+      const qKey = (q.mrf || '') + '|' + (q.tab || '');
+      if (q.mrf && L.mrfQ !== qKey) {
+        L.mrfQ = qKey;
         L.mrf = q.mrf;
+        if (q.tab) L.tab = q.tab;
       }
+      const pick = rows.find((r) => r.id === (L.mrf || q.mrf)) || rows.filter((r) => r.open).sort((a, b) => (a.priority || 'P9').localeCompare(b.priority || 'P9') || b.ageH - a.ageH)[0] || rows[0];
       const r = pick;
       const j = r.j;
       const m = r.m;
@@ -405,7 +407,7 @@
       const ai = F.ai(s, j);
       const iss = (s.flowIssues || []).filter((i) => i.mrf === m.id);
       const openIss = iss.filter((i) => i.status !== 'RESOLVED');
-      const tab = L.tab || 'detail';
+      const tab = ['detail', 'delay', 'evid', 'fin'].includes(L.tab) ? L.tab : 'detail';
       const step = L.step && L.step.mrf === m.id ? L.step.key : null;
       const w = j.worst;
       const next = w ? `${RL(w.owner)}: ${F.STAGE_LABEL[w.stage]}` : m.status === 'FULFILLED' ? 'Tidak ada — selesai' : m.status === 'IN_FULFILLMENT' ? 'Gudang: serahkan barang yang siap' : m.status === 'SUBMITTED' ? 'Atasan: persetujuan' : '—';
