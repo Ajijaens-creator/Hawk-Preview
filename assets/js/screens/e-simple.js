@@ -11,8 +11,14 @@
   const V = HAWK.views;
   const thumb = (it) => HAWK.vh.thumb(it);
   const homeBranch = (ctx) => (ctx.scope.branch && ctx.scope.branch !== 'ALL' && (S.org(ctx.s, ctx.scope.branch) || {}).type === 'BRANCH' ? ctx.scope.branch : ctx.user.scope.find((x) => (S.org(ctx.s, x) || {}).type === 'BRANCH') || 'BR-SHN');
-  const myOrders = (ctx) => ctx.s.mrfs.filter((m) => m.simple && (ctx.role === 'STAFF' ? m.requester === ctx.user.id || ctx.user.scope.includes(m.branch) : ctx.inScope(m.branch)));
-  const canReceive = (ctx, m) => ctx.can('order.receive') && (ctx.role !== 'STAFF' || m.requester === ctx.user.id || ctx.user.scope.includes(m.branch));
+  const myOrders = (ctx) => ctx.s.mrfs.filter((m) => (m.simple || m.status === 'IN_FULFILLMENT') && (ctx.role === 'STAFF' ? m.requester === ctx.user.id || ctx.user.scope.includes(m.branch) : ctx.inScope(m.branch)));
+  const canReceive = (ctx, m) => ctx.can('order.receive') && (!['STAFF', 'SUPERVISOR'].includes(ctx.role) || m.requester === ctx.user.id || ctx.user.scope.includes(m.branch));
+  /* who / outlet / division / BU come from the logged-in account — never typed again */
+  const meCard = (ctx) => {
+    const a = S.assignment(ctx.s, ctx.user);
+    return a ? `<div class="so-me" data-me="${esc(a.user)}"><span class="tiny muted">Terisi otomatis dari akun Anda</span><b>${esc(a.name)}</b> · ${esc(a.title)}<div class="tiny">Outlet <b>${esc(a.branchName)}</b> · Divisi <b>${esc(a.division)}</b> · BU <b>${esc(a.buName)}</b></div></div>` : '';
+  };
+  const lastReceipt = (m) => (m.receipts && m.receipts.length ? m.receipts[m.receipts.length - 1] : null);
   const left = (s, branch, item) => {
     const b = S.itemBudget(s, branch, item);
     return b ? Math.max(0, b.qty - b.actualQty - b.commitQty) : null;
@@ -48,6 +54,7 @@
       <div class="so-msg ${tone}">${esc(st.label)}</div>
       ${m.autoCheck && !m.autoCheck.ok && st.key === 'WAIT' ? `<div class="tiny muted" style="margin-top:4px">Kenapa perlu persetujuan: ${esc(m.autoCheck.why.join('; '))}</div>` : ''}
       <div class="tiny muted" style="margin-top:6px">${U.rp(S.mrfValue(s, m))} · ${U.datetime(m.date)} · Pembayaran: ${pay}</div>
+      ${lastReceipt(m) ? `<div class="tiny" style="margin-top:4px" data-received-by="${esc(lastReceipt(m).by.user)}">📦 Diterima oleh <b>${esc(lastReceipt(m).by.name)}</b> (${esc(lastReceipt(m).by.title)}, ${esc(lastReceipt(m).by.branchName)}) · ${U.datetime(lastReceipt(m).at)}</div>` : ''}
       ${st.key === 'ARRIVE' && canReceive(ctx, m) ? `<button class="btn lg block so-big ok" data-a="recv" data-id2="${m.id}">✅ Barang sudah diterima</button><button class="link small" data-a="recvPart" data-id2="${m.id}">Ada yang kurang atau rusak?</button>` : ''}
     </div>`;
   }
@@ -72,6 +79,7 @@
       const rest = orders.filter((m) => !waiting.includes(m));
       const canOrder = ctx.can('order.quick');
       return `<div class="so-wrap">
+        ${['STAFF', 'SUPERVISOR'].includes(ctx.role) ? meCard(ctx) : ''}
         ${last ? `<div class="so-done ${last.autoCheck && last.autoCheck.ok ? 'ok' : 'warn'}"><div style="font-size:30px">${last.autoCheck && last.autoCheck.ok ? '✅' : '⏳'}</div><div><b>${last.autoCheck && last.autoCheck.ok ? 'Pesanan diproses otomatis' : 'Pesanan dikirim ke atasan'}</b><div class="small">${last.autoCheck && last.autoCheck.ok ? 'Tidak perlu menunggu persetujuan. Saat barang datang, tekan <b>Barang sudah diterima</b>.' : esc('Perlu persetujuan karena: ' + last.autoCheck.why.join('; '))}</div><div class="tiny muted">${ui.id(last.id)}</div></div><button class="btn sm ghost" data-a="hideLast" aria-label="Tutup">✕</button></div>` : ''}
         ${waiting.length ? `<div class="card so-pad"><h3 style="margin:0">📦 Barang sedang dikirim (${waiting.length})</h3><p class="small muted" style="margin:4px 0 0">Saat barang sampai, cek jumlahnya lalu tekan tombol hijau.</p>${waiting.map((m) => orderCard(ctx, m)).join('')}</div>` : ''}
         ${canOrder ? `<div class="card so-pad"><div class="row between" style="gap:8px"><h2 style="margin:0">🛒 Pesan barang</h2>${branches.length > 1 ? `<select class="inp" style="max-width:190px" data-ch="branch" aria-label="Untuk unit">${branches.map((b) => `<option value="${b.id}" ${b.id === branch ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select>` : `<span class="small muted">${esc(S.orgName(s, branch))}</span>`}</div>

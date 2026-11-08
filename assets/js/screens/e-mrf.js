@@ -122,7 +122,7 @@
       const wh = S.whOfOrg(s, f.branch) || S.wh(s, 'WH-PST');
       const cc = S.ccOfOrg(s, f.branch) || {};
       const buMgr = s.users.find((u) => u.role === 'BU_MANAGER');
-      const auto = `<div class="auto"><b class="small">Informasi otomatis</b><dl style="margin-top:6px"><dt>Pemohon</dt><dd>${esc(user.name)}</dd><dt>Jabatan</dt><dd>${esc(user.title)}</dd><dt>Unit</dt><dd>${esc(S.orgName(s, f.branch))}</dd><dt>Gudang</dt><dd>${esc(wh.name)}</dd><dt>Cost center</dt><dd class="mono">${esc(cc.id || '—')}</dd><dt>Budget owner</dt><dd>${esc(buMgr ? buMgr.name : '—')} (BU Manager)</dd><dt>Periode budget</dt><dd>November 2026</dd></dl></div>`;
+      const auto = `<div class="auto"><b class="small">Informasi otomatis</b><dl style="margin-top:6px"><dt>Pemohon</dt><dd>${esc(user.name)}</dd><dt>Jabatan</dt><dd>${esc(user.title)}</dd><dt>Unit</dt><dd>${esc(S.orgName(s, f.branch))}</dd><dt>Divisi</dt><dd>${esc(S.assignment(s, user).division)}</dd><dt>BU</dt><dd>${esc(S.orgName(s, S.buOf(s, f.branch)) || '—')}</dd><dt>Gudang</dt><dd>${esc(wh.name)}</dd><dt>Cost center</dt><dd class="mono">${esc(cc.id || '—')}</dd><dt>Budget owner</dt><dd>${esc(buMgr ? buMgr.name : '—')} (BU Manager)</dd><dt>Periode budget</dt><dd>November 2026</dd></dl></div>`;
       const steps = ui.stepper(['Detail permintaan', 'Rincian item & cek stok/budget', 'Ringkasan & kirim'], L.step);
       if (L.step === 0) {
         return `<div class="card" style="max-width:980px">${steps}<div class="grid g-2-1"><div class="stack">

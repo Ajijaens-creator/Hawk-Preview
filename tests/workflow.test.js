@@ -813,6 +813,38 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('State bersama: jendela A sinkron dari penyimpanan', A.sync() && A.state.meta.rev === B.state.meta.rev && A.state.mrfs.find((x) => x.id === r1.data.id).status !== 'SUBMITTED');
 })();
 
+/* ============ T12. Owner 8 Nov 2026 — penerimaan di outlet oleh akun outlet (tanpa orang gudang) + identitas otomatis dari akun ============ */
+(function outletReceiving() {
+  console.log('T12 Penerimaan di outlet — therapist / receptionist / attendant / supervisor, identitas otomatis');
+  const { call, s } = fresh();
+  const a = S.assignment(s(), 'U-RCP');
+  check('Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan', a && a.branch === 'BR-SHN' && a.branchName === 'Spa Shanti' && a.division === 'Front Office' && a.bu === 'BU-SPA' && a.buName === 'JAENS Spa' && a.title === 'Receptionist Spa Shanti');
+  const m0 = call('mrf.create', { memo: 'tanpa isi unit', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF', 'U-ATD');
+  check('Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)', m0.ok && m0.data.branch === 'BR-SHN' && m0.data.requestedBy.division === 'Attendant' && m0.data.requestedBy.bu === 'BU-SPA');
+  check('Akun outlet tidak bisa memesan atas nama outlet lain', call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 1 }] }, 'STAFF', 'U-STF').error.code === 'FORBIDDEN');
+  // full chain: approve → PO → sent
+  call('mrf.decide', { id: m0.data.id, decision: 'APPROVE', note: 'ok' }, 'SUPERVISOR', 'U-SPV');
+  const m = () => s().mrfs.find((x) => x.id === m0.data.id);
+  const picks = S.pendingPurchase(s()).filter((p) => p.mrf === m0.data.id).map((p) => ({ mrf: p.mrf, li: p.li, ai: p.ai }));
+  s().transfers.filter((x) => x.mrf === m0.data.id && x.status === 'REQUESTED').forEach((x) => call('transfer.dispatch', { id: x.id }, 'WAREHOUSE'));
+  check('Pesanan 10 butuh pembelian ke supplier (ada PO untuk diterima di outlet)', picks.length > 0);
+  if (picks.length) {
+    const po = call('po.createFromMrf', { picks, supplier: 'SUP-001' }, 'PURCHASING').data;
+    call('po.submit', { id: po.id }, 'PURCHASING');
+    if (s().pos.find((x) => x.id === po.id).status === 'PENDING_APPROVAL') call('po.decide', { id: po.id, decision: 'APPROVE' }, 'PURCHASING');
+    call('po.send', { id: po.id }, 'PURCHASING');
+  }
+  check('Therapist outlet lain (Ubud) tidak bisa menerima barang Shanti', call('order.receive', { id: m0.data.id }, 'STAFF', 'U-STF2').error.code === 'FORBIDDEN');
+  check('Supervisor outlet lain (Ubud) tidak bisa menerima barang Shanti', call('order.receive', { id: m0.data.id }, 'SUPERVISOR', 'U-SPV2').error.code === 'FORBIDDEN');
+  const grnBefore = s().grns.length;
+  const r = call('order.receive', { id: m0.data.id }, 'STAFF', 'U-RCP');
+  const g = s().grns.slice(0, s().grns.length - grnBefore).find((x) => x.receivedBy);
+  check('Receptionist Shanti menerima barang (bukan pemesan, tanpa orang gudang) → selesai', r.ok && m().status === 'FULFILLED', r.error && r.error.message);
+  check('Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)', (!picks.length || (g && g.receivedBy.user === 'U-RCP' && g.receivedBy.division === 'Front Office' && g.receivedBy.buName === 'JAENS Spa')) && m().receipts.at(-1).by.branch === 'BR-SHN' && /Receptionist/.test(m().history.at(-1).note));
+  check('Tidak bisa diterima dua kali', !call('order.receive', { id: m0.data.id }, 'STAFF', 'U-ATD').ok);
+  check('Jurnal tetap seimbang', s().journals.every((j) => Math.abs(j.lines.reduce((x, l) => x + l.dr - l.cr, 0)) < 1));
+})();
+
 console.log(`\n${pass} lulus, ${failN} gagal`);
 require('fs').writeFileSync(path.join(__dirname, 'workflow-results.json'), JSON.stringify({ pass, fail: failN, results }, null, 1));
 process.exit(failN ? 1 : 0);

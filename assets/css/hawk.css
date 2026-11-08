@@ -873,3 +873,5 @@ select.ss-inp { appearance: auto; }
 .rs-staff .rs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .rs-staff .rs-item { min-height: 72px; font-size: 14px; }
 .rs-staff .rs-ic { width: 44px; height: 44px; }
+/* auto-filled account assignment (Order Sederhana / outlet receiving) */
+.so-me{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border:1px solid var(--line-2);border-left:4px solid var(--gold,#C99A2E);border-radius:12px;background:var(--card,#fff);font-size:14px}

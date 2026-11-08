@@ -89,10 +89,10 @@
 
 - **Login role demo hanya di frontend** (pergantian user di browser, data sintetis). Ini bukan keamanan. Untuk staging dibutuhkan sesi demo sementara di server yang terikat ke sandbox sintetis (NEW INTEGRATION REQUIRED, kontrak usulan di `docs/DEMO_EXPERIENCE_CENTER.md` §7). Belum dibangun.
 - **Sandbox bersama = localStorage satu browser.** Lima layar berbagi state karena satu origin di satu browser. Dua orang di dua perangkat tidak melihat sandbox yang sama. Bukan penyimpanan permanen.
-- **Penerimaan barang oleh Gudang**, bukan Supervisor (brief). Ditampilkan sebagai peran pendukung; perlu keputusan Owner.
 - **BU Manager Essence** belum ada di data demo; review alokasi BU Essence dijalankan Owner.
 - **Review & kunci alokasi Shared Office** (NV-07) adalah fitur baru prototipe (NEW INTEGRATION REQUIRED); belum ada di HAWK v2.11.6 menurut bukti yang ada.
 - **Butuh http(s).** Lewat `file://` layar role tidak dapat dikendalikan.
 - **Layar penuh** tergantung browser (tidak tersedia untuk elemen di Safari iPhone; pakai ⤢).
 - **Header** `frame-ancestors 'self'` / `X-Frame-Options: SAMEORIGIN` (sebelumnya `'none'` / `DENY`) agar aplikasi dapat membingkai dirinya sendiri.
 - **Belum diuji di Safari/iPad fisik**; diuji di Chromium (Playwright) dengan ukuran 390/834/1440 px. NOT VERIFIED di perangkat nyata.
+- **Penerimaan di outlet** (keputusan Owner 8 Nov): diterima akun outlet dengan satu tombol; posting stok & simpan dilakukan sistem. Belum ada foto surat jalan wajib saat terima (pertanyaan terbuka di Order Sederhana).

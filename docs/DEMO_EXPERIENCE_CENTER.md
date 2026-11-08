@@ -8,7 +8,7 @@ Buka lewat menu samping **Demo Experience Center** atau alamat `#/dx`. Butuh ala
 
 | Mode | Isi |
 |---|---|
-| **Option 1 · Scenario Test Lab** | Satu layar besar. Login role DEMO satu klik (8 role: 5 utama + Gudang, Asset PIC, Owner), ganti device (desktop / iPad / mobile), tutor langkah demi langkah di kanan. |
+| **Option 1 · Scenario Test Lab** | Satu layar besar. Login role DEMO satu klik (10 akun: 5 utama + Gudang pusat, Receptionist, Attendant, Asset PIC, Owner), ganti device (desktop / iPad / mobile), tutor langkah demi langkah di kanan. |
 | **Option 2 · Simulator 5 Layar** | Lima dashboard asli berdampingan: Finance (desktop), Purchasing (desktop), BU Manager (desktop), Supervisor (iPad), Staff (mobile). Plus satu layar "peran pendukung" yang muncul otomatis bila langkah dijalankan Gudang / Asset PIC / Owner. Setiap layar: pilih device, Beranda, maksimalkan (⤢), layar penuh (⛶). Feed aktivitas bersama di bawah. |
 
 Setiap layar adalah **aplikasi HAWK yang sebenarnya** (`index.html?embed=1&as=U-XXX#/nv/N`), bukan gambar. Semua layar membaca satu sandbox `localStorage` yang sama (`hawk-jaens-demo-state-v3`). Satu aksi di satu layar langsung terlihat di layar lain lewat event `storage` + `store.sync()` (cek `meta.rev`). `store.exec` selalu sinkron dulu sebelum menulis, jadi dua jendela tidak saling menimpa (diuji di T11).
@@ -33,7 +33,7 @@ Setiap layar adalah **aplikasi HAWK yang sebenarnya** (`index.html?embed=1&as=U-
 |---|---|---|---|
 | MRF | 10 botol Massage Oil Shanti → 4 lokal / 3 transfer / 3 PO → supplier kirim 2 → lewat SLA → eskalasi → ETA revisi → 10/10 → faktur (3-way match) → AP disetujui → **pembayaran** → review BU | 16 | Staff, Supervisor, Gudang, Purchasing, BU Manager, Finance |
 | NOTA | Nota tulisan tangan → koreksi OCR (simulasi) → kirim → Supervisor setuju → Finance verifikasi (jurnal) → settle | 6 | Staff, Supervisor, Finance |
-| SLA | PO terkirim → jam demo +120 jam → isu terbuka → Supervisor minta update → BU Manager eskalasi → Purchasing ETA revisi → diterima → isu selesai | 5 | Supervisor, BU Manager, Purchasing, Gudang |
+| SLA | PO terkirim → jam demo +120 jam → isu terbuka → Supervisor minta update → BU Manager eskalasi → Purchasing ETA revisi → diterima → isu selesai | 5 | Supervisor, BU Manager, Purchasing, Staff (therapist) |
 | BUDGET | Tinjau 7P → bobot bulanan budget 2027 → BHP outlet → revisi Q4 (Promotion −15 jt / Product +15 jt) → Owner setuju → budget vs actual | 6 | BU Manager, Supervisor, Owner, Finance |
 | ASSET | Lapor AC rusak → review → work order + permintaan suku cadang → approval MRF → PO → WO selesai (biaya 350 rb) → Finance posting jurnal | 8 | Staff, Supervisor, Asset PIC, BU Manager, Purchasing, Finance |
 | OFFICE | Finance ubah porsi biaya Shared Office 60/40 → BU Spa setuju → BU Essence setuju (Owner, karena data demo belum punya BU Manager Essence) → Finance **kunci periode** | 4 | Finance, BU Manager, Owner |
@@ -91,7 +91,7 @@ Nama endpoint di atas adalah **usulan**, bukan API HAWK yang ada.
 
 ## 8. Konflik desain & batasan
 
-- **Siapa yang menerima barang.** Brief menyebut Supervisor; di aplikasi saat ini penerimaan (GRN, put-away, kirim transfer) dilakukan role **Gudang**. Skenario memakai Gudang sebagai peran pendukung (layar ke-6) agar kontrol yang sudah ada tidak dilonggarkan. Perlu keputusan Owner bila Supervisor outlet harus bisa menerima langsung.
+- **Siapa yang menerima barang (diputuskan Owner 8 Nov 2026).** Akun outlet mana pun (Supervisor, therapist, receptionist, attendant) boleh menerima barang untuk outletnya sendiri lewat tombol **Barang sudah diterima** / **Ada yang kurang** (NV-24). Sistem membuat penerimaan, posting stok, simpan, dan serah terima sekaligus. Penerima (nama, jabatan, outlet, divisi, BU) dicatat otomatis dari akun. Di skenario MRF, Supervisor menerima 2 botol (MRF-08) dan therapist menerima botol terakhir (MRF-12); di skenario SLA, therapist menerima (SLA-05). Gudang hanya tampil untuk mengirim transfer dari Ubud.
 - **BU Manager Essence** belum ada di data demo; review BU Essence di skenario OFFICE dijalankan Owner.
 - Header keamanan diubah dari `frame-ancestors 'none'` / `X-Frame-Options: DENY` menjadi `'self'` / `SAMEORIGIN` agar aplikasi bisa membingkai dirinya sendiri. Situs lain tetap tidak bisa membingkai HAWK.
 - Sandbox ada di `localStorage` browser: hilang bila data situs dihapus, tidak dibagi antar perangkat atau antar orang, dan **bukan** penyimpanan permanen.

@@ -721,7 +721,7 @@ Satu halaman jejak MRF: approval, cek budget, jalur fulfillment (lokal/transfer/
 
 - `mrf.issue` — **TO VERIFY** · HAWK: Inventory — pengeluaran stok (belum terlihat di screenshot) · izin: Gudang / Receiving, Supervisor Outlet · input `{ id }` → MRF + StockLedger ISSUE + Journal CONSUMPTION · transisi: IN_FULFILLMENT → FULFILLED saat issued = requested · audit: STOCK_ISSUE
 - `transfer.dispatch` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving · input `{ id }` → Transfer · transisi: REQUESTED → IN_TRANSIT (stok asal −) · audit: TRANSFER_DISPATCH
-- `transfer.receive` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving, Supervisor Outlet · input `{ id }` → Transfer · transisi: IN_TRANSIT → RECEIVED (stok tujuan +, reservasi MRF) · audit: TRANSFER_RECEIVE
+- `transfer.receive` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving, Supervisor Outlet, Staff / Therapist / Housekeeping · input `{ id }` → Transfer · transisi: IN_TRANSIT → RECEIVED (stok tujuan +, reservasi MRF) · audit: TRANSFER_RECEIVE
 
 ### NV-29 Supervisor Approval Queue
 
@@ -1053,7 +1053,7 @@ PO yang dikirim ke vendor & transfer masuk yang menunggu diterima.
 
 **Operasi adapter:**
 
-- `transfer.receive` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving, Supervisor Outlet · input `{ id }` → Transfer · transisi: IN_TRANSIT → RECEIVED (stok tujuan +, reservasi MRF) · audit: TRANSFER_RECEIVE
+- `transfer.receive` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving, Supervisor Outlet, Staff / Therapist / Housekeeping · input `{ id }` → Transfer · transisi: IN_TRANSIT → RECEIVED (stok tujuan +, reservasi MRF) · audit: TRANSFER_RECEIVE
 
 ### NV-42 PO Receiving, Item Checklist & Document Scan
 
@@ -1131,7 +1131,7 @@ Transfer antar gudang (otomatis dari MRF atau manual).
 
 - `transfer.create` — **TO VERIFY** · HAWK: PO Request register — tombol TRANSFER & kolom TRANSFER ID · izin: Gudang / Receiving, Supervisor Outlet · input `{ from, to, lines[{item, qty}], memo }` → Transfer { id TR…, status REQUESTED } · transisi: — → REQUESTED (+reservasi asal) · audit: TRANSFER_CREATE
 - `transfer.dispatch` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving · input `{ id }` → Transfer · transisi: REQUESTED → IN_TRANSIT (stok asal −) · audit: TRANSFER_DISPATCH
-- `transfer.receive` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving, Supervisor Outlet · input `{ id }` → Transfer · transisi: IN_TRANSIT → RECEIVED (stok tujuan +, reservasi MRF) · audit: TRANSFER_RECEIVE
+- `transfer.receive` — **TO VERIFY** · HAWK: Inventory transfer · izin: Gudang / Receiving, Supervisor Outlet, Staff / Therapist / Housekeeping · input `{ id }` → Transfer · transisi: IN_TRANSIT → RECEIVED (stok tujuan +, reservasi MRF) · audit: TRANSFER_RECEIVE
 
 ### NV-45 Stock Issue, Usage & Return
 

@@ -1,5 +1,5 @@
 {
- "pass": 357,
+ "pass": 367,
  "fail": 0,
  "results": [
   {
@@ -1784,6 +1784,56 @@
   },
   {
    "name": "State bersama: jendela A sinkron dari penyimpanan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akun outlet tidak bisa memesan atas nama outlet lain",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pesanan 10 butuh pembelian ke supplier (ada PO untuk diterima di outlet)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist outlet lain (Ubud) tidak bisa menerima barang Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor outlet lain (Ubud) tidak bisa menerima barang Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Receptionist Shanti menerima barang (bukan pemesan, tanpa orang gudang) → selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak bisa diterima dua kali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jurnal tetap seimbang",
    "ok": true,
    "info": ""
   }

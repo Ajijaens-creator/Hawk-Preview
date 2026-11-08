@@ -124,7 +124,7 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `stock.query` | baca | B | B | B | B | B | B | B | B | B | B |
 | `transfer.create` | tulis |  |  |  | E |  |  | E |  |  |  |
 | `transfer.dispatch` | tulis |  |  |  |  |  |  | E |  |  |  |
-| `transfer.receive` | tulis |  |  |  | E |  |  | E |  |  |  |
+| `transfer.receive` | tulis |  |  |  | E | E |  | E |  |  |  |
 | `grn.receive` | tulis |  |  |  |  |  |  | E |  |  |  |
 | `grn.post` | tulis |  |  |  |  |  |  | E | E |  |  |
 | `grn.putaway` | tulis |  |  |  |  |  |  | E |  |  |  |

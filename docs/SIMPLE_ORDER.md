@@ -46,3 +46,11 @@ Otomatis bila **semua** terpenuhi:
 
 - `node tests/workflow.test.js` T9: 3 jenis barang (lokal + transfer + beli), bayar sebelum terima, terima sebagian lalu sisa, barang rusak, lewat budget, tanpa budget, ubah batas oleh Finance/Owner/Admin, cek saldo 1160 = 0, utang = 0, semua jurnal seimbang.
 - `node tests/e2e-simple-order.js`: 33 cek dengan klik sungguhan di 390 px, termasuk 20 dashboard (NV-01, 02, 03, 23, 30, 32, 36, 38–41, 44, 47, 49–52, 57, 59, 60) tanpa error, plus screenshot di `docs/screenshots/simple-order/`.
+
+## Penerimaan oleh akun outlet & identitas otomatis (keputusan Owner 8 Nov 2026)
+
+- Di outlet tidak ada orang gudang standby. **Supervisor, therapist, receptionist, dan attendant** outlet itu boleh menekan **Barang sudah diterima** untuk pesanan outletnya, termasuk pesanan lewat alur lengkap (MRF → PO), bukan hanya Order Sederhana.
+- Akun dari outlet lain ditolak (FORBIDDEN). Penerimaan tidak bisa dilakukan dua kali.
+- **Tidak perlu mengisi ulang identitas.** Saat memesan atau menerima, sistem mengisi dari penugasan akun: nama, jabatan, outlet, divisi, BU (`S.assignment`). Disimpan di `mrf.requestedBy`, `grn.receivedBy`, `transfer.receivedBy`, dan `mrf.receipts[]`. Akun outlet tidak bisa memesan atas nama outlet lain.
+- Di produksi, identitas ini wajib diambil server dari akun login (bukan dari isian form). Field divisi untuk outlet Spa memakai `dept` di profil user karena struktur organisasi outlet belum punya node divisi (TO VERIFY dengan HAWK).
+- Akun demo baru: Kadek Rina (Receptionist Spa Shanti), Wayan Sari (Attendant Spa Shanti).

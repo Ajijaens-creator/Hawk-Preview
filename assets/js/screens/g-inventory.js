@@ -290,12 +290,12 @@
       const done = s.grns.filter((x) => x.status === 'STORED').slice(0, 5);
       L.bins = L.bins || {};
       if (!g)
-        return `<div class="stack"><div class="card">${ui.empty('Tidak ada barang yang menunggu disimpan di rak.')}</div><div class="card"><h3>Put-away terakhir</h3>${ui.table([{ h: 'GRN', f: (x) => ui.id(x.id) }, { h: 'PO', f: (x) => ui.id(x.po) }, { h: 'Bin', f: (x) => x.lines.map((l) => `${esc(S.itemName(s, l.item))} → <span class="mono">${esc(l.bin || '—')}</span>`).join('<br>') }], done)}</div></div>`;
+        return `<div class="stack"><div class="card">${ui.empty('Tidak ada barang yang menunggu disimpan di rak.')}</div><div class="card"><h3>Put-away terakhir</h3>${ui.table([{ h: 'GRN', f: (x) => ui.id(x.id) }, { h: 'PO', f: (x) => ui.id(x.po) }, { h: 'Diterima oleh', f: (x) => (x.receivedBy ? `${esc(x.receivedBy.name)}<div class="tiny muted">${esc(x.receivedBy.title)} · ${esc(x.receivedBy.branchName)}</div>` : esc(S.userName(s, x.receiver))) }, { h: 'Bin', f: (x) => x.lines.map((l) => `${esc(S.itemName(s, l.item))} → <span class="mono">${esc(l.bin || '—')}</span>`).join('<br>') }], done)}</div></div>`;
       const wh = S.wh(s, g.wh);
       const po = S.findRecord(s, g.po).rec;
       const release = g.lines.flatMap((gl) => ((po.lines.find((l) => l.item === gl.item) || {}).mrfRefs || []).map((r) => ({ ...r, item: gl.item })));
       return `<div class="stack">${list.length > 1 ? `<div class="row small">Antrean: ${list.map((x) => `<button class="link" data-a="sel" data-p="${x.id}">${x.id}</button>`).join(' ')}</div>` : ''}
-        <div class="grid g-2-1"><div class="card"><div class="card-head"><h3>${ui.id(g.id)} → ${esc(wh.name)}</h3><span class="r">${ui.status(g.status)}</span></div>
+        <div class="grid g-2-1"><div class="card"><div class="card-head"><h3>${ui.id(g.id)} → ${esc(wh.name)}</h3><span class="r">${ui.status(g.status)}</span></div>${g.receivedBy ? `<p class="tiny muted" style="margin:0 0 8px">Diterima oleh ${esc(S.assignmentText(g.receivedBy))}</p>` : ''}
         ${g.lines.map((l, i) => {
           const sug = suggestBin(s, g.wh, l.item);
           const v = L.bins[i] || '';

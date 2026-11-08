@@ -82,15 +82,17 @@
       { id: 'U-OWN', name: 'Gede Pratama', role: 'OWNER', title: 'Owner / Eksekutif', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-BUM', name: 'Ayu Lestari', role: 'BU_MANAGER', title: 'BU Manager JAENS Spa', scope: ['BU-SPA'] },
       { id: 'U-HOD', name: 'Wayan Ardana', role: 'HEAD_DIV', title: 'Head of Division — Operasional Spa', scope: ['BU-SPA', 'DV-KOM'] },
-      { id: 'U-SPV', name: 'Putu Sukma', role: 'SUPERVISOR', title: 'Supervisor Spa Shanti', scope: ['BR-SHN'] },
-      { id: 'U-STF', name: 'Nyoman Dewi', role: 'STAFF', title: 'Therapist Spa Shanti', scope: ['BR-SHN'] },
+      { id: 'U-SPV', name: 'Putu Sukma', role: 'SUPERVISOR', title: 'Supervisor Spa Shanti', dept: 'Operasional Spa', scope: ['BR-SHN'] },
+      { id: 'U-STF', name: 'Nyoman Dewi', role: 'STAFF', title: 'Therapist Spa Shanti', dept: 'Therapist', scope: ['BR-SHN'] },
       { id: 'U-PUR', name: 'Kadek Surya', role: 'PURCHASING', title: 'Purchasing HQ', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-WHS', name: 'Made Arta', role: 'WAREHOUSE', title: 'Gudang & Receiving', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-FIN', name: 'Luh Ratna', role: 'FINANCE', title: 'Finance & Accounting', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-AST', name: 'Ketut Bagus', role: 'ASSET', title: 'Asset & Facility PIC', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-ADM', name: 'Admin Sistem', role: 'ADMIN', title: 'System Administrator', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-STF2', name: 'Komang Ayu', role: 'STAFF', title: 'Housekeeping Spa Ubud', scope: ['BR-UBD'] },
-      { id: 'U-SPV2', name: 'Ni Luh Sari', role: 'SUPERVISOR', title: 'Supervisor Spa Ubud', scope: ['BR-UBD'] },
+      { id: 'U-STF2', name: 'Komang Ayu', role: 'STAFF', title: 'Housekeeping Spa Ubud', dept: 'Housekeeping', scope: ['BR-UBD'] },
+      { id: 'U-SPV2', name: 'Ni Luh Sari', role: 'SUPERVISOR', title: 'Supervisor Spa Ubud', dept: 'Operasional Spa', scope: ['BR-UBD'] },
+      { id: 'U-RCP', name: 'Kadek Rina', role: 'STAFF', title: 'Receptionist Spa Shanti', dept: 'Front Office', scope: ['BR-SHN'] },
+      { id: 'U-ATD', name: 'Wayan Sari', role: 'STAFF', title: 'Attendant Spa Shanti', dept: 'Attendant', scope: ['BR-SHN'] },
     ];
 
     /* ---------------- Approval matrix (configurable, NV-09) ---------------- */

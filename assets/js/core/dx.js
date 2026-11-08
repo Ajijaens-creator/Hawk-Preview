@@ -25,7 +25,7 @@
     { key: 'STAFF', user: 'U-STF', label: 'Staff / Therapist', device: 'mobile', home: 24 },
   ];
   // roles that the current app requires for some steps but that are not one of the five demo screens
-  const SUPPORT = { 'U-WHS': 'Gudang / Receiving (peran pendukung)', 'U-AST': 'Asset / Facility PIC (peran pendukung)', 'U-OWN': 'Owner (peran pendukung)' };
+  const SUPPORT = { 'U-WHS': 'Gudang pusat (peran pendukung)', 'U-RCP': 'Receptionist outlet (peran pendukung)', 'U-ATD': 'Attendant outlet (peran pendukung)', 'U-AST': 'Asset / Facility PIC (peran pendukung)', 'U-OWN': 'Owner (peran pendukung)' };
   const DEVICES = { desktop: { w: 1280, h: 860, label: 'Desktop' }, ipad: { w: 834, h: 1112, label: 'iPad' }, mobile: { w: 390, h: 844, label: 'Mobile' } };
 
   /* ---- stable target IDs → selector in the REAL screen (contract for developers; see docs/DEMO_EXPERIENCE_CENTER.md) ---- */
@@ -38,6 +38,8 @@
     'dx-po-create': { nv: 32, sel: '[data-a="create"]', label: 'Konsolidasi › Buat draft PO' },
     'dx-po-approve': { nv: 36, sel: '[data-a="approve"][data-p="{po}"]', label: 'PO › Setujui' },
     'dx-grn-receive': { nv: 42, sel: '[data-a="receive"]', label: 'Penerimaan › Konfirmasi penerimaan fisik' },
+    'dx-out-recv': { nv: 24, sel: '[data-a="recv"][data-id2="{mrf}"]', label: 'Pesanan › Barang sudah diterima (akun outlet)' },
+    'dx-out-recvpart': { nv: 24, sel: '[data-a="recvPart"][data-id2="{mrf}"]', label: 'Pesanan › Ada yang kurang (terima sebagian)' },
     'dx-clock': { nv: 61, sel: '[data-a="demoClock"][data-h="72"]', label: 'Control Tower › Simulasi waktu (DEMO)' },
     'dx-issue-esc': { nv: 62, sel: '[data-a="isEsc"][data-is="{issue}"]', label: 'Isu › Eskalasi' },
     'dx-issue-update': { nv: 62, sel: '[data-a="isUpdate"][data-is="{issue}"]', label: 'Isu › Minta update' },
@@ -85,16 +87,6 @@
   };
   const poOfMrf = (s, id) => s.pos.find((p) => p.lines.some((l) => (l.src || []).some((x) => x.mrf === id)) || (p.mrfs || []).includes(id)) || po(s, allocRef(s, id, 'PURCHASE'));
   const etaIn = (s, days) => new Date(Date.parse(HAWK.flow.now(s)) + days * 864e5).toISOString().slice(0, 10);
-  const receivePo = (call, s, poId, mrfId, qty) => {
-    const P = po(s(), poId);
-    const g = call('grn.receive', { po: poId, lines: P.lines.map((l) => ({ received: Math.min(qty, l.qty - l.received), damaged: 0 })) }, 'U-WHS');
-    call('grn.post', { id: g.id }, 'U-WHS');
-    const bins = {};
-    s().grns.find((x) => x.id === g.id).lines.forEach((l, i) => (bins[i] = 'SHN-A-01'));
-    call('grn.putaway', { id: g.id, bins }, 'U-WHS');
-    if (mrfId) call('mrf.issue', { id: mrfId }, 'U-WHS');
-    return g;
-  };
   const newMrf = (s, base, pred) => s.mrfs.find((m) => !base.includes(m.id) && pred(m));
 
   /* ======================= SCENARIOS ======================= */
@@ -124,9 +116,9 @@
         { id: 'MRF-07', as: 'U-PUR', tid: 'dx-po-approve', q: (v) => ({ id: v.po }), title: 'Approval PO & kirim ke vendor', what: 'PO di bawah batas disetujui sesuai matriks approval lalu dikirim ke vendor. Tanggal janji vendor tercatat.',
           run: (c, s, v) => { if (po(s(), v.po).status === 'PENDING_APPROVAL') c('po.decide', { id: v.po, decision: 'APPROVE' }, 'U-PUR'); c('po.send', { id: v.po }, 'U-PUR'); },
           check: (s, v) => po(s, v.po) && ['SENT', 'PARTIAL', 'RECEIVED'].includes(po(s, v.po).status) && {} },
-        { id: 'MRF-08', as: 'U-WHS', tid: 'dx-grn-receive', q: (v) => ({ po: v.po }), title: 'Barang tiba sebagian: 2 dari 3', what: 'Gudang menerima fisik 2 botol, posting ke inventory, put-away, lalu diserahkan → 9/10. PO berstatus PARTIAL (backorder 1).',
-          run: (c, s, v) => receivePo(c, s, v.po, v.mrf, 2),
-          check: (s, v) => po(s, v.po).status !== 'SENT' && S.mrfFulfillment(s, mrf(s, v.mrf)).issued >= 9 && {} },
+        { id: 'MRF-08', as: 'U-SPV', tid: 'dx-out-recvpart', title: 'Barang tiba sebagian di outlet: 2 dari 3', what: 'Di outlet tidak ada orang gudang standby. Supervisor menekan "Ada yang kurang" dan mengisi 2 botol datang. Nama, outlet, divisi, dan BU terisi otomatis dari akun. Sistem membuat penerimaan, posting stok, simpan, dan serah terima → 9/10. PO PARTIAL (backorder 1).',
+          run: (c, s, v) => c('order.receive', { id: v.mrf, lines: [{ item: 'BHP-001', received: 2, damaged: 0 }], note: '2 botol tiba, 1 menyusul' }, 'U-SPV'),
+          check: (s, v) => { const g = s.grns.find((x) => x.po === v.po); return po(s, v.po).status !== 'SENT' && S.mrfFulfillment(s, mrf(s, v.mrf)).issued >= 9 && g && g.receivedBy && g.receivedBy.branch === 'BR-SHN' && {}; } },
         { id: 'MRF-09', as: 'U-PUR', tid: 'dx-clock', title: 'Waktu demo berjalan: vendor lewat janji', what: 'Tombol DEMO memajukan jam simulasi. Control Tower mendeteksi 1 botol lewat tanggal janji dan membuka 1 isu untuk Purchasing (alasan otomatis: supplier kirim sebagian).',
           run: (c) => c('demo.advanceClock', { hours: 120 }, 'U-PUR'),
           check: (s, v) => { const i = issueOf(s, v.mrf); return i && { issue: i.id }; } },
@@ -136,8 +128,8 @@
         { id: 'MRF-11', as: 'U-PUR', tid: 'dx-issue-eta', q: (v) => ({ mrf: v.mrf, tab: 'delay' }), title: 'Purchasing mencatat ETA revisi + alasan', what: 'ETA baru disimpan sebagai riwayat. Tanggal janji asli dan jatuh tempo SLA asli TIDAK ditimpa.',
           run: (c, s, v) => c('flow.changeEta', { po: v.po, eta: etaIn(s(), 2), code: 'SUPPLIER_SHORT', reason: 'Supplier konfirmasi sisa 1 botol dikirim lusa' }, 'U-PUR'),
           check: (s, v) => (po(s, v.po).etaHistory || []).length >= 1 && {} },
-        { id: 'MRF-12', as: 'U-WHS', tid: 'dx-grn-receive', q: (v) => ({ po: v.po }), title: 'Botol terakhir tiba → 10/10', what: 'Sisa 1 botol diterima dan diserahkan. MRF selesai, isu tertutup otomatis, tahap supplier tercatat TERLAMBAT.',
-          run: (c, s, v) => receivePo(c, s, v.po, v.mrf, 1),
+        { id: 'MRF-12', as: 'U-STF', tid: 'dx-out-recv', title: 'Botol terakhir tiba → therapist menerima → 10/10', what: 'Therapist yang sedang bertugas menekan "Barang sudah diterima" di HP. Penerima tercatat otomatis (nama, jabatan, outlet, divisi, BU). MRF selesai, isu tertutup otomatis, tahap supplier tercatat TERLAMBAT.',
+          run: (c, s, v) => c('order.receive', { id: v.mrf }, 'U-STF'),
           check: (s, v) => mrf(s, v.mrf).status === 'FULFILLED' && {} },
         { id: 'MRF-13', as: 'U-FIN', tid: 'dx-doc-capture', title: 'Finance mencocokkan PO–GRN–faktur', what: 'Faktur supplier (contoh A, ekstraksi AI SIMULASI) dicocokkan 3 arah dengan PO dan penerimaan, lalu diverifikasi menjadi tagihan (AP draft).',
           run: (c) => { const d = c('doc.capture', { sample: 'A' }, 'U-FIN'); c('doc.match', { id: d.id }, 'U-FIN'); c('doc.verify', { id: d.id, decision: 'APPROVE' }, 'U-FIN'); },
@@ -201,8 +193,8 @@
         { id: 'SLA-04', as: 'U-PUR', tid: 'dx-issue-eta', q: (v) => ({ mrf: v.mrf, tab: 'delay' }), title: 'Purchasing: ETA revisi + alasan', what: 'ETA revisi tercatat; tanggal janji dan jatuh tempo SLA asli tetap. Isu berstatus Dipantau.',
           run: (c, s, v) => c('flow.changeEta', { po: v.po, eta: etaIn(s(), 1), code: 'SUPPLIER_LATE', reason: 'Vendor konfirmasi kirim besok pagi' }, 'U-PUR'),
           check: (s, v) => (po(s, v.po).etaHistory || []).length >= 1 && {} },
-        { id: 'SLA-05', as: 'U-WHS', tid: 'dx-grn-receive', q: (v) => ({ po: v.po }), title: 'Barang tiba → isu selesai otomatis', what: 'Gudang menerima 3 botol. Isu tertutup otomatis karena tahapnya selesai; riwayat tidak dihapus.',
-          run: (c, s, v) => receivePo(c, s, v.po, v.mrf, 3),
+        { id: 'SLA-05', as: 'U-STF', tid: 'dx-out-recv', title: 'Barang tiba di outlet → isu selesai otomatis', what: 'Staf outlet yang ada (therapist, receptionist, atau attendant) menekan "Barang sudah diterima". Isu tertutup otomatis karena tahapnya selesai; riwayat tidak dihapus.',
+          run: (c, s, v) => c('order.receive', { id: v.mrf }, 'U-STF'),
           check: (s, v) => { const i = s.flowIssues.find((x) => x.id === v.issue); return i && i.status === 'RESOLVED' && {}; } },
       ],
     },

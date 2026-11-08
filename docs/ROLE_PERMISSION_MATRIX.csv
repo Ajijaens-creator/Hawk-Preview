@@ -108,7 +108,7 @@
 "Operasi","stock.query","baca","BACA","BACA","BACA","BACA","BACA","BACA","BACA","BACA","BACA","BACA"
 "Operasi","transfer.create","tulis","","","","EKSEKUSI","","","EKSEKUSI","","",""
 "Operasi","transfer.dispatch","tulis","","","","","","","EKSEKUSI","","",""
-"Operasi","transfer.receive","tulis","","","","EKSEKUSI","","","EKSEKUSI","","",""
+"Operasi","transfer.receive","tulis","","","","EKSEKUSI","EKSEKUSI","","EKSEKUSI","","",""
 "Operasi","grn.receive","tulis","","","","","","","EKSEKUSI","","",""
 "Operasi","grn.post","tulis","","","","","","","EKSEKUSI","EKSEKUSI","",""
 "Operasi","grn.putaway","tulis","","","","","","","EKSEKUSI","","",""

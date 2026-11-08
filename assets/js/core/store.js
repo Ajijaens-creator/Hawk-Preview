@@ -36,6 +36,27 @@
     while (o && o.type !== 'BU' && o.type !== 'OFFICE') o = S.org(s, o.parent);
     return o ? o.id : null;
   };
+  /* Where an account is assigned (from its org scope) — used to auto-fill who / outlet / division / BU on every order & receipt.
+     Never taken from the form: the backend derives it from the logged-in account. */
+  S.assignment = (s, u) => {
+    u = typeof u === 'string' ? S.user(s, u) : u;
+    if (!u) return null;
+    const home = (u.scope || []).map((x) => S.org(s, x)).filter(Boolean);
+    const unit = home.find((o) => o.type === 'BRANCH') || home.find((o) => o.type === 'DIVISION') || home[0] || null;
+    const up = (type) => { let o = unit; while (o && o.type !== type) o = S.org(s, o.parent); return o; };
+    const branch = unit && unit.type === 'BRANCH' ? unit : null;
+    const div = up('DIVISION');
+    let bu = unit;
+    while (bu && bu.type !== 'BU' && bu.type !== 'OFFICE') bu = S.org(s, bu.parent);
+    return {
+      user: u.id, name: u.name, title: u.title || '', role: u.role,
+      branch: branch ? branch.id : null, branchName: branch ? branch.name : home.length > 1 ? 'Multi-unit' : unit ? unit.name : '—',
+      division: div ? div.name : u.dept || '—',
+      bu: bu ? bu.id : null, buName: bu ? bu.name : home.length > 1 ? home.map((o) => o.name).join(', ') : '—',
+      single: home.length === 1 && !!branch,
+    };
+  };
+  S.assignmentText = (a) => (a ? [a.name, a.title, a.branchName, a.division !== '—' ? 'Divisi ' + a.division : '', a.buName].filter(Boolean).join(' · ') : '—');
   S.branches = (s, opts = {}) => s.org.filter((o) => o.type === 'BRANCH' && (opts.all || o.status === 'ACTIVE'));
   S.bus = (s) => s.org.filter((o) => (o.type === 'BU' || o.type === 'OFFICE') && o.scope === 'IN' && o.status === 'ACTIVE');
   S.whOfOrg = (s, orgId) => s.warehouses.find((w) => w.org === orgId);
@@ -683,14 +704,17 @@
   H['mrf.create'] = (s, p, ctx) => {
     const lines = (p.lines || []).filter((l) => l.item && l.qty > 0);
     need(lines.length, 'VALIDATION', 'Minimal satu item dengan qty > 0');
+    const me = S.assignment(s, ctx.user);
+    if (!p.branch && me && me.branch) p = Object.assign({}, p, { branch: me.branch }); // auto-filled from the account
     need(p.branch, 'VALIDATION', 'Unit / lokasi wajib');
+    if (['STAFF', 'SUPERVISOR'].includes(ctx.user.role)) need((ctx.user.scope || []).includes(p.branch), 'FORBIDDEN', 'Akun outlet hanya bisa memesan untuk outlet tempat ia ditugaskan');
     lines.forEach((l) => need(Number.isInteger(+l.qty) && +l.qty <= 9999, 'VALIDATION', 'Qty harus bilangan bulat ≤ 9999'));
     const org = S.org(s, p.branch);
     need(org && org.status === 'ACTIVE', 'VALIDATION', 'Unit tidak aktif');
     const id = U.nextId(s, 'PR'); // HAWK PR numbering: MRF reuses the Purchase Request engine
     const wh = S.whOfOrg(s, p.branch) || s.warehouses.find((w) => w.id === 'WH-PST');
     const m = {
-      id, date: ctx.now, requester: ctx.user.id, branch: p.branch, wh: wh.id, cc: (S.ccOfOrg(s, p.branch) || {}).id,
+      id, date: ctx.now, requester: ctx.user.id, requestedBy: me, branch: p.branch, wh: wh.id, cc: (S.ccOfOrg(s, p.branch) || {}).id,
       type: p.type || 'ROUTINE', status: p.draft ? 'DRAFT' : 'SUBMITTED', memo: p.memo || '', purpose: p.purpose || 'Operasional harian',
       lines: lines.map((l) => ({ item: l.item, qty: +l.qty, reason: l.reason || '', alloc: [] })), approvals: [], history: [], links: p.links || {},
     };
@@ -863,6 +887,8 @@
   H['transfer.receive'] = (s, p, ctx) => {
     const t = get(s.transfers, p.id, 'Transfer');
     need(t.status === 'IN_TRANSIT', 'STATE', 'Transfer belum dikirim');
+    if (['STAFF', 'SUPERVISOR'].includes(ctx.user.role)) need((ctx.user.scope || []).includes((S.wh(s, t.to) || {}).org), 'FORBIDDEN', 'Hanya akun di outlet tujuan yang bisa menerima transfer ini');
+    t.receivedBy = S.assignment(s, ctx.user);
     t.lines.forEach((l) => {
       const r = stockRow(s, t.to, l.item);
       r.onHand += l.qty;
@@ -1018,7 +1044,7 @@
     });
     need(U.sum(lines, (l) => l.received) > 0, 'VALIDATION', 'Tidak ada barang yang diterima');
     const id = U.nextId(s, 'GR');
-    const g = { id, po: po.id, wh: po.deliverTo, date: ctx.now, status: 'RECEIVED', lines, docs: p.docs || ['Surat Jalan (scan simulasi)'], receiver: ctx.user.id, history: [] };
+    const g = { id, po: po.id, wh: po.deliverTo, date: ctx.now, status: 'RECEIVED', lines, docs: p.docs || ['Surat Jalan (scan simulasi)'], receiver: ctx.user.id, receivedBy: S.assignment(s, ctx.user), history: [] };
     hist(g, ctx, 'PHYSICAL_RECEIPT', 'Penerimaan fisik — belum memengaruhi stok');
     s.grns.unshift(g);
     hist(po, ctx, 'GOODS_ARRIVED', id);
@@ -1430,7 +1456,7 @@
   H['order.receive'] = (s, p, ctx) => {
     const m = get(s.mrfs, p.id, 'Pesanan');
     need(m.status === 'IN_FULFILLMENT', 'STATE', 'Pesanan belum disetujui atau sudah selesai');
-    if (ctx.user.role === 'STAFF') need(m.requester === ctx.user.id || ctx.user.scope.includes(m.branch), 'FORBIDDEN', 'Hanya pemesan / staf unit ini');
+    if (['STAFF', 'SUPERVISOR'].includes(ctx.user.role)) need(m.requester === ctx.user.id || ctx.user.scope.includes(m.branch), 'FORBIDDEN', 'Hanya pemesan / akun di outlet ini');
     const sc = sys(ctx);
     const got = {}; // item → qty physically received now (default: everything expected)
     (p.lines || []).forEach((l) => {
@@ -1464,7 +1490,9 @@
     const f = S.mrfFulfillment(s, m);
     need(f.ready > f.issued, 'NOTHING_READY', 'Belum ada barang yang bisa dikonfirmasi diterima');
     H['mrf.issue'](s, { id: m.id }, sc);
-    hist(m, ctx, 'RECEIVED_BY_REQUESTER', p.note || 'Barang diterima');
+    const by = S.assignment(s, ctx.user);
+    (m.receipts = m.receipts || []).push({ at: ctx.now, by, note: p.note || '' });
+    hist(m, ctx, 'RECEIVED_BY_REQUESTER', `${p.note || 'Barang diterima'} — ${S.assignmentText(by)}`);
     log(s, ctx, 'order.receive', m.id, `Diterima ${ctx.user.name}; ${m.status}`);
     return m;
   };
