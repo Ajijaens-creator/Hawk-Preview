@@ -71,6 +71,11 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
     const v = vrun(CRED, 'Basic ' + b64('aji:Preview-Demo-2026!'));
     ok('Vercel: login benar → lanjut (x-middleware-next)', v.headers.get('x-middleware-next') === '1');
     ok('Vercel & Cloudflare memakai logika auth yang sama', vm.parseCredentials(CRED).length === cf.parseCredentials(CRED).length && vm.checkAuth('Basic ' + b64('aji:x'), vm.parseCredentials(CRED)) === false);
+    process.env.PREVIEW_PUBLIC = 'true';
+    ok('Vercel: PREVIEW_PUBLIC=true → terbuka tanpa login, tetap noindex', (() => { const r = vrun('', null); return r.headers.get('x-middleware-next') === '1' && JSON.stringify([...r.headers]).includes('noindex'); })());
+    process.env.PREVIEW_PUBLIC = '1';
+    ok('Vercel: PREVIEW_PUBLIC selain "true" → tetap terkunci', vrun(CRED, null).status === 401);
+    delete process.env.PREVIEW_PUBLIC;
     delete process.env.PREVIEW_CREDENTIALS;
   }
 
