@@ -1,0 +1,19 @@
+{
+  "name": "hawk-jaens-preview",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HAWK × JAENS Interactive ERP Prototype — 60 NV, DEMO data, Mock adapter. Static build + access-controlled preview.",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "node tools/build.js",
+    "release:vercel": "node tools/build-vercel.js",
+    "docs": "node tools/gen-docs.js",
+    "preview": "node tools/serve-local.js",
+    "test": "node tests/workflow.test.js && node tests/deploy.test.js",
+    "test:browser": "node tests/e2e-walkthrough.js && node tests/browser-all.js && node tests/responsive.js"
+  },
+  "dependencies": {
+    "@vercel/functions": "3.10.2"
+  }
+}

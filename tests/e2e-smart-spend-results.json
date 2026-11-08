@@ -1,0 +1,135 @@
+{
+ "results": [
+  {
+   "name": "1. Staff Spa Shanti membuka Smart Spend (NV-M1)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2. Pilih Scan Nota → kamera (NV-M2)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3. Nota tulisan tangan dibaca (AI SIMULATION) → draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "4. Detail hasil ekstraksi tampil (supplier, item, total)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5. Field yang ragu ditandai (kuning/merah)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5b. Tidak bisa lanjut sebelum field ragu dikonfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6. Harga Pasir dikoreksi pengguna (350.000)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7a. Aritmetika rincian = total cocok",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7b. Semua field ragu dikonfirmasi pengguna",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7c. Lanjut ke klasifikasi (NV-M4)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7d. Koreksi disimpan terpisah dari nilai AI",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "8. 7P Facility + OPEX + cost center terisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "9. Dampak budget ditampilkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "9b. Konfirmasi & rute approval (NV-M5)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10. Diajukan → menunggu Supervisor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10b. Belum ada jurnal sebelum verifikasi Finance",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10c. Pengaju tidak punya tombol approve",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11. Supervisor menyetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "12. Finance membuka transaksi (antrean verifikasi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13. Bukti nota asli dibuka (tidak diubah)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13b. Finance verifikasi → jurnal PENDING_REVIEW dibuat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "14. Status transaksi SETTLED + status akuntansi tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "15a. Pembayaran kedua ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "15b. Nota yang sama terdeteksi duplikat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "15c. Pengajuan duplikat diblok",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada error JavaScript",
+   "ok": true,
+   "info": ""
+  }
+ ],
+ "errors": []
+}

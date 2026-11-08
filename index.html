@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAWK × JAENS — Prototipe Interaktif (DEMO)</title>
+<meta name="description" content="HAWK ERP × JAENS Enterprises — prototipe HTML interaktif & referensi integrasi developer. Semua data DEMO / SIMULASI.">
+<link rel="stylesheet" href="assets/css/hawk.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Navigasi utama">
+    <div class="brand"><div class="brand-mark">H</div><div><b>HAWK ERP</b><small>JAENS ENTERPRISES</small></div></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <div class="row between"><span class="demo-pill">DEMO / SIMULASI</span><span>v0.9 prototipe</span></div>
+      <div class="row" style="margin-top:8px;gap:6px">
+        <label class="tiny" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="devtoggle"> Kontrak developer</label>
+      </div>
+      <div class="row" style="margin-top:8px;gap:6px">
+        <select id="modeSel" class="tb-select" style="max-width:none;width:100%" aria-label="Mode adapter">
+          <option value="MOCK">Adapter: Mock (simulasi)</option>
+          <option value="HAWK_API">Adapter: HAWK API (belum terhubung)</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top:8px;gap:6px">
+        <select id="netSel" class="tb-select" style="max-width:none;width:100%" aria-label="Simulasi kondisi jaringan">
+          <option value="OK">Kondisi: Normal</option>
+          <option value="SLOW">Kondisi: Lambat (tampilkan loading)</option>
+          <option value="FAIL">Kondisi: Gagal koneksi (tampilkan error)</option>
+        </select>
+      </div>
+      <button class="btn dark sm block" id="btn-reset" style="margin-top:8px">↺ Reset Demo Data</button>
+    </div>
+  </aside>
+  <header class="topbar" id="topbar"></header>
+  <main class="main">
+    <div class="demo-banner" role="note"><b>PROTOTIPE — DEMO / SIMULASI.</b> Data keuangan, AI, dan OCR adalah simulasi; bukan data JAENS dan bukan sistem produksi. Tidak menggantikan engine HAWK. Mode: <b id="mode-label">Mock Adapter</b> · tanggal demo 8 Nov 2026</div>
+    <div id="view"></div>
+  </main>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawer-title">
+  <div class="drawer-head"><h2 id="drawer-title"></h2><button class="icon-btn x" data-close-drawer aria-label="Tutup">✕</button></div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</aside>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-head"><h2 id="modal-title"></h2><button class="icon-btn" style="margin-left:auto;background:#f3f1ec;color:#333;border-color:#e7e4dc" data-close-modal aria-label="Tutup">✕</button></div>
+  <div class="modal-body" id="modal-body"></div>
+  <div class="modal-foot" id="modal-foot"></div>
+</div>
+<div class="pop" id="pop"></div>
+<div class="tour" id="tour" aria-live="polite"></div>
+<button class="btn dark tour-collapsed" id="tour-mini">▶ Walkthrough Owner</button>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- core (DOM-free, also used by Node tests) -->
+<script src="assets/js/core/util.js"></script>
+<script src="assets/js/core/seed.js"></script>
+<script src="assets/js/core/contracts.js"></script>
+<script src="assets/js/core/store.js"></script>
+<script src="assets/js/core/spend.js"></script>
+<script src="assets/js/core/adapter.js"></script>
+<script src="assets/js/core/ai.js"></script>
+<script src="assets/js/core/registry.js"></script>
+<!-- UI -->
+<script src="assets/js/ui/ui.js"></script>
+<script src="assets/js/ui/shell.js"></script>
+<script src="assets/js/screens/a-nav.js"></script>
+<script src="assets/js/screens/b-org.js"></script>
+<script src="assets/js/screens/c-target.js"></script>
+<script src="assets/js/screens/d-budget.js"></script>
+<script src="assets/js/screens/e-mrf.js"></script>
+<script src="assets/js/screens/f-purchasing.js"></script>
+<script src="assets/js/screens/g-inventory.js"></script>
+<script src="assets/js/screens/h-finance.js"></script>
+<script src="assets/js/screens/h-spend.js"></script>
+<script src="assets/js/screens/i-asset.js"></script>
+<script src="assets/js/screens/j-ai.js"></script>
+<script>HAWK.boot();</script>
+</body>
+</html>

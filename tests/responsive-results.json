@@ -1,0 +1,20 @@
+[
+ {
+  "size": "desktop",
+  "width": 1440,
+  "overflow": [],
+  "errors": []
+ },
+ {
+  "size": "tablet",
+  "width": 834,
+  "overflow": [],
+  "errors": []
+ },
+ {
+  "size": "mobile",
+  "width": 390,
+  "overflow": [],
+  "errors": []
+ }
+]

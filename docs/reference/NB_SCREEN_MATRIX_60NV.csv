@@ -1,0 +1,61 @@
+﻿Module,NV Code,Official Screen Name,Bundle Status,Module Folder
+A,NV-01,Role-Based Dashboard / Home,Prototype HTML available (demo),01_A_Navigation_Role_Workspace
+A,NV-02,My Tasks & Approval Inbox,Prototype HTML available (demo),01_A_Navigation_Role_Workspace
+A,NV-03,Notifications & Activity Center,Prototype HTML available (demo),01_A_Navigation_Role_Workspace
+A,NV-04,Global Search & Quick Actions,Prototype HTML available (demo),01_A_Navigation_Role_Workspace
+B,NV-05,Organization & Business Unit Tree,Prototype HTML available (demo),"02_B_Organization,_Office_Access"
+B,NV-06,"Branch, Office & Division Management",Prototype HTML available (demo),"02_B_Organization,_Office_Access"
+B,NV-07,Cost Center & Shared Office Allocation,Prototype HTML available (demo),"02_B_Organization,_Office_Access"
+B,NV-08,"User, Role & Access Management",Prototype HTML available (demo),"02_B_Organization,_Office_Access"
+B,NV-09,Approval Matrix & Rules Configuration,Prototype HTML available (demo),"02_B_Organization,_Office_Access"
+C,NV-10,Annual Target Planning: Spa & Essence,Static visual reference only,03_C_Strategic_Target_Ambidex
+C,NV-11,BU Business Driver Tree & KPI Targets,Static visual reference only,03_C_Strategic_Target_Ambidex
+C,NV-12,Operational vs Innovation Portfolio,Static visual reference only,03_C_Strategic_Target_Ambidex
+C,NV-13,Strategic Project & Investment Proposal,Static visual reference only,03_C_Strategic_Target_Ambidex
+C,NV-14,"Investment Approval, Milestone & Progress",Static visual reference only,03_C_Strategic_Target_Ambidex
+D,NV-15,Annual Budget Creation,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-16,7P Budget Allocation Overview,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-17,Routine Item / BHP Budget Planning,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-18,Non-Routine & Exceptional Budget,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-19,"OPEX, CAPEX & Other Spending Classification",Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-20,Quarterly & Monthly Budget Distribution,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-21,Budget Submission & Approval,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-22,Budget Revision & Quarterly Reforecast,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+D,NV-23,Budget vs Actual vs Commitment vs Forecast,Prototype HTML available (demo),04_D_Annual_Monthly_7P_Budget
+E,NV-24,Staff Material Request Home,Static visual reference only,05_E_MRF_Supervisor_Approval
+E,NV-25,Item Catalog / Search / Barcode Scan,Static visual reference only,05_E_MRF_Supervisor_Approval
+E,NV-26,Create Material Request,Static visual reference only,05_E_MRF_Supervisor_Approval
+E,NV-27,My Requests & Status Tracking,Static visual reference only,05_E_MRF_Supervisor_Approval
+E,NV-28,MRF Detail & Fulfillment Tracking,Static visual reference only,05_E_MRF_Supervisor_Approval
+E,NV-29,Supervisor Approval Queue,Static visual reference only,05_E_MRF_Supervisor_Approval
+E,NV-30,MRF Budget Impact & Exception Review,Static visual reference only,05_E_MRF_Supervisor_Approval
+F,NV-31,Purchasing Dashboard / Workbench,Static visual reference only,06_F_Purchasing_Supplier
+F,NV-32,Consolidated MRF & Purchasing Planning,Static visual reference only,06_F_Purchasing_Supplier
+F,NV-33,Supplier Master & Directory,Static visual reference only,06_F_Purchasing_Supplier
+F,NV-34,Supplier Quotation & Price Comparison,Static visual reference only,06_F_Purchasing_Supplier
+F,NV-35,Purchase Order Creation & Editing,Static visual reference only,06_F_Purchasing_Supplier
+F,NV-36,"PO Register, Detail & Approval",Static visual reference only,06_F_Purchasing_Supplier
+F,NV-37,Emergency Purchase Workflow,Static visual reference only,06_F_Purchasing_Supplier
+G,NV-38,Inventory Control Dashboard,Static visual reference only,07_G_Warehouse_Inventory
+G,NV-39,"Warehouse, Storage, Rack & Bin Management",Static visual reference only,07_G_Warehouse_Inventory
+G,NV-40,"Stock Balance, Item Details & Ledger",Static visual reference only,07_G_Warehouse_Inventory
+G,NV-41,Incoming Deliveries / Receiving Queue,Static visual reference only,07_G_Warehouse_Inventory
+G,NV-42,"PO Receiving, Item Checklist & Document Scan",Static visual reference only,07_G_Warehouse_Inventory
+G,NV-43,Put-Away / QR Storage Confirmation,Static visual reference only,07_G_Warehouse_Inventory
+G,NV-44,Inter-Branch Stock Transfer,Static visual reference only,07_G_Warehouse_Inventory
+G,NV-45,"Stock Issue, Usage & Return",Static visual reference only,07_G_Warehouse_Inventory
+G,NV-46,"Stock Opname, Adjustment & Discrepancy",Static visual reference only,07_G_Warehouse_Inventory
+H,NV-47,Finance Control Dashboard,Static visual reference only,08_H_Finance_Accounting
+H,NV-48,AI Invoice & Receipt Capture,Static visual reference only,08_H_Finance_Accounting
+H,NV-49,PO–Receipt–Invoice Three-Way Matching,Static visual reference only,08_H_Finance_Accounting
+H,NV-50,Accounts Payable & Payment Control,Static visual reference only,08_H_Finance_Accounting
+H,NV-51,"GL Posting, Accounting & Exception Review",Static visual reference only,08_H_Finance_Accounting
+H,NV-52,Cost Allocation & Inter-BU Reconciliation,Static visual reference only,08_H_Finance_Accounting
+I,NV-53,Asset Register & Asset Inventory,Static visual reference only,09_I_Asset_Facility_Management
+I,NV-54,"Asset Detail, Location & Lifecycle",Static visual reference only,09_I_Asset_Facility_Management
+I,NV-55,Maintenance Request & Work Order,Static visual reference only,09_I_Asset_Facility_Management
+I,NV-56,"Asset Capitalization, Depreciation & Disposal",Static visual reference only,09_I_Asset_Facility_Management
+J,NV-57,Executive & BU AI Intelligence Dashboard,Static visual reference only,10_J_AI_Intelligence_Reporting
+J,NV-58,Division / Supervisor AI Insights,Static visual reference only,10_J_AI_Intelligence_Reporting
+J,NV-59,"7P Productivity, Efficiency & Effectiveness Analytics",Static visual reference only,10_J_AI_Intelligence_Reporting
+J,NV-60,AI Scenario Forecast & Evidence Drill-Down,Static visual reference only,10_J_AI_Intelligence_Reporting

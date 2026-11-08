@@ -1,0 +1,9 @@
+# Cloudflare Pages project config (used by `npx wrangler pages deploy` and Git integration)
+# Build command: node tools/build.js   ·   Output directory: dist   ·   Functions: ./functions (Basic Auth middleware)
+name = "hawk-jaens-preview"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+
+# PREVIEW_CREDENTIALS is a SECRET — never put it in this file. Set it with:
+#   npx wrangler pages secret put PREVIEW_CREDENTIALS --project-name hawk-jaens-preview
+# or in Dashboard › Workers & Pages › hawk-jaens-preview › Settings › Variables and Secrets (Production + Preview).

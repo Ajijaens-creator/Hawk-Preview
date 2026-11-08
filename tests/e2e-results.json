@@ -1,0 +1,111 @@
+{
+ "pass": 21,
+ "fail": 0,
+ "results": [
+  {
+   "name": "1 Staff melihat menu sederhana (≤5 modul: Beranda, MRF, cek stok, Smart Spend, lapor kerusakan)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2 MRF terkirim ke Supervisor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3 Dampak budget item tampil (budget 40, 90%)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "4 Disetujui → split 4 lokal / 3 transfer / 3 beli",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5 Lokal 4 + transfer 3 diserahkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6a Draft PO dibuat dari MRF & diajukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6b PO disetujui & dikirim; PO = komitmen, tanpa jurnal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6c PO bukan expense/invoice",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7 GRN fisik → diposting (Dr Persediaan / Cr GRNI)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "8 Put-away bin terkonfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "9 MRF terpenuhi 10/10",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10 Ekstraksi faktur AI (draft, manusia verifikasi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11a AP draft dibuat setelah verifikasi manusia",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11b Finance yang memverifikasi tidak dapat menyetujui sendiri (SoD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11c BU Manager menyetujui tagihan → Dr GRNI + PPN / Cr Utang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "12 Jejak AP → MRF asal terbuka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13 Budget vs Actual vs Commitment vs Forecast (Owner)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "14 AI insight: Temuan → Bukti → Dampak → Rekomendasi → Peran → Keputusan manusia",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Walkthrough: 14/14 langkah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Perubahan stok = jumlah mutasi ledger (tanpa double counting)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada error runtime di browser",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

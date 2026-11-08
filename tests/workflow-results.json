@@ -1,0 +1,1216 @@
+{
+ "pass": 242,
+ "fail": 0,
+ "results": [
+  {
+   "name": "Staff dapat membuat MRF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ID MRF memakai format HAWK PR (PR+YYYYMM+5 digit)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Organisasi/lokasi/cost center terisi otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Validasi budget BHP bulanan: proyeksi 36/40 → WARN (90%)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rantai approval ≤ Rp1jt = Supervisor saja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staff ditolak saat mencoba approve",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor cabang lain (Ubud) tidak bisa approve MRF Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Shanti approve",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Status → IN_FULFILLMENT setelah approval (fulfillment otomatis)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jalur fulfillment 4 lokal / 3 transfer / 3 beli",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Σ alokasi = 10 (tanpa double count)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok lokal Shanti direservasi 4",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Transfer otomatis dibuat dari Spa Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Komitmen budget = 10 setelah approval",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Gudang serahkan 4 dari stok lokal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok fisik Shanti 4→0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kirim transfer",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok Ubud berkurang 3",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Terima transfer di Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Serahkan 3 hasil transfer",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kebutuhan pembelian Shanti (SUP-001) = 2 baris dari 2 MRF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Purchasing membuat PO dari MRF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO memakai format HAWK (PO+YYYYMM+5 digit)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF menampilkan referensi PO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO tidak menjadi beban",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Submit PO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "BU Manager tidak bisa approve PO kecil saat langkah Purchasing",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Purchasing approve PO (≤10jt)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kirim PO ke vendor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Komitmen 7P tidak dobel saat PO dibuat (dibawa MRF)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penerimaan fisik via checklist",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penerimaan fisik belum mengubah stok",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Posting GRN",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok bertambah 3 setelah posting",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO status RECEIVED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jurnal penerimaan: Dr Persediaan / Cr GRNI (bukan beban)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bin tidak valid ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konfirmasi put-away rak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Serahkan 3 hasil pembelian",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF 10 dari 10 terpenuhi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF status FULFILLED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok Shanti akhir = awal(4) −4 +3 −3 +3 −3 = 0, reservasi 0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok Ubud akhir 6",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ledger Shanti konsisten dengan saldo (Σ mutasi = −4)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Budget item: aktual 36, komitmen 0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF body scrub PR…02 ikut terpenuhi dari PO yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Aktual 7P Product naik tepat 10 × 85.000 + 3 × 62.000 (body scrub PR…02)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Dokumen contoh faktur tersedia untuk PO baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ekstraksi AI (simulasi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Purchasing tidak boleh capture faktur",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Three-way match MATCHED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Verifikasi manusia → AP draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "SoD: verifikator yang sama tidak bisa approve",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "BU Manager approve tagihan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jurnal faktur: Dr GRNI + PPN / Cr Utang (bukan beban)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bayar tanpa konfirmasi ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner tidak bisa membayar (hanya Finance)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance bayar dengan konfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jejak dari tagihan sampai MRF asal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Insight AI budget Massage Oil Shanti tersedia dengan bukti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bukti insight memuat MRF & jejak PO/GRN/BL",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Insight membedakan fakta/metrik/forecast/hipotesis/rekomendasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tindak lanjut insight oleh manusia",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Audit trail mencatat seluruh langkah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF aromaterapi melebihi budget → rantai + BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tolak tanpa catatan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor approve langkah 1",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah berikut BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "BU Manager approve → fulfillment",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF Rp 4,35 jt → Supervisor + Head Divisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Minta revisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staff kirim ulang revisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Eskalasi → ESCALATED, approver berikut Head Div",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penerimaan parsial + rusak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Qty melebihi sisa PO ditolak (validasi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Posting GRN parsial",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO PARTIAL dengan backorder 24 handuk",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Barang rusak tercatat sebagai rejected (4)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok Pusat handuk = 96",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Capture faktur linen",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Qty faktur > diterima → MISMATCH",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Verifikasi selisih tanpa penjelasan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Faktur duplikat terdeteksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Duplikat tidak bisa dibuatkan AP",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI insight duplikat muncul",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Budget LOCKED tidak bisa diedit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "updateLine ditolak untuk budget per-baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tambah baris draft FY2027",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Profit wajib PERFORMANCE",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PERFORMANCE hanya untuk Profit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Unit BU lain ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Distribusi bulanan ≠ 100% ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Distribusi bulanan = 100% diterima",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan FY2027",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Draft terkunci saat diajukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner tidak bisa approve sebelum Head/Finance",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Head Review (BU Manager)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kembalikan tanpa alasan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner approve → LOCKED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Usulan revisi baris tidak mengubah Revised",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner setujui revisi baris → Original tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Non-rutin diajukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pengaju tidak boleh memutus sendiri (SoD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Non-rutin disetujui BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Realokasi antar-7P harus net nol",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan revisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner setujui revisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Original tetap, Revised +20jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Profit tidak dihitung sebagai belanja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor tinjau MR AC Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "WO dibuat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Suku cadang → MRF non-rutin",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Selesaikan WO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Histori aset diperbarui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MR selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jejak WO → MRF suku cadang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Admin tambah cabang baru tanpa ubah kode",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Cabang baru langsung bisa membuat MRF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Arsip cabang dengan MRF terbuka ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Transfer melebihi stok ditolak & state di-rollback",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Operasi tanpa kontrak ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "HAWK API adapter tidak berpura-pura terhubung",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Registry memuat 60 NV unik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Semua operasi layar terdaftar di kontrak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Semua operasi tulis punya handler mock",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kode unit duplikat ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Hierarki melingkar ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Arsip BU dengan sub-unit aktif ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Arsip & aktifkan ulang unit tanpa transaksi (histori tetap)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Edit aturan approval = draft; versi aktif tetap berlaku",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rute MRF Rp1,2 jt masih memakai aturan aktif saat draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Admin tidak dapat menerbitkan aturan sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner menerbitkan → v2 berlaku + histori before/after",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Simulasi rute: nilai di luar rentang darurat → tanpa rute",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Nama & nomor 60 NV identik dengan SCREEN_MATRIX NB-HAWK-01",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada kontrak berstatus CONFIRMED EXISTING tanpa bukti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Target: profit ≥ revenue ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Target: draft disimpan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Target: BU Manager tidak dapat menyetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Target: Owner menyetujui → terkunci",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Target grup Rp125 M tidak ada di target operasional Spa–Essence",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Proyek: usulan Inovasi tersimpan sebagai PROPOSED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Proyek: tanpa nama ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Proyek: hanya Owner memutus",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Proyek: progress dibatasi 0–1, semua milestone selesai → COMPLETED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi shared office: total ≠ 100% ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi shared office: 70/30 tersimpan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi: Purchasing tidak berwenang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "User: role tidak terdaftar ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "User: scope kosong ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "User: Admin mengubah role + scope",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "User: non-Admin tidak dapat mengubah role",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: orang lain tidak dapat membatalkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: pemohon membatalkan MRF SUBMITTED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF: yang sudah diproses tidak dapat dibatalkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: alasan < 10 karakter ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: melebihi batas AR-08 ditolak (LIMIT)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: PO dibuat dengan approval susulan PENDING, tanpa jurnal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: Supervisor tidak dapat menyetujui susulan sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: BU Manager menyetujui susulan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bin: format salah ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bin: bin & rak baru ditambahkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bin: duplikat ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Opname: dimulai; opname kedua di gudang sama ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Opname: ada item belum dihitung → ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Opname: selisih tanpa penjelasan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Opname: diajukan dengan penjelasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Opname: Gudang tidak dapat menyetujui sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Opname: Finance menyetujui → stok +2, ledger ADJUST, jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "GL: Purchasing tidak dapat posting",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "GL: Finance posting jurnal review → POSTED; posting ulang ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan kerusakan: uraian kosong ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan kerusakan oleh Staff → SUBMITTED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kapitalisasi: aset baru + jurnal aset seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kapitalisasi: nilai 0 ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Disposal: diusulkan PIC Aset",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Disposal: PIC Aset tidak dapat menyetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Disposal: Finance menyetujui → DISPOSED + jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Disposal: pengusul (Finance) tidak dapat menyetujui sendiri (SoD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rencana fulfillment: MRF belum disetujui ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rencana fulfillment otomatis saat disetujui (Σ alokasi = qty); rencana ulang ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO draft: Purchasing mengubah harga & ongkir",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO draft: Gudang tidak dapat mengubah PO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PO non-draft tidak dapat diubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pemakaian langsung: melebihi stok tersedia ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pemakaian langsung 1: stok −1, ledger ISSUE, jurnal beban seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Retur qty 0 ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Retur 1: stok kembali, jurnal balik seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staff tidak dapat mengeluarkan stok langsung",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setiap operasi tulis di kontrak punya tes engine",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Capture: draft + bukti asli tersimpan terpisah, sumber = AI SIMULATION",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI: harga Pasir & Total ditandai ragu (amber)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI: aritmetika tidak cocok (935.000 vs 1.250.000) → tidak diam-diam memilih angka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI: metode bayar tidak terbaca → kosong (tidak dikarang)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan sebelum koreksi ditolak (ARITHMETIC)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi harga Pasir → aritmetika cocok; koreksi tercatat terpisah dari nilai AI",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Total masih perlu konfirmasi pengguna",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rekomendasi 7P = Facility (bukan \"Procurement\"), cost center CC-SHN-OPS",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7P di luar 6 kategori belanja ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Cek budget bulanan Shanti Facility: 18,75 jt; masih dalam budget",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor tidak dapat mengajukan nota milik Staff",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan → SUBMITTED; rute Supervisor → Finance verifikasi → Finance bayar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konfirmasi Staff ≠ approval/pembayaran/jurnal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Komitmen budget Facility naik tepat 1,25 jt (belum actual)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Data tidak dapat diubah setelah diajukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud tidak dapat menyetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance tidak dapat verifikasi sebelum approval",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Shanti menyetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bukti asli dapat dibuka Finance & Supervisor, tidak oleh Staff Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance verifikasi → 1 jurnal PENDING_REVIEW seimbang: Dr 6210 Facility / Cr 2155 kas kecil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Budget: actual +1,25 jt, komitmen kembali (tanpa double counting)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pembayaran butuh konfirmasi eksplisit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rekonsiliasi kas kecil → SETTLED + jurnal pembayaran seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada posting ganda: tepat 2 jurnal (beban + pembayaran) & 1 pembayaran untuk SM ini",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Nota yang sama difoto ulang → DUPLICATE saat diajukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario duplikat terdeteksi (sidik jari + no. nota) terhadap SM20261100001",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Foto buram: supplier/tanggal/total kosong, 0 baris — tidak ada angka karangan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Struk tercetak jelas: semua hijau, langsung dapat diajukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat tanpa alasan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: approval susulan BU Manager + jejak eksepsi AR-08",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Darurat: pengaju (Supervisor) tidak dapat menyetujui sendiri; BU Manager menyetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Over budget Promotion: status OVER → rute + BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Over budget: setelah Supervisor masih menunggu BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tagihan belum dibayar: supplier baru tidak cocok master; flow UNPAID; wajib jatuh tempo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tagihan: verifikasi → Dr beban + PPN Masukan / Cr Utang Usaha (belum dibayar)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reimburse: SKU BHP-001 dikenali, jenis Persediaan, alert harga +8%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reimburse: metode bayar ragu → wajib dikonfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reimburse persediaan: rute Supervisor → Gudang → Finance → bayar karyawan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance tidak dapat melewati konfirmasi gudang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Gudang konfirmasi qty fisik berbeda → ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Gudang konfirmasi 3 → stok Shanti +3, ledger RECEIPT",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance tidak dapat mengubah persediaan menjadi beban setelah barang diterima",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reimburse: Dr Persediaan / Cr Utang reimburse karyawan; budget Product TIDAK naik saat pembelian",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reimburse dibayar sekali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Faktur PO: diteruskan ke three-way match yang sudah ada (tanpa approval ganda)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Faktur PO: harga 52.500 vs PO 48.000 → MISMATCH; status Smart Spend mengikuti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Faktur PO: tidak ada jurnal dari Smart Spend (jurnal hanya lewat AP)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Batal draft oleh pengaju",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akses daftar: Staff Ubud tidak melihat nota Shanti; Finance melihat semua",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Semua jurnal Smart Spend seimbang",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
