@@ -53,14 +53,14 @@ Otomatis bila **semua** terpenuhi:
 - Akun dari outlet lain ditolak (FORBIDDEN). Penerimaan tidak bisa dilakukan dua kali.
 - **Tidak perlu mengisi ulang identitas.** Saat memesan atau menerima, sistem mengisi dari penugasan akun: nama, jabatan, outlet, divisi, BU (`S.assignment`). Disimpan di `mrf.requestedBy`, `grn.receivedBy`, `transfer.receivedBy`, dan `mrf.receipts[]`. Akun outlet tidak bisa memesan atas nama outlet lain.
 - Di produksi, identitas ini wajib diambil server dari akun login (bukan dari isian form).
-- Akun demo baru: Kadek Rina (Receptionist), Wayan Sari (Attendant), Nengah Budi (Security) di Spa Shanti; Made Wirawan (Asisten Operational Manager).
+- Akun demo baru: Yuli (Receptionist), Dewa (Attendant), Nengah Budi (Security) di Spa Shanti; Tika (Asisten Operational Manager).
 
 ### Struktur Divisi Operasional Spa (Owner, 8 Nov 2026)
 
 ```
 BU JAENS Spa
-└─ Divisi Operasional Spa — Operational Manager (Wayan Ardana)
-   └─ Asisten Operational Manager (Made Wirawan) — membawahi Supervisor outlet
+└─ Divisi Operasional Spa — Operational Manager (Eni Restini)
+   └─ Asisten Operational Manager (Tika) — membawahi Supervisor outlet
       └─ Outlet (Ubud, Shanti, Triloka, Bisma) — dipimpin Supervisor outlet
          └─ Departemen: Receptionist · Spa Therapist · Attendant · Security
 ```
@@ -74,12 +74,37 @@ BU JAENS Spa
 | Nilai MRF (aturan NV-09) | Rantai untuk outlet Spa |
 |---|---|
 | ≤ Rp 1 jt (AR-01) | Supervisor outlet |
-| Rp 1–5 jt (AR-02) | Supervisor → **Asisten OM** → Operational Manager |
-| Rp 5–25 jt (AR-03) | Supervisor → **Asisten OM** → Operational Manager → BU Manager |
-| > Rp 25 jt (AR-04) | Supervisor → **Asisten OM** → Operational Manager → BU Manager → Owner |
+| Rp 1–5 jt (AR-02) | Supervisor → **Asisten Manager Operasional** → Manager BU Operasional |
+| Rp 5–25 jt (AR-03) | Supervisor → **Asisten Manager Operasional** → Manager BU Operasional |
+| > Rp 25 jt (AR-04) | Supervisor → **Asisten Manager Operasional** → Manager BU Operasional → Owner |
 
 - Langkah Asisten OM disisipkan otomatis bila ada akun Asisten OM yang mencakup unit MRF itu (dibaca dari struktur organisasi, tidak di-hardcode). Unit Essence / Office tidak berubah.
 - Operational Manager tidak bisa melompati Asisten OM; Asisten OM tidak bisa menyetujui lagi sebagai Operational Manager; satu orang tidak bisa menyetujui dua langkah di MRF yang sama.
 - Eskalasi dari Supervisor outlet naik ke Asisten OM.
 - Asisten OM tidak ikut Head Review budget tahunan (tetap Operational Manager / BU Manager).
 - Di HAWK produksi: perlu "posisi" pada akun atau langkah approval per jabatan (TO VERIFY / NEW INTEGRATION REQUIRED bila HAWK hanya mendukung approval per role).
+
+### Akun demo (nama tim JAENS, permintaan Owner 8 Nov 2026)
+
+| Jabatan | Nama | Role sistem |
+|---|---|---|
+| Owner | Aji Jaens | OWNER |
+| Manager BU Operasional (JAENS Spa) | Eni Restini | BU_MANAGER |
+| Asisten Manager Operasional | Tika | HEAD_DIV + posisi ASST_OM |
+| Supervisor Outlet | Mila | SUPERVISOR |
+| Receptionist / Therapist / Attendant | Yuli / Indah / Dewa | STAFF |
+| Finance Manager | Asri | FINANCE |
+| General Accounting Supervisor | Meli | FINANCE |
+| Tax Administration | Idha | FINANCE |
+| Purchasing | Etya | PURCHASING |
+| Inventory & Aset | Diana | ASSET |
+| Warehouse Officer | Supri | WAREHOUSE |
+| Super Admin Sistem | Niken | ADMIN |
+| IT Developer | Dewa & Tim HAWK | ADMIN |
+| Manager Divisi HRD | Made Gunarsa | HEAD_DIV (Divisi HRD) |
+| Manager Divisi Komersil | Dedik | HEAD_DIV (Divisi Komersil) |
+| Manager BU JAENS Essence | Gek Niken | BU_MANAGER (BU Essence) |
+
+Akun pendukung yang tidak ada di daftar Owner tetap memakai nama fiktif: Komang Ayu (Attendant Ubud), Ni Luh Sari (Supervisor Ubud), Nengah Budi (Security Shanti).
+
+**Rantai approval MRF outlet Spa sekarang:** Supervisor outlet → Asisten Manager Operasional → Manager BU Operasional (→ Owner untuk > Rp 25 jt). Karena di Spa tidak ada manager divisi terpisah di atas Asisten, level "Head of Division" ditandatangani Manager BU Operasional; satu orang tidak menyetujui dua kali. Unit Office tetap memakai manager divisinya (Komersil, HRD).

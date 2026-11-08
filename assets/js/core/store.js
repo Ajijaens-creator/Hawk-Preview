@@ -124,6 +124,7 @@
   S.ancestors = (s, orgId) => { const out = []; let o = S.org(s, orgId); while (o) { out.push(o.id); o = S.org(s, o.parent); } return out; };
   /* Assistant Operational Manager covering this unit (Owner 8 Nov 2026: Spa MRF goes via the Assistant OM before the Operational Manager) */
   S.asstOmFor = (s, orgId) => { const up = S.ancestors(s, orgId); return s.users.find((u) => u.position === 'ASST_OM' && u.active !== false && (u.scope || []).some((x) => up.includes(x))) || null; };
+  S.headDivFor = (s, orgId) => { const up = S.ancestors(s, orgId); return s.users.find((u) => u.role === 'HEAD_DIV' && u.position !== 'ASST_OM' && u.active !== false && (u.scope || []).some((x) => up.includes(x))) || null; };
   /* Can this user act on this approval step of this MRF? One rule for engine, inbox and buttons. */
   S.canApproveStep = (s, u, step, m) => {
     if (!u || !step) return false;
@@ -131,6 +132,7 @@
     if (step === 'HEAD_DIV' && u.position === 'ASST_OM') return false; // the assistant does not also sign as Operational Manager
     if (step !== u.role) return false;
     if (u.role === 'SUPERVISOR') return (u.scope || []).includes(m.branch);
+    if (['HEAD_DIV', 'BU_MANAGER'].includes(u.role)) { const up = S.ancestors(s, m.branch); return (u.scope || []).some((x) => up.includes(x)); }
     return true;
   };
   /* Approval chain from the configurable approval matrix (NV-09) */
@@ -142,8 +144,14 @@
     const bc = S.mrfBudgetCheck(s, m);
     const exc = s.approvalRules.find((r) => r.doc === 'MRF_EXCEPTION' && r.active);
     if (exc && (bc.status === 'OVER' || bc.status === 'EXCEPTION')) exc.chain.forEach((r) => !chain.includes(r) && chain.push(r));
-    const hd = chain.indexOf('HEAD_DIV');
-    if (hd >= 0 && S.asstOmFor(s, m.branch)) chain.splice(hd, 0, 'ASST_OM');
+    let hd = chain.indexOf('HEAD_DIV');
+    // No division head (other than the assistant) over this unit → the BU Manager signs that level (e.g. Spa: the BU Operational Manager)
+    if (hd >= 0 && !S.headDivFor(s, m.branch)) {
+      if (chain.includes('BU_MANAGER')) chain.splice(hd, 1);
+      else chain[hd] = 'BU_MANAGER';
+    }
+    const at = chain.indexOf('HEAD_DIV') >= 0 ? chain.indexOf('HEAD_DIV') : chain.indexOf('BU_MANAGER');
+    if (at >= 0 && S.asstOmFor(s, m.branch)) chain.splice(at, 0, 'ASST_OM');
     return { chain, rule: tier.id, exception: bc.status === 'OVER' || bc.status === 'EXCEPTION' };
   };
   S.mrfNextApprover = (s, m) => {

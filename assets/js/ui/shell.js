@@ -412,7 +412,7 @@
     return a && a.ref ? s.pos.find((p) => p.id === a.ref) : null;
   };
   const TOUR = [
-    { t: 'Masuk sebagai Staff', d: 'Ganti role ke Therapist Spa Shanti (Nyoman Dewi). Menu menyusut ke layar MRF sederhana.', user: 'U-STF', nv: 24, done: (s) => prefs.visited['U-STF'] },
+    { t: 'Masuk sebagai Staff', d: 'Ganti role ke Therapist Spa Shanti (Indah). Menu menyusut ke layar MRF sederhana.', user: 'U-STF', nv: 24, done: (s) => prefs.visited['U-STF'] },
     { t: 'Buat MRF di Spa Shanti', d: 'Buat MRF: Minyak Pijat Lavender 1L × 10. Unit, gudang & cost center terisi otomatis.', user: 'U-STF', nv: 26, done: (s) => !!tourMrf(s) },
     { t: 'Tinjau budget BHP bulanan', d: 'Lihat dampak budget item November: budget 40, aktual 26, MRF ini 10 → 90% (peringatan).', user: 'U-SPV', nv: 30, q: (s) => (tourMrf(s) ? { id: tourMrf(s).id } : null), done: (s) => prefs.visited['nv30'] },
     { t: 'Supervisor menyetujui', d: 'Sebagai Supervisor Shanti, setujui MRF di antrean approval.', user: 'U-SPV', nv: 29, done: (s) => tourMrf(s) && ['IN_FULFILLMENT', 'FULFILLED'].includes(tourMrf(s).status) },

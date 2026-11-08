@@ -25,7 +25,7 @@
     { key: 'STAFF', user: 'U-STF', label: 'Staff / Therapist', device: 'mobile', home: 24 },
   ];
   // roles that the current app requires for some steps but that are not one of the five demo screens
-  const SUPPORT = { 'U-WHS': 'Gudang pusat (peran pendukung)', 'U-RCP': 'Receptionist outlet (peran pendukung)', 'U-ATD': 'Attendant outlet (peran pendukung)', 'U-AST': 'Asset / Facility PIC (peran pendukung)', 'U-OWN': 'Owner (peran pendukung)' };
+  const SUPPORT = { 'U-WHS': 'Gudang pusat (peran pendukung)', 'U-RCP': 'Receptionist outlet (peran pendukung)', 'U-ATD': 'Attendant outlet (peran pendukung)', 'U-AOM': 'Asisten Manager Operasional (peran pendukung)', 'U-GAS': 'General Accounting Supervisor (peran pendukung)', 'U-BUE': 'Manager BU JAENS Essence (peran pendukung)', 'U-AST': 'Inventory & Aset (peran pendukung)', 'U-OWN': 'Owner (peran pendukung)' };
   const DEVICES = { desktop: { w: 1280, h: 860, label: 'Desktop' }, ipad: { w: 834, h: 1112, label: 'iPad' }, mobile: { w: 390, h: 844, label: 'Mobile' } };
 
   /* ---- stable target IDs → selector in the REAL screen (contract for developers; see docs/DEMO_EXPERIENCE_CENTER.md) ---- */
@@ -162,8 +162,8 @@
         { id: 'NOTA-05', as: 'U-FIN', tid: 'dx-sp-verify', q: (v) => ({ tab: 'history', sel: v.sp }), title: 'Finance verifikasi klasifikasi', what: 'Finance memverifikasi klasifikasi OPEX Facility → 1 jurnal PENDING_REVIEW seimbang. Komitmen budget pindah ke actual tanpa dobel.',
           run: (c, s, v) => c('spend.verify', { id: v.sp, note: 'Perbaikan kecil, OPEX' }, 'U-FIN'),
           check: (s, v) => ['VERIFIED', 'SETTLED'].includes(S.spend(s, v.sp).status) && {} },
-        { id: 'NOTA-06', as: 'U-FIN', tid: 'dx-sp-settle', q: (v) => ({ tab: 'history', sel: v.sp }), title: 'Rekonsiliasi kas kecil + bukti digital', what: 'Rekonsiliasi butuh konfirmasi eksplisit. Bukti asli (gambar) tidak diubah; koreksi disimpan terpisah. Penyimpanan lokal browser BUKAN arsip dokumen permanen.',
-          run: (c, s, v) => c('spend.settle', { id: v.sp, confirm: true }, 'U-FIN'),
+        { id: 'NOTA-06', as: 'U-GAS', tid: 'dx-sp-settle', q: (v) => ({ tab: 'history', sel: v.sp }), title: 'General Accounting merekonsiliasi kas kecil', what: 'Pemisahan tugas: yang memverifikasi (Finance Manager) tidak ikut membayar, jadi General Accounting Supervisor yang merekonsiliasi. Butuh konfirmasi eksplisit. Bukti asli (gambar) tidak diubah; koreksi disimpan terpisah. Penyimpanan lokal browser BUKAN arsip dokumen permanen.',
+          run: (c, s, v) => c('spend.settle', { id: v.sp, confirm: true }, 'U-GAS'),
           check: (s, v) => S.spend(s, v.sp).status === 'SETTLED' && {} },
       ],
     },
@@ -233,6 +233,10 @@
           vars: (v) => ({ mrf: v.part }),
           run: (c, s, v) => c('mrf.decide', { id: v.part, decision: 'APPROVE', note: 'Untuk WO AC' }, 'U-SPV'),
           check: (s, v) => { const m = mrf(s, v.part); return m && (m.status !== 'SUBMITTED' || S.mrfNextApprover(s, m) !== 'SUPERVISOR') && {}; } },
+        { id: 'AST-04A', as: 'U-AOM', tid: 'dx-mrf-approve', q: (v) => ({ id: v.part }), title: 'Asisten Manager Operasional menyetujui', what: 'Di Divisi Operasional Spa, setelah Supervisor outlet, MRF naik ke Asisten Manager Operasional sebelum Manager BU Operasional.',
+          vars: (v) => ({ mrf: v.part }),
+          run: (c, s, v) => c('mrf.decide', { id: v.part, decision: 'APPROVE', note: 'Suku cadang AC diperlukan' }, 'U-AOM'),
+          check: (s, v) => { const m = mrf(s, v.part); return m && (m.approvals || []).some((a) => a.by === 'U-AOM') && {}; } },
         { id: 'AST-04B', as: 'U-BUM', tid: 'dx-mrf-approve', q: (v) => ({ id: v.part }), title: 'BU Manager menyetujui (non-rutin)', what: 'MRF non-rutin butuh persetujuan berjenjang sampai BU Manager sesuai matriks approval.',
           vars: (v) => ({ mrf: v.part }),
           run: (c, s, v) => c('mrf.decide', { id: v.part, decision: 'APPROVE', note: 'Perbaikan aset, disetujui' }, 'U-BUM'),
@@ -258,8 +262,8 @@
         { id: 'OFC-02', as: 'U-BUM', tid: 'dx-alloc-review', vars: () => ({ bu: 'BU-SPA' }), title: 'BU Manager Spa meninjau', what: 'BU Manager Spa menyetujui porsi BU-nya (bisa juga keberatan dengan alasan).',
           run: (c) => c('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-SPA', decision: 'AGREE', note: 'Sesuai proporsi pemakaian' }, 'U-BUM'),
           check: (s) => (s.sharedAllocations.find((x) => x.pool === 'CC-OFC-FIN').reviews || {})['BU-SPA'] && {} },
-        { id: 'OFC-03', as: 'U-OWN', tid: 'dx-alloc-review', vars: () => ({ bu: 'BU-ESS' }), title: 'Review porsi Essence (Owner)', what: 'Data demo belum punya BU Manager Essence, jadi Owner meninjau porsi Essence. Di produksi: BU Manager Essence.',
-          run: (c) => c('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-ESS', decision: 'AGREE', note: 'OK untuk Essence' }, 'U-OWN'),
+        { id: 'OFC-03', as: 'U-BUE', tid: 'dx-alloc-review', vars: () => ({ bu: 'BU-ESS' }), title: 'Manager BU JAENS Essence meninjau porsinya', what: 'Manager BU JAENS Essence menyetujui porsi 40% biaya Finance bersama untuk Essence.',
+          run: (c) => c('cc.reviewAllocation', { pool: 'CC-OFC-FIN', bu: 'BU-ESS', decision: 'AGREE', note: 'OK untuk Essence' }, 'U-BUE'),
           check: (s) => (s.sharedAllocations.find((x) => x.pool === 'CC-OFC-FIN').reviews || {})['BU-ESS'] && {} },
         { id: 'OFC-04', as: 'U-FIN', tid: 'dx-alloc-lock', title: 'Finance mengunci periode', what: 'Setelah semua BU setuju, Finance mengunci. Porsi tidak bisa diubah lagi periode ini.',
           run: (c) => c('cc.lockAllocation', { pool: 'CC-OFC-FIN' }, 'U-FIN'),

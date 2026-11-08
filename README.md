@@ -24,11 +24,11 @@ Data demo disimpan di `localStorage` browser. Tombol **↺ Reset Demo Data** di 
 
 ## Mencoba Smart Spend Money (foto nota)
 
-Ganti role ke **Nyoman Dewi (Staff Spa Shanti)**, lalu Beranda › **Scan Nota** (NV-48). Pilih nota contoh "Nota tulisan tangan", tekan *Baca dengan AI (simulasi)*, perbaiki harga Pasir menjadi 350.000, konfirmasi field kuning, pilih metode bayar, lanjutkan klasifikasi, dan kirim. Lalu sebagai **Putu Sukma (Supervisor)** setujui, dan sebagai **Luh Ratna (Finance)** buka bukti, verifikasi, dan catat pembayaran. Ekstraksi adalah **AI SIMULATION**.
+Ganti role ke **Indah (Staff Spa Shanti)**, lalu Beranda › **Scan Nota** (NV-48). Pilih nota contoh "Nota tulisan tangan", tekan *Baca dengan AI (simulasi)*, perbaiki harga Pasir menjadi 350.000, konfirmasi field kuning, pilih metode bayar, lanjutkan klasifikasi, dan kirim. Lalu sebagai **Mila (Supervisor)** setujui, dan sebagai **Asri (Finance)** buka bukti, verifikasi, dan catat pembayaran. Ekstraksi adalah **AI SIMULATION**.
 
 ## Mencoba Order Sederhana (pesan → terima → bayar)
 
-Sebagai **Nyoman Dewi (Staff Spa Shanti)**, Beranda › **🛒 Pesan barang** (NV-24): tekan **+** pada beberapa barang lalu **Pesan sekarang**. Bila dalam budget 7P dan ≤ Rp5 jt, sistem langsung menyetujui, membuat PO, dan mengirimnya ke supplier (aturan AR-13, bukan AI). Sebagai **Luh Ratna (Finance)** buka NV-50 dan tekan **Sudah dibayar**. Kembali sebagai staf, tekan **Barang sudah diterima** (atau "Ada yang kurang atau rusak?"). Pesanan yang lewat budget otomatis masuk antrean Supervisor. Batas diatur Finance/Super Admin/Owner di NV-50 atau NV-09. Lihat `docs/SIMPLE_ORDER.md`.
+Sebagai **Indah (Staff Spa Shanti)**, Beranda › **🛒 Pesan barang** (NV-24): tekan **+** pada beberapa barang lalu **Pesan sekarang**. Bila dalam budget 7P dan ≤ Rp5 jt, sistem langsung menyetujui, membuat PO, dan mengirimnya ke supplier (aturan AR-13, bukan AI). Sebagai **Asri (Finance)** buka NV-50 dan tekan **Sudah dibayar**. Kembali sebagai staf, tekan **Barang sudah diterima** (atau "Ada yang kurang atau rusak?"). Pesanan yang lewat budget otomatis masuk antrean Supervisor. Batas diatur Finance/Super Admin/Owner di NV-50 atau NV-09. Lihat `docs/SIMPLE_ORDER.md`.
 
 ## Mencoba Control Tower (NV-61 / NV-62)
 

@@ -87,7 +87,7 @@ fs.mkdirSync(shotDir, { recursive: true });
   const inbox = await view();
   ok('12. Supervisor: hanya pesanan lewat budget di antrean, pesanan otomatis tidak', inbox.includes(E.id) && !inbox.includes(A.id));
   await click(`#view [data-a="approveMrf"][data-ref="${E.id}"]`);
-  ok('12b. Supervisor menyetujui → lanjut ke BU Manager', await S((id) => HAWK.selectors.mrfNextApprover(HAWK.store.state, HAWK.store.state.mrfs.find((m) => m.id === id)) === 'BU_MANAGER', E.id));
+  ok('12b. Supervisor menyetujui → lanjut ke Asisten Manager Operasional (lalu Manager BU)', await S((id) => { const s = HAWK.store.state; const m = s.mrfs.find((x) => x.id === id); return HAWK.selectors.mrfNextApprover(s, m) === 'ASST_OM' && m.chain.slice(-1)[0] === 'BU_MANAGER'; }, E.id));
 
   // 13. Finance pays BEFORE goods arrive
   await as('U-FIN');

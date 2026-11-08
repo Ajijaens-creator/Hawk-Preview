@@ -80,22 +80,28 @@
 
     /* ---------------- Roles & users (fictional) ---------------- */
     s.users = [
-      { id: 'U-OWN', name: 'Gede Pratama', role: 'OWNER', title: 'Owner / Eksekutif', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-BUM', name: 'Ayu Lestari', role: 'BU_MANAGER', title: 'BU Manager JAENS Spa', scope: ['BU-SPA'] },
-      { id: 'U-HOD', name: 'Wayan Ardana', role: 'HEAD_DIV', title: 'Operational Manager — Divisi Operasional Spa', dept: 'Manajemen Operasional', reportsTo: 'U-BUM', scope: ['BU-SPA', 'DV-KOM'] },
-      { id: 'U-SPV', name: 'Putu Sukma', role: 'SUPERVISOR', title: 'Supervisor Outlet Spa Shanti', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-SHN'] },
-      { id: 'U-STF', name: 'Nyoman Dewi', role: 'STAFF', title: 'Spa Therapist Spa Shanti', dept: 'Spa Therapist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
-      { id: 'U-PUR', name: 'Kadek Surya', role: 'PURCHASING', title: 'Purchasing HQ', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-WHS', name: 'Made Arta', role: 'WAREHOUSE', title: 'Gudang & Receiving', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-FIN', name: 'Luh Ratna', role: 'FINANCE', title: 'Finance & Accounting', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-AST', name: 'Ketut Bagus', role: 'ASSET', title: 'Asset & Facility PIC', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-ADM', name: 'Admin Sistem', role: 'ADMIN', title: 'System Administrator', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      // Demo accounts named after the JAENS team at the Owner's request (8 Nov 2026). Data stays DEMO / synthetic.
+      { id: 'U-OWN', name: 'Aji Jaens', role: 'OWNER', title: 'Owner', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-BUM', name: 'Eni Restini', role: 'BU_MANAGER', title: 'Manager BU Operasional — JAENS Spa', dept: 'Manajemen Operasional', reportsTo: 'U-OWN', scope: ['BU-SPA'] },
+      { id: 'U-HOD', name: 'Dedik', role: 'HEAD_DIV', title: 'Manager Divisi Komersil', dept: 'Komersil', reportsTo: 'U-OWN', scope: ['DV-KOM'] },
+      { id: 'U-SPV', name: 'Mila', role: 'SUPERVISOR', title: 'Supervisor Outlet Spa Shanti', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-SHN'] },
+      { id: 'U-STF', name: 'Indah', role: 'STAFF', title: 'Spa Therapist Spa Shanti', dept: 'Spa Therapist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-PUR', name: 'Etya', role: 'PURCHASING', title: 'Purchasing', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-WHS', name: 'Supri', role: 'WAREHOUSE', title: 'Warehouse Officer', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-FIN', name: 'Asri', role: 'FINANCE', title: 'Finance Manager', dept: 'Finance & Accounting', reportsTo: 'U-OWN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-AST', name: 'Diana', role: 'ASSET', title: 'Inventory & Aset', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-ADM', name: 'Niken', role: 'ADMIN', title: 'Super Admin Sistem', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-STF2', name: 'Komang Ayu', role: 'STAFF', title: 'Attendant Spa Ubud', dept: 'Attendant', reportsTo: 'U-SPV2', scope: ['BR-UBD'] },
       { id: 'U-SPV2', name: 'Ni Luh Sari', role: 'SUPERVISOR', title: 'Supervisor Outlet Spa Ubud', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-UBD'] },
-      { id: 'U-RCP', name: 'Kadek Rina', role: 'STAFF', title: 'Receptionist Spa Shanti', dept: 'Receptionist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-RCP', name: 'Yuli', role: 'STAFF', title: 'Receptionist Spa Shanti', dept: 'Receptionist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
       { id: 'U-SEC', name: 'Nengah Budi', role: 'STAFF', title: 'Security Spa Shanti', dept: 'Security', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
-      { id: 'U-AOM', name: 'Made Wirawan', role: 'HEAD_DIV', title: 'Asisten Operational Manager — Divisi Operasional Spa', dept: 'Manajemen Operasional', position: 'ASST_OM', reportsTo: 'U-HOD', scope: ['DV-SPA-OPS'] },
-      { id: 'U-ATD', name: 'Wayan Sari', role: 'STAFF', title: 'Attendant Spa Shanti', dept: 'Attendant', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-AOM', name: 'Tika', role: 'HEAD_DIV', title: 'Asisten Manager Operasional — Divisi Operasional Spa', dept: 'Manajemen Operasional', position: 'ASST_OM', reportsTo: 'U-BUM', scope: ['DV-SPA-OPS'] },
+      { id: 'U-ATD', name: 'Dewa', role: 'STAFF', title: 'Attendant Spa Shanti', dept: 'Attendant', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-GAS', name: 'Meli', role: 'FINANCE', title: 'General Accounting Supervisor', dept: 'Finance & Accounting', reportsTo: 'U-FIN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-TAX', name: 'Idha', role: 'FINANCE', title: 'Tax Administration', dept: 'Finance & Accounting', reportsTo: 'U-FIN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-HRD', name: 'Made Gunarsa', role: 'HEAD_DIV', title: 'Manager Divisi HRD', dept: 'HG / HRD', reportsTo: 'U-OWN', scope: ['DV-HRD'] },
+      { id: 'U-BUE', name: 'Gek Niken', role: 'BU_MANAGER', title: 'Manager BU JAENS Essence', reportsTo: 'U-OWN', scope: ['BU-ESS'] },
+      { id: 'U-DEV', name: 'Dewa & Tim HAWK', role: 'ADMIN', title: 'IT Developer', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
     ];
 
     /* ---------------- Approval matrix (configurable, NV-09) ---------------- */

@@ -1,5 +1,5 @@
 {
- "pass": 374,
+ "pass": 375,
  "fail": 0,
  "results": [
   {
@@ -328,7 +328,7 @@
    "info": ""
   },
   {
-   "name": "MRF aromaterapi melebihi budget → rantai + BU Manager",
+   "name": "MRF aromaterapi melebihi budget (Spa) → Supervisor → Asisten Manager Operasional → BU Manager",
    "ok": true,
    "info": ""
   },
@@ -343,7 +343,7 @@
    "info": ""
   },
   {
-   "name": "Langkah berikut BU Manager",
+   "name": "Langkah berikut Asisten Manager Operasional, lalu BU Manager",
    "ok": true,
    "info": ""
   },
@@ -353,22 +353,27 @@
    "info": ""
   },
   {
-   "name": "MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Operational Manager → Operational Manager (Head Div)",
+   "name": "MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Manager Operasional → Manager BU Operasional",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Operational Manager tidak bisa melompati Asisten OM",
+   "name": "Manager BU Operasional tidak bisa melompati Asisten Manager Operasional",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Asisten OM menyetujui langkahnya, lalu tidak bisa menyetujui lagi sebagai Operational Manager",
+   "name": "Manager divisi lain (Komersil) & Manager BU Essence tidak bisa menyetujui MRF outlet Spa",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Operational Manager menyetujui setelah Asisten OM; jejak approval mencatat langkah ASST_OM",
+   "name": "Asisten Manager Operasional menyetujui langkahnya sekali saja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Manager BU Operasional menyetujui terakhir; jejak approval SUPERVISOR → ASST_OM → BU_MANAGER",
    "ok": true,
    "info": ""
   },
@@ -1703,7 +1708,7 @@
    "info": ""
   },
   {
-   "name": "Skenario ASSET: 8 langkah selesai end-to-end, setup tanpa error",
+   "name": "Skenario ASSET: 9 langkah selesai end-to-end, setup tanpa error",
    "ok": true,
    "info": ""
   },
@@ -1818,7 +1823,7 @@
    "info": ""
   },
   {
-   "name": "Rantai atasan: staf → Supervisor outlet → Asisten Operational Manager → Operational Manager → BU Manager",
+   "name": "Rantai atasan: staf → Supervisor outlet → Asisten Manager Operasional → Manager BU Operasional → Owner",
    "ok": true,
    "info": ""
   },

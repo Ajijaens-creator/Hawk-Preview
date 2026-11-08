@@ -91,4 +91,4 @@ Spa Shanti meminta 10 Massage Oil (BHP-001): 4 dari stok lokal, 3 transfer dari 
 
 1. Sebagai Owner buka **Control Tower › NV-61**. Tekan **⏩ Simulasi +24 jam** (DEMO) untuk melihat SLA berubah tanpa menunggu.
 2. Klik KPI, baris tahap, sel heatmap, atau baris supplier untuk drill-down. Tekan **Perjalanan ›** untuk membuka NV-62.
-3. Ganti role ke Purchasing (Kadek Surya) lalu tekan **Ubah ETA** atau **Catat alasan** di isu.
+3. Ganti role ke Purchasing (Etya) lalu tekan **Ubah ETA** atau **Catat alasan** di isu.

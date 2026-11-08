@@ -168,21 +168,22 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const { call, s } = fresh();
   const m4 = s().mrfs.find((m) => m.id === 'PR20261100004');
   const ch = S.mrfChain(s(), m4);
-  check('MRF aromaterapi melebihi budget → rantai + BU Manager', ch.chain.join() === 'SUPERVISOR,BU_MANAGER' && ch.exception, ch.chain.join());
+  check('MRF aromaterapi melebihi budget (Spa) → Supervisor → Asisten Manager Operasional → BU Manager', ch.chain.join() === 'SUPERVISOR,ASST_OM,BU_MANAGER' && ch.exception, ch.chain.join());
   let r = call('mrf.decide', { id: 'PR20261100004', decision: 'REJECT' }, 'SUPERVISOR');
   check('Tolak tanpa catatan ditolak', !r.ok && r.error.code === 'VALIDATION');
   r = call('mrf.decide', { id: 'PR20261100004', decision: 'APPROVE', note: 'Event' }, 'SUPERVISOR');
   check('Supervisor approve langkah 1', r.ok && r.data.status === 'SUBMITTED');
-  check('Langkah berikut BU Manager', S.mrfNextApprover(s(), s().mrfs.find((m) => m.id === 'PR20261100004')) === 'BU_MANAGER');
+  check('Langkah berikut Asisten Manager Operasional, lalu BU Manager', S.mrfNextApprover(s(), s().mrfs.find((m) => m.id === 'PR20261100004')) === 'ASST_OM' && call('mrf.decide', { id: 'PR20261100004', decision: 'APPROVE', note: 'ok' }, 'HEAD_DIV', 'U-AOM').ok && S.mrfNextApprover(s(), s().mrfs.find((m) => m.id === 'PR20261100004')) === 'BU_MANAGER');
   r = call('mrf.decide', { id: 'PR20261100004', decision: 'APPROVE' }, 'BU_MANAGER');
   check('BU Manager approve → fulfillment', r.ok && r.data.status === 'IN_FULFILLMENT');
   const big = call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-004', qty: 30 }] }, 'STAFF').data;
-  check('MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Operational Manager → Operational Manager (Head Div)', big.chain.join() === 'SUPERVISOR,ASST_OM,HEAD_DIV,BU_MANAGER' || big.chain.join() === 'SUPERVISOR,ASST_OM,HEAD_DIV', big.chain.join());
+  check('MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Manager Operasional → Manager BU Operasional', big.chain.join() === 'SUPERVISOR,ASST_OM,BU_MANAGER', big.chain.join());
   {
     const ap = (role, id) => call('mrf.decide', { id: big.id, decision: 'APPROVE', note: 'ok' }, role, id);
-    check('Operational Manager tidak bisa melompati Asisten OM', ap('SUPERVISOR', 'U-SPV').ok && !ap('HEAD_DIV', 'U-HOD').ok);
-    check('Asisten OM menyetujui langkahnya, lalu tidak bisa menyetujui lagi sebagai Operational Manager', ap('HEAD_DIV', 'U-AOM').ok && !ap('HEAD_DIV', 'U-AOM').ok && S.mrfNextApprover(s(), s().mrfs.find((x) => x.id === big.id)) === 'HEAD_DIV');
-    check('Operational Manager menyetujui setelah Asisten OM; jejak approval mencatat langkah ASST_OM', ap('HEAD_DIV', 'U-HOD').ok && s().mrfs.find((x) => x.id === big.id).approvals.map((a) => a.role).slice(0, 3).join() === 'SUPERVISOR,ASST_OM,HEAD_DIV');
+    check('Manager BU Operasional tidak bisa melompati Asisten Manager Operasional', ap('SUPERVISOR', 'U-SPV').ok && !ap('BU_MANAGER', 'U-BUM').ok);
+    check('Manager divisi lain (Komersil) & Manager BU Essence tidak bisa menyetujui MRF outlet Spa', !ap('HEAD_DIV', 'U-HOD').ok && !ap('BU_MANAGER', 'U-BUE').ok);
+    check('Asisten Manager Operasional menyetujui langkahnya sekali saja', ap('HEAD_DIV', 'U-AOM').ok && !ap('HEAD_DIV', 'U-AOM').ok && S.mrfNextApprover(s(), s().mrfs.find((x) => x.id === big.id)) === 'BU_MANAGER');
+    check('Manager BU Operasional menyetujui terakhir; jejak approval SUPERVISOR → ASST_OM → BU_MANAGER', ap('BU_MANAGER', 'U-BUM').ok && s().mrfs.find((x) => x.id === big.id).approvals.map((a) => a.role).join() === 'SUPERVISOR,ASST_OM,BU_MANAGER' && s().mrfs.find((x) => x.id === big.id).status === 'IN_FULFILLMENT');
     const ess = call('mrf.create', { branch: 'DV-ESS-PRD', lines: [{ item: 'BHP-004', qty: 30 }] }, 'ADMIN').data;
     check('Unit di luar Divisi Operasional Spa (Essence) tidak lewat Asisten OM', ess && !ess.chain.includes('ASST_OM'), ess && ess.chain.join());
   }
@@ -829,7 +830,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan', a && a.branch === 'BR-SHN' && a.branchName === 'Spa Shanti' && a.division === 'Operasional Spa' && a.dept === 'Receptionist' && a.reportsTo === 'U-SPV' && a.bu === 'BU-SPA' && a.buName === 'JAENS Spa' && a.title === 'Receptionist Spa Shanti');
   const chain = (id) => { const out = []; let x = S.user(s(), id); while (x) { out.push(x.id); x = x.reportsTo && S.user(s(), x.reportsTo); } return out.join('>'); };
   check('Struktur: outlet Spa di bawah Divisi Operasional Spa (BU JAENS Spa); departemen Receptionist, Spa Therapist, Attendant, Security', ['BR-UBD', 'BR-SHN', 'BR-TRK', 'BR-BSM'].every((b) => S.org(s(), b).parent === 'DV-SPA-OPS' && S.buOf(s(), b) === 'BU-SPA') && ['U-RCP', 'U-STF', 'U-ATD', 'U-SEC'].map((u) => S.assignment(s(), u).dept).join() === 'Receptionist,Spa Therapist,Attendant,Security');
-  check('Rantai atasan: staf → Supervisor outlet → Asisten Operational Manager → Operational Manager → BU Manager', chain('U-SEC') === 'U-SEC>U-SPV>U-AOM>U-HOD>U-BUM');
+  check('Rantai atasan: staf → Supervisor outlet → Asisten Manager Operasional → Manager BU Operasional → Owner', chain('U-SEC') === 'U-SEC>U-SPV>U-AOM>U-BUM>U-OWN');
   check('Asisten Operational Manager: divisi Operasional Spa, BU JAENS Spa', S.assignment(s(), 'U-AOM').division === 'Operasional Spa' && S.assignment(s(), 'U-AOM').bu === 'BU-SPA');
   const m0 = call('mrf.create', { memo: 'tanpa isi unit', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF', 'U-ATD');
   check('Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)', m0.ok && m0.data.branch === 'BR-SHN' && m0.data.requestedBy.dept === 'Attendant' && m0.data.requestedBy.division === 'Operasional Spa' && m0.data.requestedBy.bu === 'BU-SPA');
