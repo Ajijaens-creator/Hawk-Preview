@@ -11,7 +11,7 @@
   const V = HAWK.views;
   const thumb = (it) => HAWK.vh.thumb(it);
   const homeBranch = (ctx) => (ctx.scope.branch && ctx.scope.branch !== 'ALL' && (S.org(ctx.s, ctx.scope.branch) || {}).type === 'BRANCH' ? ctx.scope.branch : ctx.user.scope.find((x) => (S.org(ctx.s, x) || {}).type === 'BRANCH') || 'BR-SHN');
-  const myOrders = (ctx) => ctx.s.mrfs.filter((m) => (m.simple || m.status === 'IN_FULFILLMENT') && (ctx.role === 'STAFF' ? m.requester === ctx.user.id || ctx.user.scope.includes(m.branch) : ctx.inScope(m.branch)));
+  const myOrders = (ctx) => ctx.s.mrfs.filter((m) => (m.simple || m.status === 'IN_FULFILLMENT' || (m.receipts || []).length) && (ctx.role === 'STAFF' ? m.requester === ctx.user.id || ctx.user.scope.includes(m.branch) : ctx.inScope(m.branch)));
   const canReceive = (ctx, m) => ctx.can('order.receive') && (!['STAFF', 'SUPERVISOR'].includes(ctx.role) || m.requester === ctx.user.id || ctx.user.scope.includes(m.branch));
   /* who / outlet / division / BU come from the logged-in account — never typed again */
   const meCard = (ctx) => {
