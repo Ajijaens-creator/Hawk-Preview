@@ -1,6 +1,6 @@
 /* Production build for independent hosting (Vercel / Cloudflare Pages / any static host).
    Usage: node tools/build.js          → dist/
-   - Copies index.html + assets/ unchanged in behaviour (same 60 NV app, DEMO data, Mock adapter)
+   - Copies index.html + assets/ unchanged in behaviour (same 62 NV app, DEMO data, Mock adapter)
    - Cache-busts every CSS/JS URL with a content hash (?v=xxxxxxxx)
    - Moves the inline boot call to assets/js/boot.js so the CSP needs no 'unsafe-inline' for scripts
    - Adds noindex + build stamp, writes Cloudflare Pages _headers/_redirects and build-manifest.json
@@ -60,7 +60,7 @@ fs.writeFileSync(path.join(dist, '_redirects'), '/index.html / 301\n');
 
 fs.writeFileSync(
   path.join(dist, 'build-manifest.json'),
-  JSON.stringify({ app: 'HAWK × JAENS Interactive ERP Prototype', screens: 60, modules: 'A–J', data: 'DEMO / SIMULASI', adapter: 'MOCK (HAWK API = NOT_CONNECTED)', intendedDomain: DOMAIN, builtAt: built, files }, null, 1)
+  JSON.stringify({ app: 'HAWK × JAENS Interactive ERP Prototype', screens: 62, modules: 'A–K', data: 'DEMO / SIMULASI', adapter: 'MOCK (HAWK API = NOT_CONNECTED)', intendedDomain: DOMAIN, builtAt: built, files }, null, 1)
 );
 const size = (d) => fs.readdirSync(d, { withFileTypes: true }).reduce((a, e) => a + (e.isDirectory() ? size(path.join(d, e.name)) : fs.statSync(path.join(d, e.name)).size), 0);
 console.log(`dist/ siap: ${files.length} aset ber-hash, ${(size(dist) / 1024).toFixed(0)} KB, domain tujuan ${DOMAIN}`);

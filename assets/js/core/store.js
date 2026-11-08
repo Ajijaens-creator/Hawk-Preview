@@ -1613,6 +1613,7 @@
         try {
           const ctx = { user, now: U.now(state) };
           const res = h(state, payload || {}, ctx);
+          (HAWK.afterExec || []).forEach((f) => f(state, op, ctx));
           store.save();
           subs.forEach((f) => f(op));
           return res;

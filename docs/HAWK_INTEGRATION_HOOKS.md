@@ -10,9 +10,9 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 
 | Status | Jumlah |
 |---|---|
-| TO VERIFY | 49 |
-| NEW INTEGRATION REQUIRED | 28 |
-| UI-ONLY SIMULATION | 4 |
+| TO VERIFY | 51 |
+| NEW INTEGRATION REQUIRED | 35 |
+| UI-ONLY SIMULATION | 6 |
 
 | Operasi | Jenis | Modul HAWK existing (perkiraan) | Hook paket Owner (placeholder) | Status | Diuji di engine |
 |---|---|---|---|---|---|
@@ -95,6 +95,17 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | `ai.insights` | baca | Analytics (menu utama HAWK) — sumber data saja | `intelligence.getSourceLinkedInsights` | UI-ONLY SIMULATION | — (baca) |
 | `ai.scenario` | baca | — | — | UI-ONLY SIMULATION | — (baca) |
 | `insight.act` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.sync` | tulis | Riwayat status dokumen PR/PO/Transfer/Receiving (TO VERIFY — perlu event/timestamp per tahap) | — | TO VERIFY | ya |
+| `flow.review` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.assign` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.requestUpdate` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.escalate` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.recordReason` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.changeEta` | tulis | Purchase Order — field tanggal kirim (TO VERIFY apakah HAWK menyimpan riwayat revisi) | — | TO VERIFY | ya |
+| `flow.resolve` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.updateSla` | tulis | — | — | NEW INTEGRATION REQUIRED | ya |
+| `flow.setWeights` | tulis | — | — | UI-ONLY SIMULATION | ya |
+| `demo.advanceClock` | tulis | — (hanya demo) | — | UI-ONLY SIMULATION | ya |
 | `audit.list` | baca | Riwayat (ikon jam di toolbar HAWK) | — | TO VERIFY | — (baca) |
 | `search.global` | baca | Purchases › FIND tab | — | TO VERIFY | — (baca) |
 

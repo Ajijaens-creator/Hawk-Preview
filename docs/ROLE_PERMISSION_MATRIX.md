@@ -70,6 +70,8 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | NV-58 | Division / Supervisor AI Insights | ✓ | ✓ | ✓ | ✓ |  | ✓ | ✓ |  | ✓ |  |
 | NV-59 | 7P Productivity, Efficiency & Effectiveness Analytics | ✓ | ✓ | ✓ |  |  |  |  | ✓ |  |  |
 | NV-60 | AI Scenario Forecast & Evidence Drill-Down | ✓ | ✓ |  |  |  |  |  | ✓ |  |  |
+| NV-61 | Procurement Flow Control Tower | ✓ | ✓ | ✓ | ✓ |  | ✓ | ✓ | ✓ |  | ✓ |
+| NV-62 | Order Journey & Delay Investigation | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ## Izin operasi (E = eksekusi tulis, B = baca)
 
@@ -154,6 +156,17 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `ai.insights` | baca | B | B | B | B | B | B | B | B | B | B |
 | `ai.scenario` | baca | B | B |  |  |  |  |  | B |  |  |
 | `insight.act` | tulis | E | E | E | E |  | E | E | E | E |  |
+| `flow.sync` | tulis | E | E | E | E | E | E | E | E | E | E |
+| `flow.review` | tulis | E | E | E | E |  | E | E | E | E | E |
+| `flow.assign` | tulis | E | E | E | E |  | E | E | E | E |  |
+| `flow.requestUpdate` | tulis | E | E | E | E |  | E | E | E |  |  |
+| `flow.escalate` | tulis | E | E | E | E |  | E | E | E |  |  |
+| `flow.recordReason` | tulis | E | E | E | E |  | E | E | E | E | E |
+| `flow.changeEta` | tulis | E | E | E |  |  | E |  |  |  |  |
+| `flow.resolve` | tulis | E | E | E | E |  | E | E | E | E | E |
+| `flow.updateSla` | tulis | E | E |  |  |  |  |  |  |  | E |
+| `flow.setWeights` | tulis | E |  |  |  |  |  |  |  |  | E |
+| `demo.advanceClock` | tulis | E | E | E | E | E | E | E | E | E | E |
 | `audit.list` | baca | B |  |  |  |  |  |  | B |  | B |
 | `search.global` | baca | B | B | B | B | B | B | B | B | B | B |
 

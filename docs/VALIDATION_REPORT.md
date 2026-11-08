@@ -6,15 +6,16 @@ Tanggal: 8 November 2026 · Lingkungan: Chromium (Playwright) + Node.js 22 · Da
 
 | Area (MP-HAWK-03 bagian D) | Tes | Hasil |
 |---|---|---|
-| Alur engine end-to-end (MRF → PO → Inventory → Finance → Budget → AI), budget 7P, receiving parsial, aset, organisasi, integritas | `node tests/workflow.test.js` | **284 lulus, 0 gagal** (termasuk T8 Smart Spend dan T9 Order Sederhana); setiap operasi tulis di kontrak punya tes engine |
+| Alur engine end-to-end (MRF → PO → Inventory → Finance → Budget → AI), budget 7P, receiving parsial, aset, organisasi, integritas | `node tests/workflow.test.js` | **318 lulus, 0 gagal** (termasuk T8 Smart Spend, T9 Order Sederhana, T10 Control Tower); setiap operasi tulis di kontrak punya tes engine |
 | Walkthrough Owner 14 langkah lewat **klik UI nyata** (role switcher, tombol, form) | `node tests/e2e-walkthrough.js` | **21 lulus, 0 gagal**; 14/14 langkah tercentang |
 | **Smart Spend 15 langkah penerimaan MP-HAWK-06** lewat klik UI nyata di 390 px (Staff Shanti → nota tulisan tangan → koreksi → klasifikasi → budget → kirim → Supervisor → Finance buka bukti → verifikasi → bayar → tidak ada posting ganda) | `node tests/e2e-smart-spend.js` | **26 lulus, 0 gagal**; screenshot M1–M6 di `docs/screenshots/smart-spend/` |
 | **Order Sederhana** (8 Nov 2026): 3 jenis barang, qty & nilai berbeda, cek budget 7P, otomatis AR-13, lewat budget → Supervisor, Finance "Sudah dibayar" sebelum barang datang, terima sebagian lalu sisa, pengaturan oleh Finance/Admin/Owner, 20 dashboard dicek setelahnya | `node tests/e2e-simple-order.js` | **33 lulus, 0 gagal** di 390 px; screenshot di `docs/screenshots/simple-order/` |
-| Navigasi semua layar × semua role, error runtime, tombol tanpa handler | `node tests/browser-all.js` | **720 kunjungan** (12 pengguna × 60 NV), 419 akses dibatasi sesuai role, **3.738 kontrol** diperiksa, **0 error**, **0 tombol tanpa handler** |
-| Responsif mobile / tablet / desktop | `node tests/responsive.js` | 60/60 layar tanpa overflow horizontal di **1440 px, 834 px, 390 px**; 0 error |
+| **Control Tower MP-HAWK-08** (Massage Oil Shanti 4/3/3 → 2 tiba → lewat SLA → isu Purchasing → Supervisor eskalasi → ETA revisi → 10/10 → isu tertutup → SLA terbarui → Finance tanpa pengakuan ganda; drill-down KPI/tahap/filter; ubah bobot PFHI & SLA berversi; 8 widget peran; staf & supervisor di 390 px) | `node tests/e2e-control-tower.js` | **32 lulus, 0 gagal**; screenshot di `docs/screenshots/control-tower/` |
+| Navigasi semua layar × semua role, error runtime, tombol tanpa handler | `node tests/browser-all.js` | **744 kunjungan** (12 pengguna × 62 NV), 422 akses dibatasi sesuai role, **4.816 kontrol** diperiksa, **0 error**, **0 tombol tanpa handler** |
+| Responsif mobile / tablet / desktop | `node tests/responsive.js` | 62/62 layar tanpa overflow horizontal di **1440 px, 834 px, 390 px**; 0 error |
 | Kesiapan deploy (build `dist/`, paket Vercel tanpa GitHub, login Cloudflare & Vercel, CSP ketat, refresh di `#/nv/23`, aset lengkap, desktop/iPad/mobile di build terlindungi) | `node tests/deploy.test.js` | **31 lulus, 0 gagal** (domain preview.hawk.jaens.id — status live lihat docs/DEPLOY_VERCEL.md §5) |
 | Paket Vercel dibangun dengan Vercel CLI 65.12.1 (`vercel build --prod`, lokal) | manual, 8 Nov 2026 | Build sukses; middleware terkompilasi (runtime Node.js) menjawab 503 tanpa password, 401 tanpa login, lanjut bila login benar. **Belum diuji di server Vercel.** |
-| Penomoran NV | bagian dari workflow.test.js | Nama & nomor 60 NV **identik** dengan `SCREEN_MATRIX_60NV.csv` paket Owner |
+| Penomoran NV | bagian dari workflow.test.js | Nama & nomor NV-01–60 **identik** dengan `SCREEN_MATRIX_60NV.csv` paket Owner; NV-61/62 = addendum MP-HAWK-08 (modul K) |
 | Status integrasi jujur | bagian dari workflow.test.js | 0 kontrak CONFIRMED EXISTING tanpa bukti; adapter HAWK API mengembalikan NOT_CONNECTED |
 
 Hasil mentah ada di `tests/workflow-results.json`, `tests/e2e-results.json`, `tests/browser-all-results.json`, dan `tests/responsive-results.json`. Screenshot ada di `docs/screenshots/`.

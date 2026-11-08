@@ -107,3 +107,14 @@ Detail lengkap di `docs/SIMPLE_ORDER.md`. Ringkasan untuk developer:
 - Aturan `AR-13` (doc `AUTO_ORDER`) disimpan di matriks approval. Field: `active`, `max`, `version`, `changes[]`. Hanya Finance/Admin/Owner yang dapat mengubah (`autoOrder.update`).
 - Jurnal baru: `INVOICE_RECOGNITION` otomatis (Dr 2120 + 1150 / Cr 2110), `ADVANCE_PAYMENT` (Dr 1160 / Cr 1110), `ADVANCE_APPLY` (Dr 2110 / Cr 1160). Akun 1160 **DEMO, TO VERIFY**. `bill.pay` kini hanya membayar `total − advanceApplied`.
 - Yang wajib diputuskan sebelum produksi: apakah faktur asli supplier tetap lewat three-way match NV-49; apakah transfer antar-outlet boleh dikirim tanpa konfirmasi gudang asal; apakah foto surat jalan wajib saat "Barang diterima".
+
+## 9. Flow Intelligence & Control Tower (MP-HAWK-08, NV-61/62)
+
+Detail di `docs/CONTROL_TOWER.md` (SLA, KPI, PFHI, isu) dan `docs/PROCESS_EVENT_ADAPTER.md` (field event minimum, urutan integrasi).
+
+- **Engine:** `assets/js/core/flow.js` (`HAWK.flow`). Event dibentuk dari `history[]` dokumen yang sudah ada, jadi tidak ada ledger kedua. `F.journey(state, mrf)` mengembalikan events, tracks per jalur (lokal/transfer/PO), SLA per tahap, timeline 12 tahap, perjalanan keuangan, dan kelengkapan data.
+- **Hook:** `store.exec` kini memanggil `HAWK.afterExec[]` setelah handler sukses, di dalam transaksi yang sama (rollback bila gagal). flow.js mendaftarkan evaluator SLA (`F.sync`) di sana. Produksi: ganti dengan job terjadwal + outbox event.
+- **Data baru di state (schema 6):** `slaPolicies[]` (berversi, `changes[]`), `workCalendar`, `flowConfig.weights` (PFHI), `flowIssues[]` (append history), `flowHistory[]` (36 pesanan riwayat DEMO Agt–Okt untuk tren/P90), `po.eta` + `po.etaHistory[]` (`po.promised` tidak pernah diubah), `meta.offsetMin` (jam demo).
+- **Operasi baru (modul K):** `flow.sync`, `flow.review`, `flow.assign`, `flow.requestUpdate`, `flow.escalate`, `flow.recordReason`, `flow.changeEta`, `flow.resolve`, `flow.updateSla`, `flow.setWeights`, `demo.advanceClock` (DEMO saja, jangan dibawa ke produksi).
+- **UI:** `assets/js/screens/k-flow.js` (NV-61, NV-62, widget peran yang dibungkus ke NV-01/27/31/38/41/47/57/58). Registry: modul K; NV-62 `navHide: ['STAFF']` (staf membuka lewat widget NV-27).
+- **Keputusan Owner yang dibutuhkan:** target SLA per tahap, ambang P0, bobot PFHI final, kalender kerja & libur per unit, siapa boleh mengubah SLA, apakah revisi ETA perlu bukti dari supplier.

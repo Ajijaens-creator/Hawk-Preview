@@ -1,4 +1,4 @@
-/* Responsive check: visits all 60 NV at desktop (1440), tablet (834) and mobile (390) as Owner,
+/* Responsive check: visits all 62 NV at desktop (1440), tablet (834) and mobile (390) as Owner,
    plus role home screens for Staff / Warehouse / Supervisor on mobile. Reports page-level horizontal
    overflow (tables may scroll inside .tbl-wrap) and render failures, and saves screenshots.
    Usage: node tests/responsive.js [screenshotDir] */
@@ -24,7 +24,7 @@ const SHOTS = { 1: 'beranda', 23: 'budget-bva', 26: 'buat-mrf', 29: 'approval-su
     await p.reload();
     await p.waitForTimeout(300);
     const over = [];
-    for (let nv = 1; nv <= 60; nv++) {
+    for (let nv = 1; nv <= 62; nv++) {
       await p.evaluate((n) => { HAWK.setUser('U-OWN', { tour: false }); location.hash = '#/nv/' + n; HAWK.render(); }, nv);
       await p.waitForTimeout(40);
       const r = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, fail: /Gagal merender|Gagal menampilkan/.test(document.querySelector('#view').innerText) }));
@@ -41,7 +41,7 @@ const SHOTS = { 1: 'beranda', 23: 'budget-bva', 26: 'buat-mrf', 29: 'approval-su
     }
     problems += over.length + errs.length;
     out.push({ size: name, width: w, overflow: over, errors: errs });
-    console.log(`${name} ${w}px: ${over.length ? 'overflow/render ' + over.join(', ') : 'OK 60/60'}${errs.length ? ' errors: ' + errs.join(' | ') : ''}`);
+    console.log(`${name} ${w}px: ${over.length ? 'overflow/render ' + over.join(', ') : 'OK 62/62'}${errs.length ? ' errors: ' + errs.join(' | ') : ''}`);
     await p.close();
   }
   fs.writeFileSync(path.join(__dirname, 'responsive-results.json'), JSON.stringify(out, null, 1));

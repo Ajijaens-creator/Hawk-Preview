@@ -44,7 +44,7 @@
   U.now = (state) => {
     const base = Date.parse(U.DEMO_TODAY + 'T08:00:00Z');
     const tick = state ? (state.meta.clock = (state.meta.clock || 0) + 1) : ++clockTick;
-    return new Date(base + tick * 7 * 60000).toISOString().slice(0, 19);
+    return new Date(base + (tick * 7 + ((state && state.meta.offsetMin) || 0)) * 60000).toISOString().slice(0, 19);
   };
 
   /* HAWK ID format observed in v2.11.6 screenshots: PR20261100001 / PO20261100001

@@ -7,9 +7,9 @@ _Dibuat otomatis oleh `node tools/gen-docs.js` dari `assets/js/core/contracts.js
 | Status | Jumlah | Arti |
 |---|---|---|
 | CONFIRMED EXISTING | 0 | Hanya dengan dokumentasi/verifikasi engine — belum ada |
-| TO VERIFY | 49 | UI HAWK v2.11.6 menunjukkan kemampuan terkait (screenshot 7 Nov 2026), API belum terdokumentasi |
-| NEW INTEGRATION REQUIRED | 28 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
-| UI-ONLY SIMULATION | 4 | Hanya prototipe (AI/OCR/skenario); tidak boleh disajikan sebagai live |
+| TO VERIFY | 51 | UI HAWK v2.11.6 menunjukkan kemampuan terkait (screenshot 7 Nov 2026), API belum terdokumentasi |
+| NEW INTEGRATION REQUIRED | 35 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
+| UI-ONLY SIMULATION | 6 | Hanya prototipe (AI/OCR/skenario); tidak boleh disajikan sebagai live |
 
 Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi, skema request/response, permission di server, state workflow, audit event, **idempotency key** untuk operasi tulis, error terstruktur (`code`, `message`, `retryable`), dan bukti tes.
 
@@ -171,6 +171,22 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `ai.insights` (baca) | `intelligence.getSourceLinkedInsights` | Analytics (menu utama HAWK) — sumber data saja | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ scope, role, asOf }` | Insight[] { kind FACT\|METRIC\|FORECAST\|HYPOTHESIS\|RECOMMENDATION, finding, evidence[], source, asOf, impact, recommendation, owner } | Read-only | — | AI_INSIGHT_VIEWED (opsional) |
 | `ai.scenario` (baca) | — | — | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Finance / Accounting | `{ drivers{} }` | Forecast[] | Read-only | — | — |
 | `insight.act` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC | `{ id, action ACKNOWLEDGE\|ASSIGN\|DONE\|DISMISS, note, owner }` | InsightState | OPEN → ACKNOWLEDGED → ASSIGNED → DONE \| DISMISSED | Alasan wajib untuk DISMISS; AI tidak mengeksekusi aksi | AI_RECOMMENDATION_ACTION |
+
+## Modul K
+
+| Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
+|---|---|---|---|---|---|---|---|---|---|
+| `flow.sync` | — | Riwayat status dokumen PR/PO/Transfer/Receiving (TO VERIFY — perlu event/timestamp per tahap) | **TO VERIFY** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ }` | FlowIssue[] (SLA dievaluasi ulang) | Otomatis setelah setiap operasi | Satu isu per masalah (kunci MRF\|dokumen\|tahap); jatuh tempo asli tidak pernah ditimpa | FLOW_ISSUE_OPENED / AUTO_RESOLVE |
+| `flow.review` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ id, note? }` | FlowIssue | Status tetap; tercatat ditinjau | — | FLOW_REVIEW |
+| `flow.assign` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Purchasing, Gudang / Receiving, Finance / Accounting, Supervisor Outlet, Asset / Facility PIC | `{ id, user }` | FlowIssue | OPEN → IN_PROGRESS | Manajer atau PIC tahap | FLOW_ASSIGN |
+| `flow.requestUpdate` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting | `{ id, note }` | FlowIssue | → IN_PROGRESS | Pesan wajib | FLOW_REQUEST_UPDATE |
+| `flow.escalate` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting | `{ id, note }` | FlowIssue | → ESCALATED (tingkat +1 sesuai kebijakan SLA) | Alasan wajib; maksimum tingkat kebijakan | FLOW_ESCALATE |
+| `flow.recordReason` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ id, code, note, evidence? }` | FlowIssue | Alasan tercatat (bukan penilaian individu) | Kategori dari daftar; penjelasan ≥ 5 karakter; PIC atau manajer | FLOW_DELAY_REASON |
+| `flow.changeEta` | — | Purchase Order — field tanggal kirim (TO VERIFY apakah HAWK menyimpan riwayat revisi) | **TO VERIFY** | Purchasing, Owner / Eksekutif, BU Manager, Head of Division | `{ po, eta, reason, code? }` | PO (eta + etaHistory; promised tetap) | Isu terkait → MONITORING | PO SENT/PARTIAL; ETA ≥ hari ini; alasan wajib; tanggal janji asli tidak diubah | PO_ETA_REVISED |
+| `flow.resolve` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ id, note }` | FlowIssue RESOLVED | → RESOLVED (riwayat SLA tetap) | Alasan wajib bila tidak otomatis; catatan penyelesaian | FLOW_RESOLVE |
+| `flow.updateSla` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, System Administrator, BU Manager | `{ id, hours?, warn?, active?, note }` | SlaPolicy v(n+1) | Versi baru berlaku untuk evaluasi berikutnya; jatuh tempo isu lama tidak ditimpa | Jam 1–720; ambang 0–1; alasan wajib | SLA_POLICY_CHANGE (before/after) |
+| `flow.setWeights` | — | — | **UI-ONLY SIMULATION** | Owner / Eksekutif, System Administrator | `{ weights{onTime,activeSla,p90,data}, note }` | FlowConfig v(n+1) | — | Total 100%; alasan wajib | PFHI_WEIGHTS_CHANGE |
+| `demo.advanceClock` | — | — (hanya demo) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ hours }` | { now } | Jam demo maju | 1–240 jam | DEMO_CLOCK |
 
 ## Modul A/B
 

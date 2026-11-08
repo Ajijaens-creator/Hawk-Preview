@@ -1,5 +1,5 @@
 {
- "pass": 284,
+ "pass": 318,
  "fail": 0,
  "results": [
   {
@@ -623,7 +623,7 @@
    "info": ""
   },
   {
-   "name": "Registry memuat 60 NV unik",
+   "name": "Registry memuat 62 NV unik (60 NB-HAWK-01 + NV-61/62 addendum MP-HAWK-08)",
    "ok": true,
    "info": ""
   },
@@ -1419,6 +1419,176 @@
   },
   {
    "name": "Dashboard: budget 7P BU Spa terbarui (realisasi Product > awal)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kebijakan SLA berversi tersedia (10 tahap) + kalender kerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bobot PFHI provisional 40/25/20/15",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alokasi 4 lokal / 3 transfer / 3 PO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supplier kirim 2 dari 3 → PO PARTIAL, 9/10 diserahkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Event adapter: field minimum lengkap di setiap event",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Timeline 12 tahap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Belum lewat janji supplier → tidak ada isu untuk MRF ini",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jam demo maju (DEMO) & SLA dievaluasi ulang otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Control Tower mendeteksi: 1 isu tahap Supplier untuk Purchasing",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Isu prioritas P0/P1, berisi dampak, bukti, rekomendasi, tenggat asli",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alasan otomatis dari data (kirim sebagian) — bukan menyalahkan orang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada isu duplikat setelah sinkron berulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Shanti melihat pesanannya lewat SLA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI: fakta & hipotesis terpisah, berlabel simulasi, ada rekomendasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staff tidak bisa mencatat alasan / menyelesaikan isu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Warehouse tidak bisa mengubah ETA PO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ETA revisi tanpa alasan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ETA di masa lalu ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Purchasing mencatat ETA revisi + alasan; tanggal janji asli tidak berubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Isu → MONITORING; jatuh tempo SLA asli tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor dapat mengeskalasi (dengan alasan) ke BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Botol terakhir diterima & diserahkan → 10/10, MRF FULFILLED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Isu tertutup otomatis saat tahap selesai; riwayat tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Metrik SLA terbarui: tahap Supplier tercatat TERLAMBAT, siklus selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "PFHI terhitung dari 4 komponen (provisional), P0 dipisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Perjalanan keuangan terhubung ke MRF (tagihan dari PO yang sama)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada pengakuan ganda: maks. 1 jurnal pengakuan per tagihan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Purchasing tidak bisa mengubah SLA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "SLA berversi: v2 dengan before/after; isu lama tidak ditimpa",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bobot PFHI harus total 100%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner mengubah bobot PFHI (versi baru)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Audit mencatat aksi Control Tower",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tinjau / tugaskan / minta update tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Catat alasan lalu selesaikan isu (manual)",
    "ok": true,
    "info": ""
   }

@@ -1,4 +1,4 @@
-# SCREEN CONTRACTS — 60 NV (NB-HAWK-01)
+# SCREEN CONTRACTS — 62 NV (NB-HAWK-01 + addendum MP-HAWK-08 NV-61/62)
 
 _Dibuat otomatis dari `assets/js/core/registry.js` + `contracts.js`. Kontrak yang sama tampil di aplikasi lewat toggle "Kontrak developer"._
 
@@ -1560,4 +1560,71 @@ Skenario what-if (tamu, harga, biaya, cabang baru) + bukti asumsi.
 **Operasi adapter:**
 
 - `ai.scenario` — **UI-ONLY SIMULATION** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Finance / Accounting · input `{ drivers{} }` → Forecast[] · transisi: Read-only · audit: —
+
+## Modul K — Flow Intelligence & Control Tower
+
+### NV-61 Procurement Flow Control Tower
+
+Satu menara kendali alur pengadaan: PFHI (provisional), tepat waktu, P90, overdue, bottleneck, supplier, heatmap SLA, pusat aksi & eskalasi, insight AI — semua bisa di-drill ke pesanan.
+
+| Aspek | Spesifikasi |
+|---|---|
+| Role akses | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Purchasing, Gudang / Receiving, Supervisor Outlet, System Administrator |
+| Komponen | Hero + Source/As-of/DEMO, filter (periode, BU, cabang, divisi, supplier, kategori, PIC, prioritas, status), KPI warna, PFHI + komponen, rata-rata waktu per tahap, heatmap aging×tahap, Action & Escalation Center, performa supplier, alasan keterlambatan, tren, kartu AI frosted, kebijakan SLA berversi, tabel drill-down |
+| Field | PFHI, % tepat waktu, P90 siklus (jam), overdue, kritis (P0), berisiko, rata-rata jam/tahap, OTD supplier, lead time, isu (ref, prioritas, dampak, PIC, tenggat, bukti, rekomendasi, status) |
+| Aksi | Tinjau → `flow.review`; Tugaskan → `flow.assign`; Minta update → `flow.requestUpdate`; Eskalasi → `flow.escalate`; Catat alasan → `flow.recordReason`; Ubah ETA → `flow.changeEta`; Selesaikan isu → `flow.resolve`; Ubah SLA → `flow.updateSla`; Ubah bobot PFHI → `flow.setWeights`; Simulasi waktu (DEMO) → `demo.advanceClock`; Buka perjalanan → `nav:62` |
+| Filter | Periode, BU, cabang, divisi, supplier, kategori, PIC, prioritas, status |
+| Drawer/modal | Modal aksi isu; drill-down ke NV-62 |
+| Input | Alasan, catatan, ETA, bobot, jam SLA |
+| Validasi | Alasan wajib; bobot = 100%; ETA ≥ hari ini; jatuh tempo asli tidak ditimpa |
+| Transisi status | Isu: OPEN → IN_PROGRESS → MONITORING/ESCALATED → RESOLVED |
+| Approval | — |
+| Pengecualian | PFHI provisional, bukan skor tervalidasi; riwayat Agt–Okt = DEMO |
+| Responsif | Desktop/tablet data-rich; tabel scroll horizontal di mobile; drawer layar penuh di mobile; KPI 2 kolom & tombol besar di mobile |
+| Layar terkait | NV-62, NV-31, NV-41, NV-57, NV-58 |
+| Format ID | IS-…, SLA-…, PR…, PO…, TR… |
+
+**Operasi adapter:**
+
+- `flow.sync` — **TO VERIFY** · HAWK: Riwayat status dokumen PR/PO/Transfer/Receiving (TO VERIFY — perlu event/timestamp per tahap) · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ }` → FlowIssue[] (SLA dievaluasi ulang) · transisi: Otomatis setelah setiap operasi · audit: FLOW_ISSUE_OPENED / AUTO_RESOLVE
+- `flow.review` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ id, note? }` → FlowIssue · transisi: Status tetap; tercatat ditinjau · audit: FLOW_REVIEW
+- `flow.assign` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Purchasing, Gudang / Receiving, Finance / Accounting, Supervisor Outlet, Asset / Facility PIC · input `{ id, user }` → FlowIssue · transisi: OPEN → IN_PROGRESS · audit: FLOW_ASSIGN
+- `flow.requestUpdate` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting · input `{ id, note }` → FlowIssue · transisi: → IN_PROGRESS · audit: FLOW_REQUEST_UPDATE
+- `flow.escalate` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting · input `{ id, note }` → FlowIssue · transisi: → ESCALATED (tingkat +1 sesuai kebijakan SLA) · audit: FLOW_ESCALATE
+- `flow.recordReason` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ id, code, note, evidence? }` → FlowIssue · transisi: Alasan tercatat (bukan penilaian individu) · audit: FLOW_DELAY_REASON
+- `flow.changeEta` — **TO VERIFY** · HAWK: Purchase Order — field tanggal kirim (TO VERIFY apakah HAWK menyimpan riwayat revisi) · izin: Purchasing, Owner / Eksekutif, BU Manager, Head of Division · input `{ po, eta, reason, code? }` → PO (eta + etaHistory; promised tetap) · transisi: Isu terkait → MONITORING · audit: PO_ETA_REVISED
+- `flow.resolve` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ id, note }` → FlowIssue RESOLVED · transisi: → RESOLVED (riwayat SLA tetap) · audit: FLOW_RESOLVE
+- `flow.updateSla` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, System Administrator, BU Manager · input `{ id, hours?, warn?, active?, note }` → SlaPolicy v(n+1) · transisi: Versi baru berlaku untuk evaluasi berikutnya; jatuh tempo isu lama tidak ditimpa · audit: SLA_POLICY_CHANGE (before/after)
+- `flow.setWeights` — **UI-ONLY SIMULATION** · HAWK: — · izin: Owner / Eksekutif, System Administrator · input `{ weights{onTime,activeSla,p90,data}, note }` → FlowConfig v(n+1) · transisi: — · audit: PFHI_WEIGHTS_CHANGE
+- `demo.advanceClock` — **UI-ONLY SIMULATION** · HAWK: — (hanya demo) · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ hours }` → { now } · transisi: Jam demo maju · audit: DEMO_CLOCK
+
+### NV-62 Order Journey & Delay Investigation
+
+Perjalanan satu pesanan dari MRF sampai selesai: 12 tahap, waktu & SLA per tahap, pemenuhan lokal/transfer/PO, keterlambatan & bukti, ETA revisi, keuangan terkait, analisis akar masalah AI.
+
+| Aspek | Spesifikasi |
+|---|---|
+| Role akses | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator |
+| Komponen | Pemilih MRF, header progres, timeline 12 tahap (klik), kartu jalur lokal/transfer/PO, tab Detail / Analisis Keterlambatan / Dokumen & Bukti / Keuangan, aksi isu, AI fakta vs hipotesis |
+| Field | MRF, pemohon, barang & qty, dokumen terkait, qty terpenuhi, waktu mulai/selesai/tunggu (kalender & jam kerja), jatuh tempo SLA, PIC, aksi berikut, alasan, ETA revisi + riwayat, penerimaan sebagian/backorder, ketergantungan pembayaran |
+| Aksi | Catat alasan → `flow.recordReason`; Ubah ETA → `flow.changeEta`; Eskalasi → `flow.escalate`; Minta update → `flow.requestUpdate`; Selesaikan isu → `flow.resolve`; Buka dokumen → `ui:drawer` |
+| Filter | Pilih MRF (sesuai scope) |
+| Drawer/modal | Drawer dokumen (MRF/PO/TR/GRN/BL/PY) |
+| Input | Alasan, ETA |
+| Validasi | Sama seperti NV-61 |
+| Transisi status | Status MRF + status SLA per tahap |
+| Approval | — |
+| Pengecualian | Staff hanya melihat pesanannya sendiri/cabangnya; event dari riwayat dokumen = TO VERIFY di HAWK |
+| Responsif | Mobile-first (≥360px), target sentuh ≥44px, satu kolom; tablet 2 kolom; timeline scroll horizontal |
+| Layar terkait | NV-61, NV-27, NV-36, NV-41, NV-49 |
+| Format ID | PR…, PO…, TR…, GR…, BL…, PY…, EV-… |
+
+**Operasi adapter:**
+
+- `flow.recordReason` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ id, code, note, evidence? }` → FlowIssue · transisi: Alasan tercatat (bukan penilaian individu) · audit: FLOW_DELAY_REASON
+- `flow.changeEta` — **TO VERIFY** · HAWK: Purchase Order — field tanggal kirim (TO VERIFY apakah HAWK menyimpan riwayat revisi) · izin: Purchasing, Owner / Eksekutif, BU Manager, Head of Division · input `{ po, eta, reason, code? }` → PO (eta + etaHistory; promised tetap) · transisi: Isu terkait → MONITORING · audit: PO_ETA_REVISED
+- `flow.escalate` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting · input `{ id, note }` → FlowIssue · transisi: → ESCALATED (tingkat +1 sesuai kebijakan SLA) · audit: FLOW_ESCALATE
+- `flow.requestUpdate` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting · input `{ id, note }` → FlowIssue · transisi: → IN_PROGRESS · audit: FLOW_REQUEST_UPDATE
+- `flow.resolve` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ id, note }` → FlowIssue RESOLVED · transisi: → RESOLVED (riwayat SLA tetap) · audit: FLOW_RESOLVE
+- `flow.review` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ id, note? }` → FlowIssue · transisi: Status tetap; tercatat ditinjau · audit: FLOW_REVIEW
 

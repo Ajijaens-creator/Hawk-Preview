@@ -1,4 +1,4 @@
-# SCREEN MATRIX — 60 NV (NB-HAWK-01)
+# SCREEN MATRIX — 62 NV (NB-HAWK-01 + addendum MP-HAWK-08 NV-61/62)
 
 _Dibuat otomatis oleh `node tools/gen-docs.js`. Status uji dihitung dari isi file tes, bukan ditulis tangan._
 
@@ -10,9 +10,9 @@ _Dibuat otomatis oleh `node tools/gen-docs.js`. Status uji dihitung dari isi fil
 - **Render** — layar baca/navigasi; diuji render untuk 12 pengguna dan 3 ukuran layar.
 - **BELUM** — tidak ada view. Bila muncul di tabel ini, layar itu belum diimplementasikan.
 
-Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV, 0 error, 0 tombol tanpa handler) dan `responsive.js` (1440/834/390 px).
+Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 62 NV, 0 error, 0 tombol tanpa handler) dan `responsive.js` (1440/834/390 px).
 
-**Ringkasan:** 60 layar · E2E 22 · Engine 20 · Sebagian 0 · Render 18 · BELUM 0
+**Ringkasan:** 62 layar · E2E 29 · Engine 18 · Sebagian 0 · Render 15 · BELUM 0
 
 ## Modul A — Navigation & Role Workspace
 
@@ -73,7 +73,7 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
-| NV-31 | F | Purchasing Dashboard / Workbench | Purchasing, BU Manager, Owner / Eksekutif | — (baca) | — | Render |
+| NV-31 | F | Purchasing Dashboard / Workbench | Purchasing, BU Manager, Owner / Eksekutif | — (baca) | — | E2E |
 | NV-32 | F | Consolidated MRF & Purchasing Planning | Purchasing | `po.createFromMrf` | TO VERIFY | E2E |
 | NV-33 | F | Supplier Master & Directory | Purchasing, Finance / Accounting, BU Manager, Owner / Eksekutif | — (baca) | TO VERIFY | Render |
 | NV-34 | F | Supplier Quotation & Price Comparison | Purchasing, BU Manager, Owner / Eksekutif, Finance / Accounting | — (baca) | NEW INTEGRATION REQUIRED | Render |
@@ -85,10 +85,10 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
-| NV-38 | G | Inventory Control Dashboard | Gudang / Receiving, Purchasing, Finance / Accounting, BU Manager, Owner / Eksekutif, Supervisor Outlet, Head of Division | — (baca) | TO VERIFY | Render |
+| NV-38 | G | Inventory Control Dashboard | Gudang / Receiving, Purchasing, Finance / Accounting, BU Manager, Owner / Eksekutif, Supervisor Outlet, Head of Division | — (baca) | TO VERIFY | E2E |
 | NV-39 | G | Warehouse, Storage, Rack & Bin Management | Gudang / Receiving, System Administrator, Owner / Eksekutif | `bin.add` | NEW INTEGRATION REQUIRED | Engine |
 | NV-40 | G | Stock Balance, Item Details & Ledger | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | — (baca) | TO VERIFY | Render |
-| NV-41 | G | Incoming Deliveries / Receiving Queue | Gudang / Receiving, Purchasing, Supervisor Outlet, Owner / Eksekutif | `transfer.receive` | TO VERIFY | Engine |
+| NV-41 | G | Incoming Deliveries / Receiving Queue | Gudang / Receiving, Purchasing, Supervisor Outlet, Owner / Eksekutif | `transfer.receive` | TO VERIFY | E2E |
 | NV-42 | G | PO Receiving, Item Checklist & Document Scan | Gudang / Receiving, Owner / Eksekutif | `grn.receive`, `grn.post` | TO VERIFY | E2E |
 | NV-43 | G | Put-Away / QR Storage Confirmation | Gudang / Receiving | `grn.putaway` | NEW INTEGRATION REQUIRED | E2E |
 | NV-44 | G | Inter-Branch Stock Transfer | Gudang / Receiving, Supervisor Outlet, Owner / Eksekutif | `transfer.create`, `transfer.dispatch`, `transfer.receive` | TO VERIFY | Engine |
@@ -99,7 +99,7 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
-| NV-47 | H | Finance Control Dashboard | Finance / Accounting, Owner / Eksekutif, BU Manager | — (baca) | — | Render |
+| NV-47 | H | Finance Control Dashboard | Finance / Accounting, Owner / Eksekutif, BU Manager | — (baca) | — | E2E |
 | NV-48 | H | AI Invoice & Receipt Capture | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, Purchasing, Gudang / Receiving, BU Manager, Finance / Accounting, Asset / Facility PIC, Owner / Eksekutif | `spend.capture`, `spend.update`, `spend.submit`, `spend.approve`, `spend.receive`, `spend.verify`, `spend.settle`, `spend.cancel`, `doc.capture`, `doc.match` | UI-ONLY SIMULATION | E2E |
 | NV-49 | H | PO–Receipt–Invoice Three-Way Matching | Finance / Accounting, Purchasing | `doc.match`, `doc.verify` | NEW INTEGRATION REQUIRED | E2E |
 | NV-50 | H | Accounts Payable & Payment Control | Finance / Accounting, Owner / Eksekutif, BU Manager | `order.pay`, `autoOrder.update`, `bill.approve`, `bill.pay` | NEW INTEGRATION REQUIRED | E2E |
@@ -120,7 +120,14 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
 | NV-57 | J | Executive & BU AI Intelligence Dashboard | Owner / Eksekutif, BU Manager, Finance / Accounting, Head of Division | `insight.act` | UI-ONLY SIMULATION | E2E |
-| NV-58 | J | Division / Supervisor AI Insights | Supervisor Outlet, Head of Division, BU Manager, Purchasing, Gudang / Receiving, Asset / Facility PIC, Owner / Eksekutif | `insight.act` | UI-ONLY SIMULATION | Engine |
+| NV-58 | J | Division / Supervisor AI Insights | Supervisor Outlet, Head of Division, BU Manager, Purchasing, Gudang / Receiving, Asset / Facility PIC, Owner / Eksekutif | `insight.act` | UI-ONLY SIMULATION | E2E |
 | NV-59 | J | 7P Productivity, Efficiency & Effectiveness Analytics | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | — (baca) | UI-ONLY SIMULATION | Render |
 | NV-60 | J | AI Scenario Forecast & Evidence Drill-Down | Owner / Eksekutif, BU Manager, Finance / Accounting | — (baca) | UI-ONLY SIMULATION | Render |
+
+## Modul K — Flow Intelligence & Control Tower
+
+| NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
+|---|---|---|---|---|---|---|
+| NV-61 | K | Procurement Flow Control Tower | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Purchasing, Gudang / Receiving, Supervisor Outlet, System Administrator | `flow.sync`, `flow.review`, `flow.assign`, `flow.requestUpdate`, `flow.escalate`, `flow.recordReason`, `flow.changeEta`, `flow.resolve`, `flow.updateSla`, `flow.setWeights`, `demo.advanceClock` | UI-ONLY SIMULATION | E2E |
+| NV-62 | K | Order Journey & Delay Investigation | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `flow.recordReason`, `flow.changeEta`, `flow.escalate`, `flow.requestUpdate`, `flow.resolve`, `flow.review` | NEW INTEGRATION REQUIRED | E2E |
 

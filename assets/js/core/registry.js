@@ -16,6 +16,7 @@
     H: { name: 'Finance & Accounting', short: 'Finance & Accounting', icon: 'finance' },
     I: { name: 'Asset & Facility Management', short: 'Aset & Fasilitas', icon: 'asset' },
     J: { name: 'AI Intelligence & Reporting', short: 'AI Intelligence', icon: 'ai' },
+    K: { name: 'Flow Intelligence & Control Tower', short: 'Control Tower', icon: 'clock' },
   };
 
   const R = { OWN: 'OWNER', BUM: 'BU_MANAGER', HOD: 'HEAD_DIV', SPV: 'SUPERVISOR', STF: 'STAFF', PUR: 'PURCHASING', WHS: 'WAREHOUSE', FIN: 'FINANCE', AST: 'ASSET', ADM: 'ADMIN' };
@@ -232,6 +233,20 @@
     n(60, 'J', 'AI Scenario Forecast & Evidence Drill-Down', 'OWN BUM FIN', 'Skenario what-if (tamu, harga, biaya, cabang baru) + bukti asumsi.', {
       components: 'Slider driver, tabel skenario, grafik, daftar asumsi', fields: 'Revenue, profit, margin, capex', actions: [['Hitung ulang', 'ai.scenario']], filters: 'Horizon 12 bulan', drawers: 'Asumsi', responsive: DESK,
       inputs: 'Driver', validation: 'Rentang slider', status: 'Read', approval: '—', exceptions: 'ESTIMASI — bukan fakta', related: 'NV-10', ops: ['ai.scenario'], ids: '—' }),
+
+    /* ---------------- K (MP-HAWK-08 addendum — NV-61/62 diotorisasi Owner 8 Nov 2026) ---------------- */
+    n(61, 'K', 'Procurement Flow Control Tower', 'OWN BUM HOD FIN PUR WHS SPV ADM', 'Satu menara kendali alur pengadaan: PFHI (provisional), tepat waktu, P90, overdue, bottleneck, supplier, heatmap SLA, pusat aksi & eskalasi, insight AI — semua bisa di-drill ke pesanan.', {
+      components: 'Hero + Source/As-of/DEMO, filter (periode, BU, cabang, divisi, supplier, kategori, PIC, prioritas, status), KPI warna, PFHI + komponen, rata-rata waktu per tahap, heatmap aging×tahap, Action & Escalation Center, performa supplier, alasan keterlambatan, tren, kartu AI frosted, kebijakan SLA berversi, tabel drill-down',
+      fields: 'PFHI, % tepat waktu, P90 siklus (jam), overdue, kritis (P0), berisiko, rata-rata jam/tahap, OTD supplier, lead time, isu (ref, prioritas, dampak, PIC, tenggat, bukti, rekomendasi, status)',
+      actions: [['Tinjau', 'flow.review'], ['Tugaskan', 'flow.assign'], ['Minta update', 'flow.requestUpdate'], ['Eskalasi', 'flow.escalate'], ['Catat alasan', 'flow.recordReason'], ['Ubah ETA', 'flow.changeEta'], ['Selesaikan isu', 'flow.resolve'], ['Ubah SLA', 'flow.updateSla'], ['Ubah bobot PFHI', 'flow.setWeights'], ['Simulasi waktu (DEMO)', 'demo.advanceClock'], ['Buka perjalanan', 'nav:62']],
+      filters: 'Periode, BU, cabang, divisi, supplier, kategori, PIC, prioritas, status', drawers: 'Modal aksi isu; drill-down ke NV-62', responsive: DESK + '; KPI 2 kolom & tombol besar di mobile',
+      inputs: 'Alasan, catatan, ETA, bobot, jam SLA', validation: 'Alasan wajib; bobot = 100%; ETA ≥ hari ini; jatuh tempo asli tidak ditimpa', status: 'Isu: OPEN → IN_PROGRESS → MONITORING/ESCALATED → RESOLVED', approval: '—', exceptions: 'PFHI provisional, bukan skor tervalidasi; riwayat Agt–Okt = DEMO', related: 'NV-62, NV-31, NV-41, NV-57, NV-58', ops: ['flow.sync', 'flow.review', 'flow.assign', 'flow.requestUpdate', 'flow.escalate', 'flow.recordReason', 'flow.changeEta', 'flow.resolve', 'flow.updateSla', 'flow.setWeights', 'demo.advanceClock'], ids: 'IS-…, SLA-…, PR…, PO…, TR…' }),
+    n(62, 'K', 'Order Journey & Delay Investigation', 'ALL', 'Perjalanan satu pesanan dari MRF sampai selesai: 12 tahap, waktu & SLA per tahap, pemenuhan lokal/transfer/PO, keterlambatan & bukti, ETA revisi, keuangan terkait, analisis akar masalah AI.', {
+      components: 'Pemilih MRF, header progres, timeline 12 tahap (klik), kartu jalur lokal/transfer/PO, tab Detail / Analisis Keterlambatan / Dokumen & Bukti / Keuangan, aksi isu, AI fakta vs hipotesis',
+      fields: 'MRF, pemohon, barang & qty, dokumen terkait, qty terpenuhi, waktu mulai/selesai/tunggu (kalender & jam kerja), jatuh tempo SLA, PIC, aksi berikut, alasan, ETA revisi + riwayat, penerimaan sebagian/backorder, ketergantungan pembayaran',
+      actions: [['Catat alasan', 'flow.recordReason'], ['Ubah ETA', 'flow.changeEta'], ['Eskalasi', 'flow.escalate'], ['Minta update', 'flow.requestUpdate'], ['Selesaikan isu', 'flow.resolve'], ['Buka dokumen', 'ui:drawer']],
+      filters: 'Pilih MRF (sesuai scope)', drawers: 'Drawer dokumen (MRF/PO/TR/GRN/BL/PY)', responsive: MOB + '; timeline scroll horizontal',
+      inputs: 'Alasan, ETA', validation: 'Sama seperti NV-61', status: 'Status MRF + status SLA per tahap', approval: '—', exceptions: 'Staff hanya melihat pesanannya sendiri/cabangnya; event dari riwayat dokumen = TO VERIFY di HAWK', related: 'NV-61, NV-27, NV-36, NV-41, NV-49', ops: ['flow.recordReason', 'flow.changeEta', 'flow.escalate', 'flow.requestUpdate', 'flow.resolve', 'flow.review'], ids: 'PR…, PO…, TR…, GR…, BL…, PY…, EV-…', navHide: ['STAFF'] }),
   ];
 
   HAWK.MODULES = MODULES;

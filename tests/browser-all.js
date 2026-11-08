@@ -1,4 +1,4 @@
-/* Visits every NV (1–60) as every demo user; reports JS errors and render failures. Usage: node tests/browser-all.js */
+/* Visits every NV (1–62) as every demo user; reports JS errors and render failures. Usage: node tests/browser-all.js */
 const { chromium } = require('playwright');
 (async () => {
   const b = await chromium.launch();
@@ -14,7 +14,7 @@ const { chromium } = require('playwright');
   for (const [uid, role] of users) {
     await p.evaluate((id) => { HAWK.setUser(id, { tour: false }); HAWK.render(); }, uid);
     await p.waitForTimeout(100);
-    for (let nv = 1; nv <= 60; nv++) {
+    for (let nv = 1; nv <= 62; nv++) {
       await p.evaluate((n) => (location.hash = '#/nv/' + n), nv);
       await p.waitForTimeout(40);
       const txt = await p.$eval('#view', (e) => e.innerText);
@@ -27,7 +27,7 @@ const { chromium } = require('playwright');
       if (/Gagal merender|Gagal menampilkan|belum dirender/.test(txt)) errs.push(`render fail NV-${nv} as ${uid}/${role}: ` + txt.slice(0, 200).replace(/\n/g, ' '));
     }
   }
-  console.log(`${visits} kunjungan (${users.length} pengguna × 60 layar), ${denied} akses dibatasi (sesuai role), ${controls} kontrol diperiksa`);
+  console.log(`${visits} kunjungan (${users.length} pengguna × 62 layar), ${denied} akses dibatasi (sesuai role), ${controls} kontrol diperiksa`);
   require('fs').writeFileSync(require('path').join(__dirname, 'browser-all-results.json'), JSON.stringify({ visits, denied, controls, errors: errs }, null, 1));
   console.log(errs.length ? errs.join('\n') : 'no errors');
   await b.close();

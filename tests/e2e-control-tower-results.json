@@ -1,0 +1,167 @@
+{
+ "pass": 32,
+ "total": 32,
+ "results": [
+  {
+   "name": "1. Menu Modul K \"Control Tower\" berisi NV-61 & NV-62 (62 NV total)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2. NV-61 tampil: PFHI provisional, Source / As-of / DEMO",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3. Skenario: 4 lokal + 3 transfer + 2 dari PO diserahkan (9/10)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "4. Klik \"Simulasi +jam\" → botol terakhir lewat janji supplier → 1 isu Purchasing",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5. Action Center menampilkan isu (prioritas, dampak, tenggat asli, rekomendasi AI)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6. Klik KPI \"Lewat SLA\" → tabel drill-down berisi MRF skenario",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7. Klik tahap \"Persiapan & pengiriman supplier\" → drill ke pesanan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "8. Filter cabang Ubud → MRF Shanti tidak tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "9. Supervisor Shanti melihat widget \"Pesanan unit saya\" dengan isu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10. NV-62: timeline 12 tahap, jalur lokal/transfer/PO, 9/10",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11. Klik tahap timeline → event tahap tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "12. Analisis keterlambatan: FAKTA terpisah dari HIPOTESIS + label AI SIMULATION",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13. Supervisor eskalasi (dengan alasan) → status ESCALATED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "14. Widget Purchasing di NV-31 menampilkan isu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "15. Purchasing mencatat ETA revisi + alasan; janji asli & jatuh tempo SLA tidak ditimpa",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "16. NV-62 menampilkan riwayat ETA (asli → revisi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "17. Botol terakhir diterima & diserahkan → 10/10",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "18. Isu tertutup otomatis (RESOLVED) dengan jejak audit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "19. Metrik SLA terbarui: tahap supplier tercatat TERLAMBAT",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "20. Tab Keuangan: tagihan terhubung, \"tidak dobel\", maks 1 pengakuan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "21. Widget CFO di NV-47",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "22. Widget CEO di NV-57 (PFHI provisional, tepat waktu, P90)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "23. Owner mengubah bobot PFHI → versi 2",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "24. BU Manager mengubah SLA → versi baru + riwayat before/after",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "25. Purchasing tidak melihat tombol ubah SLA / bobot",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "26. Widget gudang di NV-38 & NV-41",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "27. Widget Head of Division di NV-58",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "28. Staff (mobile) NV-27: widget \"Pesanan saya — kapan datang?\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "29. Staff (mobile) NV-62: tampilan sederhana tanpa tombol aksi isu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "30. NV-61 mobile tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "31. Dokumen & bukti: event log dengan Event ID, sumber, dokumen terkait",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "32. Tidak ada error JavaScript selama alur",
+   "ok": true,
+   "info": ""
+  }
+ ],
+ "errors": []
+}

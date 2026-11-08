@@ -3,7 +3,7 @@
    and checks quantities, statuses, financial classifications and references.  Usage: node tests/workflow.test.js */
 'use strict';
 const path = require('path');
-['util', 'seed', 'contracts', 'store', 'spend', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
+['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
 const H = globalThis.HAWK;
 const S = H.selectors;
 
@@ -288,7 +288,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Transfer melebihi stok ditolak & state di-rollback', !bad.ok && JSON.stringify(s().stock) === snap);
   check('Operasi tanpa kontrak ditolak', !call('hack.payAll', {}, 'OWNER').ok);
   check('HAWK API adapter tidak berpura-pura terhubung', H.createApi(H.createStore({ storage: null })).adapters.HAWK_API.call('mrf.create', {}, s().users[0]).error.code === 'NOT_CONNECTED');
-  check('Registry memuat 60 NV unik', H.SCREENS.length === 60 && new Set(H.SCREENS.map((x) => x.nv)).size === 60);
+  check('Registry memuat 62 NV unik (60 NB-HAWK-01 + NV-61/62 addendum MP-HAWK-08)', H.SCREENS.length === 62 && new Set(H.SCREENS.map((x) => x.nv)).size === 62 && H.screen(61).mod === 'K' && H.screen(62).mod === 'K');
   check('Semua operasi layar terdaftar di kontrak', H.SCREENS.every((x) => x.ops.every((o) => H.contract(o))), H.SCREENS.flatMap((x) => x.ops.filter((o) => !H.contract(o))).join());
   check('Semua operasi tulis punya handler mock', H.CONTRACTS.filter((c) => !c.read).every((c) => H.handlers[c.id]), H.CONTRACTS.filter((c) => !c.read && !H.handlers[c.id]).map((c) => c.id).join());
   // Module B reference rules (MP-HAWK-03 audit)
@@ -616,6 +616,105 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('H: setelah terima & bayar: tagihan PAID, jurnal seimbang', s().bills.filter((b) => S.simplePOs(s(), Hm).some((p) => p.id === b.po)).every((b) => b.status === 'PAID') && allBal());
   const v = S.budgetView(s(), 'BGT-2026-SPA');
   check('Dashboard: budget 7P BU Spa terbarui (realisasi Product > awal)', v.lines.find((l) => l.p === 'PRODUCT' && l.cls === 'OPEX').actual > 0);
+})();
+
+/* ============ T10. MP-HAWK-08 acceptance — Flow Intelligence Control Tower (Massage Oil Shanti 4/3/3, 1 botol terlambat) ============ */
+(function controlTower() {
+  console.log('T10 Control Tower — skenario Massage Oil Shanti');
+  const { call, s } = fresh();
+  const F = H.flow;
+  const allBal = () => s().journals.every((j) => Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)));
+  check('Kebijakan SLA berversi tersedia (10 tahap) + kalender kerja', s().slaPolicies.length === 10 && s().slaPolicies.every((p) => p.version === 1) && s().workCalendar.start === 8);
+  check('Bobot PFHI provisional 40/25/20/15', JSON.stringify(s().flowConfig.weights) === JSON.stringify({ onTime: 0.4, activeSla: 0.25, p90: 0.2, data: 0.15 }));
+  let r = call('mrf.create', { branch: 'BR-SHN', memo: 'Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF');
+  const id = r.data.id;
+  call('mrf.decide', { id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV');
+  const mr = () => s().mrfs.find((x) => x.id === id);
+  const al = mr().lines[0].alloc;
+  check('Alokasi 4 lokal / 3 transfer / 3 PO', [['LOCAL', 4], ['TRANSFER', 3], ['PURCHASE', 3]].every(([p, q]) => al.filter((a) => a.path === p).reduce((t, a) => t + a.qty, 0) === q));
+  call('mrf.issue', { id }, 'WAREHOUSE');
+  const tr = al.find((a) => a.path === 'TRANSFER').ref;
+  call('transfer.dispatch', { id: tr }, 'WAREHOUSE');
+  call('transfer.receive', { id: tr }, 'WAREHOUSE');
+  call('mrf.issue', { id }, 'WAREHOUSE');
+  const pend = S.pendingPurchase(s()).filter((p) => p.wh === 'WH-SHN' && p.supplier === 'SUP-001');
+  const po = call('po.createFromMrf', { picks: pend.map((p) => ({ mrf: p.mrf, li: p.li, ai: p.ai })), supplier: 'SUP-001' }, 'PURCHASING').data;
+  call('po.submit', { id: po.id }, 'PURCHASING');
+  call('po.decide', { id: po.id, decision: 'APPROVE' }, 'PURCHASING');
+  call('po.send', { id: po.id }, 'PURCHASING');
+  const P = () => s().pos.find((x) => x.id === po.id);
+  const promised = P().promised;
+  const recv = (q) => {
+    const g = call('grn.receive', { po: po.id, lines: P().lines.map((l) => ({ received: l.item === 'BHP-001' ? q : l.qty - l.received, damaged: 0 })) }, 'WAREHOUSE').data;
+    call('grn.post', { id: g.id }, 'WAREHOUSE');
+    const bins = {};
+    s().grns.find((x) => x.id === g.id).lines.forEach((l, i) => (bins[i] = l.item === 'BHP-001' ? 'SHN-A-01' : 'SHN-A-02'));
+    call('grn.putaway', { id: g.id, bins }, 'WAREHOUSE');
+    call('mrf.issue', { id }, 'WAREHOUSE');
+  };
+  recv(2);
+  check('Supplier kirim 2 dari 3 → PO PARTIAL, 9/10 diserahkan', P().status === 'PARTIAL' && S.mrfFulfillment(s(), mr()).issued === 9);
+  let j = F.journey(s(), mr());
+  check('Event adapter: field minimum lengkap di setiap event', j.events.length >= 15 && j.events.every((e) => ['id', 'txn', 'org', 'type', 'stage', 'ts', 'actor', 'source'].every((k) => e[k] !== undefined && e[k] !== null) && 'related' in e && 'policy' in e && 'due' in e && 'reason' in e && 'evidence' in e && 'pic' in e && 'before' in e && 'after' in e && 'line' in e));
+  check('Timeline 12 tahap', j.timeline.length === 12 && j.timeline.map((x) => x.key).join() === F.TIMELINE.join());
+  check('Belum lewat janji supplier → tidak ada isu untuk MRF ini', !s().flowIssues.some((i) => i.mrf === id));
+  r = call('demo.advanceClock', { hours: 120 }, 'STAFF');
+  check('Jam demo maju (DEMO) & SLA dievaluasi ulang otomatis', r.ok && F.now(s()) > promised);
+  const iss = () => s().flowIssues.filter((i) => i.mrf === id);
+  const is = iss()[0];
+  check('Control Tower mendeteksi: 1 isu tahap Supplier untuk Purchasing', iss().length === 1 && is.stage === 'SUPPLIER' && is.pic === 'PURCHASING' && is.ref === po.id, JSON.stringify(iss()));
+  check('Isu prioritas P0/P1, berisi dampak, bukti, rekomendasi, tenggat asli', ['P0', 'P1'].includes(is.priority) && /1 botol/.test(is.impact) && is.evidence.includes(po.id) && is.recommendation && is.dueOriginal === promised + 'T17:00:00', JSON.stringify(is));
+  check('Alasan otomatis dari data (kirim sebagian) — bukan menyalahkan orang', is.reasonCode === 'SUPPLIER_SHORT' && is.reasonAuto);
+  call('flow.sync', {}, 'OWNER');
+  call('demo.advanceClock', { hours: 1 }, 'OWNER');
+  check('Tidak ada isu duplikat setelah sinkron berulang', iss().length === 1);
+  const rowsSpv = F.rows(s()).filter((x) => x.branch === 'BR-SHN' && x.id === id);
+  check('Supervisor Shanti melihat pesanannya lewat SLA', rowsSpv.length === 1 && rowsSpv[0].j.active.some((a) => a.sla === 'BREACH'));
+  const ai = F.ai(s(), F.journey(s(), mr()));
+  check('AI: fakta & hipotesis terpisah, berlabel simulasi, ada rekomendasi', ai.facts.length >= 2 && ai.hyp.length >= 1 && ai.recs.length >= 1 && /AI SIMULATION/.test(ai.label) && ai.hyp.every((h) => h.conf));
+  check('Staff tidak bisa mencatat alasan / menyelesaikan isu', !call('flow.recordReason', { id: is.id, code: 'OTHER', note: 'coba coba' }, 'STAFF').ok && !call('flow.resolve', { id: is.id, note: 'selesai' }, 'STAFF').ok);
+  check('Warehouse tidak bisa mengubah ETA PO', !call('flow.changeEta', { po: po.id, eta: '2026-11-20', reason: 'uji coba' }, 'WAREHOUSE').ok);
+  check('ETA revisi tanpa alasan ditolak', call('flow.changeEta', { po: po.id, eta: '2026-11-20', reason: '' }, 'PURCHASING').error.code === 'VALIDATION');
+  check('ETA di masa lalu ditolak', !call('flow.changeEta', { po: po.id, eta: '2026-11-09', reason: 'supplier konfirmasi' }, 'PURCHASING').ok);
+  const eta = new Date(Date.parse(F.now(s())) + 2 * 864e5).toISOString().slice(0, 10);
+  r = call('flow.changeEta', { po: po.id, eta, code: 'SUPPLIER_SHORT', reason: 'Supplier konfirmasi sisa 1 botol dikirim lusa' }, 'PURCHASING');
+  check('Purchasing mencatat ETA revisi + alasan; tanggal janji asli tidak berubah', r.ok && P().eta === eta && P().promised === promised && P().etaHistory.length === 1);
+  check('Isu → MONITORING; jatuh tempo SLA asli tetap', iss()[0].status === 'MONITORING' && iss()[0].dueOriginal === promised + 'T17:00:00' && iss()[0].history.some((h) => h.action === 'CHANGE_ETA'));
+  r = call('flow.escalate', { id: is.id, note: 'Outlet butuh untuk weekend' }, 'SUPERVISOR', 'U-SPV');
+  check('Supervisor dapat mengeskalasi (dengan alasan) ke BU Manager', r.ok && iss()[0].status === 'ESCALATED' && iss()[0].escalatedTo === 'BU_MANAGER');
+  recv(1);
+  check('Botol terakhir diterima & diserahkan → 10/10, MRF FULFILLED', S.mrfFulfillment(s(), mr()).issued === 10 && mr().status === 'FULFILLED');
+  check('Isu tertutup otomatis saat tahap selesai; riwayat tetap', iss()[0].status === 'RESOLVED' && iss()[0].history.length >= 4 && iss()[0].resolutionH > 0);
+  j = F.journey(s(), mr());
+  check('Metrik SLA terbarui: tahap Supplier tercatat TERLAMBAT, siklus selesai', j.tracks.find((t) => t.kind === 'PURCHASE').stages.find((x) => x.stage === 'SUPPLIER').sla === 'LATE' && j.timeline[11].status !== 'PENDING' && j.overall.end);
+  const k = F.kpis(s());
+  check('PFHI terhitung dari 4 komponen (provisional), P0 dipisah', k.pfhi >= 0 && k.pfhi <= 100 && k.comp.length === 4 && Array.isArray(k.critical));
+  // finance stays linked — one recognition per bill
+  r = call('doc.capture', { sample: 'A' }, 'FINANCE');
+  const dc = r.ok ? r.data : null;
+  const m2 = dc && call('doc.match', { id: dc.id }, 'FINANCE');
+  const v2 = m2 && m2.ok && call('doc.verify', { id: dc.id, decision: 'APPROVE' }, 'FINANCE');
+  const bill = v2 && v2.ok ? v2.data : null;
+  if (bill) call('bill.approve', { id: bill.id }, 'FINANCE');
+  const jf = F.journey(s(), mr());
+  check('Perjalanan keuangan terhubung ke MRF (tagihan dari PO yang sama)', !!bill && jf.related.bills.some((b) => b.id === bill.id) && jf.fin.length > 0, JSON.stringify([r.error, m2 && m2.error, v2 && v2.error]));
+  const rec = s().journals.filter((x) => x.kind === 'INVOICE_RECOGNITION' && bill && x.source === bill.id).length;
+  check('Tidak ada pengakuan ganda: maks. 1 jurnal pengakuan per tagihan', !!bill && rec <= 1 && allBal(), rec);
+  // configuration: versioned SLA & weights
+  check('Purchasing tidak bisa mengubah SLA', !call('flow.updateSla', { id: 'SLA-APR', hours: 6, note: 'lebih cepat' }, 'PURCHASING').ok);
+  r = call('flow.updateSla', { id: 'SLA-APR', hours: 6, note: 'Keputusan Owner — uji' }, 'BU_MANAGER');
+  check('SLA berversi: v2 dengan before/after; isu lama tidak ditimpa', r.ok && r.data.version === 2 && r.data.changes[0].before.hours === 8 && iss()[0].dueOriginal === promised + 'T17:00:00');
+  check('Bobot PFHI harus total 100%', !call('flow.setWeights', { weights: { onTime: 0.5, activeSla: 0.5, p90: 0.2, data: 0.1 }, note: 'uji salah' }, 'OWNER').ok);
+  check('Owner mengubah bobot PFHI (versi baru)', call('flow.setWeights', { weights: { onTime: 0.35, activeSla: 0.3, p90: 0.2, data: 0.15 }, note: 'Uji keputusan Owner' }, 'OWNER').ok && s().flowConfig.version === 2);
+  check('Audit mencatat aksi Control Tower', ['flow.changeEta', 'flow.escalate', 'flow.updateSla', 'flow.setWeights', 'demo.advanceClock'].every((op) => s().audit.some((a) => a.op === op)));
+  // standalone issue actions on seed issue
+  const seedIs = s().flowIssues.find((i) => i.status !== 'RESOLVED');
+  if (seedIs) {
+    check('Tinjau / tugaskan / minta update tercatat', call('flow.review', { id: seedIs.id }, 'OWNER').ok && call('flow.assign', { id: seedIs.id, user: 'U-PUR' }, 'OWNER').ok && call('flow.requestUpdate', { id: seedIs.id, note: 'Mohon update hari ini' }, 'BU_MANAGER').ok);
+    const needR = seedIs.reasonRequired;
+    if (needR) check('Isu tanpa alasan otomatis tidak bisa diselesaikan sebelum alasan dicatat', call('flow.resolve', { id: seedIs.id, note: 'Sudah beres' }, 'OWNER').error.code === 'VALIDATION');
+    check('Catat alasan lalu selesaikan isu (manual)', call('flow.recordReason', { id: seedIs.id, code: 'CAPACITY', note: 'Antrian PO menumpuk akhir bulan' }, 'PURCHASING').ok && call('flow.resolve', { id: seedIs.id, note: 'PO sudah dibuat' }, 'PURCHASING').ok);
+  }
 })();
 
 console.log(`\n${pass} lulus, ${failN} gagal`);

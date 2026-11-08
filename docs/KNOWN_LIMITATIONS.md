@@ -73,3 +73,14 @@
 - **Pemesan = penerima.** Di jalur sederhana staf yang memesan juga mengonfirmasi barang datang. Kontrol pengganti: harga & supplier ditetapkan sistem, nilai dibatasi, budget dicek, Finance terpisah sebagai pembayar. Pertimbangkan foto surat jalan sebagai syarat bila risiko dianggap tinggi.
 - **Transfer antar-gudang** dari outlet lain dikirim otomatis tanpa konfirmasi gudang asal (penyederhanaan). Di produksi, gudang asal sebaiknya tetap menekan "Kirim".
 - **Uang muka** (bayar sebelum barang datang) memakai akun 1160 Uang Muka Pembelian (DEMO, TO VERIFY terhadap COA HAWK). Bila backorder dibatalkan setelah dibayar penuh, sisa uang muka perlu diselesaikan manual (belum ada alur retur dana).
+
+## I. Flow Intelligence Control Tower (MP-HAWK-08)
+
+- **Event diturunkan dari riwayat dokumen prototipe.** Belum diverifikasi bahwa HAWK v2.11.6 menyimpan jam (bukan hanya tanggal) dan user per perubahan status. Bila tidak, dibutuhkan outbox event baru (NEW INTEGRATION REQUIRED).
+- **Target SLA, ambang P0, kalender kerja, dan hari libur adalah DEMO.** Perlu keputusan Owner. Kalender sama untuk semua unit (belum per outlet / shift spa).
+- **PFHI provisional.** Bobot 40/25/20/15 dari brief, belum divalidasi terhadap data historis nyata. Riwayat Agt–Okt (36 pesanan) sintetis/DEMO.
+- **Jam demo** ("Simulasi +24 jam") memajukan waktu seluruh demo, termasuk tanggal dokumen baru. Fitur ini hanya untuk demo.
+- **Evaluasi SLA** berjalan setelah setiap aksi di browser. Produksi butuh job terjadwal di server (mis. tiap 15 menit) dan notifikasi nyata. "Minta update" dan "Eskalasi" di prototipe hanya mencatat, tidak mengirim pesan.
+- **Satu isu per tahap per dokumen.** Penerimaan parsial berulang pada PO yang sama tetap satu isu supplier. Pembatalan backorder belum punya alur khusus.
+- **AI** = aturan deterministik. Perkiraan ETA AI hanya hipotesis (keyakinan rendah).
+- **Skor supplier** (70/20/10) DEMO, belum disahkan Purchasing/Owner.

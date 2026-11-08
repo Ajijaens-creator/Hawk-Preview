@@ -1,8 +1,8 @@
-# HAWK × JAENS — Prototipe Interaktif Terintegrasi (60 NV)
+# HAWK × JAENS — Prototipe Interaktif Terintegrasi (62 NV)
 
 **Status: PROTOTIPE — semua data DEMO / SIMULASI.** Prototipe ini adalah spesifikasi fungsional dan referensi serah-terima developer untuk **engine HAWK ERP yang sudah ada**. Ia bukan ERP baru, bukan buku besar kedua, dan tidak terhubung ke API produksi.
 
-Isinya satu aplikasi HTML yang dapat dinavigasi penuh: 60 layar NV-01 sampai NV-60 (NB-HAWK-01, modul A–J) berjalan di atas satu mesin state. Aplikasi memakai design token Black & Deep Gold, role switcher 10 role (12 pengguna demo), dan adapter integrasi Mock / HAWK API.
+Isinya satu aplikasi HTML yang dapat dinavigasi penuh: 62 layar: NV-01 sampai NV-60 (NB-HAWK-01, modul A–J) ditambah NV-61/62 Control Tower (MP-HAWK-08, modul K) berjalan di atas satu mesin state. Aplikasi memakai design token Black & Deep Gold, role switcher 10 role (12 pengguna demo), dan adapter integrasi Mock / HAWK API.
 
 ## Menjalankan
 
@@ -30,6 +30,10 @@ Ganti role ke **Nyoman Dewi (Staff Spa Shanti)**, lalu Beranda › **Scan Nota**
 
 Sebagai **Nyoman Dewi (Staff Spa Shanti)**, Beranda › **🛒 Pesan barang** (NV-24): tekan **+** pada beberapa barang lalu **Pesan sekarang**. Bila dalam budget 7P dan ≤ Rp5 jt, sistem langsung menyetujui, membuat PO, dan mengirimnya ke supplier (aturan AR-13, bukan AI). Sebagai **Luh Ratna (Finance)** buka NV-50 dan tekan **Sudah dibayar**. Kembali sebagai staf, tekan **Barang sudah diterima** (atau "Ada yang kurang atau rusak?"). Pesanan yang lewat budget otomatis masuk antrean Supervisor. Batas diatur Finance/Super Admin/Owner di NV-50 atau NV-09. Lihat `docs/SIMPLE_ORDER.md`.
 
+## Mencoba Control Tower (NV-61 / NV-62)
+
+Sebagai Owner buka menu **Control Tower › NV-61**: PFHI (provisional), tepat waktu, P90, lewat SLA, kritis P0, heatmap, Action & Escalation Center, performa supplier, dan insight AI (simulasi). Tekan **⏩ Simulasi +24 jam** (DEMO) untuk melihat SLA berubah. Klik KPI/tahap/heatmap untuk drill-down, lalu **Perjalanan ›** untuk NV-62 (timeline 12 tahap, analisis keterlambatan, dokumen & bukti, keuangan). Widget peran ada di NV-01 (Supervisor), 27, 31, 38, 41, 47, 57, 58. Lihat `docs/CONTROL_TOWER.md`.
+
 ## Struktur
 
 ```
@@ -56,9 +60,11 @@ docs/                      dokumen serah-terima (lihat daftar di bawah)
 | Dokumen | Isi |
 |---|---|
 | [docs/MP-HAWK-03_AUDIT.md](docs/MP-HAWK-03_AUDIT.md) | Audit kedua ZIP paket Owner (A–E, F–J) dan apa yang diadopsi |
-| [docs/SCREEN_MATRIX_60NV.md](docs/SCREEN_MATRIX_60NV.md) | 60 NV + status implementasi & cakupan uji per layar (E2E / Engine / Render) |
+| [docs/SCREEN_MATRIX_60NV.md](docs/SCREEN_MATRIX_60NV.md) | 62 NV + status implementasi & cakupan uji per layar (E2E / Engine / Render) |
 | [docs/ROLE_PERMISSION_MATRIX.md](docs/ROLE_PERMISSION_MATRIX.md) | Akses layar & izin operasi per role |
 | [docs/HAWK_INTEGRATION_HOOKS.md](docs/HAWK_INTEGRATION_HOOKS.md) | Titik sambung ke HAWK, 81 operasi, status integrasi (belum ada yang terhubung) |
+| [docs/CONTROL_TOWER.md](docs/CONTROL_TOWER.md) | NV-61/62: timeline 12 tahap, kebijakan SLA, definisi KPI, PFHI provisional, isu & eskalasi, widget peran |
+| [docs/PROCESS_EVENT_ADAPTER.md](docs/PROCESS_EVENT_ADAPTER.md) | Spesifikasi Process Event Tracking Adapter: field minimum, status TO VERIFY, urutan integrasi |
 | [docs/SMART_SPEND_WORKFLOW.md](docs/SMART_SPEND_WORKFLOW.md) | Smart Spend Money & AI Receipt (NV-48, subview NV-M1..M6): 4 alur, kontrol, jurnal, skenario, kontrak |
 | [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) | Deploy ke Vercel tanpa GitHub, domain, SSL, checklist verifikasi |
 | [docs/SCREEN_MATRIX.csv](docs/SCREEN_MATRIX.csv) | 60 NV: role, field, aksi, validasi, status, operasi, status integrasi |
@@ -90,8 +96,9 @@ node tests/workflow.test.js          # engine: journey, budget, receiving, aset,
 node tests/e2e-walkthrough.js        # 14 langkah lewat klik UI di Chromium (butuh Playwright)
 node tests/e2e-smart-spend.js        # Smart Spend 15 langkah di 390 px + screenshot M1–M6
 node tests/e2e-simple-order.js       # Order Sederhana 33 cek di 390 px + 20 dashboard + screenshot
-node tests/browser-all.js            # 12 pengguna × 60 layar: render, akses, error runtime
-node tests/responsive.js             # 60 layar × 1440 / 834 / 390 px: overflow & screenshot
+node tests/e2e-control-tower.js      # Control Tower: skenario Massage Oil Shanti 32 cek + screenshot
+node tests/browser-all.js            # 12 pengguna × 62 layar: render, akses, error runtime
+node tests/responsive.js             # 62 layar × 1440 / 834 / 390 px: overflow & screenshot
 node tests/deploy.test.js            # build, login Cloudflare & Vercel, CSP, desktop/iPad/mobile
 ```
 

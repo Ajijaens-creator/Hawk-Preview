@@ -1,10 +1,10 @@
 /* Generates the machine-derived handoff documents from the single sources of truth
-   (registry.js = 60 NV, contracts.js = adapter operations). Run: node tools/gen-docs.js
+   (registry.js = 62 NV, contracts.js = adapter operations). Run: node tools/gen-docs.js
    Output: docs/SCREEN_MATRIX.csv, docs/ROLE_PERMISSION_MATRIX.csv, docs/INTEGRATION_CONTRACTS.md, docs/SCREEN_CONTRACTS.md */
 'use strict';
 const path = require('path');
 const fs = require('fs');
-['util', 'seed', 'contracts', 'store', 'spend', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
+['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
 const H = globalThis.HAWK;
 const out = path.join(__dirname, '../docs');
 fs.mkdirSync(out, { recursive: true });
@@ -60,7 +60,7 @@ mods.forEach((m) => {
 fs.writeFileSync(path.join(out, 'INTEGRATION_CONTRACTS.md'), ic);
 
 /* 4. Per-screen developer contracts */
-let sc = `# SCREEN CONTRACTS — 60 NV (NB-HAWK-01)\n\n_Dibuat otomatis dari \`assets/js/core/registry.js\` + \`contracts.js\`. Kontrak yang sama tampil di aplikasi lewat toggle "Kontrak developer"._\n\n`;
+let sc = `# SCREEN CONTRACTS — 62 NV (NB-HAWK-01 + addendum MP-HAWK-08 NV-61/62)\n\n_Dibuat otomatis dari \`assets/js/core/registry.js\` + \`contracts.js\`. Kontrak yang sama tampil di aplikasi lewat toggle "Kontrak developer"._\n\n`;
 Object.keys(H.MODULES).forEach((m) => {
   sc += `## Modul ${m} — ${H.MODULES[m].name}\n\n`;
   H.SCREENS.filter((s) => s.mod === m).forEach((s) => {
@@ -85,7 +85,7 @@ console.log(`docs: SCREEN_MATRIX.csv (${H.SCREENS.length} NV), ROLE_PERMISSION_M
 {
   const tdir = path.join(__dirname, '../tests');
   const wf = fs.readFileSync(path.join(tdir, 'workflow.test.js'), 'utf8');
-  const e2e = ['e2e-walkthrough.js', 'e2e-smart-spend.js', 'e2e-simple-order.js'].filter((f) => fs.existsSync(path.join(tdir, f))).map((f) => fs.readFileSync(path.join(tdir, f), 'utf8')).join('\n');
+  const e2e = ['e2e-walkthrough.js', 'e2e-smart-spend.js', 'e2e-simple-order.js', 'e2e-control-tower.js'].filter((f) => fs.existsSync(path.join(tdir, f))).map((f) => fs.readFileSync(path.join(tdir, f), 'utf8')).join('\n');
   const testedOps = new Set([...wf.matchAll(/call\('([a-zA-Z]+\.[a-zA-Z]+)'/g)].map((m) => m[1]));
   const e2eNv = new Set([1, ...[...e2e.matchAll(/go\((\d+)/g)].map((m) => +m[1])]);
   const viewNv = new Set();
@@ -94,8 +94,8 @@ console.log(`docs: SCREEN_MATRIX.csv (${H.SCREENS.length} NV), ROLE_PERMISSION_M
   });
   const rankLow = (ops) => ops.map((o) => (H.contract(o) || {}).status).filter(Boolean).sort((a, b) => rank.indexOf(a) - rank.indexOf(b))[0] || '—';
   const tally = { e2e: 0, engine: 0, partial: 0, render: 0, none: 0 };
-  let sm = `# SCREEN MATRIX — 60 NV (NB-HAWK-01)\n\n_Dibuat otomatis oleh \`node tools/gen-docs.js\`. Status uji dihitung dari isi file tes, bukan ditulis tangan._\n\n`;
-  sm += `**Arti status implementasi**\n\n- **E2E** — layar dibuka dan dioperasikan lewat klik UI nyata di \`tests/e2e-walkthrough.js\` atau \`tests/e2e-smart-spend.js\`.\n- **Engine** — semua operasi tulis layar ini dipanggil di \`tests/workflow.test.js\` (aturan, transisi, jurnal, rollback); tombol UI-nya diperiksa punya handler, tetapi tidak semuanya diklik.\n- **Sebagian** — layar interaktif; sebagian operasi tulis belum punya tes otomatis (dicantumkan).\n- **Render** — layar baca/navigasi; diuji render untuk 12 pengguna dan 3 ukuran layar.\n- **BELUM** — tidak ada view. Bila muncul di tabel ini, layar itu belum diimplementasikan.\n\nSemua layar yang memiliki view juga lulus \`browser-all.js\` (12 pengguna × 60 NV, 0 error, 0 tombol tanpa handler) dan \`responsive.js\` (1440/834/390 px).\n\n`;
+  let sm = `# SCREEN MATRIX — 62 NV (NB-HAWK-01 + addendum MP-HAWK-08 NV-61/62)\n\n_Dibuat otomatis oleh \`node tools/gen-docs.js\`. Status uji dihitung dari isi file tes, bukan ditulis tangan._\n\n`;
+  sm += `**Arti status implementasi**\n\n- **E2E** — layar dibuka dan dioperasikan lewat klik UI nyata di \`tests/e2e-walkthrough.js\` atau \`tests/e2e-smart-spend.js\`.\n- **Engine** — semua operasi tulis layar ini dipanggil di \`tests/workflow.test.js\` (aturan, transisi, jurnal, rollback); tombol UI-nya diperiksa punya handler, tetapi tidak semuanya diklik.\n- **Sebagian** — layar interaktif; sebagian operasi tulis belum punya tes otomatis (dicantumkan).\n- **Render** — layar baca/navigasi; diuji render untuk 12 pengguna dan 3 ukuran layar.\n- **BELUM** — tidak ada view. Bila muncul di tabel ini, layar itu belum diimplementasikan.\n\nSemua layar yang memiliki view juga lulus \`browser-all.js\` (12 pengguna × 62 NV, 0 error, 0 tombol tanpa handler) dan \`responsive.js\` (1440/834/390 px).\n\n`;
   const rowsMd = [];
   H.SCREENS.forEach((s) => {
     const writes = s.ops.filter((o) => { const c = H.contract(o); return c && !c.read; });

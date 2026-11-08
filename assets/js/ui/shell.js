@@ -198,7 +198,7 @@
   function renderSidebar(nv, u) {
     const mods = Object.entries(HAWK.MODULES)
       .map(([k, m]) => {
-        const items = HAWK.SCREENS.filter((s) => s.mod === k && HAWK.canSee(u.role, s.nv));
+        const items = HAWK.SCREENS.filter((s) => s.mod === k && HAWK.canSee(u.role, s.nv) && !(s.navHide || []).includes(u.role));
         if (!items.length) return '';
         const cur = HAWK.screen(nv);
         const active = cur && cur.mod === k;
@@ -289,7 +289,7 @@
         title = 'Material Request ' + r.id;
         body = `<div class="card">${kv([['Status', ui.status(r.status)], ['Pemohon', esc(S.userName(s, r.requester))], ['Unit', esc(S.orgName(s, r.branch))], ['Gudang', esc(S.whName(s, r.wh))], ['Cost center', esc(r.cc)], ['Jenis', r.type === 'ROUTINE' ? 'Rutin (BHP)' : 'Non-rutin'], ['Tanggal', U.datetime(r.date)], ['Memo', esc(r.memo)], ['Budget', ui.status(bc.status)], ['Approval', (r.chain || S.mrfChain(s, r).chain).map((c, i) => `${(r.approvals || [])[i] ? '✓ ' : ''}${HAWK.ROLE_LABEL[c]}`).join(' → ')], ['Terpenuhi', `${fu.issued} / ${fu.requested}`]])}</div>
         <div class="card" style="margin-top:12px"><h3>Item & alokasi</h3>${ui.table([{ h: 'Item', f: (l) => esc(S.itemName(s, l.item)) }, { h: 'Qty', num: true, f: (l) => l.qty }, { h: 'Alokasi', f: (l) => (l.alloc || []).map((a) => `${a.path}:${a.qty}${a.ref ? ' ' + ui.id(a.ref) : ''} <span class="tiny muted">(siap ${a.readyQty}, diserahkan ${a.issuedQty})</span>`).join('<br>') || '—' }], r.lines)}</div>`;
-        foot = open(28, { id: r.id }, 'Buka detail & fulfillment (NV-28)');
+        foot = open(62, { mrf: r.id }, 'Lacak perjalanan (NV-62)') + ' ' + open(28, { id: r.id }, 'Buka detail & fulfillment (NV-28)');
         break;
       }
       case 'PO': {
