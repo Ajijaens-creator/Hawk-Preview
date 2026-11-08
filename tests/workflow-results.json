@@ -1,5 +1,5 @@
 {
- "pass": 367,
+ "pass": 370,
  "fail": 0,
  "results": [
   {
@@ -1789,6 +1789,21 @@
   },
   {
    "name": "Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Struktur: outlet Spa di bawah Divisi Operasional Spa (BU JAENS Spa); departemen Receptionist, Spa Therapist, Attendant, Security",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rantai atasan: staf → Supervisor outlet → Asisten Operational Manager → Operational Manager → BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Asisten Operational Manager: divisi Operasional Spa, BU JAENS Spa",
    "ok": true,
    "info": ""
   },

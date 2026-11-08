@@ -52,5 +52,19 @@ Otomatis bila **semua** terpenuhi:
 - Di outlet tidak ada orang gudang standby. **Supervisor, therapist, receptionist, dan attendant** outlet itu boleh menekan **Barang sudah diterima** untuk pesanan outletnya, termasuk pesanan lewat alur lengkap (MRF → PO), bukan hanya Order Sederhana.
 - Akun dari outlet lain ditolak (FORBIDDEN). Penerimaan tidak bisa dilakukan dua kali.
 - **Tidak perlu mengisi ulang identitas.** Saat memesan atau menerima, sistem mengisi dari penugasan akun: nama, jabatan, outlet, divisi, BU (`S.assignment`). Disimpan di `mrf.requestedBy`, `grn.receivedBy`, `transfer.receivedBy`, dan `mrf.receipts[]`. Akun outlet tidak bisa memesan atas nama outlet lain.
-- Di produksi, identitas ini wajib diambil server dari akun login (bukan dari isian form). Field divisi untuk outlet Spa memakai `dept` di profil user karena struktur organisasi outlet belum punya node divisi (TO VERIFY dengan HAWK).
-- Akun demo baru: Kadek Rina (Receptionist Spa Shanti), Wayan Sari (Attendant Spa Shanti).
+- Di produksi, identitas ini wajib diambil server dari akun login (bukan dari isian form).
+- Akun demo baru: Kadek Rina (Receptionist), Wayan Sari (Attendant), Nengah Budi (Security) di Spa Shanti; Made Wirawan (Asisten Operational Manager).
+
+### Struktur Divisi Operasional Spa (Owner, 8 Nov 2026)
+
+```
+BU JAENS Spa
+└─ Divisi Operasional Spa — Operational Manager (Wayan Ardana)
+   └─ Asisten Operational Manager (Made Wirawan) — membawahi Supervisor outlet
+      └─ Outlet (Ubud, Shanti, Triloka, Bisma) — dipimpin Supervisor outlet
+         └─ Departemen: Receptionist · Spa Therapist · Attendant · Security
+```
+
+- Outlet sekarang berada di bawah node organisasi **Divisi Operasional Spa** (`DV-SPA-OPS`), bukan langsung di bawah BU. Budget, cost center, dan laporan per BU tetap sama karena BU dicari dengan menelusuri ke atas.
+- Departemen disimpan di profil akun (`dept`) dan atasan langsung di `reportsTo`. Keduanya ikut tercatat otomatis saat memesan dan menerima barang.
+- Asisten Operational Manager memakai role Head of Division yang sudah ada, dengan cakupan Divisi Operasional Spa. Rantai approval belum diubah (TO VERIFY: apakah approval MRF bernilai menengah harus lewat Asisten OM sebelum Operational Manager).

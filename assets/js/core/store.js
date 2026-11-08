@@ -51,12 +51,14 @@
     return {
       user: u.id, name: u.name, title: u.title || '', role: u.role,
       branch: branch ? branch.id : null, branchName: branch ? branch.name : home.length > 1 ? 'Multi-unit' : unit ? unit.name : '—',
-      division: div ? div.name : u.dept || '—',
+      division: div ? div.name : '—',
+      dept: u.dept || '—',
+      reportsTo: u.reportsTo || null, reportsToName: u.reportsTo ? (S.user(s, u.reportsTo) || {}).name || u.reportsTo : null,
       bu: bu ? bu.id : null, buName: bu ? bu.name : home.length > 1 ? home.map((o) => o.name).join(', ') : '—',
       single: home.length === 1 && !!branch,
     };
   };
-  S.assignmentText = (a) => (a ? [a.name, a.title, a.branchName, a.division !== '—' ? 'Divisi ' + a.division : '', a.buName].filter(Boolean).join(' · ') : '—');
+  S.assignmentText = (a) => (a ? [a.name, a.title, a.branchName, a.division && a.division !== '—' ? 'Divisi ' + a.division : '', a.dept && a.dept !== '—' ? 'Dept. ' + a.dept : '', a.buName].filter(Boolean).join(' · ') : '—');
   S.branches = (s, opts = {}) => s.org.filter((o) => o.type === 'BRANCH' && (opts.all || o.status === 'ACTIVE'));
   S.bus = (s) => s.org.filter((o) => (o.type === 'BU' || o.type === 'OFFICE') && o.scope === 'IN' && o.status === 'ACTIVE');
   S.whOfOrg = (s, orgId) => s.warehouses.find((w) => w.org === orgId);

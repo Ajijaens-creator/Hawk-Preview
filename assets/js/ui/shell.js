@@ -97,7 +97,8 @@
   HAWK.tasks = function (s, u) {
     const t = [];
     const add = (o) => t.push(o);
-    const owns = (org) => u.scope.some((x) => x === org || S.buOf(s, org) === x || (S.org(s, org) || {}).parent === x);
+    const ancestors = (org) => { const out = []; let o = S.org(s, org); while (o) { out.push(o.id); o = S.org(s, o.parent); } return out; };
+    const owns = (org) => { const up = ancestors(org); return u.scope.some((x) => up.includes(x) || S.buOf(s, org) === x); };
     const role = u.role;
     s.mrfs.forEach((m) => {
       const step = S.mrfNextApprover(s, m);
@@ -229,7 +230,7 @@
     const sc = scopeInfo(u);
     const bus = S.bus(s);
     const buSel = `<select class="tb-select org" id="sel-bu" aria-label="Unit bisnis" ${sc.fixed ? 'disabled' : ''}><option value="ALL">JAENS Spa–Essence–Office</option>${bus.map((b) => `<option value="${b.id}" ${sc.bu === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select>`;
-    const brs = s.org.filter((o) => ['BRANCH', 'DIVISION'].includes(o.type) && o.status === 'ACTIVE' && (sc.bu === 'ALL' || o.parent === sc.bu));
+    const brs = s.org.filter((o) => ['BRANCH', 'DIVISION'].includes(o.type) && o.status === 'ACTIVE' && (sc.bu === 'ALL' || S.buOf(s, o.id) === sc.bu));
     const brSel = `<select class="tb-select" id="sel-branch" aria-label="Cabang / divisi" ${sc.fixed ? 'disabled' : ''}><option value="ALL">Semua cabang/divisi</option>${brs.map((b) => `<option value="${b.id}" ${sc.branch === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select>`;
     const tasks = HAWK.tasks(s, u).length;
     const notifs = HAWK.notifications(s, u).filter((n) => !s.notificationsRead[n.id + u.id]).length;

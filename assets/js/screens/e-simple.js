@@ -16,7 +16,7 @@
   /* who / outlet / division / BU come from the logged-in account — never typed again */
   const meCard = (ctx) => {
     const a = S.assignment(ctx.s, ctx.user);
-    return a ? `<div class="so-me" data-me="${esc(a.user)}"><span class="tiny muted">Terisi otomatis dari akun Anda</span><div><b>${esc(a.name)}</b> · ${esc(a.title)}</div><div class="tiny">Outlet <b>${esc(a.branchName)}</b> · Divisi <b>${esc(a.division)}</b> · BU <b>${esc(a.buName)}</b></div></div>` : '';
+    return a ? `<div class="so-me" data-me="${esc(a.user)}"><span class="tiny muted">Terisi otomatis dari akun Anda</span><div><b>${esc(a.name)}</b> · ${esc(a.title)}</div><div class="tiny">Outlet <b>${esc(a.branchName)}</b> · Dept. <b>${esc(a.dept)}</b> · Divisi <b>${esc(a.division)}</b> · BU <b>${esc(a.buName)}</b>${a.reportsToName ? ` · Atasan <b>${esc(a.reportsToName)}</b>` : ''}</div></div>` : '';
   };
   const lastReceipt = (m) => (m.receipts && m.receipts.length ? m.receipts[m.receipts.length - 1] : null);
   const left = (s, branch, item) => {

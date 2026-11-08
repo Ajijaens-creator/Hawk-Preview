@@ -818,9 +818,13 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   console.log('T12 Penerimaan di outlet — therapist / receptionist / attendant / supervisor, identitas otomatis');
   const { call, s } = fresh();
   const a = S.assignment(s(), 'U-RCP');
-  check('Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan', a && a.branch === 'BR-SHN' && a.branchName === 'Spa Shanti' && a.division === 'Front Office' && a.bu === 'BU-SPA' && a.buName === 'JAENS Spa' && a.title === 'Receptionist Spa Shanti');
+  check('Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan', a && a.branch === 'BR-SHN' && a.branchName === 'Spa Shanti' && a.division === 'Operasional Spa' && a.dept === 'Receptionist' && a.reportsTo === 'U-SPV' && a.bu === 'BU-SPA' && a.buName === 'JAENS Spa' && a.title === 'Receptionist Spa Shanti');
+  const chain = (id) => { const out = []; let x = S.user(s(), id); while (x) { out.push(x.id); x = x.reportsTo && S.user(s(), x.reportsTo); } return out.join('>'); };
+  check('Struktur: outlet Spa di bawah Divisi Operasional Spa (BU JAENS Spa); departemen Receptionist, Spa Therapist, Attendant, Security', ['BR-UBD', 'BR-SHN', 'BR-TRK', 'BR-BSM'].every((b) => S.org(s(), b).parent === 'DV-SPA-OPS' && S.buOf(s(), b) === 'BU-SPA') && ['U-RCP', 'U-STF', 'U-ATD', 'U-SEC'].map((u) => S.assignment(s(), u).dept).join() === 'Receptionist,Spa Therapist,Attendant,Security');
+  check('Rantai atasan: staf → Supervisor outlet → Asisten Operational Manager → Operational Manager → BU Manager', chain('U-SEC') === 'U-SEC>U-SPV>U-AOM>U-HOD>U-BUM');
+  check('Asisten Operational Manager: divisi Operasional Spa, BU JAENS Spa', S.assignment(s(), 'U-AOM').division === 'Operasional Spa' && S.assignment(s(), 'U-AOM').bu === 'BU-SPA');
   const m0 = call('mrf.create', { memo: 'tanpa isi unit', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF', 'U-ATD');
-  check('Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)', m0.ok && m0.data.branch === 'BR-SHN' && m0.data.requestedBy.division === 'Attendant' && m0.data.requestedBy.bu === 'BU-SPA');
+  check('Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)', m0.ok && m0.data.branch === 'BR-SHN' && m0.data.requestedBy.dept === 'Attendant' && m0.data.requestedBy.division === 'Operasional Spa' && m0.data.requestedBy.bu === 'BU-SPA');
   check('Akun outlet tidak bisa memesan atas nama outlet lain', call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 1 }] }, 'STAFF', 'U-STF').error.code === 'FORBIDDEN');
   // full chain: approve → PO → sent
   call('mrf.decide', { id: m0.data.id, decision: 'APPROVE', note: 'ok' }, 'SUPERVISOR', 'U-SPV');
@@ -840,7 +844,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const r = call('order.receive', { id: m0.data.id }, 'STAFF', 'U-RCP');
   const g = s().grns.slice(0, s().grns.length - grnBefore).find((x) => x.receivedBy);
   check('Receptionist Shanti menerima barang (bukan pemesan, tanpa orang gudang) → selesai', r.ok && m().status === 'FULFILLED', r.error && r.error.message);
-  check('Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)', (!picks.length || (g && g.receivedBy.user === 'U-RCP' && g.receivedBy.division === 'Front Office' && g.receivedBy.buName === 'JAENS Spa')) && m().receipts.at(-1).by.branch === 'BR-SHN' && /Receptionist/.test(m().history.at(-1).note));
+  check('Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)', (!picks.length || (g && g.receivedBy.user === 'U-RCP' && g.receivedBy.dept === 'Receptionist' && g.receivedBy.buName === 'JAENS Spa')) && m().receipts.at(-1).by.branch === 'BR-SHN' && /Receptionist/.test(m().history.at(-1).note));
   check('Tidak bisa diterima dua kali', !call('order.receive', { id: m0.data.id }, 'STAFF', 'U-ATD').ok);
   check('Jurnal tetap seimbang', s().journals.every((j) => Math.abs(j.lines.reduce((x, l) => x + l.dr - l.cr, 0)) < 1));
 })();
