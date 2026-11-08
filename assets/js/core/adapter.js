@@ -81,4 +81,6 @@
     OWNER: 'Owner / Eksekutif', BU_MANAGER: 'BU Manager', HEAD_DIV: 'Head of Division', SUPERVISOR: 'Supervisor Outlet', STAFF: 'Staff / Therapist / Housekeeping',
     PURCHASING: 'Purchasing', WAREHOUSE: 'Gudang / Receiving', FINANCE: 'Finance / Accounting', ASSET: 'Asset / Facility PIC', ADMIN: 'System Administrator',
   };
+  // Rule-engine actor (Order Sederhana, AR-13). Non-enumerable: never offered as a login role or assignable role.
+  Object.defineProperty(HAWK.ROLE_LABEL, 'SYSTEM', { value: 'Sistem (aturan otomatis)', enumerable: false });
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -165,7 +165,7 @@
       const simDoc = L.sd || 'MRF';
       const simAmt = L.sa === undefined ? 3500000 : +L.sa;
       const sim = ctx.S.routeSim(s, simDoc, simAmt, !!L.so);
-      const simDocs = U.uniq(s.approvalRules.filter((r) => r.doc !== 'MRF_EXCEPTION').map((r) => r.doc));
+      const simDocs = U.uniq(s.approvalRules.filter((r) => !['MRF_EXCEPTION', 'AUTO_ORDER'].includes(r.doc)).map((r) => r.doc));
       return `<div class="stack">
         ${pend.length ? `<div class="card" style="border-color:var(--gold)"><div class="card-head"><h3>Draft revisi menunggu terbit (${pend.length})</h3><span class="r">${ui.intBadge('NEW INTEGRATION REQUIRED')}</span></div>
           ${pend.map((r) => `<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding:10px 0;gap:10px;flex-wrap:wrap"><div><b>${r.id} · ${esc(r.name)}</b>
@@ -176,13 +176,13 @@
         [
           { h: 'Aturan', f: (r) => `<b>${esc(r.name)}</b> <span class="tiny muted">v${r.version || 1}</span>${r.pending ? ' <span class="badge warn">draft revisi</span>' : ''}<div class="tiny muted">${r.id} · ${esc(r.condition)}</div>${r.policy ? `<div class="tiny" style="color:var(--warn)">${esc(r.policy)}</div>` : ''}` },
           { h: 'Dokumen', f: (r) => `<span class="badge">${r.doc}</span>` },
-          { h: 'Min (Rp)', num: true, f: (r) => (can ? `<input class="qty" style="width:110px" type="number" id="ar-min-${r.id}" value="${r.min}">` : U.rp(r.min)) },
-          { h: 'Maks (Rp)', num: true, f: (r) => (can ? `<input class="qty" style="width:110px" type="number" id="ar-max-${r.id}" value="${r.max === null ? '' : r.max}" placeholder="∞">` : r.max === null ? '∞' : U.rp(r.max)) },
+          { h: 'Min (Rp)', num: true, f: (r) => (can && r.doc !== 'AUTO_ORDER' ? `<input class="qty" style="width:110px" type="number" id="ar-min-${r.id}" value="${r.min}">` : U.rp(r.min)) },
+          { h: 'Maks (Rp)', num: true, f: (r) => (can && r.doc !== 'AUTO_ORDER' ? `<input class="qty" style="width:110px" type="number" id="ar-max-${r.id}" value="${r.max === null ? '' : r.max}" placeholder="∞">` : r.max === null ? '∞' : U.rp(r.max)) },
           { h: 'Rantai approval', f: (r) => `<div class="row" style="gap:4px">${chainB(r.chain)}${r.postApproval ? ` <span class="badge warn">susulan ${esc(HAWK.ROLE_LABEL[r.postApproval])}</span>` : ''}</div>` },
-          { h: 'SLA', num: true, f: (r) => (can ? `<input class="qty" style="width:60px" type="number" id="ar-sla-${r.id}" value="${r.slaHours}">` : r.slaHours) + ' jam' },
+          { h: 'SLA', num: true, f: (r) => (can && r.doc !== 'AUTO_ORDER' ? `<input class="qty" style="width:60px" type="number" id="ar-sla-${r.id}" value="${r.slaHours}">` : r.slaHours) + ' jam' },
           { h: 'Eskalasi', f: (r) => esc(HAWK.ROLE_LABEL[r.escalateTo] || '—') },
-          { h: 'Aktif', f: (r) => (can ? `<input type="checkbox" id="ar-act-${r.id}" ${r.active ? 'checked' : ''}>` : r.active ? '✓' : '—') },
-          { h: '', f: (r) => (can ? `<button class="btn sm" data-a="save" data-p="${r.id}">Simpan draft</button>` : '') },
+          { h: 'Aktif', f: (r) => (can && r.doc !== 'AUTO_ORDER' ? `<input type="checkbox" id="ar-act-${r.id}" ${r.active ? 'checked' : ''}>` : r.active ? '✓' : '—') },
+          { h: '', f: (r) => (r.doc === 'AUTO_ORDER' ? '<span class="tiny muted">Atur di kartu Order Otomatis ↑</span>' : can ? `<button class="btn sm" data-a="save" data-p="${r.id}">Simpan draft</button>` : '') },
         ],
         list
       )}<p class="tiny muted" style="margin:8px 0 0">Perubahan disimpan sebagai <b>draft revisi</b>; versi aktif tetap berlaku sampai Owner menerbitkan (maker ≠ checker, pola dari referensi Modul B). Dokumen yang sedang berjalan mempertahankan rantai saat diajukan. Tingkat nilai MRF dari Board B; rantai budget dari referensi Modul D. Field APPROVE STATUS / APPROVED BY ada di PR & PO HAWK ${ui.intBadge('TO VERIFY')}.</p></div>

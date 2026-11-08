@@ -1,10 +1,9 @@
 # DEPLOY KE VERCEL — tanpa GitHub, tanpa database
 
-**Paket:** `HAWK_JAENS_60NV_VERCEL_READY.zip` · **Target:** `https://preview-furchasing.jaens.id` · **Data:** DEMO di browser, Mock adapter, tanpa database, tanpa API HAWK.
+**Paket:** `HAWK_JAENS_60NV_VERCEL_READY.zip` · **Target:** `https://preview.hawk.jaens.id` · **Data:** DEMO di browser, Mock adapter, tanpa database, tanpa API HAWK.
 
 > ⚠️ **Domain belum aktif.** Belum ada deployment, record DNS, atau sertifikat SSL. Jangan bagikan domain sebelum semua cek di langkah 5 lulus.
 >
-> ⚠️ **Ejaan subdomain.** Permintaan tertulis `preview-furchasing` ("f"). Bila yang dimaksud `preview-purchasing`, pakai nama itu di semua langkah di bawah. File di paket tidak perlu diubah.
 
 ## Isi paket
 
@@ -50,14 +49,14 @@ Saya belum dapat memastikan dari dokumentasi Vercel bahwa upload drag-and-drop m
 2. Buka URL deployment di jendela private. **Harus muncul dialog login.**
 3. Bila halaman langsung terbuka tanpa login, **jangan bagikan URL itu**. Pilih salah satu: deploy ulang lewat CLI (langkah 2), atau aktifkan Settings › Deployment Protection › **Password Protection** (fitur berbayar Vercel) untuk semua deployment termasuk custom domain.
 
-## 4. Hubungkan domain `preview-furchasing.jaens.id`
+## 4. Hubungkan domain `preview.hawk.jaens.id`
 
-1. Project › Settings › **Domains** › Add › `preview-furchasing.jaens.id`.
+1. Project › Settings › **Domains** › Add › `preview.hawk.jaens.id`.
 2. Di pengelola DNS `jaens.id`, buat record **persis seperti yang ditampilkan Vercel** di halaman Domains. Umumnya:
 
    | Type | Name / Host | Value | TTL |
    |---|---|---|---|
-   | CNAME | `preview-furchasing` | `cname.vercel-dns.com` (atau nilai khusus proyek dari Vercel) | 300 |
+   | CNAME | `preview.hawk` | `cname.vercel-dns.com` (atau nilai khusus proyek dari Vercel) | 300 |
 
    - Bila DNS `jaens.id` di Cloudflare: set record ini **DNS only** (awan abu-abu).
    - Jangan ada record A/AAAA lain untuk nama yang sama.
@@ -67,11 +66,11 @@ Saya belum dapat memastikan dari dokumentasi Vercel bahwa upload drag-and-drop m
 ## 5. Verifikasi sebelum domain diumumkan
 
 ```bash
-dig +short CNAME preview-furchasing.jaens.id                       # → cname.vercel-dns.com. (atau nilai Vercel)
-echo | openssl s_client -connect preview-furchasing.jaens.id:443 -servername preview-furchasing.jaens.id 2>/dev/null | openssl x509 -noout -subject -dates
-curl -sI https://preview-furchasing.jaens.id/ | grep -iE '^HTTP|www-authenticate'           # → 401 + WWW-Authenticate
-curl -sI -u 'aji:<password>' https://preview-furchasing.jaens.id/ | grep -iE '^HTTP|content-security'   # → 200 + CSP
-curl -sI https://preview-furchasing.jaens.id/assets/js/core/seed.js | head -1                # → 401 (aset juga terkunci)
+dig +short CNAME preview.hawk.jaens.id                       # → cname.vercel-dns.com. (atau nilai Vercel)
+echo | openssl s_client -connect preview.hawk.jaens.id:443 -servername preview.hawk.jaens.id 2>/dev/null | openssl x509 -noout -subject -dates
+curl -sI https://preview.hawk.jaens.id/ | grep -iE '^HTTP|www-authenticate'           # → 401 + WWW-Authenticate
+curl -sI -u 'aji:<password>' https://preview.hawk.jaens.id/ | grep -iE '^HTTP|content-security'   # → 200 + CSP
+curl -sI https://preview.hawk.jaens.id/assets/js/core/seed.js | head -1                # → 401 (aset juga terkunci)
 ```
 
 Di browser (desktop, iPad, HP): login → Beranda NV-01 → buka `…/#/nv/23` lalu tekan **Refresh** (layar yang sama harus tampil) → Walkthrough Owner berjalan → tidak ada error di console.

@@ -19,7 +19,7 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
   const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
   ok('dist/index.html tanpa inline script (CSP script-src self)', !/<script>(?!<\/script>)/.test(html) && html.includes('assets/js/boot.js?v='));
   const refs = [...html.matchAll(/(?:src|href)="(assets\/[^"?]+)\?v=/g)].map((m) => m[1]);
-  ok('Semua 23 aset (CSS + 22 JS) direferensikan & ada di dist', refs.length === 23 && refs.every((r) => fs.existsSync(path.join(dist, r))), refs.length);
+  ok('Semua 24 aset (CSS + 23 JS) direferensikan & ada di dist', refs.length === 24 && refs.every((r) => fs.existsSync(path.join(dist, r))), refs.length);
   ok('noindex meta + robots.txt', html.includes('noindex') && fs.readFileSync(path.join(dist, 'robots.txt'), 'utf8').includes('Disallow: /'));
   ok('Tidak ada URL eksternal di build', !/https?:\/\//.test(html + fs.readFileSync(path.join(dist, 'assets/css/hawk.css'), 'utf8')));
   ok('Tidak ada kredensial di source/build', !/PREVIEW_CREDENTIALS\s*=\s*"[^"<]/.test(fs.readFileSync(path.join(root, 'wrangler.toml'), 'utf8')) && !fs.readFileSync(path.join(root, 'vercel.json'), 'utf8').includes('PREVIEW_CREDENTIALS'));
@@ -36,7 +36,7 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
   ok('Vercel-ready: output = public, tanpa build command, tanpa script build', rvj.outputDirectory === 'public' && !rvj.buildCommand && !(rpk.scripts && rpk.scripts.build));
   { const rc = ['blurry', 'duplicate', 'emergency', 'handwritten', 'overbudget', 'po-invoice', 'printed', 'reimburse', 'unpaid'].map((k) => 'assets/img/receipts/' + k + '.svg');
     ok('9 nota contoh DEMO ikut di dist & paket Vercel', rc.every((r) => fs.existsSync(path.join(dist, r)) && fs.existsSync(path.join(rel, 'public', r)))); }
-  ok('Vercel-ready: public/ = build dist (index + 23 aset)', fs.readFileSync(path.join(rel, 'public/index.html'), 'utf8') === fs.readFileSync(path.join(dist, 'index.html'), 'utf8') && refs.every((r) => fs.existsSync(path.join(rel, 'public', r))));
+  ok('Vercel-ready: public/ = build dist (index + 24 aset)', fs.readFileSync(path.join(rel, 'public/index.html'), 'utf8') === fs.readFileSync(path.join(dist, 'index.html'), 'utf8') && refs.every((r) => fs.existsSync(path.join(rel, 'public', r))));
   ok('Vercel-ready: middleware sama dengan source, runtime nodejs, CSP sama', fs.readFileSync(path.join(rel, 'middleware.js'), 'utf8') === fs.readFileSync(path.join(root, 'middleware.js'), 'utf8') && /runtime: 'nodejs'/.test(fs.readFileSync(path.join(rel, 'middleware.js'), 'utf8')) && rvj.headers[0].headers.find((h) => h.key === 'Content-Security-Policy').value === CSP);
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
   const leak = walk(rel).filter((f) => /\.(js|json|html|css|md)$/.test(f)).filter((f) => /(api[_-]?key|secret[_-]?key|sk-[A-Za-z0-9]{16}|password\s*[:=]\s*["'][^"'<]{6,}|@gmail\.com|supabase\.co)/i.test(fs.readFileSync(f, 'utf8')));
@@ -45,7 +45,7 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
   console.log('Access control — Cloudflare Pages middleware');
   const cf = await import(path.join(root, 'functions/_middleware.js'));
   const nextOk = async () => new Response('APP', { status: 200 });
-  const run = (env, auth, p = '/') => cf.onRequest({ request: new Request('https://preview-furchasing.jaens.id' + p, { headers: auth ? { authorization: auth } : {} }), env, next: nextOk });
+  const run = (env, auth, p = '/') => cf.onRequest({ request: new Request('https://preview.hawk.jaens.id' + p, { headers: auth ? { authorization: auth } : {} }), env, next: nextOk });
   ok('Tanpa konfigurasi → 503 (fail closed)', (await run({}, 'Basic ' + b64('aji:Preview-Demo-2026!'))).status === 503);
   ok('Password < 12 karakter diabaikan → 503', (await run({ PREVIEW_CREDENTIALS: 'aji:pendek' }, 'Basic ' + b64('aji:pendek'))).status === 503);
   const r401 = await run({ PREVIEW_CREDENTIALS: CRED });
@@ -65,7 +65,7 @@ const CRED = 'aji:Preview-Demo-2026!,devhawk:Another-Strong-Pass';
     console.log('  (lewati: @vercel/functions belum ter-install — jalankan npm install) ' + e.message.split('\n')[0]);
   }
   if (vm) {
-    const vrun = (cred, auth) => { process.env.PREVIEW_CREDENTIALS = cred || ''; return vm.default(new Request('https://preview-furchasing.jaens.id/', { headers: auth ? { authorization: auth } : {} })); };
+    const vrun = (cred, auth) => { process.env.PREVIEW_CREDENTIALS = cred || ''; return vm.default(new Request('https://preview.hawk.jaens.id/', { headers: auth ? { authorization: auth } : {} })); };
     ok('Vercel: tanpa konfigurasi → 503', vrun('', 'Basic ' + b64('aji:Preview-Demo-2026!')).status === 503);
     ok('Vercel: tanpa login → 401', vrun(CRED).status === 401);
     const v = vrun(CRED, 'Basic ' + b64('aji:Preview-Demo-2026!'));

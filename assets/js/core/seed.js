@@ -34,7 +34,7 @@
 
   function seed() {
     const s = {
-      meta: { version: '0.9.0-demo', schema: 4, seq: {}, clock: 0, demoDate: '2026-11-08', period: '2026-11' },
+      meta: { version: '0.9.0-demo', schema: 5, seq: {}, clock: 0, demoDate: '2026-11-08', period: '2026-11' },
       sevenP: SEVEN_P,
       season: SEASON,
     };
@@ -107,6 +107,7 @@
       { id: 'AR-09', doc: 'BUDGET', name: 'Budget tahunan BU', condition: 'Draft → Head Review (Head of Division / BU Manager) → Finance Review → Owner Review → Locked (Modul D)', min: 0, max: null, chain: ['HEAD_DIV', 'FINANCE', 'OWNER'], escalateTo: null, slaHours: 120, active: true },
       { id: 'AR-10', doc: 'BILL', name: 'Verifikasi tagihan (AP)', condition: 'Three-way match lolos / selisih dijelaskan', min: 0, max: null, chain: ['FINANCE'], escalateTo: 'BU_MANAGER', slaHours: 48, active: true },
       { id: 'AR-11', doc: 'PAYMENT', name: 'Otorisasi pembayaran', condition: 'Semua pembayaran — AI tidak pernah menyetujui', min: 0, max: null, chain: ['FINANCE'], escalateTo: 'OWNER', slaHours: 48, active: true },
+      { id: 'AR-13', doc: 'AUTO_ORDER', name: 'Order sederhana otomatis (aturan, bukan AI)', condition: 'Barang rutin + supplier default + dalam budget item 7P bulan berjalan + nilai ≤ Rp 5 jt → approval, PO & kirim supplier otomatis. Selain itu → rantai manual.', min: 0, max: 5000000, chain: ['SYSTEM'], escalateTo: 'SUPERVISOR', slaHours: 1, active: true, policy: 'Batas DEMO — keputusan Owner. Manusia hanya: pesan, konfirmasi terima, konfirmasi bayar.' },
       { id: 'AR-12', doc: 'INVESTMENT', name: 'Investasi / proyek strategis', condition: 'Semua proposal investasi', min: 0, max: null, chain: ['BU_MANAGER', 'OWNER'], escalateTo: null, slaHours: 168, active: true },
     ];
 

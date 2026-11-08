@@ -1,10 +1,9 @@
 # Panduan Deployment & Custom Domain — HAWK × JAENS Preview
 
-**Target:** `https://preview-furchasing.jaens.id` · **Isi:** prototipe 60 NV (modul A–J), data DEMO, Mock Adapter · **Untuk:** developer JAENS / HAWK
+**Target:** `https://preview.hawk.jaens.id` · **Isi:** prototipe 60 NV (modul A–J), data DEMO, Mock Adapter · **Untuk:** developer JAENS / HAWK
 
 > ⚠️ **Status domain saat paket ini dibuat: BELUM AKTIF.** Belum ada deployment, record DNS, atau sertifikat SSL yang dibuat. Domain baru boleh diumumkan setelah semua cek di §6 lulus.
 >
-> ⚠️ **Periksa ejaan subdomain.** Permintaan tertulis `preview-furchasing` ("f"). Bila yang dimaksud `preview-purchasing`, gunakan nama itu secara konsisten di DNS, di dashboard hosting, dan di `PREVIEW_DOMAIN` saat build (`PREVIEW_DOMAIN=preview-purchasing.jaens.id node tools/build.js`). Selain itu tidak ada yang perlu diubah.
 
 ---
 
@@ -66,20 +65,20 @@ Jalankan dari root folder paket, supaya folder `functions/` ikut ter-deploy.
 - Variables and Secrets: tambah `PREVIEW_CREDENTIALS` (Encrypt) untuk Production **dan** Preview.
 
 ### 3b. Custom domain
-1. Pages › `hawk-jaens-preview` › **Custom domains** › *Set up a custom domain* › `preview-furchasing.jaens.id`. Tambahkan di sini **dulu** sebelum membuat CNAME, karena CNAME tanpa langkah ini menghasilkan error 522.
+1. Pages › `hawk-jaens-preview` › **Custom domains** › *Set up a custom domain* › `preview.hawk.jaens.id`. Tambahkan di sini **dulu** sebelum membuat CNAME, karena CNAME tanpa langkah ini menghasilkan error 522.
 2. DNS:
    - **Zona `jaens.id` di Cloudflare:** record dibuat otomatis (CNAME proxied).
    - **DNS di provider lain:** buat record berikut.
 
      | Type | Name / Host | Target / Value | TTL |
      |---|---|---|---|
-     | CNAME | `preview-furchasing` | `hawk-jaens-preview.pages.dev` | 300 / Auto |
+     | CNAME | `preview.hawk` | `hawk-jaens-preview.pages.dev` | 300 / Auto |
 
 3. SSL diterbitkan otomatis oleh Cloudflare setelah validasi, biasanya beberapa menit (maksimal 24 jam). Status harus menjadi **Active** di halaman Custom domains.
 
 ### 3c. Cloudflare Access (opsional, kuat)
 Zero Trust › Access › Applications › Add › **Self-hosted**:
-- Domain: `preview-furchasing.jaens.id`
+- Domain: `preview.hawk.jaens.id`
 - Policy: *Allow* untuk *Emails* yang ditentukan (atau *Emails ending in* `@jaens.id`)
 - Login method: One-time PIN
 
@@ -94,12 +93,12 @@ Ini hanya bekerja bila hostname diproksi Cloudflare (zona di Cloudflare). Aktifk
 4. Settings › Deployment Protection › **Standard Protection** (melindungi URL `*.vercel.app`).
 
 ### 4b. Custom domain
-1. Settings › **Domains** › Add › `preview-furchasing.jaens.id`.
+1. Settings › **Domains** › Add › `preview.hawk.jaens.id`.
 2. Buat CNAME di DNS `jaens.id` **persis seperti nilai yang ditampilkan Vercel** di halaman Domains. Umumnya:
 
    | Type | Name / Host | Target / Value | TTL |
    |---|---|---|---|
-   | CNAME | `preview-furchasing` | `cname.vercel-dns.com` (atau nilai khusus proyek yang ditampilkan Vercel) | 300 |
+   | CNAME | `preview.hawk` | `cname.vercel-dns.com` (atau nilai khusus proyek yang ditampilkan Vercel) | 300 |
 
 3. Bila `jaens.id` dikelola Cloudflare, set record ini **DNS only** (awan abu-abu) supaya Vercel dapat menerbitkan sertifikat.
 4. SSL (Let's Encrypt) diterbitkan otomatis setelah DNS valid. Status domain harus **Valid Configuration** tanpa peringatan.
@@ -118,23 +117,23 @@ Jalankan semua cek di bawah dan simpan hasilnya.
 
 ```bash
 # 1. DNS mengarah ke platform
-dig +short CNAME preview-furchasing.jaens.id
+dig +short CNAME preview.hawk.jaens.id
 #    → hawk-jaens-preview.pages.dev.   atau   cname.vercel-dns.com. / nilai Vercel
 #    (zona Cloudflare yang di-proxy: dig A menampilkan IP Cloudflare — itu normal)
 
 # 2. Sertifikat valid untuk hostname ini dan belum kedaluwarsa
-echo | openssl s_client -connect preview-furchasing.jaens.id:443 -servername preview-furchasing.jaens.id 2>/dev/null \
+echo | openssl s_client -connect preview.hawk.jaens.id:443 -servername preview.hawk.jaens.id 2>/dev/null \
   | openssl x509 -noout -subject -issuer -dates -ext subjectAltName
 
 # 3. Tanpa login ditolak (BUKAN 200, BUKAN 503)
-curl -sI https://preview-furchasing.jaens.id/ | grep -iE '^HTTP|www-authenticate'
+curl -sI https://preview.hawk.jaens.id/ | grep -iE '^HTTP|www-authenticate'
 #    → HTTP/2 401  +  www-authenticate: Basic realm="HAWK x JAENS Preview (DEMO)"
 
 # 4. Dengan login: 200 + header keamanan
-curl -sI -u 'aji:<password>' https://preview-furchasing.jaens.id/ | grep -iE '^HTTP|content-security-policy|strict-transport|x-robots'
+curl -sI -u 'aji:<password>' https://preview.hawk.jaens.id/ | grep -iE '^HTTP|content-security-policy|strict-transport|x-robots'
 
 # 5. HTTP diarahkan ke HTTPS (Cloudflare: aktifkan SSL/TLS › Edge Certificates › Always Use HTTPS; Vercel: otomatis)
-curl -sI http://preview-furchasing.jaens.id/ | grep -iE '^HTTP|location'
+curl -sI http://preview.hawk.jaens.id/ | grep -iE '^HTTP|location'
 ```
 
 Cek manual di browser:

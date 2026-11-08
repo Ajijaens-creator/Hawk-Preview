@@ -85,7 +85,7 @@ console.log(`docs: SCREEN_MATRIX.csv (${H.SCREENS.length} NV), ROLE_PERMISSION_M
 {
   const tdir = path.join(__dirname, '../tests');
   const wf = fs.readFileSync(path.join(tdir, 'workflow.test.js'), 'utf8');
-  const e2e = ['e2e-walkthrough.js', 'e2e-smart-spend.js'].filter((f) => fs.existsSync(path.join(tdir, f))).map((f) => fs.readFileSync(path.join(tdir, f), 'utf8')).join('\n');
+  const e2e = ['e2e-walkthrough.js', 'e2e-smart-spend.js', 'e2e-simple-order.js'].filter((f) => fs.existsSync(path.join(tdir, f))).map((f) => fs.readFileSync(path.join(tdir, f), 'utf8')).join('\n');
   const testedOps = new Set([...wf.matchAll(/call\('([a-zA-Z]+\.[a-zA-Z]+)'/g)].map((m) => m[1]));
   const e2eNv = new Set([1, ...[...e2e.matchAll(/go\((\d+)/g)].map((m) => +m[1])]);
   const viewNv = new Set();

@@ -97,6 +97,9 @@
       }
       if (m.status === 'REVISION' && m.requester === u.id) add({ type: 'MRF', ref: m.id, unit: S.orgName(s, m.branch), title: 'Perbaiki & kirim ulang', status: m.status, nv: 27, kind: 'revision' });
     });
+    // Order Sederhana: only two human tasks exist — "Barang diterima" (requester/unit) and "Sudah dibayar" (Finance)
+    s.mrfs.filter((m) => m.simple && m.status === 'IN_FULFILLMENT' && (m.requester === u.id || (role === 'STAFF' && u.scope.includes(m.branch))) && S.simpleStage(s, m).key === 'ARRIVE').forEach((m) => add({ type: 'PESANAN', ref: m.id, unit: S.orgName(s, m.branch), title: 'Konfirmasi barang sudah diterima', value: S.mrfValue(s, m), status: 'ARRIVE', nv: 24, kind: 'receive' }));
+    if (role === 'FINANCE' && HAWK.payQueue) HAWK.payQueue(s).forEach((po) => add({ type: 'BAYAR', ref: po.id, unit: S.supplierName(s, po.supplier), title: 'Konfirmasi sudah dibayar (order otomatis)', value: S.poPayState(s, po).rest, status: po.status, nv: 50, kind: 'paid' }));
     if (role === 'PURCHASING') {
       const p = S.pendingPurchase(s);
       if (p.length) add({ type: 'PEMBELIAN', ref: p.map((x) => x.mrf).filter((v, i, a) => a.indexOf(v) === i).join(', '), unit: 'Purchasing HQ', title: `${p.length} kebutuhan disetujui belum ber-PO`, status: 'AWAITING_PO', nv: 32, kind: 'consolidate' });

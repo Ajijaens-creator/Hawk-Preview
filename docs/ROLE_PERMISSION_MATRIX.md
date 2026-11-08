@@ -18,7 +18,7 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | NV-06 | Branch, Office & Division Management | ✓ |  |  |  |  |  |  |  |  | ✓ |
 | NV-07 | Cost Center & Shared Office Allocation | ✓ | ✓ |  |  |  |  |  | ✓ |  | ✓ |
 | NV-08 | User, Role & Access Management | ✓ |  |  |  |  |  |  |  |  | ✓ |
-| NV-09 | Approval Matrix & Rules Configuration | ✓ |  |  |  |  |  |  |  |  | ✓ |
+| NV-09 | Approval Matrix & Rules Configuration | ✓ |  |  |  |  |  |  | ✓ |  | ✓ |
 | NV-10 | Annual Target Planning: Spa & Essence | ✓ | ✓ | ✓ |  |  |  |  | ✓ |  |  |
 | NV-11 | BU Business Driver Tree & KPI Targets | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |
 | NV-12 | Operational vs Innovation Portfolio | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |
@@ -104,6 +104,10 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `mrf.planFulfillment` | tulis | E | E | E | E |  |  | E |  |  |  |
 | `mrf.issue` | tulis |  |  |  | E |  |  | E |  |  |  |
 | `mrf.cancel` | tulis |  |  |  | E | E |  |  |  |  | E |
+| `autoOrder.update` | tulis | E |  |  |  |  |  |  | E |  | E |
+| `order.quick` | tulis |  | E | E | E | E |  |  |  | E | E |
+| `order.receive` | tulis |  | E | E | E | E |  | E |  | E | E |
+| `order.pay` | tulis |  |  |  |  |  |  |  | E |  |  |
 | `supplier.list` | baca | B | B | B | B | B | B | B | B | B | B |
 | `quotation.compare` | baca | B | B |  |  |  | B |  | B |  |  |
 | `po.createFromMrf` | tulis |  |  |  |  |  | E |  |  |  |  |

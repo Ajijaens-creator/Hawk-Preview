@@ -28,7 +28,7 @@
   S.wh = (s, id) => s.warehouses.find((w) => w.id === id);
   S.whName = (s, id) => (S.wh(s, id) || {}).name || id;
   S.user = (s, id) => s.users.find((u) => u.id === id);
-  S.userName = (s, id) => (S.user(s, id) || {}).name || id || '—';
+  S.userName = (s, id) => (id === 'SYS-RULE' ? 'Sistem (aturan AR-13)' : (S.user(s, id) || {}).name || id || '—');
   S.supplier = (s, id) => s.suppliers.find((x) => x.id === id);
   S.supplierName = (s, id) => (S.supplier(s, id) || {}).name || id;
   S.buOf = (s, orgId) => {
@@ -1237,8 +1237,9 @@
     need(b.status === 'APPROVED', 'STATE', 'Tagihan belum disetujui');
     need(p.confirm === true, 'CONFIRM', 'Pembayaran butuh konfirmasi eksplisit manusia');
     const pid = 'PY-2611-' + String(s.payments.length + 1).padStart(4, '0');
-    s.payments.unshift({ id: pid, bill: b.id, amount: b.total, date: s.meta.demoDate, method: 'Transfer bank (SIMULASI — tidak ada dana keluar)', status: 'PAID', by: ctx.user.id });
-    journal(s, ctx, b.id, 'PAYMENT', [{ acc: '2110 Utang Usaha', cc: 'CC-OFC-FIN', dr: b.total, cr: 0 }, { acc: '1110 Bank (DEMO)', cc: 'CC-OFC-FIN', dr: 0, cr: b.total }], 'Pembayaran ' + b.invoiceNo);
+    const amt = b.total - (b.advanceApplied || 0); // part already covered by an advance never leaves the bank twice
+    s.payments.unshift({ id: pid, bill: b.id, amount: amt, date: s.meta.demoDate, method: 'Transfer bank (SIMULASI — tidak ada dana keluar)', status: 'PAID', by: ctx.user.id });
+    journal(s, ctx, b.id, 'PAYMENT', [{ acc: '2110 Utang Usaha', cc: 'CC-OFC-FIN', dr: amt, cr: 0 }, { acc: '1110 Bank (DEMO)', cc: 'CC-OFC-FIN', dr: 0, cr: amt }], 'Pembayaran ' + b.invoiceNo);
     b.status = 'PAID';
     b.paidAt = ctx.now;
     hist(b, ctx, 'PAY', pid);
@@ -1253,6 +1254,204 @@
     j.postedAt = ctx.now;
     log(s, ctx, 'gl.post', j.id, 'Diteruskan ke HAWK Finance (simulasi)');
     return j;
+  };
+
+  /* ---- Order Sederhana (Simple Order) — rule-based automation, NOT AI ----
+     Humans act at exactly three points: (1) order, (2) "Barang diterima", (3) Finance "Sudah dibayar".
+     Everything in between is executed by the configurable rule AR-13 (NV-09) under the actor SYS-RULE,
+     using the SAME engine handlers as the manual flow. Any rule miss falls back to the manual approval chain. */
+  const SYS = { id: 'SYS-RULE', role: 'SYSTEM', name: 'Sistem — aturan otomatis AR-13', scope: [] };
+  const sys = (ctx) => ({ user: SYS, now: ctx.now, by: ctx.user });
+  const AUTO_DEFAULT = { id: 'AR-13', doc: 'AUTO_ORDER', max: 5000000, active: true };
+  S.autoRule = (s) => s.approvalRules.find((r) => r.doc === 'AUTO_ORDER') || AUTO_DEFAULT;
+  /* Which conditions an order must meet for straight-through processing. Pure read; used by UI preview and engine. */
+  S.autoOrderCheck = (s, m) => {
+    const rule = S.autoRule(s);
+    const why = [];
+    const v = S.mrfValue(s, m);
+    if (!rule.active) why.push('Aturan order otomatis (AR-13) sedang nonaktif');
+    if (m.type !== 'ROUTINE') why.push('Permintaan non-rutin');
+    m.lines.forEach((l) => {
+      const it = S.item(s, l.item);
+      if (!it) return why.push('Item tidak dikenal');
+      if (!it.routine) why.push(`${it.name} bukan barang rutin`);
+      if (!it.supplier || !S.supplier(s, it.supplier)) why.push(`${it.name} belum punya supplier default`);
+    });
+    const bc = S.mrfBudgetCheck(s, m);
+    bc.lines.forEach((x) => {
+      if (x.status === 'OVER') why.push(`${S.itemName(s, x.item)} melebihi budget bulan ini (${U.pct(x.ratio)})`);
+      if (x.status === 'NO_BUDGET') why.push(`${S.itemName(s, x.item)} belum ada budget-nya`);
+    });
+    if (rule.max !== null && v > rule.max) why.push(`Nilai ${U.rp(v)} di atas batas otomatis ${U.rp(rule.max)}`);
+    return { ok: why.length === 0, why: U.uniq(why), value: v, rule: rule.id, max: rule.max, budget: bc.status };
+  };
+  S.poPaid = (s, po) => U.sum(s.payments.filter((p) => p.po === po.id || s.bills.some((b) => b.id === p.bill && b.po === po.id)), (p) => p.amount);
+  S.poPayState = (s, po) => {
+    const total = S.poTotals(s, po).total;
+    const paid = S.poPaid(s, po);
+    return { total, paid, rest: Math.max(0, total - paid), status: paid <= 0 ? 'UNPAID' : paid + 1 >= total ? 'PAID' : 'PARTIAL' };
+  };
+  S.simplePOs = (s, m) => U.uniq(m.lines.flatMap((l) => (l.alloc || []).filter((a) => a.path === 'PURCHASE' && a.ref).map((a) => a.ref))).map((id) => s.pos.find((p) => p.id === id)).filter(Boolean);
+  S.simpleStage = (s, m) => {
+    if (['REJECTED', 'CANCELLED'].includes(m.status)) return { key: 'STOP', label: m.status === 'REJECTED' ? 'Ditolak' : 'Dibatalkan', step: -1 };
+    if (['SUBMITTED', 'ESCALATED', 'REVISION', 'DRAFT'].includes(m.status)) return { key: 'WAIT', label: 'Menunggu persetujuan ' + (HAWK.ROLE_LABEL[S.mrfNextApprover(s, m)] || 'atasan'), step: 0 };
+    if (m.status === 'FULFILLED') return { key: 'DONE', label: 'Selesai — barang sudah diterima', step: 3 };
+    const f = S.mrfFulfillment(s, m);
+    const waiting = s.transfers.some((t) => t.mrf === m.id && t.status === 'IN_TRANSIT') || S.simplePOs(s, m).some((p) => ['SENT', 'PARTIAL'].includes(p.status)) || f.ready > f.issued;
+    return waiting ? { key: 'ARRIVE', label: f.issued ? 'Sebagian diterima — sisa sedang dikirim' : 'Sedang dikirim — tekan "Barang diterima" saat sampai', step: 2 } : { key: 'PROC', label: 'Diproses', step: 1 };
+  };
+  const autoBill = (s, ctx, g, po) => {
+    // Bill = PO price × accepted qty of THIS receipt (invoice assumed equal to PO; the supplier's real invoice is still to be attached — TO VERIFY)
+    const sub = U.sum(g.lines, (gl) => gl.accepted * po.lines.find((l) => l.item === gl.item).price);
+    if (sub <= 0) return null;
+    const tax = Math.round(sub * (po.taxRate || 0));
+    const id = U.nextId(s, 'BL');
+    const sc = sys(ctx);
+    const bill = { id, supplier: po.supplier, invoiceNo: 'AUTO-' + g.id, invoiceDate: s.meta.demoDate, po: po.id, grn: g.id, doc: null, subtotal: sub, tax, total: sub + tax, status: 'APPROVED', due: '2026-12-08', matchStatus: 'MATCHED', auto: true,
+      exceptionNote: null, verifiedBy: SYS.id, approvedBy: SYS.id, note: 'Tagihan otomatis = harga PO × qty diterima. Faktur asli supplier tetap dilampirkan (TO VERIFY).', history: [] };
+    bill.journal = journal(s, sc, id, 'INVOICE_RECOGNITION', [
+      { acc: '2120 Barang Diterima Belum Ditagih (GRNI)', cc: 'CC-OFC-FIN', dr: sub, cr: 0 },
+      { acc: '1150 PPN Masukan', cc: 'CC-OFC-FIN', dr: tax, cr: 0 },
+      { acc: '2110 Utang Usaha', cc: 'CC-OFC-FIN', dr: 0, cr: sub + tax },
+    ], 'Pengakuan utang otomatis ' + po.id + ' / ' + g.id);
+    hist(bill, sc, 'AUTO_BILL', 'PO = penerimaan (2-way match otomatis), aturan AR-13');
+    s.bills.unshift(bill);
+    // apply advance payment made before the goods arrived
+    const adv = (po.prepaid || 0) - (po.prepaidApplied || 0);
+    if (adv > 0) {
+      const amt = Math.min(adv, bill.total);
+      journal(s, sc, id, 'ADVANCE_APPLY', [{ acc: '2110 Utang Usaha', cc: 'CC-OFC-FIN', dr: amt, cr: 0 }, { acc: '1160 Uang Muka Pembelian (DEMO)', cc: 'CC-OFC-FIN', dr: 0, cr: amt }], 'Kompensasi uang muka ' + po.id);
+      po.prepaidApplied = (po.prepaidApplied || 0) + amt;
+      bill.advanceApplied = amt;
+      if (amt + 1 >= bill.total) {
+        bill.status = 'PAID';
+        bill.paidAt = ctx.now;
+      }
+      hist(bill, sc, 'ADVANCE_APPLIED', U.rp(amt));
+    }
+    return bill;
+  };
+  /* AR-13 settings — editable by Finance, Super Admin (ADMIN) and Owner (Owner decision 8 Nov 2026). Applies to NEW orders only. */
+  H['autoOrder.update'] = (s, p, ctx) => {
+    need(['FINANCE', 'ADMIN', 'OWNER'].includes(ctx.user.role), 'FORBIDDEN', 'Hanya Finance, Super Admin, atau Owner');
+    let r = s.approvalRules.find((x) => x.doc === 'AUTO_ORDER');
+    if (!r) {
+      r = { ...AUTO_DEFAULT, name: 'Order sederhana otomatis', condition: '', min: 0, chain: ['SYSTEM'], slaHours: 1 };
+      s.approvalRules.push(r);
+    }
+    const max = p.max === undefined ? r.max : p.max === null ? null : Math.round(+p.max);
+    need(max !== null && Number.isFinite(max) && max >= 0 && max <= 25000000, 'VALIDATION', 'Batas harus Rp0 – Rp25.000.000 (di atas itu wajib rantai BU Manager/Owner)');
+    need(p.note && p.note.trim().length >= 5, 'VALIDATION', 'Alasan perubahan wajib (min. 5 karakter)');
+    const before = { active: r.active, max: r.max };
+    const after = { active: p.active === undefined ? r.active : !!p.active, max };
+    need(before.active !== after.active || before.max !== after.max, 'VALIDATION', 'Tidak ada perubahan');
+    Object.assign(r, after);
+    r.version = (r.version || 1) + 1;
+    r.changes = r.changes || [];
+    r.changes.unshift({ ts: ctx.now, by: ctx.user.id, role: ctx.user.role, before, after, note: p.note.trim() });
+    log(s, ctx, 'autoOrder.update', r.id, `v${r.version}: ${before.active ? 'aktif' : 'nonaktif'} ${U.rp(before.max)} → ${after.active ? 'aktif' : 'nonaktif'} ${U.rp(after.max)} — ${p.note.trim()}`);
+    return r;
+  };
+  H['order.quick'] = (s, p, ctx) => {
+    const m = H['mrf.create'](s, { branch: p.branch, type: 'ROUTINE', purpose: p.purpose || 'Operasional harian', memo: p.memo || 'Order sederhana', lines: p.lines }, ctx);
+    m.simple = true;
+    const chk = S.autoOrderCheck(s, m);
+    m.autoCheck = { ok: chk.ok, why: chk.why, value: chk.value, rule: chk.rule, max: chk.max };
+    const sc = sys(ctx);
+    if (!chk.ok) {
+      hist(m, sc, 'AUTO_CHECK', 'Tidak lolos aturan otomatis → approval manual: ' + chk.why.join('; '));
+      log(s, sc, 'order.quick', m.id, 'Pengecualian → rantai manual ' + m.chain.join(' → '));
+      return m;
+    }
+    m.chain = ['SYSTEM'];
+    m.rule = chk.rule;
+    m.approvals = [{ by: SYS.id, role: 'SYSTEM', ts: ctx.now, note: `Auto-approve ${chk.rule}: rutin, dalam budget 7P, ≤ ${U.rp(chk.max)}` }];
+    m.status = 'APPROVED';
+    hist(m, sc, 'AUTO_APPROVE', m.approvals[0].note);
+    H['mrf.planFulfillment'](s, { id: m.id }, sc);
+    s.transfers.filter((t) => t.mrf === m.id && t.status === 'REQUESTED').forEach((t) => {
+      H['transfer.dispatch'](s, { id: t.id }, sc);
+      t.auto = true;
+    });
+    const rows = S.pendingPurchase(s).filter((r) => r.mrf === m.id);
+    const bySup = {};
+    rows.forEach((r) => (bySup[r.supplier] = bySup[r.supplier] || []).push({ mrf: r.mrf, li: r.li, ai: r.ai }));
+    Object.entries(bySup).forEach(([sup, picks]) => {
+      const po = H['po.createFromMrf'](s, { picks, supplier: sup, memo: 'Order sederhana ' + m.id + ' (otomatis AR-13)' }, sc);
+      po.auto = true;
+      H['po.submit'](s, { id: po.id }, sc);
+      po.approvals = po.chain.map(() => ({ by: SYS.id, role: 'SYSTEM', ts: ctx.now }));
+      po.status = 'APPROVED';
+      po.approvedBy = SYS.id;
+      hist(po, sc, 'AUTO_APPROVE', `${chk.rule}: harga dari penawaran/master, total ${U.rp(S.poTotals(s, po).total)}`);
+      H['po.send'](s, { id: po.id }, sc);
+    });
+    log(s, sc, 'order.quick', m.id, `Otomatis: ${rows.length} baris beli, ${s.transfers.filter((t) => t.mrf === m.id).length} transfer`);
+    return m;
+  };
+  H['order.receive'] = (s, p, ctx) => {
+    const m = get(s.mrfs, p.id, 'Pesanan');
+    need(m.status === 'IN_FULFILLMENT', 'STATE', 'Pesanan belum disetujui atau sudah selesai');
+    if (ctx.user.role === 'STAFF') need(m.requester === ctx.user.id || ctx.user.scope.includes(m.branch), 'FORBIDDEN', 'Hanya pemesan / staf unit ini');
+    const sc = sys(ctx);
+    const got = {}; // item → qty physically received now (default: everything expected)
+    (p.lines || []).forEach((l) => {
+      need(Number.isInteger(+l.received) && +l.received >= 0 && (+l.damaged || 0) >= 0 && (+l.damaged || 0) <= +l.received, 'VALIDATION', 'Qty diterima/rusak tidak valid');
+      got[l.item] = { received: +l.received, damaged: +l.damaged || 0 };
+    });
+    // stock already at the outlet (local reservation) or arriving by internal transfer counts first; the rest is the supplier delivery
+    m.lines.forEach((l) => {
+      if (!got[l.item]) return;
+      const nonPo = U.sum(l.alloc.filter((a) => a.path !== 'PURCHASE'), (a) => a.qty - a.issuedQty);
+      got[l.item].received = Math.max(0, got[l.item].received - nonPo);
+    });
+    s.transfers.filter((t) => t.mrf === m.id && t.status === 'IN_TRANSIT').forEach((t) => H['transfer.receive'](s, { id: t.id }, ctx));
+    S.simplePOs(s, m).filter((po) => ['SENT', 'PARTIAL'].includes(po.status)).forEach((po) => {
+      const lines = po.lines.map((l) => {
+        const out = l.qty - l.received;
+        const g = got[l.item];
+        const rec = g ? Math.min(out, Math.max(0, g.received)) : out;
+        if (g) g.received -= rec;
+        return { received: rec, damaged: g ? Math.min(rec, g.damaged) : 0, note: p.note || '' };
+      });
+      if (!U.sum(lines, (l) => l.received)) return;
+      const g = H['grn.receive'](s, { po: po.id, lines, docs: ['Konfirmasi "Barang diterima" oleh ' + ctx.user.name] }, ctx);
+      H['grn.post'](s, { id: g.id }, sc);
+      const wh = S.wh(s, g.wh);
+      const bins = {};
+      g.lines.forEach((gl, i) => (bins[i] = (S.stock(s, g.wh, gl.item) || {}).bin || wh.bins.find((b) => !/RCV/.test(b)) || wh.bins[0]));
+      H['grn.putaway'](s, { id: g.id, bins }, sc);
+      if (po.auto) autoBill(s, ctx, g, po);
+    });
+    const f = S.mrfFulfillment(s, m);
+    need(f.ready > f.issued, 'NOTHING_READY', 'Belum ada barang yang bisa dikonfirmasi diterima');
+    H['mrf.issue'](s, { id: m.id }, sc);
+    hist(m, ctx, 'RECEIVED_BY_REQUESTER', p.note || 'Barang diterima');
+    log(s, ctx, 'order.receive', m.id, `Diterima ${ctx.user.name}; ${m.status}`);
+    return m;
+  };
+  H['order.pay'] = (s, p, ctx) => {
+    need(p.confirm === true, 'CONFIRM', 'Pembayaran butuh konfirmasi eksplisit manusia');
+    const po = get(s.pos, p.po, 'PO');
+    need(['SENT', 'PARTIAL', 'RECEIVED'].includes(po.status), 'STATE', 'PO belum dikirim ke supplier');
+    const st = S.poPayState(s, po);
+    need(st.rest > 0, 'DUPLICATE', 'PO ini sudah lunas — tidak bisa dibayar dua kali');
+    let paid = 0;
+    s.bills.filter((b) => b.po === po.id && b.status === 'APPROVED').forEach((b) => {
+      H['bill.pay'](s, { id: b.id, confirm: true }, ctx);
+      paid += s.payments.find((x) => x.bill === b.id).amount;
+    });
+    const rest = S.poPayState(s, po).rest;
+    if (rest > 0) {
+      const pid = 'PY-2611-' + String(s.payments.length + 1).padStart(4, '0');
+      s.payments.unshift({ id: pid, po: po.id, bill: null, amount: rest, date: s.meta.demoDate, method: 'Transfer bank (SIMULASI — tidak ada dana keluar)', status: 'PAID', kind: 'ADVANCE', by: ctx.user.id });
+      journal(s, ctx, po.id, 'ADVANCE_PAYMENT', [{ acc: '1160 Uang Muka Pembelian (DEMO)', cc: 'CC-OFC-FIN', dr: rest, cr: 0 }, { acc: '1110 Bank (DEMO)', cc: 'CC-OFC-FIN', dr: 0, cr: rest }], 'Uang muka ' + po.id + ' (barang belum/sebagian diterima)');
+      po.prepaid = (po.prepaid || 0) + rest;
+      paid += rest;
+    }
+    hist(po, ctx, 'PAID_CONFIRMED', `${U.rp(paid)} — konfirmasi "Sudah dibayar" oleh ${ctx.user.name}`);
+    log(s, ctx, 'order.pay', po.id, 'Sudah dibayar ' + U.rp(paid));
+    return po;
   };
 
   /* ---- Asset & facility (Module I) ---- */

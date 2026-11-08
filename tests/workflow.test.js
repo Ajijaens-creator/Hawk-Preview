@@ -511,6 +511,113 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Semua jurnal Smart Spend seimbang', s().spends.filter((x) => x.journal).every((x) => bal(x.journal) && (!x.settleJournal || bal(x.settleJournal))));
 })();
 
+/* ============ T9. Order Sederhana — manusia hanya: pesan · barang diterima · sudah dibayar (aturan AR-13, bukan AI) ============ */
+(function simpleOrder() {
+  console.log('T9 Order Sederhana (otomatis AR-13)');
+  const { call, s, user } = fresh();
+  const bal = (id) => { const j = s().journals.find((x) => x.id === id); return j && Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)); };
+  const allBal = () => s().journals.every((j) => Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)));
+  const humanOps = () => s().audit.filter((a) => a.user !== 'SYS-RULE').map((a) => a.op);
+  const b0 = S.itemBudget(s(), 'BR-SHN', 'BHP-001');
+  const shn0 = stockOf(s(), 'WH-SHN', 'BHP-001').onHand;
+  const auditStart = s().audit.length;
+
+  // A. 3 jenis barang, qty & nilai berbeda — dalam budget → lolos otomatis (lokal + transfer + beli)
+  let r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-001', qty: 12 }, { item: 'BHP-004', qty: 4 }, { item: 'BHP-007', qty: 100 }] }, 'STAFF', 'U-STF');
+  check('A: Staff memesan 3 jenis barang', r.ok, r.error && r.error.message);
+  const A0 = r.data;
+  const mr = (id) => s().mrfs.find((x) => x.id === id);
+  let A = A0;
+  check('A: lolos AR-13 (rutin, dalam budget, ≤ Rp5 jt) → disetujui sistem tanpa atasan', A.autoCheck.ok && A.approvals[0].by === 'SYS-RULE' && A.status === 'IN_FULFILLMENT', JSON.stringify(A.autoCheck));
+  check('A: nilai pesanan dihitung (12×85rb + 4×145rb + 100×6,5rb = Rp2.250.000)', A.autoCheck.value === 2250000, A.autoCheck.value);
+  const al = A.lines[0].alloc;
+  check('A: minyak pijat 12 = lokal + transfer + beli (Σ = 12)', H.U.sum(al, (a) => a.qty) === 12 && al.some((a) => a.path === 'PURCHASE'), JSON.stringify(al));
+  const poA = S.simplePOs(s(), A);
+  check('A: PO dibuat, disetujui & dikirim ke supplier default otomatis', poA.length >= 1 && poA.every((p) => p.status === 'SENT' && p.auto && p.approvedBy === 'SYS-RULE' && p.supplier === S.item(s(), p.lines[0].item).supplier), JSON.stringify(poA.map((p) => [p.id, p.status])));
+  check('A: transfer antar-gudang dikirim otomatis', s().transfers.filter((t) => t.mrf === A.id).every((t) => t.status === 'IN_TRANSIT'));
+  check('A: budget item → komitmen bertambah 12 (belum realisasi)', S.itemBudget(s(), 'BR-SHN', 'BHP-001').commitQty === b0.commitQty + 12, S.itemBudget(s(), 'BR-SHN', 'BHP-001').commitQty);
+  check('A: tidak ada tugas approval MRF/PO untuk Supervisor/Purchasing', !S.mrfNextApprover(s(), A) && poA.every((p) => !S.poNextApprover(s(), p)) && !S.pendingPurchase(s()).some((x) => x.mrf === A.id));
+  check('A: Staff mendapat tugas tunggal "Barang diterima"', S.simpleStage(s(), A).key === 'ARRIVE');
+
+  // B. Finance konfirmasi bayar SEBELUM barang datang → uang muka
+  const po1 = poA[0];
+  r = call('order.pay', { po: po1.id, confirm: true }, 'STAFF', 'U-STF');
+  check('B: Staff tidak bisa konfirmasi bayar', !r.ok && r.error.code === 'FORBIDDEN');
+  r = call('order.pay', { po: po1.id }, 'FINANCE');
+  check('B: tanpa konfirmasi eksplisit ditolak', !r.ok && r.error.code === 'CONFIRM');
+  r = call('order.pay', { po: po1.id, confirm: true }, 'FINANCE');
+  check('B: Finance "Sudah dibayar" sebelum barang tiba → uang muka Dr 1160 / Cr 1110', r.ok && S.poPayState(s(), po1).status === 'PAID' && s().journals.some((j) => j.kind === 'ADVANCE_PAYMENT' && j.source === po1.id), r.error && r.error.message);
+  r = call('order.pay', { po: po1.id, confirm: true }, 'FINANCE');
+  check('B: bayar dua kali diblok', !r.ok && r.error.code === 'DUPLICATE');
+
+  // C. Staff "Barang diterima" — sebagian (minyak pijat kurang 2)
+  const buy = al.find((a) => a.path === 'PURCHASE').qty;
+  r = call('order.receive', { id: A.id, lines: [{ item: 'BHP-001', received: 10, damaged: 0 }] }, 'STAFF', 'U-STF2');
+  check('C: Staff cabang lain tidak bisa konfirmasi terima', !r.ok && r.error.code === 'FORBIDDEN', r.error && r.error.code);
+  r = call('order.receive', { id: A.id, lines: [{ item: 'BHP-001', received: 10, damaged: 0 }] }, 'STAFF', 'U-STF');
+  A = mr(A0.id); // a refused call rolls the store back to a fresh copy — always re-read
+  check('C: Staff tekan "Barang diterima" (minyak pijat 10 dari 12)', r.ok, r.error && r.error.message);
+  const poMin = s().pos.find((p) => p.lines.some((l) => l.item === 'BHP-001') && p.auto);
+  check('C: GRN otomatis terposting & tersimpan, PO jadi PARTIAL (backorder 2)', poMin.status === 'PARTIAL' && s().grns.filter((g) => g.po === poMin.id).every((g) => g.status === 'STORED'), poMin.status);
+  check('C: tagihan otomatis = harga PO × qty diterima; uang muka dikompensasi', s().bills.filter((b) => b.po === po1.id && b.auto).every((b) => b.matchStatus === 'MATCHED' && (b.po !== poMin.id || b.subtotal === (buy - 2) * 85000)), JSON.stringify(s().bills.filter((b) => b.auto).map((b) => [b.po, b.subtotal, b.status])));
+  check('C: barang langsung tercatat terpakai (realisasi budget) & status sebagian', A.status === 'IN_FULFILLMENT' && S.mrfFulfillment(s(), A).issued === S.mrfFulfillment(s(), A).requested - 2, JSON.stringify(S.mrfFulfillment(s(), A)));
+  check('C: stok fisik Shanti tidak negatif & konsisten', s().stock.every((x) => x.onHand >= 0 && x.reserved >= 0 && x.reserved <= x.onHand + 0.0001));
+  // sisa datang
+  r = call('order.receive', { id: A.id }, 'STAFF', 'U-STF');
+  A = mr(A0.id);
+  check('C: sisa 2 datang → "Barang diterima" lagi → pesanan SELESAI', r.ok && A.status === 'FULFILLED', (r.error && r.error.message) || A.status);
+  check('C: semua PO pesanan RECEIVED', S.simplePOs(s(), A).every((p) => p.status === 'RECEIVED'));
+  const bNow = S.itemBudget(s(), 'BR-SHN', 'BHP-001');
+  check('C: budget minyak pijat → realisasi +12, komitmen kembali', bNow.actualQty === b0.actualQty + 12 && bNow.commitQty === b0.commitQty, JSON.stringify([b0.actualQty, b0.commitQty, bNow.actualQty, bNow.commitQty]));
+  check('C: stok lokal Shanti tidak dobel (awal − lokal terpakai)', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === shn0 - al.find((a) => a.path === 'LOCAL').qty, stockOf(s(), 'WH-SHN', 'BHP-001').onHand);
+
+  // D. Bayar SESUDAH diterima (PO lain dari pesanan A, bila ada) → bill.pay biasa
+  const others = S.simplePOs(s(), A).filter((p) => S.poPayState(s(), p).rest > 0);
+  others.forEach((p) => (r = call('order.pay', { po: p.id, confirm: true }, 'FINANCE')));
+  check('D: semua PO pesanan A lunas, uang muka 1160 bersih (0)', S.simplePOs(s(), A).every((p) => S.poPayState(s(), p).status === 'PAID'), JSON.stringify(S.simplePOs(s(), A).map((p) => S.poPayState(s(), p))));
+  const adv = H.U.sum(s().journals.flatMap((j) => j.lines).filter((l) => l.acc.startsWith('1160')), (l) => l.dr - l.cr);
+  check('D: saldo uang muka 1160 = 0 setelah barang lengkap diterima', Math.round(adv) === 0, adv);
+  const ap = H.U.sum(s().journals.filter((j) => S.simplePOs(s(), A).some((p) => j.source === p.id || s().bills.some((b) => b.id === j.source && b.po === p.id))).flatMap((j) => j.lines).filter((l) => l.acc.startsWith('2110')), (l) => l.dr - l.cr);
+  check('D: utang usaha pesanan A = 0 (tidak dobel bayar)', Math.round(ap) === 0, ap);
+  check('D: semua jurnal seimbang', allBal());
+  const ops = humanOps().slice(0, s().audit.length - auditStart);
+  check('D: manusia hanya 3 aksi (pesan · terima · bayar); approval, PO, posting, put-away & tagihan oleh SYS-RULE', ops.every((o) => ['order.quick', 'mrf.create', 'order.receive', 'grn.receive', 'transfer.receive', 'order.pay', 'bill.pay'].includes(o)) && ['mrf.decide', 'po.submit', 'po.decide', 'po.send', 'grn.post', 'grn.putaway', 'bill.approve', 'doc.verify', 'transfer.dispatch'].every((o) => !ops.includes(o)), JSON.stringify(H.U.uniq(ops)));
+
+  // E. Melebihi budget → otomatis jatuh ke rantai manual (Supervisor + BU Manager)
+  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-005', qty: 20 }] }, 'STAFF', 'U-STF');
+  check('E: melebihi budget → TIDAK otomatis, alasan jelas, rantai + BU Manager', r.ok && !r.data.autoCheck.ok && r.data.status === 'SUBMITTED' && r.data.chain.includes('BU_MANAGER') && /melebihi budget/.test(r.data.autoCheck.why[0]), JSON.stringify(r.data && [r.data.autoCheck, r.data.chain]));
+  check('E: tidak ada PO dibuat untuk pengecualian', S.simplePOs(s(), r.data).length === 0);
+  // F. Barang tanpa budget (bahan baku Essence di outlet) → manual
+  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'ESS-RM-01', qty: 1 }] }, 'STAFF', 'U-STF');
+  check('F: barang tanpa budget item → manual', r.ok && !r.data.autoCheck.ok && /belum ada budget/.test(r.data.autoCheck.why.join()), JSON.stringify(r.data && r.data.autoCheck));
+  // G. Pengaturan oleh Finance / Super Admin / Owner — batas diturunkan ke Rp500rb
+  r = call('autoOrder.update', { max: 500000, note: 'Uji batas kecil' }, 'STAFF');
+  check('G: Staff tidak bisa mengubah pengaturan', !r.ok && r.error.code === 'FORBIDDEN');
+  r = call('autoOrder.update', { max: 500000 }, 'FINANCE');
+  check('G: alasan perubahan wajib', !r.ok && r.error.code === 'VALIDATION');
+  r = call('autoOrder.update', { max: 500000, note: 'Uji batas kecil' }, 'FINANCE');
+  check('G: Finance menurunkan batas ke Rp500rb (tercatat audit before/after)', r.ok && S.autoRule(s()).max === 500000 && S.autoRule(s()).changes[0].before.max === 5000000 && s().audit[0].op === 'autoOrder.update');
+  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-003', qty: 20 }] }, 'STAFF', 'U-STF');
+  check('G: pesanan Rp760rb > batas baru → manual (Supervisor)', r.ok && !r.data.autoCheck.ok && r.data.chain[0] === 'SUPERVISOR', JSON.stringify(r.data && r.data.autoCheck));
+  r = call('autoOrder.update', { active: false, note: 'Owner menonaktifkan sementara' }, 'OWNER');
+  check('G: Owner bisa menonaktifkan', r.ok && S.autoRule(s()).active === false);
+  r = call('autoOrder.update', { active: true, max: 5000000, note: 'Kembali ke keputusan Owner 8 Nov' }, 'ADMIN');
+  check('G: Super Admin bisa mengaktifkan kembali', r.ok && S.autoRule(s()).active && S.autoRule(s()).max === 5000000 && S.autoRule(s()).version === 4);
+  r = call('autoOrder.update', { max: 30000000, note: 'terlalu besar' }, 'OWNER');
+  check('G: batas > Rp25 jt ditolak', !r.ok && r.error.code === 'VALIDATION');
+  // H. Ubud — beli murni dari supplier, bayar setelah terima
+  r = call('order.quick', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 20 }, { item: 'BHP-002', qty: 10 }] }, 'STAFF', 'U-STF2');
+  const Hm = r.data;
+  check('H: Ubud (staff lain) — 2 jenis barang lolos otomatis', r.ok && Hm.autoCheck.ok && Hm.status === 'IN_FULFILLMENT', JSON.stringify(r.data && r.data.autoCheck));
+  r = call('order.receive', { id: Hm.id, lines: [{ item: 'BHP-001', received: 20, damaged: 2 }] }, 'STAFF', 'U-STF2');
+  check('H: 2 botol rusak dicatat; tagihan hanya untuk yang diterima baik', r.ok && s().grns.some((g) => g.lines.some((l) => l.item === 'BHP-001' && l.damaged === 2)), r.error && r.error.message);
+  r = call('order.receive', { id: Hm.id }, 'STAFF', 'U-STF2');
+  S.simplePOs(s(), Hm).forEach((p) => S.poPayState(s(), p).rest > 0 && call('order.pay', { po: p.id, confirm: true }, 'FINANCE'));
+  check('H: setelah terima & bayar: tagihan PAID, jurnal seimbang', s().bills.filter((b) => S.simplePOs(s(), Hm).some((p) => p.id === b.po)).every((b) => b.status === 'PAID') && allBal());
+  const v = S.budgetView(s(), 'BGT-2026-SPA');
+  check('Dashboard: budget 7P BU Spa terbarui (realisasi Product > awal)', v.lines.find((l) => l.p === 'PRODUCT' && l.cls === 'OPEX').actual > 0);
+})();
+
 console.log(`\n${pass} lulus, ${failN} gagal`);
 require('fs').writeFileSync(path.join(__dirname, 'workflow-results.json'), JSON.stringify({ pass, fail: failN, results }, null, 1));
 process.exit(failN ? 1 : 0);

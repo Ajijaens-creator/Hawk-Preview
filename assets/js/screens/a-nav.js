@@ -100,11 +100,11 @@
   };
   function quick(role) {
     const q = {
-      STAFF: [[48, '📷 Scan Nota'], [26, 'Buat MRF'], [25, 'Scan barcode'], [27, 'Status permintaan']],
+      STAFF: [[24, '🛒 Pesan barang'], [48, '📷 Scan Nota'], [27, 'Status permintaan']],
       SUPERVISOR: [[29, 'Antrean approval'], [48, '📷 Scan Nota & approval'], [30, 'Dampak budget'], [26, 'Buat MRF']],
       PURCHASING: [[32, 'Konsolidasi MRF'], [36, 'PO register'], [37, 'Pembelian darurat']],
       WAREHOUSE: [[41, 'Antrean penerimaan'], [43, 'Put-away'], [45, 'Serahkan stok']],
-      FINANCE: [[48, 'Smart Spend & faktur AI'], [49, 'Three-way match'], [50, 'AP & pembayaran']],
+      FINANCE: [[50, '💵 Konfirmasi bayar'], [48, 'Smart Spend & faktur AI'], [49, 'Three-way match']],
       ASSET: [[55, 'Maintenance & WO'], [53, 'Register aset']],
       ADMIN: [[6, 'Kelola unit'], [8, 'Pengguna & role'], [9, 'Matriks approval']],
     }[role] || [[2, 'Tugas & approval'], [23, 'Budget vs Actual'], [57, 'AI Intelligence']];

@@ -216,7 +216,7 @@ Aturan approval per jenis dokumen & nilai (MRF tier Board B, PO, darurat, budget
 
 | Aspek | Spesifikasi |
 |---|---|
-| Role akses | System Administrator, Owner / Eksekutif |
+| Role akses | System Administrator, Owner / Eksekutif, Finance / Accounting |
 | Komponen | Menu jenis dokumen, tabel aturan, visual rantai, toggle aktif |
 | Field | Min, max, rantai, eskalasi, SLA |
 | Aksi | Ubah batas/aktif → `approval.updateRule` |
@@ -234,6 +234,7 @@ Aturan approval per jenis dokumen & nilai (MRF tier Board B, PO, darurat, budget
 **Operasi adapter:**
 
 - `approval.updateRule` — **TO VERIFY** · HAWK: Approval di PR/PO (field APPROVE STATUS / APPROVED BY) · izin: System Administrator · input `{ id, min?, max?, chain?, active?, slaHours?, note? }` → ApprovalRule (+pending draft) · transisi: ACTIVE v(n) tetap berlaku → DRAFT revisi menunggu terbit · audit: APPROVAL_RULE_DRAFT
+- `autoOrder.update` — **NEW INTEGRATION REQUIRED** · HAWK: — (pengaturan aturan baru) · izin: Finance / Accounting, System Administrator, Owner / Eksekutif · input `{ active?, max?, note }` → ApprovalRule AR-13 v(n+1) · transisi: Berlaku untuk pesanan BARU; pesanan berjalan tidak berubah · audit: AUTO_ORDER_RULE_CHANGE (before/after, alasan)
 
 ## Modul C — Strategic Target & Ambidex
 
@@ -592,14 +593,14 @@ Original, Revised, Actual, Commitment, Forecast per 7P — bergerak dengan trans
 
 ### NV-24 Staff Material Request Home
 
-Beranda permintaan sederhana untuk staff: buat MRF, status terakhir, scan.
+Order Sederhana untuk staff (mobile): pilih barang + jumlah → Pesan sekarang. Cek budget 7P otomatis; lolos aturan AR-13 → approval, PO & kirim supplier otomatis. Staff hanya menekan "Barang sudah diterima".
 
 | Aspek | Spesifikasi |
 |---|---|
 | Role akses | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif |
-| Komponen | Tombol besar Buat MRF/Scan, ringkasan status, daftar terakhir, donut kategori |
-| Field | Draft, menunggu, disetujui, diproses |
-| Aksi | Buat MRF → `nav:26`; Scan barcode → `nav:25` |
+| Komponen | Daftar barang besar (+/−), bar ringkasan dengan status budget, kartu pesanan 3 langkah, tombol besar Barang sudah diterima, modal kurang/rusak |
+| Field | Barang, jumlah, sisa budget, status pesanan |
+| Aksi | Pesan sekarang → `order.quick`; Barang sudah diterima → `order.receive`; Form lengkap → `nav:26` |
 | Filter | — |
 | Drawer/modal | Detail MRF |
 | Input | — |
@@ -613,6 +614,8 @@ Beranda permintaan sederhana untuk staff: buat MRF, status terakhir, scan.
 
 **Operasi adapter:**
 
+- `order.quick` — **NEW INTEGRATION REQUIRED** · HAWK: Purchase Request → Purchase Order (engine yang sama, dipicu aturan) · izin: Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Asset / Facility PIC, System Administrator · input `{ branch, lines:[{item, qty}], memo? }` → MRF { simple:true, autoCheck{ok, why[]}, status IN_FULFILLMENT \| SUBMITTED } · transisi: Lolos AR-13 → APPROVED (SYS-RULE) → fulfillment → transfer dikirim → PO DRAFT→APPROVED→SENT otomatis; tidak lolos → SUBMITTED ke rantai manual · audit: PR_CREATE + AUTO_APPROVE / AUTO_CHECK (aktor SYS-RULE, bukan AI)
+- `order.receive` — **NEW INTEGRATION REQUIRED** · HAWK: Receiving + Inventory issue (engine yang sama) · izin: Staff / Therapist / Housekeeping, Supervisor Outlet, Gudang / Receiving, Head of Division, BU Manager, Asset / Facility PIC, System Administrator · input `{ id (MRF), lines?:[{item, received, damaged}], note? }` → MRF (+ GRN POSTED/STORED, transfer RECEIVED, tagihan otomatis, issue) · transisi: Transfer IN_TRANSIT → RECEIVED; PO SENT → PARTIAL\|RECEIVED; GRN RECEIVED → POSTED → STORED (SYS-RULE); tagihan APPROVED; MRF → FULFILLED bila lengkap · audit: GOODS_PHYSICAL_RECEIPT (manusia) + POST/PUTAWAY/AUTO_BILL/ISSUE (SYS-RULE)
 - `item.search` — **TO VERIFY** · HAWK: Inventory / Cards — kolom BARCODE & ITEM di PR entry · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ q \| barcode, location }` → Item[] { id, barcode, name, unit, p7, routine, sourceSOH, requestSOH } · transisi: Read-only · audit: —
 
 ### NV-25 Item Catalog / Search / Barcode Scan
@@ -1279,7 +1282,7 @@ Tagihan AP, persetujuan (SoD), jadwal & pembayaran dengan konfirmasi.
 | Role akses | Finance / Accounting, Owner / Eksekutif, BU Manager |
 | Komponen | Tab status, tabel tagihan, aging, modal konfirmasi bayar |
 | Field | Tagihan, supplier, jatuh tempo, nilai, status |
-| Aksi | Setujui tagihan → `bill.approve`; Bayar (konfirmasi) → `bill.pay`; Telusuri ke MRF → `ui:trace` |
+| Aksi | Sudah dibayar (order otomatis) → `order.pay`; Atur order otomatis AR-13 → `autoOrder.update`; Setujui tagihan → `bill.approve`; Bayar (konfirmasi) → `bill.pay`; Telusuri ke MRF → `ui:trace` |
 | Filter | Status |
 | Drawer/modal | Detail + jejak |
 | Input | Konfirmasi |
@@ -1293,6 +1296,8 @@ Tagihan AP, persetujuan (SoD), jadwal & pembayaran dengan konfirmasi.
 
 **Operasi adapter:**
 
+- `order.pay` — **TO VERIFY** · HAWK: Finance (pembayaran) — belum terverifikasi · izin: Finance / Accounting · input `{ po, confirm: true }` → PO (+ Payment, Journal) · transisi: Tagihan APPROVED → PAID; sisa PO belum diterima → uang muka (Dr 1160 / Cr 1110), dikompensasi otomatis saat barang diterima · audit: PAYMENT_CONFIRMED
+- `autoOrder.update` — **NEW INTEGRATION REQUIRED** · HAWK: — (pengaturan aturan baru) · izin: Finance / Accounting, System Administrator, Owner / Eksekutif · input `{ active?, max?, note }` → ApprovalRule AR-13 v(n+1) · transisi: Berlaku untuk pesanan BARU; pesanan berjalan tidak berubah · audit: AUTO_ORDER_RULE_CHANGE (before/after, alasan)
 - `bill.approve` — **TO VERIFY** · HAWK: Purchases › BILLS / AGED PAYABLE; Journal · izin: Finance / Accounting, BU Manager · input `{ id }` → Bill APPROVED + Journal Dr GRNI, Dr PPN Masukan / Cr Utang Usaha · transisi: DRAFT → APPROVED · audit: AP_APPROVE
 - `bill.pay` — **TO VERIFY** · HAWK: Finance (pembayaran) — belum terverifikasi · izin: Finance / Accounting · input `{ id, confirm: true }` → Payment + Journal Dr Utang / Cr Bank · transisi: APPROVED → PAID · audit: PAYMENT_EXECUTED
 

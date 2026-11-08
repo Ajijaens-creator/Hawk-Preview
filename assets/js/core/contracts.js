@@ -62,6 +62,21 @@
     c('mrf.issue', { module: 'E/G', hawk: 'Inventory — pengeluaran stok (belum terlihat di screenshot)', status: 'TO VERIFY', roles: ['WAREHOUSE', 'SUPERVISOR'], input: '{ id }', output: 'MRF + StockLedger ISSUE + Journal CONSUMPTION', transition: 'IN_FULFILLMENT → FULFILLED saat issued = requested', validation: 'onHand & reserved cukup', audit: 'STOCK_ISSUE' }),
     c('mrf.cancel', { module: 'E', hawk: 'Purchase Request — CANCEL', status: 'TO VERIFY', roles: ['STAFF', 'SUPERVISOR', 'ADMIN'], input: '{ id, note }', output: 'MRF', transition: 'DRAFT|SUBMITTED|REVISION → CANCELLED', validation: 'Hanya pemohon', audit: 'PR_CANCEL' }),
 
+    c('autoOrder.update', { module: 'B/H', hawk: '— (pengaturan aturan baru)', status: 'NEW INTEGRATION REQUIRED', roles: ['FINANCE', 'ADMIN', 'OWNER'],
+      input: '{ active?, max?, note }', output: 'ApprovalRule AR-13 v(n+1)', transition: 'Berlaku untuk pesanan BARU; pesanan berjalan tidak berubah',
+      validation: 'Role Finance / Super Admin / Owner; batas Rp0–25 jt; alasan wajib; harus ada perubahan', audit: 'AUTO_ORDER_RULE_CHANGE (before/after, alasan)' }),
+    c('order.quick', { module: 'E/F', hawk: 'Purchase Request → Purchase Order (engine yang sama, dipicu aturan)', status: 'NEW INTEGRATION REQUIRED', roles: ['STAFF', 'SUPERVISOR', 'HEAD_DIV', 'BU_MANAGER', 'ASSET', 'ADMIN'],
+      input: '{ branch, lines:[{item, qty}], memo? }', output: 'MRF { simple:true, autoCheck{ok, why[]}, status IN_FULFILLMENT | SUBMITTED }',
+      transition: 'Lolos AR-13 → APPROVED (SYS-RULE) → fulfillment → transfer dikirim → PO DRAFT→APPROVED→SENT otomatis; tidak lolos → SUBMITTED ke rantai manual',
+      validation: 'Rutin; supplier default; budget item 7P tidak OVER/NO_BUDGET; nilai ≤ batas AR-13; validasi MRF biasa', audit: 'PR_CREATE + AUTO_APPROVE / AUTO_CHECK (aktor SYS-RULE, bukan AI)' }),
+    c('order.receive', { module: 'E/G', hawk: 'Receiving + Inventory issue (engine yang sama)', status: 'NEW INTEGRATION REQUIRED', roles: ['STAFF', 'SUPERVISOR', 'WAREHOUSE', 'HEAD_DIV', 'BU_MANAGER', 'ASSET', 'ADMIN'],
+      input: '{ id (MRF), lines?:[{item, received, damaged}], note? }', output: 'MRF (+ GRN POSTED/STORED, transfer RECEIVED, tagihan otomatis, issue)',
+      transition: 'Transfer IN_TRANSIT → RECEIVED; PO SENT → PARTIAL|RECEIVED; GRN RECEIVED → POSTED → STORED (SYS-RULE); tagihan APPROVED; MRF → FULFILLED bila lengkap',
+      validation: 'Hanya pemesan/staf unit; qty ≤ sisa; rusak ≤ diterima; harus ada barang yang ditunggu', audit: 'GOODS_PHYSICAL_RECEIPT (manusia) + POST/PUTAWAY/AUTO_BILL/ISSUE (SYS-RULE)' }),
+    c('order.pay', { module: 'H', hawk: 'Finance (pembayaran) — belum terverifikasi', status: 'TO VERIFY', roles: ['FINANCE'],
+      input: '{ po, confirm: true }', output: 'PO (+ Payment, Journal)', transition: 'Tagihan APPROVED → PAID; sisa PO belum diterima → uang muka (Dr 1160 / Cr 1110), dikompensasi otomatis saat barang diterima',
+      validation: 'Konfirmasi eksplisit manusia; PO sudah dikirim; tidak boleh lunas dua kali; AI/sistem tidak pernah memanggil operasi ini', audit: 'PAYMENT_CONFIRMED' }),
+
     /* ---------- F. Purchasing ---------- */
     c('supplier.list', { module: 'F', hawk: 'Cards (master supplier/card — kolom CARD di PR)', status: 'TO VERIFY', roles: ALL, read: true, input: '{ q, category }', output: 'Supplier[] { id, name, term (TRADING TERM), priceLevel }', transition: 'Read-only', validation: '—', audit: '—' }),
     c('quotation.compare', { module: 'F', hawk: 'PRICE LEVEL di PO entry', status: 'NEW INTEGRATION REQUIRED', roles: ['PURCHASING', 'BU_MANAGER', 'OWNER', 'FINANCE'], read: true, input: '{ item }', output: 'Quotation[] { supplier, price, leadDays, validUntil, moq }', transition: 'Read-only', validation: '—', audit: '—' }),

@@ -26,6 +26,10 @@ Data demo disimpan di `localStorage` browser. Tombol **↺ Reset Demo Data** di 
 
 Ganti role ke **Nyoman Dewi (Staff Spa Shanti)**, lalu Beranda › **Scan Nota** (NV-48). Pilih nota contoh "Nota tulisan tangan", tekan *Baca dengan AI (simulasi)*, perbaiki harga Pasir menjadi 350.000, konfirmasi field kuning, pilih metode bayar, lanjutkan klasifikasi, dan kirim. Lalu sebagai **Putu Sukma (Supervisor)** setujui, dan sebagai **Luh Ratna (Finance)** buka bukti, verifikasi, dan catat pembayaran. Ekstraksi adalah **AI SIMULATION**.
 
+## Mencoba Order Sederhana (pesan → terima → bayar)
+
+Sebagai **Nyoman Dewi (Staff Spa Shanti)**, Beranda › **🛒 Pesan barang** (NV-24): tekan **+** pada beberapa barang lalu **Pesan sekarang**. Bila dalam budget 7P dan ≤ Rp5 jt, sistem langsung menyetujui, membuat PO, dan mengirimnya ke supplier (aturan AR-13, bukan AI). Sebagai **Luh Ratna (Finance)** buka NV-50 dan tekan **Sudah dibayar**. Kembali sebagai staf, tekan **Barang sudah diterima** (atau "Ada yang kurang atau rusak?"). Pesanan yang lewat budget otomatis masuk antrean Supervisor. Batas diatur Finance/Super Admin/Owner di NV-50 atau NV-09. Lihat `docs/SIMPLE_ORDER.md`.
+
 ## Struktur
 
 ```
@@ -54,7 +58,7 @@ docs/                      dokumen serah-terima (lihat daftar di bawah)
 | [docs/MP-HAWK-03_AUDIT.md](docs/MP-HAWK-03_AUDIT.md) | Audit kedua ZIP paket Owner (A–E, F–J) dan apa yang diadopsi |
 | [docs/SCREEN_MATRIX_60NV.md](docs/SCREEN_MATRIX_60NV.md) | 60 NV + status implementasi & cakupan uji per layar (E2E / Engine / Render) |
 | [docs/ROLE_PERMISSION_MATRIX.md](docs/ROLE_PERMISSION_MATRIX.md) | Akses layar & izin operasi per role |
-| [docs/HAWK_INTEGRATION_HOOKS.md](docs/HAWK_INTEGRATION_HOOKS.md) | Titik sambung ke HAWK, 77 operasi, status integrasi (belum ada yang terhubung) |
+| [docs/HAWK_INTEGRATION_HOOKS.md](docs/HAWK_INTEGRATION_HOOKS.md) | Titik sambung ke HAWK, 81 operasi, status integrasi (belum ada yang terhubung) |
 | [docs/SMART_SPEND_WORKFLOW.md](docs/SMART_SPEND_WORKFLOW.md) | Smart Spend Money & AI Receipt (NV-48, subview NV-M1..M6): 4 alur, kontrol, jurnal, skenario, kontrak |
 | [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) | Deploy ke Vercel tanpa GitHub, domain, SSL, checklist verifikasi |
 | [docs/SCREEN_MATRIX.csv](docs/SCREEN_MATRIX.csv) | 60 NV: role, field, aksi, validasi, status, operasi, status integrasi |
@@ -62,7 +66,7 @@ docs/                      dokumen serah-terima (lihat daftar di bawah)
 | [docs/WORKFLOW_MAP.md](docs/WORKFLOW_MAP.md) | Alur end-to-end, transisi status, jurnal akuntansi |
 | [docs/ROLE_PERMISSION_MATRIX.csv](docs/ROLE_PERMISSION_MATRIX.csv) | Layar (lihat) dan operasi (eksekusi) per role |
 | [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md) | Entitas, field, format ID, aturan anti double-counting |
-| [docs/INTEGRATION_CONTRACTS.md](docs/INTEGRATION_CONTRACTS.md) | 77 operasi adapter + status (TO VERIFY / NEW / UI-ONLY) + pemetaan hook paket Owner |
+| [docs/INTEGRATION_CONTRACTS.md](docs/INTEGRATION_CONTRACTS.md) | 81 operasi adapter + status (TO VERIFY / NEW / UI-ONLY) + pemetaan hook paket Owner |
 | [docs/AI_INTELLIGENCE_SPEC.md](docs/AI_INTELLIGENCE_SPEC.md) | 10 kemampuan AI, struktur insight 6 langkah, governance |
 | [docs/DEVELOPER_HANDOFF.md](docs/DEVELOPER_HANDOFF.md) | Arsitektur, cara mengganti mock adapter, checklist integrasi |
 | [docs/DESIGN_CONFLICTS.md](docs/DESIGN_CONFLICTS.md) | Konflik antar referensi dan keputusan yang diambil |
@@ -85,6 +89,7 @@ Langkah lengkap, record DNS CNAME, SSL, dan checklist verifikasi domain ada di *
 node tests/workflow.test.js          # engine: journey, budget, receiving, aset, org (Node saja)
 node tests/e2e-walkthrough.js        # 14 langkah lewat klik UI di Chromium (butuh Playwright)
 node tests/e2e-smart-spend.js        # Smart Spend 15 langkah di 390 px + screenshot M1–M6
+node tests/e2e-simple-order.js       # Order Sederhana 33 cek di 390 px + 20 dashboard + screenshot
 node tests/browser-all.js            # 12 pengguna × 60 layar: render, akses, error runtime
 node tests/responsive.js             # 60 layar × 1440 / 834 / 390 px: overflow & screenshot
 node tests/deploy.test.js            # build, login Cloudflare & Vercel, CSP, desktop/iPad/mobile

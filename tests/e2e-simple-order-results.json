@@ -1,0 +1,171 @@
+{
+ "pass": 33,
+ "total": 33,
+ "results": [
+  {
+   "name": "1. Staff membuka beranda → Pesan barang (NV-24)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2. 3 jenis barang dipilih (4 sabun, 12 minyak, 100 sandal) → total Rp2.250.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3. Cek budget otomatis: \"Dalam budget — langsung diproses\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3b. Layar 390px tanpa scroll samping",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "4. Pesan sekarang → disetujui otomatis (tanpa atasan) dan PO terkirim",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5. PO otomatis berstatus SENT ke supplier default",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6. Kartu pesanan: tombol besar \"Barang sudah diterima\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7. Essential oil 20 → \"Perlu persetujuan atasan\" + alasan melebihi budget",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "8. Pesanan lewat budget → menunggu Supervisor (+ BU Manager)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "9. Dashboard staff: tugas \"Konfirmasi barang sudah diterima\" tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10. NV-27 Status permintaan memuat kedua pesanan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11. NV-28 detail menampilkan approval oleh Sistem (aturan AR-13)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "12. Supervisor: hanya pesanan lewat budget di antrean, pesanan otomatis tidak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "12b. Supervisor menyetujui → lanjut ke BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13. Finance NV-50: panel \"Konfirmasi pembayaran\" berisi PO otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13b. Finance juga melihat Pengaturan Order Otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13c. NV-50 390px tanpa scroll samping",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "14. Modal konfirmasi jelas: SIMULASI, tidak ada dana keluar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "15. \"Sudah dibayar\" → PO lunas (uang muka, barang belum datang)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "16. NV-51 jurnal: uang muka Dr 1160 / Cr 1110 menunggu review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "17. Terima sebagian (minyak kurang 2) → sisa tetap ditunggu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "18. Sisa datang → \"Barang sudah diterima\" → pesanan Selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "19. Budget 7P: realisasi minyak pijat +12, komitmen kembali seperti awal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "20. Semua PO pesanan lunas; antrean bayar kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "21. Akuntansi: uang muka 1160 bersih 0, semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "22. Finance mengubah batas ke Rp500.000 (tercatat v2 + jejak)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "23. Super Admin melihat kartu pengaturan di NV-09 (bisa ubah)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "24. Owner melihat & dapat mengubah; batas kembali Rp5 jt (v3)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "25. Staff tidak punya akses pengaturan (operasi ditolak)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "26. 20 dashboard/layar terkait (NV-01…60) tampil tanpa error setelah alur",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "27. NV-23 Budget vs Actual memuat realisasi Product (Owner)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "28. NV-03 notifikasi/aktivitas mencatat aksi sistem AR-13",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "29. Tidak ada error JavaScript",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

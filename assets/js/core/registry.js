@@ -55,9 +55,9 @@
     n(8, 'B', 'User, Role & Access Management', 'ADM', 'Pengguna, role, scope unit, dan matriks hak akses layar.', {
       components: 'Tab Pengguna/Role/Hak akses, tabel, modal ubah role', fields: 'Nama, role, scope, status', actions: [['Ubah role', 'user.assignRole']],
       filters: 'Role, unit', drawers: 'Modal', responsive: DESK, inputs: 'Role, scope', validation: 'Role valid', status: '—', approval: 'Admin', exceptions: 'UI bukan keamanan — backend wajib enforce', related: 'ROLE_PERMISSION_MATRIX.csv', ops: ['user.assignRole'], ids: 'U-*' }),
-    n(9, 'B', 'Approval Matrix & Rules Configuration', 'ADM OWN', 'Aturan approval per jenis dokumen & nilai (MRF tier Board B, PO, darurat, budget, tagihan, pembayaran).', {
+    n(9, 'B', 'Approval Matrix & Rules Configuration', 'ADM OWN FIN', 'Aturan approval per jenis dokumen & nilai (MRF tier Board B, PO, darurat, budget, tagihan, pembayaran).', {
       components: 'Menu jenis dokumen, tabel aturan, visual rantai, toggle aktif', fields: 'Min, max, rantai, eskalasi, SLA', actions: [['Ubah batas/aktif', 'approval.updateRule']],
-      filters: 'Jenis dokumen', drawers: 'Modal aturan', responsive: DESK, inputs: 'Nilai', validation: 'Rentang tidak tumpang tindih', status: 'Versi aturan', approval: 'Admin/Owner', exceptions: '—', related: 'MRF, PO, Budget', ops: ['approval.updateRule'], ids: 'AR-*' }),
+      filters: 'Jenis dokumen', drawers: 'Modal aturan', responsive: DESK, inputs: 'Nilai', validation: 'Rentang tidak tumpang tindih', status: 'Versi aturan', approval: 'Admin/Owner', exceptions: '—', related: 'MRF, PO, Budget', ops: ['approval.updateRule', 'autoOrder.update'], ids: 'AR-*' }),
 
     /* ---------------- C ---------------- */
     n(10, 'C', 'Annual Target Planning: Spa & Essence', 'OWN BUM HOD FIN', 'Target revenue & profit tahunan per BU (Spa–Essence saja; target grup di luar lingkup).', {
@@ -106,9 +106,9 @@
       inputs: '—', validation: '—', status: 'Read', approval: '—', exceptions: 'Forecast = estimasi', related: 'MRF, ledger', ops: [], ids: 'BGT-*' }),
 
     /* ---------------- E ---------------- */
-    n(24, 'E', 'Staff Material Request Home', 'STF SPV HOD BUM OWN', 'Beranda permintaan sederhana untuk staff: buat MRF, status terakhir, scan.', {
-      components: 'Tombol besar Buat MRF/Scan, ringkasan status, daftar terakhir, donut kategori', fields: 'Draft, menunggu, disetujui, diproses', actions: [['Buat MRF', 'nav:26'], ['Scan barcode', 'nav:25']], filters: '—', drawers: 'Detail MRF', responsive: MOB,
-      inputs: '—', validation: '—', status: 'Read', approval: '—', exceptions: '—', related: 'NV-27', ops: ['item.search'], ids: 'PR…' }),
+    n(24, 'E', 'Staff Material Request Home', 'STF SPV HOD BUM OWN', 'Order Sederhana untuk staff (mobile): pilih barang + jumlah → Pesan sekarang. Cek budget 7P otomatis; lolos aturan AR-13 → approval, PO & kirim supplier otomatis. Staff hanya menekan "Barang sudah diterima".', {
+      components: 'Daftar barang besar (+/−), bar ringkasan dengan status budget, kartu pesanan 3 langkah, tombol besar Barang sudah diterima, modal kurang/rusak', fields: 'Barang, jumlah, sisa budget, status pesanan', actions: [['Pesan sekarang', 'order.quick'], ['Barang sudah diterima', 'order.receive'], ['Form lengkap', 'nav:26']], filters: '—', drawers: 'Detail MRF', responsive: MOB,
+      inputs: '—', validation: '—', status: 'Read', approval: '—', exceptions: '—', related: 'NV-27', ops: ['order.quick', 'order.receive', 'item.search'], ids: 'PR…' }),
     n(25, 'E', 'Item Catalog / Search / Barcode Scan', 'STF SPV PUR WHS OWN', 'Katalog item dengan stok lokal (Request SOH) & scan barcode simulasi.', {
       components: 'Pencarian, chip kategori, kartu item, simulasi scan', fields: 'Barcode, item, unit, 7P, stok', actions: [['Tambah ke MRF', 'ui:cart'], ['Scan', 'ui:scan']], filters: 'Kategori, 7P', drawers: 'Detail item', responsive: MOB,
       inputs: 'Query / barcode', validation: 'Barcode 13 digit', status: '—', approval: '—', exceptions: 'Barcode tak dikenal', related: 'NV-26', ops: ['item.search', 'stock.query'], ids: 'BHP-*' }),
@@ -196,8 +196,8 @@
       components: 'Daftar dokumen, checklist 6 cek, tabel baris 3 kolom, form verifikasi', fields: 'Qty PO/terima/faktur, harga PO/faktur', actions: [['Jalankan matching', 'doc.match'], ['Verifikasi & buat AP draft', 'doc.verify'], ['Tolak', 'doc.verify']], filters: 'Status', drawers: '—', responsive: DESK,
       inputs: 'Catatan', validation: 'Duplikat ditolak; selisih butuh penjelasan', status: 'MATCHED/MISMATCH → VERIFIED', approval: 'Manusia', exceptions: 'AI tidak menyetujui', related: 'NV-50', ops: ['doc.match', 'doc.verify'], ids: 'DC…, BL…' }),
     n(50, 'H', 'Accounts Payable & Payment Control', 'FIN OWN BUM', 'Tagihan AP, persetujuan (SoD), jadwal & pembayaran dengan konfirmasi.', {
-      components: 'Tab status, tabel tagihan, aging, modal konfirmasi bayar', fields: 'Tagihan, supplier, jatuh tempo, nilai, status', actions: [['Setujui tagihan', 'bill.approve'], ['Bayar (konfirmasi)', 'bill.pay'], ['Telusuri ke MRF', 'ui:trace']], filters: 'Status', drawers: 'Detail + jejak', responsive: DESK,
-      inputs: 'Konfirmasi', validation: 'SoD; konfirmasi eksplisit', status: 'DRAFT → APPROVED → PAID', approval: 'AR-10/11', exceptions: 'AI tidak bisa membayar', related: 'NV-51', ops: ['bill.approve', 'bill.pay'], ids: 'BL…, PY-*' }),
+      components: 'Tab status, tabel tagihan, aging, modal konfirmasi bayar', fields: 'Tagihan, supplier, jatuh tempo, nilai, status', actions: [['Sudah dibayar (order otomatis)', 'order.pay'], ['Atur order otomatis AR-13', 'autoOrder.update'], ['Setujui tagihan', 'bill.approve'], ['Bayar (konfirmasi)', 'bill.pay'], ['Telusuri ke MRF', 'ui:trace']], filters: 'Status', drawers: 'Detail + jejak', responsive: DESK,
+      inputs: 'Konfirmasi', validation: 'SoD; konfirmasi eksplisit', status: 'DRAFT → APPROVED → PAID', approval: 'AR-10/11', exceptions: 'AI tidak bisa membayar', related: 'NV-51', ops: ['order.pay', 'autoOrder.update', 'bill.approve', 'bill.pay'], ids: 'BL…, PY-*' }),
     n(51, 'H', 'GL Posting, Accounting & Exception Review', 'FIN OWN', 'Review jurnal usulan (receipt, konsumsi, faktur, bayar) sebelum diposting oleh engine HAWK.', {
       components: 'Filter jenis, tabel jurnal, detail debit/kredit, peta perlakuan', fields: 'Akun, CC, debit, kredit', actions: [['Posting ke HAWK Finance', 'gl.post']], filters: 'Jenis, status', drawers: 'Detail jurnal', responsive: DESK,
       inputs: '—', validation: 'Seimbang', status: 'PENDING_REVIEW → POSTED', approval: 'Finance', exceptions: 'Bukan buku besar kedua', related: 'Sumber dokumen', ops: ['gl.post'], ids: 'JV…' }),

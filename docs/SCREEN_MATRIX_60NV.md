@@ -12,15 +12,15 @@ _Dibuat otomatis oleh `node tools/gen-docs.js`. Status uji dihitung dari isi fil
 
 Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV, 0 error, 0 tombol tanpa handler) dan `responsive.js` (1440/834/390 px).
 
-**Ringkasan:** 60 layar · E2E 17 · Engine 24 · Sebagian 0 · Render 19 · BELUM 0
+**Ringkasan:** 60 layar · E2E 22 · Engine 20 · Sebagian 0 · Render 18 · BELUM 0
 
 ## Modul A — Navigation & Role Workspace
 
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
 | NV-01 | A | Role-Based Dashboard / Home | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | — (baca) | UI-ONLY SIMULATION | E2E |
-| NV-02 | A | My Tasks & Approval Inbox | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `mrf.decide`, `po.decide`, `budget.approve` | NEW INTEGRATION REQUIRED | Engine |
-| NV-03 | A | Notifications & Activity Center | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | — (baca) | TO VERIFY | Render |
+| NV-02 | A | My Tasks & Approval Inbox | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `mrf.decide`, `po.decide`, `budget.approve` | NEW INTEGRATION REQUIRED | E2E |
+| NV-03 | A | Notifications & Activity Center | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | — (baca) | TO VERIFY | E2E |
 | NV-04 | A | Global Search & Quick Actions | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | — (baca) | TO VERIFY | Render |
 
 ## Modul B — Organization, Office & Access
@@ -31,7 +31,7 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 | NV-06 | B | Branch, Office & Division Management | System Administrator, Owner / Eksekutif | `org.upsertUnit`, `org.setStatus` | TO VERIFY | Engine |
 | NV-07 | B | Cost Center & Shared Office Allocation | System Administrator, Finance / Accounting, Owner / Eksekutif, BU Manager | `cc.updateAllocation` | NEW INTEGRATION REQUIRED | Engine |
 | NV-08 | B | User, Role & Access Management | System Administrator | `user.assignRole` | TO VERIFY | Engine |
-| NV-09 | B | Approval Matrix & Rules Configuration | System Administrator, Owner / Eksekutif | `approval.updateRule` | TO VERIFY | Engine |
+| NV-09 | B | Approval Matrix & Rules Configuration | System Administrator, Owner / Eksekutif, Finance / Accounting | `approval.updateRule`, `autoOrder.update` | NEW INTEGRATION REQUIRED | E2E |
 
 ## Modul C — Strategic Target & Ambidex
 
@@ -61,10 +61,10 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
-| NV-24 | E | Staff Material Request Home | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif | — (baca) | TO VERIFY | E2E |
+| NV-24 | E | Staff Material Request Home | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif | `order.quick`, `order.receive` | NEW INTEGRATION REQUIRED | E2E |
 | NV-25 | E | Item Catalog / Search / Barcode Scan | Staff / Therapist / Housekeeping, Supervisor Outlet, Purchasing, Gudang / Receiving, Owner / Eksekutif | — (baca) | TO VERIFY | Render |
 | NV-26 | E | Create Material Request | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Asset / Facility PIC, Owner / Eksekutif | `mrf.create` | NEW INTEGRATION REQUIRED | E2E |
-| NV-27 | E | My Requests & Status Tracking | Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC, Head of Division, BU Manager, Owner / Eksekutif | `mrf.cancel`, `mrf.submitDraft` | TO VERIFY | Engine |
+| NV-27 | E | My Requests & Status Tracking | Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC, Head of Division, BU Manager, Owner / Eksekutif | `mrf.cancel`, `mrf.submitDraft` | TO VERIFY | E2E |
 | NV-28 | E | MRF Detail & Fulfillment Tracking | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `mrf.issue`, `transfer.dispatch`, `transfer.receive` | TO VERIFY | E2E |
 | NV-29 | E | Supervisor Approval Queue | Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif | `mrf.decide` | TO VERIFY | E2E |
 | NV-30 | E | MRF Budget Impact & Exception Review | Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif, Finance / Accounting | `mrf.decide` | NEW INTEGRATION REQUIRED | E2E |
@@ -102,8 +102,8 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 60 NV
 | NV-47 | H | Finance Control Dashboard | Finance / Accounting, Owner / Eksekutif, BU Manager | — (baca) | — | Render |
 | NV-48 | H | AI Invoice & Receipt Capture | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, Purchasing, Gudang / Receiving, BU Manager, Finance / Accounting, Asset / Facility PIC, Owner / Eksekutif | `spend.capture`, `spend.update`, `spend.submit`, `spend.approve`, `spend.receive`, `spend.verify`, `spend.settle`, `spend.cancel`, `doc.capture`, `doc.match` | UI-ONLY SIMULATION | E2E |
 | NV-49 | H | PO–Receipt–Invoice Three-Way Matching | Finance / Accounting, Purchasing | `doc.match`, `doc.verify` | NEW INTEGRATION REQUIRED | E2E |
-| NV-50 | H | Accounts Payable & Payment Control | Finance / Accounting, Owner / Eksekutif, BU Manager | `bill.approve`, `bill.pay` | TO VERIFY | E2E |
-| NV-51 | H | GL Posting, Accounting & Exception Review | Finance / Accounting, Owner / Eksekutif | `gl.post` | TO VERIFY | Engine |
+| NV-50 | H | Accounts Payable & Payment Control | Finance / Accounting, Owner / Eksekutif, BU Manager | `order.pay`, `autoOrder.update`, `bill.approve`, `bill.pay` | NEW INTEGRATION REQUIRED | E2E |
+| NV-51 | H | GL Posting, Accounting & Exception Review | Finance / Accounting, Owner / Eksekutif | `gl.post` | TO VERIFY | E2E |
 | NV-52 | H | Cost Allocation & Inter-BU Reconciliation | Finance / Accounting, Owner / Eksekutif, BU Manager | `cc.updateAllocation` | NEW INTEGRATION REQUIRED | Engine |
 
 ## Modul I — Asset & Facility Management

@@ -1,5 +1,5 @@
 {
- "pass": 242,
+ "pass": 284,
  "fail": 0,
  "results": [
   {
@@ -1209,6 +1209,216 @@
   },
   {
    "name": "Semua jurnal Smart Spend seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: Staff memesan 3 jenis barang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: lolos AR-13 (rutin, dalam budget, ≤ Rp5 jt) → disetujui sistem tanpa atasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: nilai pesanan dihitung (12×85rb + 4×145rb + 100×6,5rb = Rp2.250.000)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: minyak pijat 12 = lokal + transfer + beli (Σ = 12)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: PO dibuat, disetujui & dikirim ke supplier default otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: transfer antar-gudang dikirim otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: budget item → komitmen bertambah 12 (belum realisasi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: tidak ada tugas approval MRF/PO untuk Supervisor/Purchasing",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "A: Staff mendapat tugas tunggal \"Barang diterima\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "B: Staff tidak bisa konfirmasi bayar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "B: tanpa konfirmasi eksplisit ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "B: Finance \"Sudah dibayar\" sebelum barang tiba → uang muka Dr 1160 / Cr 1110",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "B: bayar dua kali diblok",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: Staff cabang lain tidak bisa konfirmasi terima",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: Staff tekan \"Barang diterima\" (minyak pijat 10 dari 12)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: GRN otomatis terposting & tersimpan, PO jadi PARTIAL (backorder 2)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: tagihan otomatis = harga PO × qty diterima; uang muka dikompensasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: barang langsung tercatat terpakai (realisasi budget) & status sebagian",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: stok fisik Shanti tidak negatif & konsisten",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: sisa 2 datang → \"Barang diterima\" lagi → pesanan SELESAI",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: semua PO pesanan RECEIVED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: budget minyak pijat → realisasi +12, komitmen kembali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "C: stok lokal Shanti tidak dobel (awal − lokal terpakai)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "D: semua PO pesanan A lunas, uang muka 1160 bersih (0)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "D: saldo uang muka 1160 = 0 setelah barang lengkap diterima",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "D: utang usaha pesanan A = 0 (tidak dobel bayar)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "D: semua jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "D: manusia hanya 3 aksi (pesan · terima · bayar); approval, PO, posting, put-away & tagihan oleh SYS-RULE",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "E: melebihi budget → TIDAK otomatis, alasan jelas, rantai + BU Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "E: tidak ada PO dibuat untuk pengecualian",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F: barang tanpa budget item → manual",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: Staff tidak bisa mengubah pengaturan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: alasan perubahan wajib",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: Finance menurunkan batas ke Rp500rb (tercatat audit before/after)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: pesanan Rp760rb > batas baru → manual (Supervisor)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: Owner bisa menonaktifkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: Super Admin bisa mengaktifkan kembali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "G: batas > Rp25 jt ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "H: Ubud (staff lain) — 2 jenis barang lolos otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "H: 2 botol rusak dicatat; tagihan hanya untuk yang diterima baik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "H: setelah terima & bayar: tagihan PAID, jurnal seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Dashboard: budget 7P BU Spa terbarui (realisasi Product > awal)",
    "ok": true,
    "info": ""
   }

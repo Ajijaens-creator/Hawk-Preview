@@ -97,3 +97,13 @@ Rincian: `SMART_SPEND_WORKFLOW.md`. Yang wajib dibangun di backend HAWK sebelum 
 4. **Jurnal**: kirim usulan ke GL HAWK yang ada (bukan ledger kedua); nomor jurnal dikembalikan HAWK.
 5. **Faktur ber-PO**: teruskan ke three-way match yang ada (`doc.match` / `doc.verify`), bukan alur baru.
 6. **Gudang**: penerimaan barang tanpa PO lewat engine inventory HAWK (ledger RECEIPT).
+
+## 8. Order Sederhana (permintaan Owner 8 Nov 2026)
+
+Detail lengkap di `docs/SIMPLE_ORDER.md`. Ringkasan untuk developer:
+
+- Operasi baru: `order.quick`, `order.receive`, `order.pay`, `autoOrder.update`. Ketiganya **memanggil handler yang sudah ada** (`mrf.create`, `mrf.planFulfillment`, `transfer.dispatch/receive`, `po.createFromMrf/submit/send`, `grn.receive/post/putaway`, `mrf.issue`, `bill.pay`), bukan engine kedua.
+- Langkah otomatis memakai aktor `SYS-RULE` (role `SYSTEM`, tidak bisa dipilih sebagai login atau role pengguna). Produksi: implementasikan sebagai service account HAWK dengan izin terbatas pada transisi yang diizinkan AR-13, dan audit yang menyebut nomor aturan.
+- Aturan `AR-13` (doc `AUTO_ORDER`) disimpan di matriks approval. Field: `active`, `max`, `version`, `changes[]`. Hanya Finance/Admin/Owner yang dapat mengubah (`autoOrder.update`).
+- Jurnal baru: `INVOICE_RECOGNITION` otomatis (Dr 2120 + 1150 / Cr 2110), `ADVANCE_PAYMENT` (Dr 1160 / Cr 1110), `ADVANCE_APPLY` (Dr 2110 / Cr 1160). Akun 1160 **DEMO, TO VERIFY**. `bill.pay` kini hanya membayar `total − advanceApplied`.
+- Yang wajib diputuskan sebelum produksi: apakah faktur asli supplier tetap lewat three-way match NV-49; apakah transfer antar-outlet boleh dikirim tanpa konfirmasi gudang asal; apakah foto surat jalan wajib saat "Barang diterima".

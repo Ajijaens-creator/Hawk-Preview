@@ -40,8 +40,7 @@
 
 ## E. Deployment & domain
 
-- **Domain `preview-furchasing.jaens.id` belum aktif.** Belum ada deployment Vercel, record DNS, atau sertifikat SSL. Status ini baru boleh berubah setelah checklist di DEPLOY_VERCEL.md §5 lulus.
-- **Ejaan subdomain** (`furchasing` vs `purchasing`) belum dikonfirmasi.
+- **Domain `preview.hawk.jaens.id`** (diganti Owner dari preview-furchasing pada 8 Nov 2026). Proyek Vercel `hawk-jaens-preview` sudah terdeploy dan domain terverifikasi lewat TXT; status live baru boleh diklaim setelah CNAME, SSL, dan login diuji dari luar (DEPLOY_VERCEL.md §5).
 - **Login Vercel** (middleware.js) sudah diuji lewat `vercel build` lokal (CLI 65.12.1) dan menjalankan fungsi hasil kompilasi: 503 tanpa password, 401 tanpa login, lanjut bila login benar. Belum diuji di server Vercel sungguhan.
 - **Upload drag-and-drop ("Vercel Drop")**: belum dapat dipastikan menjalankan middleware. Jalur yang terdokumentasi dan diuji adalah Vercel CLI dari folder. Bila Drop dipakai, wajib cek bahwa dialog login muncul.
 - Basic Auth adalah kontrol akses preview, bukan sistem login aplikasi. Role switcher di dalam aplikasi tetap simulasi.
@@ -64,3 +63,13 @@
 - **Kamera:** `capture="environment"` membuka kamera di HP. Di desktop yang terbuka pemilih file. Belum diuji di Safari iPhone/iPad asli.
 - **PDF** diterima sebagai lampiran hanya di produksi. Pratinjau hanya menampilkan gambar.
 - **Font tulisan tangan** di nota contoh memakai font sistem (tanpa unduhan font), jadi tampilannya sedikit berbeda antar perangkat.
+
+## H. Order Sederhana (permintaan Owner 8 Nov 2026)
+
+- **Aturan, bukan AI.** Persetujuan, PO, kirim ke supplier, posting stok, put-away, dan tagihan dijalankan aktor `SYS-RULE` berdasarkan aturan AR-13. Aturan ini **NEW INTEGRATION REQUIRED**: engine HAWK belum diketahui punya mekanisme auto-approve.
+- **Batas Rp5 jt** dipilih Owner (8 Nov 2026) dan ditandai DEMO. Finance, Super Admin, dan Owner dapat mengubahnya langsung (dengan alasan & jejak audit). Ini **tidak** memakai pola draft → terbit Owner seperti aturan NV-09 lain, atas permintaan Owner.
+- **Kirim PO "otomatis"** hanya mengubah status menjadi SENT. Tidak ada email/WA ke supplier di prototipe.
+- **Tagihan otomatis** = harga PO × qty diterima (2-way match). Faktur asli supplier tetap harus dilampirkan; selisih harga faktur vs PO belum dicek di jalur otomatis (TO VERIFY: apakah faktur tetap lewat NV-49).
+- **Pemesan = penerima.** Di jalur sederhana staf yang memesan juga mengonfirmasi barang datang. Kontrol pengganti: harga & supplier ditetapkan sistem, nilai dibatasi, budget dicek, Finance terpisah sebagai pembayar. Pertimbangkan foto surat jalan sebagai syarat bila risiko dianggap tinggi.
+- **Transfer antar-gudang** dari outlet lain dikirim otomatis tanpa konfirmasi gudang asal (penyederhanaan). Di produksi, gudang asal sebaiknya tetap menekan "Kirim".
+- **Uang muka** (bayar sebelum barang datang) memakai akun 1160 Uang Muka Pembelian (DEMO, TO VERIFY terhadap COA HAWK). Bila backorder dibatalkan setelah dibayar penuh, sisa uang muka perlu diselesaikan manual (belum ada alur retur dana).

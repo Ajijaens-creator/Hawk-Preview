@@ -10,8 +10,8 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 
 | Status | Jumlah |
 |---|---|
-| TO VERIFY | 48 |
-| NEW INTEGRATION REQUIRED | 25 |
+| TO VERIFY | 49 |
+| NEW INTEGRATION REQUIRED | 28 |
 | UI-ONLY SIMULATION | 4 |
 
 | Operasi | Jenis | Modul HAWK existing (perkiraan) | Hook paket Owner (placeholder) | Status | Diuji di engine |
@@ -45,6 +45,10 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | `mrf.planFulfillment` | tulis | PO Request register — tombol TRANSFER dan PO, kolom TRANSFER ID / PO ID | — | TO VERIFY | ya |
 | `mrf.issue` | tulis | Inventory — pengeluaran stok (belum terlihat di screenshot) | `mrf.getFulfillment / inventory.issue` | TO VERIFY | ya |
 | `mrf.cancel` | tulis | Purchase Request — CANCEL | — | TO VERIFY | ya |
+| `autoOrder.update` | tulis | — (pengaturan aturan baru) | — | NEW INTEGRATION REQUIRED | ya |
+| `order.quick` | tulis | Purchase Request → Purchase Order (engine yang sama, dipicu aturan) | — | NEW INTEGRATION REQUIRED | ya |
+| `order.receive` | tulis | Receiving + Inventory issue (engine yang sama) | — | NEW INTEGRATION REQUIRED | ya |
+| `order.pay` | tulis | Finance (pembayaran) — belum terverifikasi | — | TO VERIFY | ya |
 | `supplier.list` | baca | Cards (master supplier/card — kolom CARD di PR) | — | TO VERIFY | — (baca) |
 | `quotation.compare` | baca | PRICE LEVEL di PO entry | — | NEW INTEGRATION REQUIRED | — (baca) |
 | `po.createFromMrf` | tulis | Purchases › DATA ENTRY \| PURCHASE ORDER (ID PO20261100001) + tombol PO di PO Request register | `purchasing.createPO` | TO VERIFY | ya |
