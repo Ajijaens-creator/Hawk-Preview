@@ -21,7 +21,7 @@
   const short = (v) => U.rp(v, { short: true });
 
   /* shared helpers */
-  // Branch/division-scoped users (e.g. Supervisor Shanti) see their parent BU's budget (read per permission)
+  // Branch/division-scoped users (e.g. Supervisor Ubud) see their parent BU's budget (read per permission)
   const budgetsFor = (ctx) => ctx.s.budgets.filter((b) => ctx.role === 'OWNER' || ['FINANCE', 'ADMIN'].includes(ctx.role) || ctx.user.scope.some((x) => x === b.bu || S.buOf(ctx.s, x) === b.bu));
   const noBudget = () => `<div class="card">${ui.empty('<b>Belum ada budget dalam lingkup akses Anda</b><div class="tiny" style="margin-top:6px">Budget dibuat BU Manager / Finance di NV-15. Hubungi BU Manager bila Anda seharusnya melihat budget unit ini.</div>')}</div>`;
   const pickBudget = (ctx, pref) => {

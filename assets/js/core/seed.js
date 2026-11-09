@@ -44,10 +44,10 @@
       { id: 'GRP', type: 'GROUP', name: 'JAENS Enterprises (Grup)', parent: null, status: 'ACTIVE', scope: 'OUT', note: 'Target grup & valuasi di luar lingkup operasional Spa–Essence' },
       { id: 'BU-SPA', type: 'BU', code: 'SPA', name: 'JAENS Spa', parent: 'GRP', status: 'ACTIVE', scope: 'IN' },
       { id: 'DV-SPA-OPS', type: 'DIVISION', code: 'OPS', name: 'Operasional Spa', parent: 'BU-SPA', status: 'ACTIVE', scope: 'IN', note: 'Dipimpin Operational Manager, dibantu Asisten Operational Manager yang membawahi Supervisor outlet. Tiap outlet: Receptionist, Spa Therapist, Attendant, Security.' },
-      { id: 'BR-UBD', type: 'BRANCH', code: 'UBD', name: 'Spa Ubud', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
-      { id: 'BR-SHN', type: 'BRANCH', code: 'SHN', name: 'Spa Shanti', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
-      { id: 'BR-TRK', type: 'BRANCH', code: 'TRK', name: 'Spa Triloka', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
-      { id: 'BR-BSM', type: 'BRANCH', code: 'BSM', name: 'Spa Bisma', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
+      { id: 'BR-SHN', type: 'BRANCH', code: 'SHN', name: 'JAENS Spa Shanti', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
+      { id: 'BR-UBD', type: 'BRANCH', code: 'UBD', name: 'JAENS Spa Center (Ubud)', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
+      { id: 'BR-TRK', type: 'BRANCH', code: 'TRK', name: 'JAENS Spa Triloka', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
+      { id: 'BR-BSM', type: 'BRANCH', code: 'BSM', name: 'JAENS Spa Bisma', parent: 'DV-SPA-OPS', status: 'ACTIVE', scope: 'IN' },
       { id: 'BU-ESS', type: 'BU', code: 'ESS', name: 'JAENS Essence', parent: 'GRP', status: 'ACTIVE', scope: 'IN', note: 'Engine produksi/manufaktur independen bila ada' },
       { id: 'DV-ESS-PRD', type: 'DIVISION', code: 'PRD', name: 'Produksi Essence', parent: 'BU-ESS', status: 'ACTIVE', scope: 'IN' },
       { id: 'DV-ESS-SLS', type: 'DIVISION', code: 'SLS', name: 'Penjualan Essence', parent: 'BU-ESS', status: 'ACTIVE', scope: 'IN' },
@@ -60,10 +60,10 @@
     ];
 
     s.costCenters = [
-      { id: 'CC-UBD-OPS', name: 'Operasional Spa Ubud', org: 'BR-UBD' },
-      { id: 'CC-SHN-OPS', name: 'Operasional Spa Shanti', org: 'BR-SHN' },
-      { id: 'CC-TRK-OPS', name: 'Operasional Spa Triloka', org: 'BR-TRK' },
-      { id: 'CC-BSM-OPS', name: 'Operasional Spa Bisma', org: 'BR-BSM' },
+      { id: 'CC-SHN-OPS', name: 'Operasional JAENS Spa Shanti', org: 'BR-SHN' },
+      { id: 'CC-UBD-OPS', name: 'Operasional JAENS Spa Center', org: 'BR-UBD' },
+      { id: 'CC-TRK-OPS', name: 'Operasional JAENS Spa Triloka', org: 'BR-TRK' },
+      { id: 'CC-BSM-OPS', name: 'Operasional JAENS Spa Bisma', org: 'BR-BSM' },
       { id: 'CC-ESS-PRD', name: 'Produksi Essence', org: 'DV-ESS-PRD' },
       { id: 'CC-ESS-SLS', name: 'Penjualan Essence', org: 'DV-ESS-SLS' },
       { id: 'CC-OFC-FIN', name: 'Finance HQ', org: 'DV-FIN', shared: true },
@@ -84,19 +84,20 @@
       { id: 'U-OWN', name: 'Aji Jaens', role: 'OWNER', title: 'Owner', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-BUM', name: 'Eni Restini', role: 'BU_MANAGER', title: 'Manager BU Operasional — JAENS Spa', dept: 'Manajemen Operasional', reportsTo: 'U-OWN', scope: ['BU-SPA'] },
       { id: 'U-HOD', name: 'Dedik', role: 'HEAD_DIV', title: 'Manager Divisi Komersil', dept: 'Komersil', reportsTo: 'U-OWN', scope: ['DV-KOM'] },
-      { id: 'U-SPV', name: 'Mila', role: 'SUPERVISOR', title: 'Supervisor Outlet Spa Shanti', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-SHN'] },
-      { id: 'U-STF', name: 'Indah', role: 'STAFF', title: 'Spa Therapist Spa Shanti', dept: 'Spa Therapist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-SPV', name: 'Mila', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Center (Ubud)', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-UBD'] },
+      { id: 'U-STF', name: 'Indah', role: 'STAFF', title: 'Spa Therapist JAENS Spa Center', dept: 'Spa Therapist', reportsTo: 'U-SPV', scope: ['BR-UBD'] },
       { id: 'U-PUR', name: 'Etya', role: 'PURCHASING', title: 'Purchasing', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-WHS', name: 'Supri', role: 'WAREHOUSE', title: 'Warehouse Officer', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-FIN', name: 'Asri', role: 'FINANCE', title: 'Finance Manager', dept: 'Finance & Accounting', reportsTo: 'U-OWN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-AST', name: 'Diana', role: 'ASSET', title: 'Inventory & Aset', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-ADM', name: 'Niken', role: 'ADMIN', title: 'Super Admin Sistem', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-STF2', name: 'Komang Ayu', role: 'STAFF', title: 'Attendant Spa Ubud', dept: 'Attendant', reportsTo: 'U-SPV2', scope: ['BR-UBD'] },
-      { id: 'U-SPV2', name: 'Ni Luh Sari', role: 'SUPERVISOR', title: 'Supervisor Outlet Spa Ubud', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-UBD'] },
-      { id: 'U-RCP', name: 'Yuli', role: 'STAFF', title: 'Receptionist Spa Shanti', dept: 'Receptionist', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
-      { id: 'U-SEC', name: 'Nengah Budi', role: 'STAFF', title: 'Security Spa Shanti', dept: 'Security', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-SPV2', name: 'Tina', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Shanti', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-SHN'] },
+      { id: 'U-SPV3', name: 'Dewik', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Triloka', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-TRK'] },
+      { id: 'U-SPV4', name: 'Wahyudi', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Bisma', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-BSM'] },
+      { id: 'U-RCP', name: 'Yuli', role: 'STAFF', title: 'Receptionist JAENS Spa Center', dept: 'Receptionist', reportsTo: 'U-SPV', scope: ['BR-UBD'] },
+      { id: 'U-SEC', name: 'Joni', role: 'STAFF', title: 'Security JAENS Spa Center', dept: 'Security', reportsTo: 'U-SPV', scope: ['BR-UBD'] },
       { id: 'U-AOM', name: 'Tika', role: 'HEAD_DIV', title: 'Asisten Manager Operasional — Divisi Operasional Spa', dept: 'Manajemen Operasional', position: 'ASST_OM', reportsTo: 'U-BUM', scope: ['DV-SPA-OPS'] },
-      { id: 'U-ATD', name: 'Dewa', role: 'STAFF', title: 'Attendant Spa Shanti', dept: 'Attendant', reportsTo: 'U-SPV', scope: ['BR-SHN'] },
+      { id: 'U-ATD', name: 'Dewa', role: 'STAFF', title: 'Attendant JAENS Spa Center', dept: 'Attendant', reportsTo: 'U-SPV', scope: ['BR-UBD'] },
       { id: 'U-GAS', name: 'Meli', role: 'FINANCE', title: 'General Accounting Supervisor', dept: 'Finance & Accounting', reportsTo: 'U-FIN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-TAX', name: 'Idha', role: 'FINANCE', title: 'Tax Administration', dept: 'Finance & Accounting', reportsTo: 'U-FIN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-HRD', name: 'Made Gunarsa', role: 'HEAD_DIV', title: 'Manager Divisi HRD', dept: 'HG / HRD', reportsTo: 'U-OWN', scope: ['DV-HRD'] },
@@ -142,7 +143,7 @@
       { bu: 'BU-ESS', id: 'D8', name: 'Biaya bahan baku per unit', unit: 'Rp', target: 18500, actual: 19200, lowerBetter: true },
     ];
     s.projects = [
-      { id: 'PRJ-2027-01', name: 'Renovasi 2 ruang couple treatment Spa Ubud', bu: 'BU-SPA', type: 'OPERATIONAL', capex: 850000000, opex: 40000000, status: 'PROPOSED', owner: 'U-BUM', payback: 26, irr: 0.21, milestones: [] },
+      { id: 'PRJ-2027-01', name: 'Renovasi 2 ruang couple treatment JAENS Spa Center', bu: 'BU-SPA', type: 'OPERATIONAL', capex: 850000000, opex: 40000000, status: 'PROPOSED', owner: 'U-BUM', payback: 26, irr: 0.21, milestones: [] },
       { id: 'PRJ-2027-02', name: 'Lini produk Essence: travel kit aromaterapi', bu: 'BU-ESS', type: 'INNOVATION', capex: 320000000, opex: 180000000, status: 'APPROVED', owner: 'U-OWN', payback: 18, irr: 0.28,
         milestones: [
           { name: 'Formulasi & uji stabilitas', due: '2026-12-15', progress: 0.6, status: 'ON_TRACK' },
@@ -155,7 +156,7 @@
           { name: 'Integrasi & uji', due: '2026-11-30', progress: 0.7, status: 'AT_RISK' },
           { name: 'Go-live 4 cabang', due: '2026-12-20', progress: 0, status: 'NOT_STARTED' },
         ] },
-      { id: 'PRJ-2026-03', name: 'Penggantian AC hemat energi Spa Shanti', bu: 'BU-SPA', type: 'OPERATIONAL', capex: 145000000, opex: 0, status: 'COMPLETED', owner: 'U-AST', payback: 30, irr: 0.15,
+      { id: 'PRJ-2026-03', name: 'Penggantian AC hemat energi JAENS Spa Center', bu: 'BU-SPA', type: 'OPERATIONAL', capex: 145000000, opex: 0, status: 'COMPLETED', owner: 'U-AST', payback: 30, irr: 0.15,
         milestones: [{ name: 'Instalasi', due: '2026-06-30', progress: 1, status: 'DONE' }] },
     ];
 
@@ -189,7 +190,7 @@
       ] },
     ];
     // branch allocation of Spa budget (share of spending lines)
-    s.branchShare = { 'BR-UBD': 0.34, 'BR-SHN': 0.25, 'BR-TRK': 0.23, 'BR-BSM': 0.18 };
+    s.branchShare = { 'BR-UBD': 0.25, 'BR-SHN': 0.34, 'BR-TRK': 0.23, 'BR-BSM': 0.18 };
 
     /* FY2027 line-level planning (Module D developer handoff, 2026-11-08): unit × 7P × item, qty × price,
        separate dimensions 7P / stream (Operational|Innovation) / fund type. Aggregated 7P lines are derived. */
@@ -242,7 +243,7 @@
     s.nonRoutine = [
       { id: 'NRB-2026-01', name: 'Event Hari Spa Nasional (Promosi)', bu: 'BU-SPA', unit: 'BU-SPA', p: 'PROMOTION', kind: 'OPEX', amount: 45000000, used: 31500000, status: 'APPROVED', reason: 'Event tahunan nasional', by: 'U-HOD', decidedBy: 'U-OWN' },
       { id: 'NRB-2026-02', name: 'Pelatihan sertifikasi therapist', bu: 'BU-SPA', unit: 'BU-SPA', p: 'PEOPLE', kind: 'OPEX', amount: 60000000, used: 12000000, status: 'APPROVED', reason: 'Wajib sertifikasi baru', by: 'U-BUM', decidedBy: 'U-OWN' },
-      { id: 'NRB-2026-03', name: 'Perbaikan darurat atap Spa Bisma', bu: 'BU-SPA', unit: 'BR-BSM', p: 'FACILITY', kind: 'OPEX', amount: 25000000, used: 0, status: 'SUBMITTED', reason: 'Bocor saat musim hujan, ruang refleksi tidak bisa dipakai', by: 'U-HOD' },
+      { id: 'NRB-2026-03', name: 'Perbaikan darurat atap JAENS Spa Bisma', bu: 'BU-SPA', unit: 'BR-BSM', p: 'FACILITY', kind: 'OPEX', amount: 25000000, used: 0, status: 'SUBMITTED', reason: 'Bocor saat musim hujan, ruang refleksi tidak bisa dipakai', by: 'U-HOD' },
       { id: 'NRB-2026-04', name: 'Sampel formula Essence untuk buyer', bu: 'BU-ESS', unit: 'DV-ESS-PRD', p: 'PRODUCT', kind: 'OPEX', amount: 18000000, used: 0, status: 'SUBMITTED', reason: 'Permintaan buyer hotel — riset produk baru', by: 'U-FIN' },
     ];
 
@@ -290,20 +291,20 @@
     /* ---------------- Warehouses, racks & bins ---------------- */
     const bins = (code, racks) => racks.flatMap((r) => [1, 2, 3].map((n) => `${code}-${r}-0${n}`));
     s.warehouses = [
-      { id: 'WH-UBD', name: 'Gudang Spa Ubud', org: 'BR-UBD', racks: ['A', 'B'], bins: bins('UBD', ['A', 'B']) },
-      { id: 'WH-SHN', name: 'Gudang Spa Shanti', org: 'BR-SHN', racks: ['A', 'B'], bins: bins('SHN', ['A', 'B']) },
-      { id: 'WH-TRK', name: 'Gudang Spa Triloka', org: 'BR-TRK', racks: ['A'], bins: bins('TRK', ['A']) },
-      { id: 'WH-BSM', name: 'Gudang Spa Bisma', org: 'BR-BSM', racks: ['A'], bins: bins('BSM', ['A']) },
+      { id: 'WH-SHN', name: 'Gudang JAENS Spa Shanti', org: 'BR-SHN', racks: ['A', 'B'], bins: bins('SHN', ['A', 'B']) },
+      { id: 'WH-UBD', name: 'Gudang JAENS Spa Center', org: 'BR-UBD', racks: ['A', 'B'], bins: bins('UBD', ['A', 'B']) },
+      { id: 'WH-TRK', name: 'Gudang JAENS Spa Triloka', org: 'BR-TRK', racks: ['A'], bins: bins('TRK', ['A']) },
+      { id: 'WH-BSM', name: 'Gudang JAENS Spa Bisma', org: 'BR-BSM', racks: ['A'], bins: bins('BSM', ['A']) },
       { id: 'WH-ESS', name: 'Gudang Essence', org: 'BU-ESS', racks: ['A', 'B', 'C'], bins: bins('ESS', ['A', 'B', 'C']) },
       { id: 'WH-PST', name: 'Gudang Pusat HQ', org: 'BU-OFC', racks: ['A', 'B'], bins: bins('PST', ['A', 'B']) },
     ];
     const st = (wh, item, onHand, min, max, bin) => ({ wh, item, onHand, reserved: 0, min, max, bin });
     s.stock = [
-      st('WH-SHN', 'BHP-001', 4, 6, 30, 'SHN-A-01'), st('WH-SHN', 'BHP-002', 3, 4, 20, 'SHN-A-02'), st('WH-SHN', 'BHP-003', 40, 30, 120, 'SHN-B-01'),
-      st('WH-SHN', 'BHP-004', 3, 2, 8, 'SHN-B-02'), st('WH-SHN', 'BHP-005', 12, 15, 60, 'SHN-A-03'), st('WH-SHN', 'BHP-006', 18, 10, 40, 'SHN-B-03'),
-      st('WH-SHN', 'BHP-007', 160, 100, 400, 'SHN-B-03'), st('WH-SHN', 'BHP-008', 6, 4, 20, 'SHN-A-02'),
-      st('WH-UBD', 'BHP-001', 9, 6, 30, 'UBD-A-01'), st('WH-UBD', 'BHP-002', 10, 4, 20, 'UBD-A-02'), st('WH-UBD', 'BHP-003', 95, 30, 150, 'UBD-B-01'),
-      st('WH-UBD', 'BHP-004', 5, 2, 8, 'UBD-B-02'), st('WH-UBD', 'BHP-005', 35, 15, 60, 'UBD-A-03'), st('WH-UBD', 'BHP-008', 9, 4, 20, 'UBD-A-02'),
+      st('WH-UBD', 'BHP-001', 4, 6, 30, 'UBD-A-01'), st('WH-UBD', 'BHP-002', 3, 4, 20, 'UBD-A-02'), st('WH-UBD', 'BHP-003', 40, 30, 120, 'UBD-B-01'),
+      st('WH-UBD', 'BHP-004', 3, 2, 8, 'UBD-B-02'), st('WH-UBD', 'BHP-005', 12, 15, 60, 'UBD-A-03'), st('WH-UBD', 'BHP-006', 18, 10, 40, 'UBD-B-03'),
+      st('WH-UBD', 'BHP-007', 160, 100, 400, 'UBD-B-03'), st('WH-UBD', 'BHP-008', 6, 4, 20, 'UBD-A-02'),
+      st('WH-SHN', 'BHP-001', 9, 6, 30, 'SHN-A-01'), st('WH-SHN', 'BHP-002', 10, 4, 20, 'SHN-A-02'), st('WH-SHN', 'BHP-003', 95, 30, 150, 'SHN-B-01'),
+      st('WH-SHN', 'BHP-004', 5, 2, 8, 'SHN-B-02'), st('WH-SHN', 'BHP-005', 35, 15, 60, 'SHN-A-03'), st('WH-SHN', 'BHP-008', 9, 4, 20, 'SHN-A-02'),
       st('WH-TRK', 'BHP-001', 5, 5, 25, 'TRK-A-01'), st('WH-TRK', 'BHP-002', 1, 4, 20, 'TRK-A-02'), st('WH-TRK', 'BHP-003', 42, 30, 120, 'TRK-A-03'),
       st('WH-BSM', 'BHP-001', 2, 4, 20, 'BSM-A-01'), st('WH-BSM', 'BHP-003', 25, 20, 80, 'BSM-A-02'), st('WH-BSM', 'BHP-004', 1, 2, 6, 'BSM-A-03'),
       st('WH-ESS', 'ESS-RM-01', 14, 10, 40, 'ESS-A-01'),
@@ -317,10 +318,10 @@
       return { period: '2026-11', branch, item, qty, value: qty * it.price, baseActualQty };
     };
     s.itemBudgets = [
-      ib('BR-SHN', 'BHP-001', 40, 26), ib('BR-SHN', 'BHP-002', 20, 9), ib('BR-SHN', 'BHP-003', 60, 22), ib('BR-SHN', 'BHP-004', 6, 2),
-      ib('BR-SHN', 'BHP-005', 40, 31), ib('BR-SHN', 'BHP-006', 25, 8), ib('BR-SHN', 'BHP-007', 300, 120), ib('BR-SHN', 'BHP-008', 16, 7),
-      ib('BR-UBD', 'BHP-001', 50, 21), ib('BR-UBD', 'BHP-002', 24, 10), ib('BR-UBD', 'BHP-003', 80, 30), ib('BR-UBD', 'BHP-004', 8, 3),
-      ib('BR-UBD', 'BHP-005', 50, 18), ib('BR-TRK', 'BHP-001', 35, 15), ib('BR-TRK', 'BHP-002', 18, 8), ib('BR-TRK', 'BHP-003', 60, 25),
+      ib('BR-UBD', 'BHP-001', 40, 26), ib('BR-UBD', 'BHP-002', 20, 9), ib('BR-UBD', 'BHP-003', 60, 22), ib('BR-UBD', 'BHP-004', 6, 2),
+      ib('BR-UBD', 'BHP-005', 40, 31), ib('BR-UBD', 'BHP-006', 25, 8), ib('BR-UBD', 'BHP-007', 300, 120), ib('BR-UBD', 'BHP-008', 16, 7),
+      ib('BR-SHN', 'BHP-001', 50, 21), ib('BR-SHN', 'BHP-002', 24, 10), ib('BR-SHN', 'BHP-003', 80, 30), ib('BR-SHN', 'BHP-004', 8, 3),
+      ib('BR-SHN', 'BHP-005', 50, 18), ib('BR-TRK', 'BHP-001', 35, 15), ib('BR-TRK', 'BHP-002', 18, 8), ib('BR-TRK', 'BHP-003', 60, 25),
       ib('BR-BSM', 'BHP-001', 28, 14), ib('BR-BSM', 'BHP-003', 45, 20), ib('BR-BSM', 'BHP-004', 5, 2),
     ];
 
@@ -328,30 +329,30 @@
     s.meta.seq = { PR202611: 5, PO202611: 2, TR202611: 1, GR202611: 1, BL202611: 1, JV202611: 3, MT202611: 2, WO202611: 1, DC202611: 1 };
 
     s.mrfs = [
-      { id: 'PR20261100001', date: '2026-11-02T09:10:00', requester: 'U-STF2', branch: 'BR-UBD', wh: 'WH-UBD', cc: 'CC-UBD-OPS', type: 'ROUTINE', status: 'FULFILLED', memo: 'Stok handuk untuk akhir pekan',
-        lines: [{ item: 'BHP-003', qty: 20, reason: 'Pemakaian rutin', alloc: [{ path: 'LOCAL', qty: 20, fromWh: 'WH-UBD', ref: null, readyQty: 20, issuedQty: 20 }] }],
-        history: [{ ts: '2026-11-02T09:10:00', by: 'U-STF2', action: 'SUBMIT' }, { ts: '2026-11-02T10:02:00', by: 'U-SPV2', action: 'APPROVE', note: 'OK' }, { ts: '2026-11-02T13:30:00', by: 'U-WHS', action: 'ISSUE', note: '20 pcs diserahkan' }] },
-      { id: 'PR20261100002', date: '2026-11-04T11:00:00', requester: 'U-STF', branch: 'BR-SHN', wh: 'WH-SHN', cc: 'CC-SHN-OPS', type: 'ROUTINE', status: 'IN_FULFILLMENT', memo: 'Body scrub untuk paket promo November',
-        lines: [{ item: 'BHP-002', qty: 5, reason: 'Paket promo', alloc: [{ path: 'LOCAL', qty: 2, fromWh: 'WH-SHN', ref: null, readyQty: 2, issuedQty: 2 }, { path: 'PURCHASE', qty: 3, fromWh: null, ref: null, readyQty: 0, issuedQty: 0 }] }],
+      { id: 'PR20261100001', date: '2026-11-02T09:10:00', requester: 'U-SPV2', branch: 'BR-SHN', wh: 'WH-SHN', cc: 'CC-SHN-OPS', type: 'ROUTINE', status: 'FULFILLED', memo: 'Stok handuk untuk akhir pekan',
+        lines: [{ item: 'BHP-003', qty: 20, reason: 'Pemakaian rutin', alloc: [{ path: 'LOCAL', qty: 20, fromWh: 'WH-SHN', ref: null, readyQty: 20, issuedQty: 20 }] }],
+        history: [{ ts: '2026-11-02T09:10:00', by: 'U-SPV2', action: 'SUBMIT' }, { ts: '2026-11-02T10:02:00', by: 'U-AOM', action: 'APPROVE', note: 'OK' }, { ts: '2026-11-02T13:30:00', by: 'U-WHS', action: 'ISSUE', note: '20 pcs diserahkan' }] },
+      { id: 'PR20261100002', date: '2026-11-04T11:00:00', requester: 'U-STF', branch: 'BR-UBD', wh: 'WH-UBD', cc: 'CC-UBD-OPS', type: 'ROUTINE', status: 'IN_FULFILLMENT', memo: 'Body scrub untuk paket promo November',
+        lines: [{ item: 'BHP-002', qty: 5, reason: 'Paket promo', alloc: [{ path: 'LOCAL', qty: 2, fromWh: 'WH-UBD', ref: null, readyQty: 2, issuedQty: 2 }, { path: 'PURCHASE', qty: 3, fromWh: null, ref: null, readyQty: 0, issuedQty: 0 }] }],
         history: [{ ts: '2026-11-04T11:00:00', by: 'U-STF', action: 'SUBMIT' }, { ts: '2026-11-04T11:40:00', by: 'U-SPV', action: 'APPROVE', note: 'Disetujui, sesuai budget' }, { ts: '2026-11-04T14:00:00', by: 'U-WHS', action: 'ISSUE', note: '2 pak dari stok lokal' }] },
-      { id: 'PR20261100003', date: '2026-11-05T08:45:00', requester: 'U-STF2', branch: 'BR-BSM', wh: 'WH-BSM', cc: 'CC-BSM-OPS', type: 'ROUTINE', status: 'IN_FULFILLMENT', memo: 'Minyak pijat Bisma',
+      { id: 'PR20261100003', date: '2026-11-05T08:45:00', requester: 'U-SPV4', branch: 'BR-BSM', wh: 'WH-BSM', cc: 'CC-BSM-OPS', type: 'ROUTINE', status: 'IN_FULFILLMENT', memo: 'Minyak pijat Bisma',
         lines: [{ item: 'BHP-001', qty: 6, reason: 'Pemakaian rutin', alloc: [{ path: 'PURCHASE', qty: 6, fromWh: null, ref: null, readyQty: 0, issuedQty: 0 }] }],
-        history: [{ ts: '2026-11-05T08:45:00', by: 'U-STF2', action: 'SUBMIT' }, { ts: '2026-11-05T09:30:00', by: 'U-BUM', action: 'APPROVE', note: 'Disetujui' }] },
-      { id: 'PR20261100004', date: '2026-11-07T15:20:00', requester: 'U-STF', branch: 'BR-SHN', wh: 'WH-SHN', cc: 'CC-SHN-OPS', type: 'ROUTINE', status: 'SUBMITTED', memo: 'Aromaterapi untuk event wellness weekend',
+        history: [{ ts: '2026-11-05T08:45:00', by: 'U-SPV4', action: 'SUBMIT' }, { ts: '2026-11-05T09:30:00', by: 'U-BUM', action: 'APPROVE', note: 'Disetujui' }] },
+      { id: 'PR20261100004', date: '2026-11-07T15:20:00', requester: 'U-STF', branch: 'BR-UBD', wh: 'WH-UBD', cc: 'CC-UBD-OPS', type: 'ROUTINE', status: 'SUBMITTED', memo: 'Aromaterapi untuk event wellness weekend',
         lines: [{ item: 'BHP-005', qty: 14, reason: 'Event wellness weekend', alloc: [] }],
         history: [{ ts: '2026-11-07T15:20:00', by: 'U-STF', action: 'SUBMIT' }] },
-      { id: 'PR20261100005', date: '2026-11-03T10:00:00', requester: 'U-STF2', branch: 'BR-UBD', wh: 'WH-UBD', cc: 'CC-UBD-OPS', type: 'ROUTINE', status: 'REJECTED', memo: 'Sabun cair',
+      { id: 'PR20261100005', date: '2026-11-03T10:00:00', requester: 'U-SPV2', branch: 'BR-SHN', wh: 'WH-SHN', cc: 'CC-SHN-OPS', type: 'ROUTINE', status: 'REJECTED', memo: 'Sabun cair',
         lines: [{ item: 'BHP-004', qty: 4, reason: 'Stok cadangan', alloc: [] }],
-        history: [{ ts: '2026-11-03T10:00:00', by: 'U-STF2', action: 'SUBMIT' }, { ts: '2026-11-03T11:15:00', by: 'U-SPV2', action: 'REJECT', note: 'Stok gudang masih cukup 5 jerigen' }] },
+        history: [{ ts: '2026-11-03T10:00:00', by: 'U-SPV2', action: 'SUBMIT' }, { ts: '2026-11-03T11:15:00', by: 'U-AOM', action: 'REJECT', note: 'Stok gudang masih cukup 5 jerigen' }] },
     ];
     // reflect seeded local issues in ledger
     s.ledger.push(
-      { id: 'LG-0001', ts: '2026-11-02T13:30:00', type: 'ISSUE', wh: 'WH-UBD', item: 'BHP-003', qty: -20, ref: 'PR20261100001', cc: 'CC-UBD-OPS', by: 'U-WHS', note: 'Seed history' },
-      { id: 'LG-0002', ts: '2026-11-04T14:00:00', type: 'ISSUE', wh: 'WH-SHN', item: 'BHP-002', qty: -2, ref: 'PR20261100002', cc: 'CC-SHN-OPS', by: 'U-WHS', note: 'Seed history' }
+      { id: 'LG-0001', ts: '2026-11-02T13:30:00', type: 'ISSUE', wh: 'WH-SHN', item: 'BHP-003', qty: -20, ref: 'PR20261100001', cc: 'CC-SHN-OPS', by: 'U-WHS', note: 'Seed history' },
+      { id: 'LG-0002', ts: '2026-11-04T14:00:00', type: 'ISSUE', wh: 'WH-UBD', item: 'BHP-002', qty: -2, ref: 'PR20261100002', cc: 'CC-UBD-OPS', by: 'U-WHS', note: 'Seed history' }
     );
 
     s.transfers = [
-      { id: 'TR20261100001', date: '2026-11-01T09:00:00', from: 'WH-UBD', to: 'WH-TRK', status: 'RECEIVED', mrf: null, lines: [{ item: 'BHP-003', qty: 15 }], history: [{ ts: '2026-11-01T09:00:00', by: 'U-WHS', action: 'DISPATCH' }, { ts: '2026-11-01T15:00:00', by: 'U-WHS', action: 'RECEIVE' }] },
+      { id: 'TR20261100001', date: '2026-11-01T09:00:00', from: 'WH-SHN', to: 'WH-TRK', status: 'RECEIVED', mrf: null, lines: [{ item: 'BHP-003', qty: 15 }], history: [{ ts: '2026-11-01T09:00:00', by: 'U-WHS', action: 'DISPATCH' }, { ts: '2026-11-01T15:00:00', by: 'U-WHS', action: 'RECEIVE' }] },
     ];
 
     s.pos = [
@@ -369,25 +370,25 @@
     ];
     s.payments = [{ id: 'PY-2611-0001', bill: 'BL20261100001', amount: 965700, date: '2026-11-05', method: 'Transfer bank (DEMO)', status: 'PAID', by: 'U-FIN' }];
     s.journals = [
-      { id: 'JV20261100001', ts: '2026-11-02T13:30:00', source: 'PR20261100001', kind: 'CONSUMPTION', status: 'POSTED', lines: [{ acc: '6110 Beban BHP — Facility', cc: 'CC-UBD-OPS', dr: 760000, cr: 0 }, { acc: '1140 Persediaan BHP', cc: 'CC-UBD-OPS', dr: 0, cr: 760000 }] },
-      { id: 'JV20261100002', ts: '2026-11-04T14:00:00', source: 'PR20261100002', kind: 'CONSUMPTION', status: 'POSTED', lines: [{ acc: '6100 Beban BHP — Product', cc: 'CC-SHN-OPS', dr: 124000, cr: 0 }, { acc: '1140 Persediaan BHP', cc: 'CC-SHN-OPS', dr: 0, cr: 124000 }] },
+      { id: 'JV20261100001', ts: '2026-11-02T13:30:00', source: 'PR20261100001', kind: 'CONSUMPTION', status: 'POSTED', lines: [{ acc: '6110 Beban BHP — Facility', cc: 'CC-SHN-OPS', dr: 760000, cr: 0 }, { acc: '1140 Persediaan BHP', cc: 'CC-SHN-OPS', dr: 0, cr: 760000 }] },
+      { id: 'JV20261100002', ts: '2026-11-04T14:00:00', source: 'PR20261100002', kind: 'CONSUMPTION', status: 'POSTED', lines: [{ acc: '6100 Beban BHP — Product', cc: 'CC-UBD-OPS', dr: 124000, cr: 0 }, { acc: '1140 Persediaan BHP', cc: 'CC-UBD-OPS', dr: 0, cr: 124000 }] },
       { id: 'JV20261100003', ts: '2026-11-05T10:00:00', source: 'BL20261100001', kind: 'PAYMENT', status: 'POSTED', lines: [{ acc: '2110 Utang Usaha', cc: 'CC-OFC-FIN', dr: 965700, cr: 0 }, { acc: '1110 Bank (DEMO)', cc: 'CC-OFC-FIN', dr: 0, cr: 965700 }] },
     ];
 
     /* ---------------- Assets & maintenance ---------------- */
     s.assets = [
-      { id: 'AST-SHN-0001', name: 'AC Split 1,5 PK — Ruang Treatment 3', cat: 'HVAC', org: 'BR-SHN', location: 'Spa Shanti › Lantai 1 › Ruang Treatment 3', acquired: '2026-06-28', cost: 9800000, life: 60, method: 'Garis lurus', status: 'ACTIVE', condition: 'Perlu perbaikan', lastService: '2026-06-28', serviceIntervalDays: 90, source: 'PRJ-2026-03',
+      { id: 'AST-UBD-0001', name: 'AC Split 1,5 PK — Ruang Treatment 3', cat: 'HVAC', org: 'BR-UBD', location: 'JAENS Spa Center › Lantai 1 › Ruang Treatment 3', acquired: '2026-06-28', cost: 9800000, life: 60, method: 'Garis lurus', status: 'ACTIVE', condition: 'Perlu perbaikan', lastService: '2026-06-28', serviceIntervalDays: 90, source: 'PRJ-2026-03',
         history: [{ ts: '2026-06-28T10:00:00', event: 'Kapitalisasi dari PRJ-2026-03', by: 'U-FIN' }] },
-      { id: 'AST-SHN-0002', name: 'Bed Pijat Elektrik', cat: 'Peralatan Treatment', org: 'BR-SHN', location: 'Spa Shanti › Lantai 1 › Ruang Treatment 1', acquired: '2024-03-12', cost: 18500000, life: 96, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-09-01', serviceIntervalDays: 180, history: [] },
-      { id: 'AST-UBD-0001', name: 'Water Heater 80L', cat: 'Utilitas', org: 'BR-UBD', location: 'Spa Ubud › Area Shower', acquired: '2021-08-02', cost: 6200000, life: 60, method: 'Garis lurus', status: 'ACTIVE', condition: 'Menurun', lastService: '2026-04-11', serviceIntervalDays: 120, history: [] },
-      { id: 'AST-UBD-0002', name: 'Sauna Room Heater', cat: 'Peralatan Treatment', org: 'BR-UBD', location: 'Spa Ubud › Sauna', acquired: '2023-01-20', cost: 42000000, life: 96, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-08-15', serviceIntervalDays: 180, history: [] },
-      { id: 'AST-TRK-0001', name: 'Mesin Cuci Komersial 12kg', cat: 'Laundry', org: 'BR-TRK', location: 'Spa Triloka › Laundry', acquired: '2022-05-05', cost: 28500000, life: 84, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-07-20', serviceIntervalDays: 120, history: [] },
+      { id: 'AST-UBD-0002', name: 'Bed Pijat Elektrik', cat: 'Peralatan Treatment', org: 'BR-UBD', location: 'JAENS Spa Center › Lantai 1 › Ruang Treatment 1', acquired: '2024-03-12', cost: 18500000, life: 96, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-09-01', serviceIntervalDays: 180, history: [] },
+      { id: 'AST-SHN-0001', name: 'Water Heater 80L', cat: 'Utilitas', org: 'BR-SHN', location: 'JAENS Spa Shanti › Area Shower', acquired: '2021-08-02', cost: 6200000, life: 60, method: 'Garis lurus', status: 'ACTIVE', condition: 'Menurun', lastService: '2026-04-11', serviceIntervalDays: 120, history: [] },
+      { id: 'AST-SHN-0002', name: 'Sauna Room Heater', cat: 'Peralatan Treatment', org: 'BR-SHN', location: 'JAENS Spa Shanti › Sauna', acquired: '2023-01-20', cost: 42000000, life: 96, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-08-15', serviceIntervalDays: 180, history: [] },
+      { id: 'AST-TRK-0001', name: 'Mesin Cuci Komersial 12kg', cat: 'Laundry', org: 'BR-TRK', location: 'JAENS Spa Triloka › Laundry', acquired: '2022-05-05', cost: 28500000, life: 84, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-07-20', serviceIntervalDays: 120, history: [] },
       { id: 'AST-ESS-0001', name: 'Mesin Pengisi Botol Semi-otomatis', cat: 'Produksi', org: 'BU-ESS', location: 'Essence › Ruang Produksi', acquired: '2025-02-14', cost: 64000000, life: 96, method: 'Garis lurus', status: 'ACTIVE', condition: 'Baik', lastService: '2026-10-02', serviceIntervalDays: 90, history: [] },
-      { id: 'AST-BSM-0001', name: 'Kursi Refleksi (set 4)', cat: 'Furnitur', org: 'BR-BSM', location: 'Spa Bisma › Ruang Refleksi', acquired: '2019-02-01', cost: 14000000, life: 60, method: 'Garis lurus', status: 'PENDING_DISPOSAL', condition: 'Rusak', lastService: '2025-12-01', serviceIntervalDays: 180, history: [] },
+      { id: 'AST-BSM-0001', name: 'Kursi Refleksi (set 4)', cat: 'Furnitur', org: 'BR-BSM', location: 'JAENS Spa Bisma › Ruang Refleksi', acquired: '2019-02-01', cost: 14000000, life: 60, method: 'Garis lurus', status: 'PENDING_DISPOSAL', condition: 'Rusak', lastService: '2025-12-01', serviceIntervalDays: 180, history: [] },
     ];
     s.maintenance = [
-      { id: 'MT20261100001', date: '2026-11-06T16:00:00', asset: 'AST-SHN-0001', reporter: 'U-STF', branch: 'BR-SHN', issue: 'AC bocor dan kurang dingin, tamu komplain', priority: 'HIGH', status: 'SUBMITTED', wo: null, history: [{ ts: '2026-11-06T16:00:00', by: 'U-STF', action: 'SUBMIT' }] },
-      { id: 'MT20261100002', date: '2026-10-20T09:00:00', asset: 'AST-TRK-0001', reporter: 'U-STF2', branch: 'BR-TRK', issue: 'Bunyi kasar saat spin', priority: 'MEDIUM', status: 'COMPLETED', wo: 'WO20261100001', history: [] },
+      { id: 'MT20261100001', date: '2026-11-06T16:00:00', asset: 'AST-UBD-0001', reporter: 'U-STF', branch: 'BR-UBD', issue: 'AC bocor dan kurang dingin, tamu komplain', priority: 'HIGH', status: 'SUBMITTED', wo: null, history: [{ ts: '2026-11-06T16:00:00', by: 'U-STF', action: 'SUBMIT' }] },
+      { id: 'MT20261100002', date: '2026-10-20T09:00:00', asset: 'AST-TRK-0001', reporter: 'U-SPV3', branch: 'BR-TRK', issue: 'Bunyi kasar saat spin', priority: 'MEDIUM', status: 'COMPLETED', wo: 'WO20261100001', history: [] },
     ];
     s.workOrders = [
       { id: 'WO20261100001', mt: 'MT20261100002', asset: 'AST-TRK-0001', assignee: 'Vendor servis (DEMO)', status: 'COMPLETED', parts: [], cost: 350000, completedAt: '2026-10-22T15:00:00', notes: 'Ganti bearing', history: [] },

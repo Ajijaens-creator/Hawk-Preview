@@ -18,7 +18,7 @@ Status keseluruhan: **TO VERIFY / NEW INTEGRATION REQUIRED**. Tidak ada endpoint
 | `txn_id` | string | `PR20261100006` | MRF id | TO VERIFY (ID PR terlihat di v2.11.6) |
 | `line_id` | string/null | `PR20261100006#1` | baris MRF/PO | TO VERIFY |
 | `related_docs[]` | string[] | `["PO20261100003","GR…"]` | alokasi & referensi | TO VERIFY |
-| `org_unit` | string | `BR-SHN` | `mrf.branch` | TO VERIFY (Location) |
+| `org_unit` | string | `BR-UBD` | `mrf.branch` | TO VERIFY (Location) |
 | `event_type` | enum | `MRF_SUBMITTED`, `APPROVAL_APPROVE`, `TRANSFER_DISPATCH`, `PO_SEND`, `PO_ETA_REVISED`, `GRN_PHYSICAL_RECEIPT`, `GRN_POST_INVENTORY`, `GRN_PUTAWAY`, `ISSUED`, `FULFILLMENT_COMPLETED`, `BILL_*`, `PAYMENT` | `history[].action` | NEW (penamaan baku) |
 | `stage` | enum | `SUBMIT`, `BUDGET`, `APPROVAL`, `ALLOCATION`, `TRANSFER`, `PURCHASING`, `PO_APPROVAL`, `SUPPLIER`, `ARRIVAL`, `RECEIPT`, `PUTAWAY`, `ISSUE`, `DONE`, `FINANCE`, `PAYMENT` | dipetakan adapter | NEW |
 | `timestamp` | ISO-8601 + zona | `2026-11-08T08:07:00Z` | `history[].ts` | TO VERIFY: apakah HAWK menyimpan jam, bukan hanya tanggal |

@@ -32,12 +32,12 @@ Semua angka DEMO. Setiap langkah memetakan ke layar NV, operasi adapter (lihat `
 
 **Tanpa double counting.** Satu peristiwa ekonomi hanya dicatat di satu tempat: PO tidak dihitung sebagai actual, GRN tidak dihitung sebagai beban, dan beban 7P baru diakui saat barang diserahkan. Tagihan mengosongkan GRNI, bukan membuat beban baru. Tes `e2e-walkthrough.js` memeriksa bahwa perubahan stok sama dengan jumlah mutasi ledger.
 
-## 2. Contoh wajib — Spa Shanti, Minyak Pijat Lavender 1L × 10
+## 2. Contoh wajib — Spa Ubud, Minyak Pijat Lavender 1L × 10
 
 | Sumber | Qty | Referensi | Hasil |
 |---|---|---|---|
-| Stok lokal WH-SHN | 4 | PR…  | Diserahkan langsung |
-| Transfer dari WH-UBD | 3 | TR… | Dikirim → diterima → diserahkan |
+| Stok lokal WH-UBD | 4 | PR…  | Diserahkan langsung |
+| Transfer dari WH-SHN | 3 | TR… | Dikirim → diterima → diserahkan |
 | Pembelian | 3 | PO… → GR… → DC… → BL… | Diterima, disimpan di bin, diserahkan |
 | **Total** | **10** | | MRF FULFILLED 10/10; jejak dapat ditelusuri dua arah (NV-28 ↔ NV-50) |
 

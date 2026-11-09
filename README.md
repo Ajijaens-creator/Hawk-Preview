@@ -17,18 +17,18 @@ Data demo disimpan di `localStorage` browser. Tombol **↺ Reset Demo Data** di 
 ## Mencoba alur Owner (14 langkah)
 
 1. Klik **▶ Walkthrough Owner** (kiri bawah). Setiap langkah mengganti role, membuka layar yang tepat, dan baru centang hijau setelah aksinya benar-benar dilakukan.
-2. Alur yang diuji: **MRF Spa Shanti (Minyak Pijat Lavender 1L × 10)** → cek budget item → Supervisor setuju → split otomatis **4 lokal + 3 transfer dari Ubud + 3 beli** → PO → penerimaan & checklist → put-away scan bin → penyerahan 10/10 → ekstraksi faktur AI (simulasi) → three-way match → AP (SoD: BU Manager menyetujui) → jejak AP ke MRF → Budget vs Actual vs Commitment vs Forecast → AI Insight + bukti.
+2. Alur yang diuji: **MRF Spa Ubud (Minyak Pijat Lavender 1L × 10)** → cek budget item → Supervisor setuju → split otomatis **4 lokal + 3 transfer dari Shanti + 3 beli** → PO → penerimaan & checklist → put-away scan bin → penyerahan 10/10 → ekstraksi faktur AI (simulasi) → three-way match → AP (SoD: BU Manager menyetujui) → jejak AP ke MRF → Budget vs Actual vs Commitment vs Forecast → AI Insight + bukti.
 3. Ganti role kapan saja lewat avatar di kanan atas. Staff, Gudang, dan Supervisor mendapat menu yang lebih sederhana dan tampilan mobile-first.
 4. Selector **Kondisi** di sidebar menampilkan state *loading* (Lambat) dan *error* (Gagal koneksi). Selector **Adapter** mengganti ke HAWK API, yang sengaja mengembalikan `NOT_CONNECTED`.
 5. Toggle **Kontrak developer** menampilkan kontrak layar dan operasi di bawah setiap layar.
 
 ## Mencoba Smart Spend Money (foto nota)
 
-Ganti role ke **Indah (Staff Spa Shanti)**, lalu Beranda › **Scan Nota** (NV-48). Pilih nota contoh "Nota tulisan tangan", tekan *Baca dengan AI (simulasi)*, perbaiki harga Pasir menjadi 350.000, konfirmasi field kuning, pilih metode bayar, lanjutkan klasifikasi, dan kirim. Lalu sebagai **Mila (Supervisor)** setujui, dan sebagai **Asri (Finance)** buka bukti, verifikasi, dan catat pembayaran. Ekstraksi adalah **AI SIMULATION**.
+Ganti role ke **Indah (Staff Spa Ubud)**, lalu Beranda › **Scan Nota** (NV-48). Pilih nota contoh "Nota tulisan tangan", tekan *Baca dengan AI (simulasi)*, perbaiki harga Pasir menjadi 350.000, konfirmasi field kuning, pilih metode bayar, lanjutkan klasifikasi, dan kirim. Lalu sebagai **Mila (Supervisor)** setujui, dan sebagai **Asri (Finance)** buka bukti, verifikasi, dan catat pembayaran. Ekstraksi adalah **AI SIMULATION**.
 
 ## Mencoba Order Sederhana (pesan → terima → bayar)
 
-Sebagai **Indah (Staff Spa Shanti)**, Beranda › **🛒 Pesan barang** (NV-24): tekan **+** pada beberapa barang lalu **Pesan sekarang**. Bila dalam budget 7P dan ≤ Rp5 jt, sistem langsung menyetujui, membuat PO, dan mengirimnya ke supplier (aturan AR-13, bukan AI). Sebagai **Asri (Finance)** buka NV-50 dan tekan **Sudah dibayar**. Kembali sebagai staf, tekan **Barang sudah diterima** (atau "Ada yang kurang atau rusak?"). Pesanan yang lewat budget otomatis masuk antrean Supervisor. Batas diatur Finance/Super Admin/Owner di NV-50 atau NV-09. Lihat `docs/SIMPLE_ORDER.md`.
+Sebagai **Indah (Staff Spa Ubud)**, Beranda › **🛒 Pesan barang** (NV-24): tekan **+** pada beberapa barang lalu **Pesan sekarang**. Bila dalam budget 7P dan ≤ Rp5 jt, sistem langsung menyetujui, membuat PO, dan mengirimnya ke supplier (aturan AR-13, bukan AI). Sebagai **Asri (Finance)** buka NV-50 dan tekan **Sudah dibayar**. Kembali sebagai staf, tekan **Barang sudah diterima** (atau "Ada yang kurang atau rusak?"). Pesanan yang lewat budget otomatis masuk antrean Supervisor. Batas diatur Finance/Super Admin/Owner di NV-50 atau NV-09. Lihat `docs/SIMPLE_ORDER.md`.
 
 ## Mencoba Control Tower (NV-61 / NV-62)
 
@@ -101,7 +101,7 @@ node tests/workflow.test.js          # engine: journey, budget, receiving, aset,
 node tests/e2e-walkthrough.js        # 14 langkah lewat klik UI di Chromium (butuh Playwright)
 node tests/e2e-smart-spend.js        # Smart Spend 15 langkah di 390 px + screenshot M1–M6
 node tests/e2e-simple-order.js       # Order Sederhana 33 cek di 390 px + 20 dashboard + screenshot
-node tests/e2e-control-tower.js      # Control Tower: skenario Massage Oil Shanti 32 cek + screenshot
+node tests/e2e-control-tower.js      # Control Tower: skenario Massage Oil Ubud 32 cek + screenshot
 node tests/e2e-demo-center.js        # Demo Center: 5 layar, klik asli lintas layar, 6 skenario, 35 cek
 node tests/browser-all.js            # 12 pengguna × 62 layar: render, akses, error runtime
 node tests/responsive.js             # 62 layar × 1440 / 834 / 390 px: overflow & screenshot

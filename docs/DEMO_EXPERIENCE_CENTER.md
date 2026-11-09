@@ -31,7 +31,7 @@ Setiap layar adalah **aplikasi HAWK yang sebenarnya** (`index.html?embed=1&as=U-
 
 | ID | Skenario | Langkah | Role yang terlibat |
 |---|---|---|---|
-| MRF | 10 botol Massage Oil Shanti → 4 lokal / 3 transfer / 3 PO → supplier kirim 2 → lewat SLA → eskalasi → ETA revisi → 10/10 → faktur (3-way match) → AP disetujui → **pembayaran** → review BU | 16 | Staff, Supervisor, Gudang, Purchasing, BU Manager, Finance |
+| MRF | 10 botol Massage Oil Ubud → 4 lokal / 3 transfer / 3 PO → supplier kirim 2 → lewat SLA → eskalasi → ETA revisi → 10/10 → faktur (3-way match) → AP disetujui → **pembayaran** → review BU | 16 | Staff, Supervisor, Gudang, Purchasing, BU Manager, Finance |
 | NOTA | Nota tulisan tangan → koreksi OCR (simulasi) → kirim → Supervisor setuju → Finance verifikasi (jurnal) → settle | 6 | Staff, Supervisor, Finance |
 | SLA | PO terkirim → jam demo +120 jam → isu terbuka → Supervisor minta update → BU Manager eskalasi → Purchasing ETA revisi → diterima → isu selesai | 5 | Supervisor, BU Manager, Purchasing, Staff (therapist) |
 | BUDGET | Tinjau 7P → bobot bulanan budget 2027 → BHP outlet → revisi Q4 (Promotion −15 jt / Product +15 jt) → Owner setuju → budget vs actual | 6 | BU Manager, Supervisor, Owner, Finance |
@@ -91,7 +91,7 @@ Nama endpoint di atas adalah **usulan**, bukan API HAWK yang ada.
 
 ## 8. Konflik desain & batasan
 
-- **Siapa yang menerima barang (diputuskan Owner 8 Nov 2026).** Akun outlet mana pun (Supervisor, therapist, receptionist, attendant) boleh menerima barang untuk outletnya sendiri lewat tombol **Barang sudah diterima** / **Ada yang kurang** (NV-24). Sistem membuat penerimaan, posting stok, simpan, dan serah terima sekaligus. Penerima (nama, jabatan, outlet, divisi, BU) dicatat otomatis dari akun. Di skenario MRF, Supervisor menerima 2 botol (MRF-08) dan therapist menerima botol terakhir (MRF-12); di skenario SLA, therapist menerima (SLA-05). Gudang hanya tampil untuk mengirim transfer dari Ubud.
+- **Siapa yang menerima barang (diputuskan Owner 8 Nov 2026).** Akun outlet mana pun (Supervisor, therapist, receptionist, attendant) boleh menerima barang untuk outletnya sendiri lewat tombol **Barang sudah diterima** / **Ada yang kurang** (NV-24). Sistem membuat penerimaan, posting stok, simpan, dan serah terima sekaligus. Penerima (nama, jabatan, outlet, divisi, BU) dicatat otomatis dari akun. Di skenario MRF, Supervisor menerima 2 botol (MRF-08) dan therapist menerima botol terakhir (MRF-12); di skenario SLA, therapist menerima (SLA-05). Gudang hanya tampil untuk mengirim transfer dari Shanti.
 - Header keamanan diubah dari `frame-ancestors 'none'` / `X-Frame-Options: DENY` menjadi `'self'` / `SAMEORIGIN` agar aplikasi bisa membingkai dirinya sendiri. Situs lain tetap tidak bisa membingkai HAWK.
 - Sandbox ada di `localStorage` browser: hilang bila data situs dihapus, tidak dibagi antar perangkat atau antar orang, dan **bukan** penyimpanan permanen.
 - Layar penuh (⛶) bergantung izin browser; Safari iOS tidak mendukung layar penuh untuk elemen (gunakan ⤢).

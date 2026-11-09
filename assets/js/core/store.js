@@ -1208,7 +1208,7 @@
   };
   H['bin.add'] = (s, p, ctx) => {
     const wh = get(s.warehouses, p.wh, 'Gudang');
-    need(/^[A-Z]{3}-[A-Z]-\d{2}$/.test(p.bin), 'VALIDATION', 'Format bin: KOD-R-NN (contoh SHN-C-01)');
+    need(/^[A-Z]{3}-[A-Z]-\d{2}$/.test(p.bin), 'VALIDATION', 'Format bin: KOD-R-NN (contoh UBD-C-01)');
     need(!wh.bins.includes(p.bin), 'DUPLICATE', 'Bin sudah ada');
     wh.bins.push(p.bin);
     const rack = p.bin.split('-')[1];

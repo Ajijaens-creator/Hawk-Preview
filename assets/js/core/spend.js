@@ -83,7 +83,7 @@
       lines: [L('Minyak Pijat Lavender 1L', 3, 'btl', 92000, 0.94, { sku: 'BHP-001' })],
       suggest: { p: 'PRODUCT', cls: 'INVENTORY', routine: true, why: 'SKU BHP-001 (Minyak Pijat Lavender) cocok → persediaan; diterima gudang dulu, beban diakui saat dipakai.' } },
     { key: 'OVERBUDGET', icon: '📊', title: 'Pengeluaran melewati budget', tag: 'Over budget', img: 'assets/img/receipts/overbudget.svg', fp: 'fp-pkd-3021', kind: 'PRINTED',
-      note: 'Cetak spanduk & brosur event; budget Promotion Shanti bulan ini hampir habis.',
+      note: 'Cetak spanduk & brosur event; budget Promotion Ubud bulan ini hampir habis.',
       read: { supplier: ['Percetakan Kilat Denpasar', 0.96], date: ['2026-11-08', 0.96], receiptNo: ['PKD-3021', 0.94], currency: ['IDR', 0.99], pay: ['TRANSFER', 0.85], tax: [0, 0.9], disc: [200000, 0.9], total: [4800000, 0.96] },
       lines: [L('Spanduk event 3×1 m', 4, 'lbr', 450000), L('Brosur A5 full color', 2000, 'lbr', 1600)],
       suggest: { p: 'PROMOTION', cls: 'OPEX', routine: false, why: 'Materi promosi event → Promotion, non-rutin.' } },
@@ -100,19 +100,19 @@
     s.meta.seq.JV202611 = (s.meta.seq.JV202611 || 0) + 1;
     // Month-to-date actual per branch × 7P before today's demo activity (DEMO numbers, Rp) — used for the monthly budget check
     s.spendMonthBase = {
-      'BR-SHN|FACILITY': 13200000, 'BR-SHN|PROMOTION': 11400000, 'BR-SHN|PLACE': 6100000, 'BR-SHN|PRODUCT': 9800000, 'BR-SHN|PROCESS': 1900000, 'BR-SHN|PEOPLE': 0,
-      'BR-UBD|FACILITY': 15400000, 'BR-UBD|PROMOTION': 9200000, 'BR-UBD|PLACE': 8800000, 'BR-UBD|PRODUCT': 14100000,
+      'BR-UBD|FACILITY': 13200000, 'BR-UBD|PROMOTION': 11400000, 'BR-UBD|PLACE': 6100000, 'BR-UBD|PRODUCT': 9800000, 'BR-UBD|PROCESS': 1900000, 'BR-UBD|PEOPLE': 0,
+      'BR-SHN|FACILITY': 15400000, 'BR-SHN|PROMOTION': 9200000, 'BR-SHN|PLACE': 8800000, 'BR-SHN|PRODUCT': 14100000,
     };
     // A received, unbilled PO for the PO-backed invoice scenario (seed history: GRN posted & stored)
-    s.pos.push({ id: 'PO20261000016', date: '2026-10-29T09:00:00', supplier: 'SUP-007', deliverTo: 'WH-SHN', status: 'RECEIVED', emergency: false, memo: 'Restock essential oil Spa Shanti', promised: '2026-11-04', term: 'Net 30', createdBy: 'U-PUR', approvedBy: 'U-BUM', freight: 0, taxRate: 0.11,
+    s.pos.push({ id: 'PO20261000016', date: '2026-10-29T09:00:00', supplier: 'SUP-007', deliverTo: 'WH-UBD', status: 'RECEIVED', emergency: false, memo: 'Restock essential oil JAENS Spa Center', promised: '2026-11-04', term: 'Net 30', createdBy: 'U-PUR', approvedBy: 'U-BUM', freight: 0, taxRate: 0.11,
       lines: [{ item: 'BHP-005', qty: 20, received: 20, price: 48000, disc: 0, mrfRefs: [] }], history: [{ ts: '2026-10-29T09:00:00', by: 'U-PUR', action: 'CREATE' }, { ts: '2026-10-29T13:00:00', by: 'U-BUM', action: 'APPROVE' }, { ts: '2026-11-04T10:00:00', by: 'U-WHS', action: 'FULLY_RECEIVED' }] });
-    s.grns.push({ id: 'GR20261000012', po: 'PO20261000016', wh: 'WH-SHN', date: '2026-11-04T10:00:00', status: 'STORED', lines: [{ item: 'BHP-005', expected: 20, received: 20, damaged: 0, bin: 'SHN-A-02' }], docs: ['Surat Jalan MAN-SJ-1189 (scan simulasi)'], receiver: 'U-WHS', journal: 'JV20261000041', history: [] });
+    s.grns.push({ id: 'GR20261000012', po: 'PO20261000016', wh: 'WH-UBD', date: '2026-11-04T10:00:00', status: 'STORED', lines: [{ item: 'BHP-005', expected: 20, received: 20, damaged: 0, bin: 'UBD-A-02' }], docs: ['Surat Jalan MAN-SJ-1189 (scan simulasi)'], receiver: 'U-WHS', journal: 'JV20261000041', history: [] });
     s.journals.push({ id: 'JV20261000041', ts: '2026-11-04T10:05:00', source: 'GR20261000012', kind: 'GOODS_RECEIPT', status: 'POSTED', memo: 'Penerimaan PO20261000016', lines: [{ acc: '1140 Persediaan BHP', cc: 'CC-OFC-PUR', dr: 960000, cr: 0 }, { acc: '2120 Barang Diterima Belum Ditagih (GRNI)', cc: 'CC-OFC-PUR', dr: 0, cr: 960000 }] });
     // One already-processed Smart Spend transaction (target of the duplicate scenario)
     const jv = 'JV202611' + String(s.meta.seq.JV202611).padStart(5, '0');
     s.evidence = [{ id: 'EV20261100001', spend: 'SM20261100001', file: 'nota_TokoSinarBali_TSB-2211.jpg', image: 'assets/img/receipts/duplicate.svg', mime: 'image/svg+xml', pages: 1, fingerprint: 'fp-tsb-2211', uploadedBy: 'U-STF', ts: '2026-11-05T16:10:00', storage: 'LOCAL_DEMO', derived: [] }];
     s.spends = [{
-      id: 'SM20261100001', ts: '2026-11-05T16:10:00', createdBy: 'U-STF', branch: 'BR-SHN', cc: 'CC-SHN-OPS', status: 'SETTLED', flow: 'PAID', scenario: 'DUPLICATE', evidence: 'EV20261100001', source: 'SIMULATED_AI_EXTRACTION',
+      id: 'SM20261100001', ts: '2026-11-05T16:10:00', createdBy: 'U-STF', branch: 'BR-UBD', cc: 'CC-UBD-OPS', status: 'SETTLED', flow: 'PAID', scenario: 'DUPLICATE', evidence: 'EV20261100001', source: 'SIMULATED_AI_EXTRACTION',
       ai: { supplier: 'Toko Sinar Bali', date: '2026-11-05', receiptNo: 'TSB-2211', total: 186000 },
       fields: { supplier: 'Toko Sinar Bali', supplierId: null, date: '2026-11-05', receiptNo: 'TSB-2211', currency: 'IDR', pay: 'CASH', payDate: '2026-11-05', tax: 0, disc: 0, total: 186000, payer: null, due: null, po: null },
       lines: [{ desc: 'Lilin aromaterapi', qty: 6, uom: 'pcs', price: 31000, disc: 0, sku: null }],
@@ -122,7 +122,7 @@
       journal: jv, settleJournal: null, budgetAtSubmit: null,
       history: [{ ts: '2026-11-05T16:10:00', by: 'U-STF', action: 'CAPTURE', note: 'AI SIMULATION' }, { ts: '2026-11-05T16:12:00', by: 'U-STF', action: 'SUBMIT' }, { ts: '2026-11-05T17:00:00', by: 'U-SPV', action: 'APPROVE' }, { ts: '2026-11-06T09:00:00', by: 'U-FIN', action: 'VERIFY', note: jv }, { ts: '2026-11-06T09:30:00', by: 'U-FIN', action: 'SETTLE' }],
     }];
-    s.journals.push({ id: jv, ts: '2026-11-06T09:00:00', source: 'SM20261100001', kind: 'SPEND_MONEY', status: 'POSTED', memo: 'Spend Money Toko Sinar Bali TSB-2211 (kas kecil, sudah direkonsiliasi)', lines: [{ acc: EXP_ACC.PLACE, cc: 'CC-SHN-OPS', dr: 186000, cr: 0 }, { acc: SETTLE_ACC.PAID, cc: 'CC-SHN-OPS', dr: 0, cr: 186000 }] });
+    s.journals.push({ id: jv, ts: '2026-11-06T09:00:00', source: 'SM20261100001', kind: 'SPEND_MONEY', status: 'POSTED', memo: 'Spend Money Toko Sinar Bali TSB-2211 (kas kecil, sudah direkonsiliasi)', lines: [{ acc: EXP_ACC.PLACE, cc: 'CC-UBD-OPS', dr: 186000, cr: 0 }, { acc: SETTLE_ACC.PAID, cc: 'CC-UBD-OPS', dr: 0, cr: 186000 }] });
     return s;
   };
 

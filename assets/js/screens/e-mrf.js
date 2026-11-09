@@ -16,7 +16,7 @@
     if (ex) ex.qty += qty;
     else c.push({ item, qty, reason: '' });
   };
-  const defaultBranch = (ctx) => (ctx.scope.branch && ctx.scope.branch !== 'ALL' ? ctx.scope.branch : ctx.user.scope.find((x) => (S.org(ctx.s, x) || {}).type === 'BRANCH') || 'BR-SHN');
+  const defaultBranch = (ctx) => (ctx.scope.branch && ctx.scope.branch !== 'ALL' ? ctx.scope.branch : ctx.user.scope.find((x) => (S.org(ctx.s, x) || {}).type === 'BRANCH') || 'BR-UBD');
 
   function budgetCell(s, branch, item, qty, type) {
     const it = S.item(s, item);

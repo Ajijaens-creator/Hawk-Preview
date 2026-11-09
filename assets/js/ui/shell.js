@@ -406,26 +406,26 @@
   };
 
   /* ---------- Owner walkthrough (MP-HAWK-02 §14) ---------- */
-  const tourMrf = (s) => s.mrfs.find((m) => m.requester === 'U-STF' && !SEED_MRF.includes(m.id) && m.branch === 'BR-SHN' && m.lines.some((l) => l.item === 'BHP-001'));
+  const tourMrf = (s) => s.mrfs.find((m) => m.requester === 'U-STF' && !SEED_MRF.includes(m.id) && m.branch === 'BR-UBD' && m.lines.some((l) => l.item === 'BHP-001'));
   const tourPo = (s, m) => {
     const a = m && m.lines[0].alloc.find((x) => x.path === 'PURCHASE');
     return a && a.ref ? s.pos.find((p) => p.id === a.ref) : null;
   };
   const TOUR = [
-    { t: 'Masuk sebagai Staff', d: 'Ganti role ke Therapist Spa Shanti (Indah). Menu menyusut ke layar MRF sederhana.', user: 'U-STF', nv: 24, done: (s) => prefs.visited['U-STF'] },
-    { t: 'Buat MRF di Spa Shanti', d: 'Buat MRF: Minyak Pijat Lavender 1L × 10. Unit, gudang & cost center terisi otomatis.', user: 'U-STF', nv: 26, done: (s) => !!tourMrf(s) },
+    { t: 'Masuk sebagai Staff', d: 'Ganti role ke Therapist JAENS Spa Center (Indah). Menu menyusut ke layar MRF sederhana.', user: 'U-STF', nv: 24, done: (s) => prefs.visited['U-STF'] },
+    { t: 'Buat MRF di JAENS Spa Center', d: 'Buat MRF: Minyak Pijat Lavender 1L × 10. Unit, gudang & cost center terisi otomatis.', user: 'U-STF', nv: 26, done: (s) => !!tourMrf(s) },
     { t: 'Tinjau budget BHP bulanan', d: 'Lihat dampak budget item November: budget 40, aktual 26, MRF ini 10 → 90% (peringatan).', user: 'U-SPV', nv: 30, q: (s) => (tourMrf(s) ? { id: tourMrf(s).id } : null), done: (s) => prefs.visited['nv30'] },
-    { t: 'Supervisor menyetujui', d: 'Sebagai Supervisor Shanti, setujui MRF di antrean approval.', user: 'U-SPV', nv: 29, done: (s) => tourMrf(s) && ['IN_FULFILLMENT', 'FULFILLED'].includes(tourMrf(s).status) },
-    { t: 'Lihat jalur fulfillment', d: 'Sistem membagi otomatis: 4 stok lokal, 3 transfer dari Spa Ubud, 3 pembelian. Gudang menyerahkan stok lokal & memproses transfer.', user: 'U-WHS', nv: 28, q: (s) => (tourMrf(s) ? { id: tourMrf(s).id } : null), done: (s) => tourMrf(s) && S.mrfFulfillment(s, tourMrf(s)).TRANSFER.issued === 3 && S.mrfFulfillment(s, tourMrf(s)).LOCAL.issued === 4 },
+    { t: 'Supervisor menyetujui', d: 'Sebagai Supervisor Ubud, setujui MRF di antrean approval.', user: 'U-SPV', nv: 29, done: (s) => tourMrf(s) && ['IN_FULFILLMENT', 'FULFILLED'].includes(tourMrf(s).status) },
+    { t: 'Lihat jalur fulfillment', d: 'Sistem membagi otomatis: 4 stok lokal, 3 transfer dari JAENS Spa Shanti, 3 pembelian. Gudang menyerahkan stok lokal & memproses transfer.', user: 'U-WHS', nv: 28, q: (s) => (tourMrf(s) ? { id: tourMrf(s).id } : null), done: (s) => tourMrf(s) && S.mrfFulfillment(s, tourMrf(s)).TRANSFER.issued === 3 && S.mrfFulfillment(s, tourMrf(s)).LOCAL.issued === 4 },
     { t: 'Buat & telusuri PO', d: 'Purchasing mengonsolidasi kebutuhan → buat PO → ajukan → setujui → kirim ke vendor.', user: 'U-PUR', nv: 32, done: (s) => { const p = tourPo(s, tourMrf(s)); return p && ['SENT', 'PARTIAL', 'RECEIVED'].includes(p.status); } },
     { t: 'Terima barang via checklist', d: 'Gudang membuka PO, mencocokkan qty aktual, lalu posting penerimaan (fisik ≠ posting).', user: 'U-WHS', nv: 42, done: (s) => { const p = tourPo(s, tourMrf(s)); return p && s.grns.some((g) => g.po === p.id && g.status !== 'RECEIVED'); } },
-    { t: 'Konfirmasi simpan di rak', d: 'Scan QR bin (mis. SHN-A-01) untuk put-away; stok dilepas ke MRF.', user: 'U-WHS', nv: 43, done: (s) => { const p = tourPo(s, tourMrf(s)); return p && s.grns.some((g) => g.po === p.id && g.status === 'STORED'); } },
-    { t: 'Lihat stok terbaru & serahkan', d: 'Serahkan 3 unit hasil pembelian → MRF 10/10. Cek saldo & ledger Shanti.', user: 'U-WHS', nv: 45, done: (s) => tourMrf(s) && tourMrf(s).status === 'FULFILLED' },
+    { t: 'Konfirmasi simpan di rak', d: 'Scan QR bin (mis. UBD-A-01) untuk put-away; stok dilepas ke MRF.', user: 'U-WHS', nv: 43, done: (s) => { const p = tourPo(s, tourMrf(s)); return p && s.grns.some((g) => g.po === p.id && g.status === 'STORED'); } },
+    { t: 'Lihat stok terbaru & serahkan', d: 'Serahkan 3 unit hasil pembelian → MRF 10/10. Cek saldo & ledger Ubud.', user: 'U-WHS', nv: 45, done: (s) => tourMrf(s) && tourMrf(s).status === 'FULFILLED' },
     { t: 'Simulasikan ekstraksi faktur AI', d: 'Finance memilih faktur contoh PT Aroma Bali Lestari — ekstraksi AI simulasi.', user: 'U-FIN', nv: 48, done: (s) => { const p = tourPo(s, tourMrf(s)); return p && s.docs.some((d) => d.fields.poText === p.id); } },
     { t: 'Matching & status hutang', d: 'Jalankan three-way match, verifikasi manusia → AP draft. Setujui tagihan sebagai BU Manager (pemisahan tugas).', user: 'U-FIN', nv: 49, done: (s) => { const p = tourPo(s, tourMrf(s)); return p && s.bills.some((b) => b.po === p.id && ['APPROVED', 'PAID'].includes(b.status)); } },
     { t: 'Buka MRF asal dari Finance', d: 'Di AP / tagihan, klik jejak transaksi sampai ke MRF asal.', user: 'U-FIN', nv: 50, done: (s) => prefs.visited['trace'] },
     { t: 'Lihat Budget 7P & produktivitas', d: 'Budget vs Actual vs Commitment vs Forecast — Product JAENS Spa bertambah sesuai pemakaian.', user: 'U-OWN', nv: 23, done: (s) => prefs.visited['nv23o'] },
-    { t: 'Buka AI Insight + bukti', d: 'Buka insight Massage Oil Spa Shanti beserta bukti (MRF, PO, GRN, tagihan) dan rekomendasi.', user: 'U-OWN', nv: 57, done: (s) => prefs.visited['insight'] },
+    { t: 'Buka AI Insight + bukti', d: 'Buka insight Massage Oil JAENS Spa Center beserta bukti (MRF, PO, GRN, tagihan) dan rekomendasi.', user: 'U-OWN', nv: 57, done: (s) => prefs.visited['insight'] },
   ];
   HAWK.TOUR = TOUR;
   function renderTour() {

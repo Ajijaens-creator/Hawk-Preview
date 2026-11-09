@@ -96,4 +96,4 @@
 - **Belum diuji di Safari/iPad fisik**; diuji di Chromium (Playwright) dengan ukuran 390/834/1440 px. NOT VERIFIED di perangkat nyata.
 - **Penerimaan di outlet** (keputusan Owner 8 Nov): diterima akun outlet dengan satu tombol; posting stok & simpan dilakukan sistem. Belum ada foto surat jalan wajib saat terima (pertanyaan terbuka di Order Sederhana).
 - **Akun demo memakai nama tim JAENS** (permintaan Owner 8 Nov 2026), tetapi seluruh data tetap DEMO/sintetis. Preview saat ini publik tanpa login, jadi nama-nama ini terlihat oleh siapa pun yang membuka tautan.
-- **"Supervisor Outlet JAENS Spa Center"** dipasang di outlet Spa Shanti karena semua data skenario ada di sana; perlu konfirmasi apakah JAENS Spa Center outlet tersendiri.
+- JAENS Spa Center = outlet Ubud (dikonfirmasi Owner 9 Nov 2026). Data skenario demo (stok, nota, aset AC) dipindah ke Ubud; angka-angkanya tetap sintetis.

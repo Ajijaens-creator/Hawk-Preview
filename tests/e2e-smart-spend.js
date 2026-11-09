@@ -41,8 +41,8 @@ fs.mkdirSync(shotDir, { recursive: true });
   await p.evaluate(() => { HAWK.setUser('U-STF', { tour: false }); });
   await go(48);
 
-  // 1. Staff at Spa Shanti opens Smart Spend
-  ok('1. Staff Spa Shanti membuka Smart Spend (NV-M1)', (await mview()) === 'M1' && /Spa Shanti/.test(await p.innerText('.ss-phone')));
+  // 1. Staff at Spa Ubud opens Smart Spend
+  ok('1. Staff Spa Ubud membuka Smart Spend (NV-M1)', (await mview()) === 'M1' && /JAENS Spa Center/.test(await p.innerText('.ss-phone')));
   await shot('M1-beranda');
 
   // 2. Scan Nota → camera view

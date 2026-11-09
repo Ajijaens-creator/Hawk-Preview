@@ -8,9 +8,9 @@ Tanggal: 8 November 2026 · Lingkungan: Chromium (Playwright) + Node.js 22 · Da
 |---|---|---|
 | Alur engine end-to-end (MRF → PO → Inventory → Finance → Budget → AI), budget 7P, receiving parsial, aset, organisasi, integritas | `node tests/workflow.test.js` | **375 lulus, 0 gagal** (termasuk T8 Smart Spend, T9 Order Sederhana, T10 Control Tower, T11 Demo Center 6 skenario, T12 penerimaan di outlet oleh akun outlet + identitas otomatis); setiap operasi tulis di kontrak punya tes engine |
 | Walkthrough Owner 14 langkah lewat **klik UI nyata** (role switcher, tombol, form) | `node tests/e2e-walkthrough.js` | **21 lulus, 0 gagal**; 14/14 langkah tercentang |
-| **Smart Spend 15 langkah penerimaan MP-HAWK-06** lewat klik UI nyata di 390 px (Staff Shanti → nota tulisan tangan → koreksi → klasifikasi → budget → kirim → Supervisor → Finance buka bukti → verifikasi → bayar → tidak ada posting ganda) | `node tests/e2e-smart-spend.js` | **27 lulus, 0 gagal**; screenshot M1–M6 di `docs/screenshots/smart-spend/` |
+| **Smart Spend 15 langkah penerimaan MP-HAWK-06** lewat klik UI nyata di 390 px (Staff Ubud → nota tulisan tangan → koreksi → klasifikasi → budget → kirim → Supervisor → Finance buka bukti → verifikasi → bayar → tidak ada posting ganda) | `node tests/e2e-smart-spend.js` | **27 lulus, 0 gagal**; screenshot M1–M6 di `docs/screenshots/smart-spend/` |
 | **Order Sederhana** (8 Nov 2026): 3 jenis barang, qty & nilai berbeda, cek budget 7P, otomatis AR-13, lewat budget → Supervisor, Finance "Sudah dibayar" sebelum barang datang, terima sebagian lalu sisa, pengaturan oleh Finance/Admin/Owner, 20 dashboard dicek setelahnya | `node tests/e2e-simple-order.js` | **33 lulus, 0 gagal** di 390 px; screenshot di `docs/screenshots/simple-order/` |
-| **Control Tower MP-HAWK-08** (Massage Oil Shanti 4/3/3 → 2 tiba → lewat SLA → isu Purchasing → Supervisor eskalasi → ETA revisi → 10/10 → isu tertutup → SLA terbarui → Finance tanpa pengakuan ganda; drill-down KPI/tahap/filter; ubah bobot PFHI & SLA berversi; 8 widget peran; staf & supervisor di 390 px) | `node tests/e2e-control-tower.js` | **32 lulus, 0 gagal**; screenshot di `docs/screenshots/control-tower/` |
+| **Control Tower MP-HAWK-08** (Massage Oil Ubud 4/3/3 → 2 tiba → lewat SLA → isu Purchasing → Supervisor eskalasi → ETA revisi → 10/10 → isu tertutup → SLA terbarui → Finance tanpa pengakuan ganda; drill-down KPI/tahap/filter; ubah bobot PFHI & SLA berversi; 8 widget peran; staf & supervisor di 390 px) | `node tests/e2e-control-tower.js` | **32 lulus, 0 gagal**; screenshot di `docs/screenshots/control-tower/` |
 | **Demo Experience Center MP-HAWK-09** (`#/dx`): 5 dashboard asli di frame (Finance/Purchasing/BU Manager desktop, Supervisor iPad, Staff HP) di satu sandbox; klik tombol asli Setujui di layar Supervisor → terdeteksi tutor (via UI) → status sama di kelima layar + feed; 6 skenario (45 langkah) lewat tutor dengan setiap Target ID ditemukan di layar asli role-nya, jurnal seimbang; maksimalkan, BLOCKED, PASS, export JSON, Test Lab login role & ganti device, reset, 390/834/1440 px | `node tests/e2e-demo-center.js` | **35 lulus, 0 gagal**; screenshot di `docs/screenshots/demo-center/` |
 | Navigasi semua layar × semua role, error runtime, tombol tanpa handler | `node tests/browser-all.js` | **1302 kunjungan** (21 pengguna × 62 NV), 742 akses dibatasi sesuai role, **8.315 kontrol** diperiksa, **0 error**, **0 tombol tanpa handler** |
 | Responsif mobile / tablet / desktop | `node tests/responsive.js` | 62/62 layar tanpa overflow horizontal di **1440 px, 834 px, 390 px**; 0 error |
@@ -24,7 +24,7 @@ Hasil mentah ada di `tests/workflow-results.json`, `tests/e2e-results.json`, `te
 ## Pemeriksaan kunci
 
 **Konsistensi data, tanpa double counting**
-- Contoh Spa Shanti: alokasi 4 lokal + 3 transfer + 3 beli = 10. Stok Shanti akhir = 4 − 4 + 3 − 3 + 3 − 3 = 0, reservasi 0. Stok Ubud akhir 6.
+- Contoh Spa Ubud: alokasi 4 lokal + 3 transfer + 3 beli = 10. Stok Ubud akhir = 4 − 4 + 3 − 3 + 3 − 3 = 0, reservasi 0. Stok Shanti akhir 6.
 - Perubahan stok sama dengan jumlah mutasi ledger, baik di tes engine maupun di tes UI.
 - Komitmen 7P tidak dobel saat PO dibuat, karena komitmen berasal dari MRF.
 - Actual 7P Product naik tepat 10 × Rp85.000 + 3 × Rp62.000. Body scrub dari MRF lain ikut terpenuhi lewat PO yang sama.
@@ -32,7 +32,7 @@ Hasil mentah ada di `tests/workflow-results.json`, `tests/e2e-results.json`, `te
 
 **Kontrol & permission**
 - Staff tidak dapat menyetujui MRF.
-- Supervisor Ubud tidak dapat menyetujui MRF Shanti.
+- Supervisor Shanti tidak dapat menyetujui MRF Ubud.
 - Purchasing tidak dapat melakukan capture faktur.
 - Owner tidak dapat membayar.
 - SoD: verifikator tagihan ≠ penyetuju, pengaju non-rutin ≠ pemutus, pembuat draft aturan approval ≠ penerbit.

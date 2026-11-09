@@ -83,7 +83,7 @@
   /* Synthetic completed-order history (DEMO) — used ONLY for trends, stage averages and supplier scorecards.
      It never touches stock, budget or journals. Clearly labelled "Riwayat DEMO (sintetis)". */
   F.seedHistory = (s) => {
-    const br = ['BR-SHN', 'BR-UBD', 'BR-TRK', 'BR-BSM', 'BU-ESS'];
+    const br = ['BR-UBD', 'BR-SHN', 'BR-TRK', 'BR-BSM', 'BU-ESS'];
     const items = ['BHP-001', 'BHP-002', 'BHP-003', 'BHP-004', 'BHP-005', 'BHP-006', 'BHP-007', 'BHP-008', 'ESS-RM-01'];
     const out = [];
     const months = [['2026-08', 0.71], ['2026-09', 0.74], ['2026-10', 0.78]];
@@ -106,7 +106,7 @@
   const baseSeed = HAWK.seed;
   HAWK.seed = function () {
     const s = baseSeed();
-    s.meta.schema = 10;
+    s.meta.schema = 11;
     F.seedConfig(s);
     F.seedHistory(s);
     F.sync(s, { user: { id: 'SYS-RULE', role: 'SYSTEM' }, now: F.now(s) });

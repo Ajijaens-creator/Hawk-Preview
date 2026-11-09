@@ -1,5 +1,5 @@
 {
- "pass": 375,
+ "pass": 377,
  "fail": 0,
  "results": [
   {
@@ -33,12 +33,12 @@
    "info": ""
   },
   {
-   "name": "Supervisor cabang lain (Ubud) tidak bisa approve MRF Shanti",
+   "name": "Supervisor cabang lain (Shanti) tidak bisa approve MRF Ubud",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Supervisor Shanti approve",
+   "name": "Supervisor Ubud approve",
    "ok": true,
    "info": ""
   },
@@ -58,12 +58,12 @@
    "info": ""
   },
   {
-   "name": "Stok lokal Shanti direservasi 4",
+   "name": "Stok lokal Ubud direservasi 4",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Transfer otomatis dibuat dari Spa Ubud",
+   "name": "Transfer otomatis dibuat dari Spa Shanti",
    "ok": true,
    "info": ""
   },
@@ -78,7 +78,7 @@
    "info": ""
   },
   {
-   "name": "Stok fisik Shanti 4→0",
+   "name": "Stok fisik Ubud 4→0",
    "ok": true,
    "info": ""
   },
@@ -88,12 +88,12 @@
    "info": ""
   },
   {
-   "name": "Stok Ubud berkurang 3",
+   "name": "Stok Shanti berkurang 3",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Terima transfer di Shanti",
+   "name": "Terima transfer di Ubud",
    "ok": true,
    "info": ""
   },
@@ -103,7 +103,7 @@
    "info": ""
   },
   {
-   "name": "Kebutuhan pembelian Shanti (SUP-001) = 2 baris dari 2 MRF",
+   "name": "Kebutuhan pembelian Ubud (SUP-001) = 2 baris dari 2 MRF",
    "ok": true,
    "info": ""
   },
@@ -208,17 +208,17 @@
    "info": ""
   },
   {
-   "name": "Stok Shanti akhir = awal(4) −4 +3 −3 +3 −3 = 0, reservasi 0",
+   "name": "Stok Ubud akhir = awal(4) −4 +3 −3 +3 −3 = 0, reservasi 0",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Stok Ubud akhir 6",
+   "name": "Stok Shanti akhir 6",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Ledger Shanti konsisten dengan saldo (Σ mutasi = −4)",
+   "name": "Ledger Ubud konsisten dengan saldo (Σ mutasi = −4)",
    "ok": true,
    "info": ""
   },
@@ -303,7 +303,7 @@
    "info": ""
   },
   {
-   "name": "Insight AI budget Massage Oil Shanti tersedia dengan bukti",
+   "name": "Insight AI budget Massage Oil Ubud tersedia dengan bukti",
    "ok": true,
    "info": ""
   },
@@ -583,7 +583,7 @@
    "info": ""
   },
   {
-   "name": "Supervisor tinjau MR AC Shanti",
+   "name": "Supervisor tinjau MR AC Ubud",
    "ok": true,
    "info": ""
   },
@@ -1023,7 +1023,7 @@
    "info": ""
   },
   {
-   "name": "Rekomendasi 7P = Facility (bukan \"Procurement\"), cost center CC-SHN-OPS",
+   "name": "Rekomendasi 7P = Facility (bukan \"Procurement\"), cost center CC-UBD-OPS",
    "ok": true,
    "info": ""
   },
@@ -1033,7 +1033,7 @@
    "info": ""
   },
   {
-   "name": "Cek budget bulanan Shanti Facility: 18,75 jt; masih dalam budget",
+   "name": "Cek budget bulanan Ubud Facility: 18,75 jt; masih dalam budget",
    "ok": true,
    "info": ""
   },
@@ -1063,7 +1063,7 @@
    "info": ""
   },
   {
-   "name": "Supervisor Ubud tidak dapat menyetujui",
+   "name": "Supervisor Shanti tidak dapat menyetujui",
    "ok": true,
    "info": ""
   },
@@ -1073,12 +1073,12 @@
    "info": ""
   },
   {
-   "name": "Supervisor Shanti menyetujui",
+   "name": "Supervisor Ubud menyetujui",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Bukti asli dapat dibuka Finance & Supervisor, tidak oleh Staff Ubud",
+   "name": "Bukti asli dapat dibuka Finance & Supervisor, tidak oleh Supervisor Bisma",
    "ok": true,
    "info": ""
   },
@@ -1188,7 +1188,7 @@
    "info": ""
   },
   {
-   "name": "Gudang konfirmasi 3 → stok Shanti +3, ledger RECEIPT",
+   "name": "Gudang konfirmasi 3 → stok Ubud +3, ledger RECEIPT",
    "ok": true,
    "info": ""
   },
@@ -1228,7 +1228,7 @@
    "info": ""
   },
   {
-   "name": "Akses daftar: Staff Ubud tidak melihat nota Shanti; Finance melihat semua",
+   "name": "Akses daftar: Supervisor Bisma tidak melihat nota Ubud; Finance melihat semua",
    "ok": true,
    "info": ""
   },
@@ -1303,7 +1303,7 @@
    "info": ""
   },
   {
-   "name": "C: Staff cabang lain tidak bisa konfirmasi terima",
+   "name": "C: Akun outlet lain tidak bisa konfirmasi terima",
    "ok": true,
    "info": ""
   },
@@ -1328,7 +1328,7 @@
    "info": ""
   },
   {
-   "name": "C: stok fisik Shanti tidak negatif & konsisten",
+   "name": "C: stok fisik Ubud tidak negatif & konsisten",
    "ok": true,
    "info": ""
   },
@@ -1348,7 +1348,7 @@
    "info": ""
   },
   {
-   "name": "C: stok lokal Shanti tidak dobel (awal − lokal terpakai)",
+   "name": "C: stok lokal Ubud tidak dobel (awal − lokal terpakai)",
    "ok": true,
    "info": ""
   },
@@ -1428,7 +1428,7 @@
    "info": ""
   },
   {
-   "name": "H: Ubud (staff lain) — 2 jenis barang lolos otomatis",
+   "name": "H: Shanti (Supervisor Tina) — 2 jenis barang lolos otomatis",
    "ok": true,
    "info": ""
   },
@@ -1508,7 +1508,7 @@
    "info": ""
   },
   {
-   "name": "Supervisor Shanti melihat pesanannya lewat SLA",
+   "name": "Supervisor Ubud melihat pesanannya lewat SLA",
    "ok": true,
    "info": ""
   },
@@ -1828,12 +1828,22 @@
    "info": ""
   },
   {
+   "name": "Supervisor tiap outlet (Owner 9 Nov 2026): Center/Ubud Mila, Shanti Tina, Triloka Dewik, Bisma Wahyudi; semua lapor ke Asisten OM",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akun fiktif lama dihapus, Security = Joni di JAENS Spa Center",
+   "ok": true,
+   "info": ""
+  },
+  {
    "name": "Asisten Operational Manager: divisi Operasional Spa, BU JAENS Spa",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)",
+   "name": "Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Ubud)",
    "ok": true,
    "info": ""
   },
@@ -1848,17 +1858,17 @@
    "info": ""
   },
   {
-   "name": "Therapist outlet lain (Ubud) tidak bisa menerima barang Shanti",
+   "name": "Supervisor outlet lain (Bisma) tidak bisa menerima barang Ubud",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Supervisor outlet lain (Ubud) tidak bisa menerima barang Shanti",
+   "name": "Supervisor outlet lain (Shanti) tidak bisa menerima barang Ubud",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Receptionist Shanti menerima barang (bukan pemesan, tanpa orang gudang) → selesai",
+   "name": "Receptionist Ubud menerima barang (bukan pemesan, tanpa orang gudang) → selesai",
    "ok": true,
    "info": ""
   },

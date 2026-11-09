@@ -46,7 +46,7 @@ fs.mkdirSync(shotDir, { recursive: true });
 
   // 1. Staff home = Order Sederhana
   ok('1. Staff membuka beranda → Pesan barang (NV-24)', /Pesan barang/.test(await view()) && (await p.$$('#view .so-item')).length >= 6);
-  const before = await S(() => { const s = HAWK.store.state; const b = HAWK.selectors.itemBudget(s, 'BR-SHN', 'BHP-001'); return { act: b.actualQty, com: b.commitQty, jv: s.journals.length }; });
+  const before = await S(() => { const s = HAWK.store.state; const b = HAWK.selectors.itemBudget(s, 'BR-UBD', 'BHP-001'); return { act: b.actualQty, com: b.commitQty, jv: s.journals.length }; });
   // 2. several items, qty & values: + button ×4, typed qty 12 and 100
   for (let i = 0; i < 4; i++) await click('#view [data-a="inc"][data-it="BHP-004"][data-d="1"]');
   await setQty('BHP-001', 12);
@@ -119,7 +119,7 @@ fs.mkdirSync(shotDir, { recursive: true });
   const A3 = await S((id) => HAWK.store.state.mrfs.find((x) => x.id === id).status, A.id);
   ok('18. Sisa datang → "Barang sudah diterima" → pesanan Selesai', A3 === 'FULFILLED' && /Selesai/.test(await view()), A3);
   await shot('6-selesai');
-  const after = await S(() => { const s = HAWK.store.state; const b = HAWK.selectors.itemBudget(s, 'BR-SHN', 'BHP-001'); return { act: b.actualQty, com: b.commitQty }; });
+  const after = await S(() => { const s = HAWK.store.state; const b = HAWK.selectors.itemBudget(s, 'BR-UBD', 'BHP-001'); return { act: b.actualQty, com: b.commitQty }; });
   ok('19. Budget 7P: realisasi minyak pijat +12, komitmen kembali seperti awal', after.act === before.act + 12 && after.com === before.com, JSON.stringify([before, after]));
 
   // 20. Finance pays the rest after receipt

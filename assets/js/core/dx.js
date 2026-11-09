@@ -93,21 +93,21 @@
   const SCENARIOS = [
     {
       id: 'MRF', name: 'MRF 10 botol → PO → Receiving → Finance', short: 'MRF → PO → Receiving → Finance',
-      story: 'Spa Shanti butuh 10 botol Massage Oil: 4 stok lokal, 3 transfer dari Ubud, 3 dibeli. Supplier kirim 2, 1 terlambat → ETA revisi → 10/10 → faktur, AP, pembayaran terotorisasi, review BU.',
+      story: 'JAENS Spa Center butuh 10 botol Massage Oil: 4 stok lokal, 3 transfer dari Shanti, 3 dibeli. Supplier kirim 2, 1 terlambat → ETA revisi → 10/10 → faktur, AP, pembayaran terotorisasi, review BU.',
       steps: [
-        { id: 'MRF-01', as: 'U-STF', tid: 'dx-mrf-new', title: 'Buat MRF 10 botol Massage Oil', what: 'Staff Shanti mengisi permintaan 10 botol BHP-001 (Massage Oil) dari layar Buat MRF.',
-          run: (c) => c('mrf.create', { branch: 'BR-SHN', memo: 'DEMO DX — Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'U-STF'),
+        { id: 'MRF-01', as: 'U-STF', tid: 'dx-mrf-new', title: 'Buat MRF 10 botol Massage Oil', what: 'Staff Ubud mengisi permintaan 10 botol BHP-001 (Massage Oil) dari layar Buat MRF.',
+          run: (c) => c('mrf.create', { branch: 'BR-UBD', memo: 'DEMO DX — Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'U-STF'),
           check: (s, v) => { const m = newMrf(s, v.base, (x) => x.requester === 'U-STF' && x.lines[0].item === 'BHP-001' && x.lines[0].qty === 10); return m && { mrf: m.id }; } },
-        { id: 'MRF-02', as: 'U-SPV', tid: 'dx-mrf-approve', q: (v) => ({ id: v.mrf }), title: 'Supervisor menyetujui (budget item dicek)', what: 'Supervisor Shanti melihat dampak budget lalu menyetujui. Sistem langsung membagi pemenuhan 4 lokal / 3 transfer / 3 beli.',
+        { id: 'MRF-02', as: 'U-SPV', tid: 'dx-mrf-approve', q: (v) => ({ id: v.mrf }), title: 'Supervisor menyetujui (budget item dicek)', what: 'Supervisor Ubud melihat dampak budget lalu menyetujui. Sistem langsung membagi pemenuhan 4 lokal / 3 transfer / 3 beli.',
           run: (c, s, v) => c('mrf.decide', { id: v.mrf, decision: 'APPROVE', note: 'Stok untuk weekend' }, 'U-SPV'),
           check: (s, v) => { const m = mrf(s, v.mrf); return m && m.status !== 'SUBMITTED' && m.lines[0].alloc.length ? { tr: allocRef(s, v.mrf, 'TRANSFER') } : null; } },
-        { id: 'MRF-03', as: 'U-SPV', tid: 'dx-mrf-issue', title: 'Serahkan 4 botol dari stok lokal', what: 'Stok gudang Shanti cukup untuk 4 botol — langsung diserahkan ke pemohon (serah terima).',
+        { id: 'MRF-03', as: 'U-SPV', tid: 'dx-mrf-issue', title: 'Serahkan 4 botol dari stok lokal', what: 'Stok gudang Ubud cukup untuk 4 botol — langsung diserahkan ke pemohon (serah terima).',
           run: (c, s, v) => c('mrf.issue', { id: v.mrf }, 'U-SPV'),
           check: (s, v) => S.mrfFulfillment(s, mrf(s, v.mrf)).issued >= 4 && {} },
-        { id: 'MRF-04', as: 'U-WHS', tid: 'dx-trf-dispatch', title: 'Gudang Ubud mengirim transfer 3 botol', what: 'Transfer antar-cabang dibuat otomatis saat alokasi. Gudang asal menekan Kirim (stok asal berkurang, status dalam perjalanan).',
+        { id: 'MRF-04', as: 'U-WHS', tid: 'dx-trf-dispatch', title: 'Gudang Shanti mengirim transfer 3 botol', what: 'Transfer antar-cabang dibuat otomatis saat alokasi. Gudang asal menekan Kirim (stok asal berkurang, status dalam perjalanan).',
           run: (c, s, v) => c('transfer.dispatch', { id: v.tr }, 'U-WHS'),
           check: (s, v) => { const t = s.transfers.find((x) => x.id === v.tr); return t && t.status !== 'REQUESTED' && {}; } },
-        { id: 'MRF-05', as: 'U-SPV', tid: 'dx-trf-receive', title: 'Supervisor menerima transfer & menyerahkan', what: 'Barang transfer tiba di Shanti, diterima, lalu diserahkan → 7/10 terpenuhi.',
+        { id: 'MRF-05', as: 'U-SPV', tid: 'dx-trf-receive', title: 'Supervisor menerima transfer & menyerahkan', what: 'Barang transfer tiba di Ubud, diterima, lalu diserahkan → 7/10 terpenuhi.',
           run: (c, s, v) => { c('transfer.receive', { id: v.tr }, 'U-SPV'); c('mrf.issue', { id: v.mrf }, 'U-SPV'); },
           check: (s, v) => S.mrfFulfillment(s, mrf(s, v.mrf)).issued >= 7 && {} },
         { id: 'MRF-06', as: 'U-PUR', tid: 'dx-po-create', title: 'Purchasing membuat PO 3 botol', what: 'Kebutuhan beli 3 botol masuk konsolidasi. Purchasing membuat draft PO ke PT Aroma Bali Lestari dan mengajukannya.',
@@ -118,7 +118,7 @@
           check: (s, v) => po(s, v.po) && ['SENT', 'PARTIAL', 'RECEIVED'].includes(po(s, v.po).status) && {} },
         { id: 'MRF-08', as: 'U-SPV', tid: 'dx-out-recvpart', title: 'Barang tiba sebagian di outlet: 2 dari 3', what: 'Di outlet tidak ada orang gudang standby. Supervisor menekan "Ada yang kurang" dan mengisi 2 botol datang. Nama, outlet, divisi, dan BU terisi otomatis dari akun. Sistem membuat penerimaan, posting stok, simpan, dan serah terima → 9/10. PO PARTIAL (backorder 1).',
           run: (c, s, v) => c('order.receive', { id: v.mrf, lines: [{ item: 'BHP-001', received: 2, damaged: 0 }], note: '2 botol tiba, 1 menyusul' }, 'U-SPV'),
-          check: (s, v) => { const g = s.grns.find((x) => x.po === v.po); return po(s, v.po).status !== 'SENT' && S.mrfFulfillment(s, mrf(s, v.mrf)).issued >= 9 && g && g.receivedBy && g.receivedBy.branch === 'BR-SHN' && {}; } },
+          check: (s, v) => { const g = s.grns.find((x) => x.po === v.po); return po(s, v.po).status !== 'SENT' && S.mrfFulfillment(s, mrf(s, v.mrf)).issued >= 9 && g && g.receivedBy && g.receivedBy.branch === 'BR-UBD' && {}; } },
         { id: 'MRF-09', as: 'U-PUR', tid: 'dx-clock', title: 'Waktu demo berjalan: vendor lewat janji', what: 'Tombol DEMO memajukan jam simulasi. Control Tower mendeteksi 1 botol lewat tanggal janji dan membuka 1 isu untuk Purchasing (alasan otomatis: supplier kirim sebagian).',
           run: (c) => c('demo.advanceClock', { hours: 120 }, 'U-PUR'),
           check: (s, v) => { const i = issueOf(s, v.mrf); return i && { issue: i.id }; } },
@@ -148,12 +148,12 @@
       story: 'Staff memotret nota tulisan tangan. Ekstraksi AI SIMULASI menandai angka ragu; manusia mengoreksi, cek 7P & budget, Supervisor menyetujui, Finance memverifikasi dan merekonsiliasi dengan bukti digital.',
       steps: [
         { id: 'NOTA-01', as: 'U-STF', tid: 'dx-sp-capture', title: 'Foto nota tulisan tangan (AI SIMULASI)', what: 'Pilih contoh nota tulisan tangan. Hasil ekstraksi adalah simulasi deterministik — tidak ada OCR nyata di preview.',
-          run: (c) => c('spend.capture', { scenario: 'HANDWRITTEN', branch: 'BR-SHN' }, 'U-STF'),
+          run: (c) => c('spend.capture', { scenario: 'HANDWRITTEN', branch: 'BR-UBD' }, 'U-STF'),
           check: (s, v) => { const x = (s.spends || []).find((d) => !v.baseSp.includes(d.id) && d.createdBy === 'U-STF'); return x && { sp: x.id }; } },
         { id: 'NOTA-02', as: 'U-STF', tid: 'dx-sp-fix', q: (v) => ({ tab: 'review', cur: v.sp }), title: 'Koreksi angka yang ragu', what: 'Harga "Pasir" terbaca 35.000 (ragu). Staff mengoreksi menjadi 350.000 sesuai nota, mengonfirmasi total dan metode bayar. Nilai AI asli tetap tersimpan terpisah.',
           run: (c, s, v) => { const sp = S.spend(s(), v.sp); c('spend.update', { id: v.sp, lines: sp.lines.map((l, i) => (i === 1 ? { ...l, price: 350000 } : l)) }, 'U-STF'); c('spend.update', { id: v.sp, confirm: ['total'], fields: { pay: 'CASH', payDate: '2026-11-07' } }, 'U-STF'); },
           check: (s, v) => { const sp = S.spend(s, v.sp); return sp && S.spendMath(sp).ok && !S.spendOpenIssues(sp).length && {}; } },
-        { id: 'NOTA-03', as: 'U-STF', tid: 'dx-sp-submit', q: (v) => ({ tab: 'review', cur: v.sp }), title: 'Cek 7P / cost center / budget lalu ajukan', what: 'Rekomendasi 7P = Facility, cost center CC-SHN-OPS, budget bulanan masih cukup. Konfirmasi Staff ≠ persetujuan ≠ pembayaran.',
+        { id: 'NOTA-03', as: 'U-STF', tid: 'dx-sp-submit', q: (v) => ({ tab: 'review', cur: v.sp }), title: 'Cek 7P / cost center / budget lalu ajukan', what: 'Rekomendasi 7P = Facility, cost center CC-UBD-OPS, budget bulanan masih cukup. Konfirmasi Staff ≠ persetujuan ≠ pembayaran.',
           run: (c, s, v) => c('spend.submit', { id: v.sp }, 'U-STF'),
           check: (s, v) => S.spend(s, v.sp).status !== 'DRAFT' && {} },
         { id: 'NOTA-04', as: 'U-SPV', tid: 'dx-sp-approve', q: (v) => ({ tab: 'history', sel: v.sp }), title: 'Supervisor menyetujui', what: 'Supervisor unit yang sama menyetujui. Supervisor cabang lain tidak bisa.',
@@ -169,9 +169,9 @@
     },
     {
       id: 'SLA', name: 'Vendor lewat SLA → eskalasi → selesai', short: 'Vendor SLA breach',
-      story: 'PO 3 botol untuk Shanti sudah dikirim ke vendor. Vendor belum mengirim saat janji lewat → risiko stok outlet → BU eskalasi → ETA revisi → barang datang, isu selesai otomatis.',
+      story: 'PO 3 botol untuk Ubud sudah dikirim ke vendor. Vendor belum mengirim saat janji lewat → risiko stok outlet → BU eskalasi → ETA revisi → barang datang, isu selesai otomatis.',
       setup: (c, s) => {
-        const m = c('mrf.create', { branch: 'BR-SHN', memo: 'DEMO DX — SLA vendor', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'U-STF');
+        const m = c('mrf.create', { branch: 'BR-UBD', memo: 'DEMO DX — SLA vendor', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'U-STF');
         c('mrf.decide', { id: m.id, decision: 'APPROVE', note: 'OK' }, 'U-SPV');
         const picks = S.pendingPurchase(s()).filter((p) => p.mrf === m.id).map((p) => ({ mrf: p.mrf, li: p.li, ai: p.ai }));
         const p = c('po.createFromMrf', { picks, supplier: 'SUP-001' }, 'U-PUR');
@@ -185,7 +185,7 @@
           run: (c) => c('demo.advanceClock', { hours: 120 }, 'U-PUR'),
           check: (s, v) => { const i = issueOf(s, v.mrf); return i && { issue: i.id }; } },
         { id: 'SLA-02', as: 'U-SPV', tid: 'dx-issue-update', q: (v) => ({ mrf: v.mrf, tab: 'delay' }), title: 'Supervisor: risiko stok outlet', what: 'Supervisor melihat isu di unitnya dan meminta update karena stok tinggal untuk 2 hari.',
-          run: (c, s, v) => c('flow.requestUpdate', { id: v.issue, note: 'Stok Massage Oil Shanti tinggal untuk 2 hari' }, 'U-SPV'),
+          run: (c, s, v) => c('flow.requestUpdate', { id: v.issue, note: 'Stok Massage Oil Ubud tinggal untuk 2 hari' }, 'U-SPV'),
           check: (s, v) => s.flowIssues.find((x) => x.id === v.issue).history.some((h) => /UPDATE/.test(h.action)) && {} },
         { id: 'SLA-03', as: 'U-BUM', tid: 'dx-issue-esc', q: (v) => ({ mrf: v.mrf, tab: 'delay' }), title: 'BU Manager mengeskalasi', what: 'BU Manager menaikkan isu sesuai kebijakan eskalasi (dengan alasan).',
           run: (c, s, v) => c('flow.escalate', { id: v.issue, note: 'Risiko layanan weekend — mohon perhatian' }, 'U-BUM'),
@@ -218,11 +218,11 @@
     },
     {
       id: 'ASSET', name: 'Maintenance AC → WO → suku cadang → selesai', short: 'Asset maintenance AC',
-      story: 'AC ruang treatment Shanti bocor. Laporan → persetujuan → work order → beli suku cadang → selesai → Finance mengklasifikasi biaya pemeliharaan.',
+      story: 'AC ruang treatment Ubud bocor. Laporan → persetujuan → work order → beli suku cadang → selesai → Finance mengklasifikasi biaya pemeliharaan.',
       steps: [
         { id: 'AST-01', as: 'U-STF', tid: 'dx-mt-new', title: 'Staff melaporkan AC rusak', what: 'Laporan kerusakan aset AC Split Ruang Treatment 3 (prioritas tinggi).',
-          run: (c) => c('mt.create', { asset: 'AST-SHN-0001', issue: 'AC ruang treatment 3 bocor dan kurang dingin', priority: 'HIGH' }, 'U-STF'),
-          check: (s, v) => { const m = s.maintenance.find((x) => !v.baseMt.includes(x.id) && x.asset === 'AST-SHN-0001'); return m && { mt: m.id }; } },
+          run: (c) => c('mt.create', { asset: 'AST-UBD-0001', issue: 'AC ruang treatment 3 bocor dan kurang dingin', priority: 'HIGH' }, 'U-STF'),
+          check: (s, v) => { const m = s.maintenance.find((x) => !v.baseMt.includes(x.id) && x.asset === 'AST-UBD-0001'); return m && { mt: m.id }; } },
         { id: 'AST-02', as: 'U-SPV', tid: 'dx-mt-review', title: 'Supervisor menyetujui perbaikan', what: 'Persetujuan supervisor membuka jalan untuk work order.',
           run: (c, s, v) => c('mt.review', { id: v.mt, decision: 'APPROVE', note: 'Tamu komplain, segera' }, 'U-SPV'),
           check: (s, v) => s.maintenance.find((x) => x.id === v.mt).status !== 'SUBMITTED' && {} },

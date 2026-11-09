@@ -1,5 +1,5 @@
 /* End-to-end UI test of MP-HAWK-08 Flow Intelligence Control Tower (NV-61 / NV-62 + role widgets).
-   Acceptance scenario: JAENS Spa Shanti requests 10 Massage Oil (BHP-001) → 4 local + 3 transfer + 3 PO; supplier delivers 2,
+   Acceptance scenario: JAENS Spa Ubud requests 10 Massage Oil (BHP-001) → 4 local + 3 transfer + 3 PO; supplier delivers 2,
    the last bottle becomes overdue → issue for Purchasing → Supervisor sees it → AI recommends → Purchasing records revised ETA + reason
    → last bottle received & issued (10/10) → issue resolved → SLA metrics update → Finance linked without duplicate recognition.
    Upstream document steps (MRF/PO/GRN) use the same Mock Adapter calls the UI uses (already click-tested in e2e-walkthrough.js);
@@ -48,21 +48,21 @@ fs.mkdirSync(shotDir, { recursive: true });
   ok('2. NV-61 tampil: PFHI provisional, Source / As-of / DEMO', /Procurement Flow Control Tower/.test(t) && /PROVISIONAL/i.test(t) && /As-of/.test(t) && /DEMO/.test(t));
 
   // Scenario documents (MRF 4/3/3, transfer, PO, partial receipt 2/3)
-  const mrf = await call('mrf.create', { branch: 'BR-SHN', memo: 'Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Rutin' }] }, 'U-STF');
+  const mrf = await call('mrf.create', { branch: 'BR-UBD', memo: 'Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Rutin' }] }, 'U-STF');
   await call('mrf.decide', { id: mrf.id, decision: 'APPROVE', note: 'OK' }, 'U-SPV');
   await call('mrf.issue', { id: mrf.id }, 'U-WHS');
   const tr = await S((id) => HAWK.store.state.mrfs.find((m) => m.id === id).lines[0].alloc.find((a) => a.path === 'TRANSFER').ref, mrf.id);
   await call('transfer.dispatch', { id: tr }, 'U-WHS');
   await call('transfer.receive', { id: tr }, 'U-WHS');
   await call('mrf.issue', { id: mrf.id }, 'U-WHS');
-  const picks = await S(() => HAWK.selectors.pendingPurchase(HAWK.store.state).filter((x) => x.wh === 'WH-SHN' && x.supplier === 'SUP-001').map((x) => ({ mrf: x.mrf, li: x.li, ai: x.ai })));
+  const picks = await S(() => HAWK.selectors.pendingPurchase(HAWK.store.state).filter((x) => x.wh === 'WH-UBD' && x.supplier === 'SUP-001').map((x) => ({ mrf: x.mrf, li: x.li, ai: x.ai })));
   const po = await call('po.createFromMrf', { picks, supplier: 'SUP-001' }, 'U-PUR');
   for (const op of ['po.submit', 'po.decide', 'po.send']) await call(op, { id: po.id, decision: 'APPROVE' }, 'U-PUR');
   const receive = async (q) => {
     const lines = await S(([id, q]) => HAWK.store.state.pos.find((x) => x.id === id).lines.map((l) => ({ received: l.item === 'BHP-001' ? q : l.qty - l.received, damaged: 0 })), [po.id, q]);
     const g = await call('grn.receive', { po: po.id, lines }, 'U-WHS');
     await call('grn.post', { id: g.id }, 'U-WHS');
-    const bins = await S((gid) => Object.fromEntries(HAWK.store.state.grns.find((x) => x.id === gid).lines.map((l, i) => [i, l.item === 'BHP-001' ? 'SHN-A-01' : 'SHN-A-02'])), g.id);
+    const bins = await S((gid) => Object.fromEntries(HAWK.store.state.grns.find((x) => x.id === gid).lines.map((l, i) => [i, l.item === 'BHP-001' ? 'UBD-A-01' : 'UBD-A-02'])), g.id);
     await call('grn.putaway', { id: g.id, bins }, 'U-WHS');
     return [g, await call('mrf.issue', { id: mrf.id }, 'U-WHS')];
   };
@@ -95,17 +95,17 @@ fs.mkdirSync(shotDir, { recursive: true });
   await wait(250);
   ok('7. Klik tahap "Persiapan & pengiriman supplier" → drill ke pesanan', (await p.innerText('#ft-drill')).includes(mrf.id));
   // filter
-  await p.selectOption('#view select[data-k="branch"]', 'BR-UBD');
+  await p.selectOption('#view select[data-k="branch"]', 'BR-SHN');
   await wait(300);
-  ok('8. Filter cabang Ubud → MRF Shanti tidak tampil', !(await p.innerText('#ft-drill')).includes(mrf.id));
+  ok('8. Filter cabang Shanti → MRF Ubud tidak tampil', !(await p.innerText('#ft-drill')).includes(mrf.id));
   await p.click('#view [data-a="fltReset"]');
   await wait(250);
 
-  // 9. Supervisor Shanti sees it (NV-01 widget) and escalates on NV-62
+  // 9. Supervisor Ubud sees it (NV-01 widget) and escalates on NV-62
   await as('U-SPV');
   await go(1);
   t = await view();
-  ok('9. Supervisor Shanti melihat widget "Pesanan unit saya" dengan isu', /Pesanan unit saya/.test(t) && t.includes(I[0].id));
+  ok('9. Supervisor Ubud melihat widget "Pesanan unit saya" dengan isu', /Pesanan unit saya/.test(t) && t.includes(I[0].id));
   await go(62, mrf.id);
   t = await view();
   ok('10. NV-62: timeline 12 tahap, jalur lokal/transfer/PO, 9/10', (await p.$$('#view .ft-step')).length === 12 && /9\/10/.test(t) && /Stok lokal/.test(t) && /Transfer/.test(t) && /Pembelian/.test(t));
@@ -212,7 +212,7 @@ fs.mkdirSync(shotDir, { recursive: true });
 
   // 28. mobile — staff & supervisor
   await p.setViewportSize({ width: 390, height: 844 });
-  const mrf2 = await call('mrf.create', { branch: 'BR-SHN', memo: 'Lulur', lines: [{ item: 'BHP-002', qty: 3, reason: 'Rutin' }] }, 'U-STF');
+  const mrf2 = await call('mrf.create', { branch: 'BR-UBD', memo: 'Lulur', lines: [{ item: 'BHP-002', qty: 3, reason: 'Rutin' }] }, 'U-STF');
   await as('U-STF');
   await go(27);
   ok('28. Staff (mobile) NV-27: widget "Pesanan saya — kapan datang?"', /kapan datang/.test(await view()));

@@ -41,7 +41,7 @@ fs.mkdirSync(shotDir, { recursive: true });
   await wait(400);
 
   try {
-    // 1–2 Staff creates MRF at Spa Shanti: Minyak Pijat Lavender 1L × 10
+    // 1–2 Staff creates MRF at Spa Ubud: Minyak Pijat Lavender 1L × 10
     await as('U-STF');
     await go(24);
     ok('1 Staff melihat menu sederhana (≤5 modul: Beranda, MRF, cek stok, Smart Spend, lapor kerusakan)', (await p.$$eval('#nav .nav-mod', (m) => m.length)) <= 5, String(await p.$$eval('#nav .nav-mod', (m) => m.length)));
@@ -54,7 +54,7 @@ fs.mkdirSync(shotDir, { recursive: true });
     await clickIn('[data-a="next1"]');
     await clickIn('[data-a="submit"]:not([data-draft])');
     const mrf = await st(() => HAWK.store.state.mrfs.find((m) => m.requester === 'U-STF' && m.lines.some((l) => l.item === 'BHP-001' && l.qty === 10) && m.status === 'SUBMITTED'));
-    ok('2 MRF terkirim ke Supervisor', mrf && mrf.branch === 'BR-SHN' && mrf.chain[0] === 'SUPERVISOR', await lastToast());
+    ok('2 MRF terkirim ke Supervisor', mrf && mrf.branch === 'BR-UBD' && mrf.chain[0] === 'SUPERVISOR', await lastToast());
     await p.screenshot({ path: path.join(shotDir, '02-mrf-terkirim.png') });
 
     // 3–4 Supervisor reviews budget impact then approves
@@ -176,7 +176,7 @@ fs.mkdirSync(shotDir, { recursive: true });
     const done = await tourDone();
     ok('Walkthrough: 14/14 langkah selesai', done.every(Boolean), done.map((d, i) => (d ? '' : i + 1)).filter(Boolean).join(','));
     // no double counting: change in on-hand since seed = sum of ledger movements recorded during this session
-    const cons = await st(() => { const s = HAWK.store.state; const S = HAWK.selectors; const s0 = HAWK.seed(); const ids0 = new Set(s0.ledger.map((l) => l.id)); const d = (S.stock(s, 'WH-SHN', 'BHP-001').onHand) - (S.stock(s0, 'WH-SHN', 'BHP-001').onHand); const led = s.ledger.filter((l) => !ids0.has(l.id) && l.wh === 'WH-SHN' && l.item === 'BHP-001').reduce((a, l) => a + l.qty, 0); return { delta: d, led }; });
+    const cons = await st(() => { const s = HAWK.store.state; const S = HAWK.selectors; const s0 = HAWK.seed(); const ids0 = new Set(s0.ledger.map((l) => l.id)); const d = (S.stock(s, 'WH-UBD', 'BHP-001').onHand) - (S.stock(s0, 'WH-UBD', 'BHP-001').onHand); const led = s.ledger.filter((l) => !ids0.has(l.id) && l.wh === 'WH-UBD' && l.item === 'BHP-001').reduce((a, l) => a + l.qty, 0); return { delta: d, led }; });
     ok('Perubahan stok = jumlah mutasi ledger (tanpa double counting)', cons.delta === cons.led, JSON.stringify(cons));
   } catch (e) {
     ok('Eksekusi tanpa exception', false, e.message);

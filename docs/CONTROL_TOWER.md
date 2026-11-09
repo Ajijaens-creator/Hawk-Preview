@@ -82,7 +82,7 @@ NV-61 dan NV-62 menampilkan **FAKTA** (dihitung dari dokumen), **HIPOTESIS** (de
 
 ## 8. Skenario uji penerimaan (lulus)
 
-Spa Shanti meminta 10 Massage Oil (BHP-001): 4 dari stok lokal, 3 transfer dari Ubud, 3 lewat PO. Supplier mengirim 2. Botol terakhir lewat janji, lalu Control Tower membuka 1 isu P0 untuk Purchasing. Supervisor Shanti melihatnya dan mengeskalasi. AI merekomendasikan konfirmasi ETA atau transfer alternatif. Purchasing mencatat ETA revisi + alasan (tanggal janji asli tetap). Botol terakhir diterima dan diserahkan (10/10), isu tertutup otomatis, dan tahap supplier tercatat TERLAMBAT. Finance memproses faktur dengan maksimal 1 jurnal pengakuan per tagihan.
+Spa Ubud meminta 10 Massage Oil (BHP-001): 4 dari stok lokal, 3 transfer dari Shanti, 3 lewat PO. Supplier mengirim 2. Botol terakhir lewat janji, lalu Control Tower membuka 1 isu P0 untuk Purchasing. Supervisor Ubud melihatnya dan mengeskalasi. AI merekomendasikan konfirmasi ETA atau transfer alternatif. Purchasing mencatat ETA revisi + alasan (tanggal janji asli tetap). Botol terakhir diterima dan diserahkan (10/10), isu tertutup otomatis, dan tahap supplier tercatat TERLAMBAT. Finance memproses faktur dengan maksimal 1 jurnal pengakuan per tagihan.
 
 - Engine: `tests/workflow.test.js` T10.
 - Klik UI: `tests/e2e-control-tower.js` (32 cek). Screenshot di `docs/screenshots/control-tower/`.

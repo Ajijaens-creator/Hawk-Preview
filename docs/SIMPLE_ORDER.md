@@ -53,7 +53,7 @@ Otomatis bila **semua** terpenuhi:
 - Akun dari outlet lain ditolak (FORBIDDEN). Penerimaan tidak bisa dilakukan dua kali.
 - **Tidak perlu mengisi ulang identitas.** Saat memesan atau menerima, sistem mengisi dari penugasan akun: nama, jabatan, outlet, divisi, BU (`S.assignment`). Disimpan di `mrf.requestedBy`, `grn.receivedBy`, `transfer.receivedBy`, dan `mrf.receipts[]`. Akun outlet tidak bisa memesan atas nama outlet lain.
 - Di produksi, identitas ini wajib diambil server dari akun login (bukan dari isian form).
-- Akun demo baru: Yuli (Receptionist), Dewa (Attendant), Nengah Budi (Security) di Spa Shanti; Tika (Asisten Operational Manager).
+- Akun demo outlet: Yuli (Receptionist), Indah (Therapist), Dewa (Attendant), Joni (Security) di JAENS Spa Center (Ubud); Tika (Asisten Operational Manager).
 
 ### Struktur Divisi Operasional Spa (Owner, 8 Nov 2026)
 
@@ -61,7 +61,7 @@ Otomatis bila **semua** terpenuhi:
 BU JAENS Spa
 └─ Divisi Operasional Spa — Operational Manager (Eni Restini)
    └─ Asisten Operational Manager (Tika) — membawahi Supervisor outlet
-      └─ Outlet (Ubud, Shanti, Triloka, Bisma) — dipimpin Supervisor outlet
+      └─ Outlet (Shanti, Ubud, Triloka, Bisma) — dipimpin Supervisor outlet
          └─ Departemen: Receptionist · Spa Therapist · Attendant · Security
 ```
 
@@ -91,7 +91,11 @@ BU JAENS Spa
 | Owner | Aji Jaens | OWNER |
 | Manager BU Operasional (JAENS Spa) | Eni Restini | BU_MANAGER |
 | Asisten Manager Operasional | Tika | HEAD_DIV + posisi ASST_OM |
-| Supervisor Outlet | Mila | SUPERVISOR |
+| Supervisor Outlet JAENS Spa Center (Ubud) | Mila | SUPERVISOR |
+| Supervisor Outlet JAENS Spa Shanti | Tina | SUPERVISOR |
+| Supervisor Outlet JAENS Spa Triloka | Dewik | SUPERVISOR |
+| Supervisor Outlet JAENS Spa Bisma | Wahyudi | SUPERVISOR |
+| Security JAENS Spa Center | Joni | STAFF |
 | Receptionist / Therapist / Attendant | Yuli / Indah / Dewa | STAFF |
 | Finance Manager | Asri | FINANCE |
 | General Accounting Supervisor | Meli | FINANCE |
@@ -105,6 +109,6 @@ BU JAENS Spa
 | Manager Divisi Komersil | Dedik | HEAD_DIV (Divisi Komersil) |
 | Manager BU JAENS Essence | Gek Niken | BU_MANAGER (BU Essence) |
 
-Akun pendukung yang tidak ada di daftar Owner tetap memakai nama fiktif: Komang Ayu (Attendant Ubud), Ni Luh Sari (Supervisor Ubud), Nengah Budi (Security Shanti).
+Pembaruan Owner 9 Nov 2026: JAENS Spa Center = outlet Ubud. Mila dan timnya (Yuli, Indah, Dewa, Joni) bertugas di sana, dan semua skenario demo berjalan di Ubud (transfer datang dari Gudang Shanti). Akun fiktif Komang Ayu dan Ni Luh Sari dihapus; tidak ada lagi nama fiktif di daftar akun.
 
 **Rantai approval MRF outlet Spa sekarang:** Supervisor outlet → Asisten Manager Operasional → Manager BU Operasional (→ Owner untuk > Rp 25 jt). Karena di Spa tidak ada manager divisi terpisah di atas Asisten, level "Head of Division" ditandatangani Manager BU Operasional; satu orang tidak menyetujui dua kali. Unit Office tetap memakai manager divisinya (Komersil, HRD).

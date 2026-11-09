@@ -30,15 +30,15 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   console.log('T1 Owner acceptance journey');
   const { call, s } = fresh();
   const budgetBefore = S.budgetView(s(), 'BGT-2026-SPA').lines.find((l) => l.p === 'PRODUCT' && l.cls === 'OPEX');
-  const shnBefore = stockOf(s(), 'WH-SHN', 'BHP-001').onHand;
   const ubdBefore = stockOf(s(), 'WH-UBD', 'BHP-001').onHand;
+  const shnBefore = stockOf(s(), 'WH-SHN', 'BHP-001').onHand;
 
-  // 1–2 Staff creates MRF at Spa Shanti
-  let r = call('mrf.create', { branch: 'BR-SHN', memo: 'Minyak pijat untuk weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF');
+  // 1–2 Staff creates MRF at Spa Ubud
+  let r = call('mrf.create', { branch: 'BR-UBD', memo: 'Minyak pijat untuk weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF');
   check('Staff dapat membuat MRF', r.ok, r.error && r.error.message);
   const mrf = r.data;
   check('ID MRF memakai format HAWK PR (PR+YYYYMM+5 digit)', /^PR202611\d{5}$/.test(mrf.id), mrf.id);
-  check('Organisasi/lokasi/cost center terisi otomatis', mrf.wh === 'WH-SHN' && mrf.cc === 'CC-SHN-OPS');
+  check('Organisasi/lokasi/cost center terisi otomatis', mrf.wh === 'WH-UBD' && mrf.cc === 'CC-UBD-OPS');
   // 3 budget check
   const bc = S.mrfBudgetCheck(s(), mrf);
   check('Validasi budget BHP bulanan: proyeksi 36/40 → WARN (90%)', bc.lines[0].projectedQty === 36 && bc.status === 'WARN', JSON.stringify(bc.lines[0].projectedQty));
@@ -47,10 +47,10 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   r = call('mrf.decide', { id: mrf.id, decision: 'APPROVE' }, 'STAFF');
   check('Staff ditolak saat mencoba approve', !r.ok && r.error.code === 'FORBIDDEN');
   r = call('mrf.decide', { id: mrf.id, decision: 'APPROVE' }, 'SUPERVISOR', 'U-SPV2');
-  check('Supervisor cabang lain (Ubud) tidak bisa approve MRF Shanti', !r.ok && r.error.code === 'FORBIDDEN', r.error && r.error.message);
+  check('Supervisor cabang lain (Shanti) tidak bisa approve MRF Ubud', !r.ok && r.error.code === 'FORBIDDEN', r.error && r.error.message);
   // 4 Supervisor approves
   r = call('mrf.decide', { id: mrf.id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV');
-  check('Supervisor Shanti approve', r.ok, r.error && r.error.message);
+  check('Supervisor Ubud approve', r.ok, r.error && r.error.message);
   const m = s().mrfs.find((x) => x.id === mrf.id);
   check('Status → IN_FULFILLMENT setelah approval (fulfillment otomatis)', m.status === 'IN_FULFILLMENT', m.status);
   // 5 paths 4/3/3
@@ -58,25 +58,25 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const by = (p) => al.filter((a) => a.path === p).reduce((t, a) => t + a.qty, 0);
   check('Jalur fulfillment 4 lokal / 3 transfer / 3 beli', by('LOCAL') === 4 && by('TRANSFER') === 3 && by('PURCHASE') === 3, JSON.stringify(al));
   check('Σ alokasi = 10 (tanpa double count)', al.reduce((t, a) => t + a.qty, 0) === 10);
-  check('Stok lokal Shanti direservasi 4', stockOf(s(), 'WH-SHN', 'BHP-001').reserved === 4);
+  check('Stok lokal Ubud direservasi 4', stockOf(s(), 'WH-UBD', 'BHP-001').reserved === 4);
   const tr = al.find((a) => a.path === 'TRANSFER').ref;
-  check('Transfer otomatis dibuat dari Spa Ubud', s().transfers.find((t) => t.id === tr).from === 'WH-UBD');
-  const commitAfterApprove = S.itemBudget(s(), 'BR-SHN', 'BHP-001').commitQty;
+  check('Transfer otomatis dibuat dari Spa Shanti', s().transfers.find((t) => t.id === tr).from === 'WH-SHN');
+  const commitAfterApprove = S.itemBudget(s(), 'BR-UBD', 'BHP-001').commitQty;
   check('Komitmen budget = 10 setelah approval', commitAfterApprove === 10, commitAfterApprove);
 
   // Warehouse issues local 4
   r = call('mrf.issue', { id: m.id }, 'WAREHOUSE');
   check('Gudang serahkan 4 dari stok lokal', r.ok && S.mrfFulfillment(s(), m).issued === 4, r.error && r.error.message);
-  check('Stok fisik Shanti 4→0', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === shnBefore - 4);
+  check('Stok fisik Ubud 4→0', stockOf(s(), 'WH-UBD', 'BHP-001').onHand === ubdBefore - 4);
   // transfer
   check('Kirim transfer', call('transfer.dispatch', { id: tr }, 'WAREHOUSE').ok);
-  check('Stok Ubud berkurang 3', stockOf(s(), 'WH-UBD', 'BHP-001').onHand === ubdBefore - 3);
-  check('Terima transfer di Shanti', call('transfer.receive', { id: tr }, 'WAREHOUSE').ok);
+  check('Stok Shanti berkurang 3', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === shnBefore - 3);
+  check('Terima transfer di Ubud', call('transfer.receive', { id: tr }, 'WAREHOUSE').ok);
   check('Serahkan 3 hasil transfer', call('mrf.issue', { id: m.id }, 'WAREHOUSE').ok && S.mrfFulfillment(s(), m).issued === 7);
 
-  // 6 Purchasing consolidates (include PR20261100002 body scrub also Shanti + SUP-001)
-  const pend = S.pendingPurchase(s()).filter((p) => p.wh === 'WH-SHN' && p.supplier === 'SUP-001');
-  check('Kebutuhan pembelian Shanti (SUP-001) = 2 baris dari 2 MRF', pend.length === 2, JSON.stringify(pend));
+  // 6 Purchasing consolidates (include PR20261100002 body scrub also Ubud + SUP-001)
+  const pend = S.pendingPurchase(s()).filter((p) => p.wh === 'WH-UBD' && p.supplier === 'SUP-001');
+  check('Kebutuhan pembelian Ubud (SUP-001) = 2 baris dari 2 MRF', pend.length === 2, JSON.stringify(pend));
   r = call('po.createFromMrf', { picks: pend.map((p) => ({ mrf: p.mrf, li: p.li, ai: p.ai })), supplier: 'SUP-001' }, 'PURCHASING');
   check('Purchasing membuat PO dari MRF', r.ok, r.error && r.error.message);
   const po = r.data;
@@ -92,34 +92,34 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Komitmen 7P tidak dobel saat PO dibuat (dibawa MRF)', commitAfterPO === commitBeforePO, `${commitBeforePO} vs ${commitAfterPO}`);
 
   // 7 Receiving (physical) — no stock change
-  const onHandBeforeGrn = stockOf(s(), 'WH-SHN', 'BHP-001').onHand;
+  const onHandBeforeGrn = stockOf(s(), 'WH-UBD', 'BHP-001').onHand;
   r = call('grn.receive', { po: po.id, lines: po.lines.map((l) => ({ received: l.qty, damaged: 0 })) }, 'WAREHOUSE');
   check('Penerimaan fisik via checklist', r.ok, r.error && r.error.message);
   const grn = r.data;
-  check('Penerimaan fisik belum mengubah stok', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === onHandBeforeGrn);
+  check('Penerimaan fisik belum mengubah stok', stockOf(s(), 'WH-UBD', 'BHP-001').onHand === onHandBeforeGrn);
   check('Posting GRN', call('grn.post', { id: grn.id }, 'WAREHOUSE').ok);
-  check('Stok bertambah 3 setelah posting', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === onHandBeforeGrn + 3);
+  check('Stok bertambah 3 setelah posting', stockOf(s(), 'WH-UBD', 'BHP-001').onHand === onHandBeforeGrn + 3);
   check('PO status RECEIVED', s().pos.find((x) => x.id === po.id).status === 'RECEIVED');
   const jvR = s().journals.find((j) => j.source === grn.id);
   check('Jurnal penerimaan: Dr Persediaan / Cr GRNI (bukan beban)', jvR && jvR.lines.some((l) => /Persediaan/.test(l.acc) && l.dr > 0) && jvR.lines.some((l) => /GRNI/.test(l.acc) && l.cr > 0));
   // 8 put-away
-  r = call('grn.putaway', { id: grn.id, bins: { 0: 'SHN-X-99' } }, 'WAREHOUSE');
+  r = call('grn.putaway', { id: grn.id, bins: { 0: 'UBD-X-99' } }, 'WAREHOUSE');
   check('Bin tidak valid ditolak', !r.ok);
   const bins = {};
-  s().grns.find((g) => g.id === grn.id).lines.forEach((l, i) => (bins[i] = l.item === 'BHP-001' ? 'SHN-A-01' : 'SHN-A-02'));
+  s().grns.find((g) => g.id === grn.id).lines.forEach((l, i) => (bins[i] = l.item === 'BHP-001' ? 'UBD-A-01' : 'UBD-A-02'));
   check('Konfirmasi put-away rak', call('grn.putaway', { id: grn.id, bins }, 'WAREHOUSE').ok);
   check('Serahkan 3 hasil pembelian', call('mrf.issue', { id: m.id }, 'WAREHOUSE').ok);
   const f = S.mrfFulfillment(s(), s().mrfs.find((x) => x.id === m.id));
   check('MRF 10 dari 10 terpenuhi', f.issued === 10 && f.requested === 10, JSON.stringify(f));
   check('MRF status FULFILLED', s().mrfs.find((x) => x.id === m.id).status === 'FULFILLED');
   // 9 inventory consistent
-  const shn = stockOf(s(), 'WH-SHN', 'BHP-001');
-  check('Stok Shanti akhir = awal(4) −4 +3 −3 +3 −3 = 0, reservasi 0', shn.onHand === 0 && shn.reserved === 0, JSON.stringify(shn));
-  check('Stok Ubud akhir 6', stockOf(s(), 'WH-UBD', 'BHP-001').onHand === 6);
-  const ledgerSum = s().ledger.filter((l) => l.wh === 'WH-SHN' && l.item === 'BHP-001').reduce((t, l) => t + l.qty, 0);
-  check('Ledger Shanti konsisten dengan saldo (Σ mutasi = −4)', ledgerSum === -4, ledgerSum);
+  const ubd = stockOf(s(), 'WH-UBD', 'BHP-001');
+  check('Stok Ubud akhir = awal(4) −4 +3 −3 +3 −3 = 0, reservasi 0', ubd.onHand === 0 && ubd.reserved === 0, JSON.stringify(ubd));
+  check('Stok Shanti akhir 6', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === 6);
+  const ledgerSum = s().ledger.filter((l) => l.wh === 'WH-UBD' && l.item === 'BHP-001').reduce((t, l) => t + l.qty, 0);
+  check('Ledger Ubud konsisten dengan saldo (Σ mutasi = −4)', ledgerSum === -4, ledgerSum);
   // budget actual
-  const ib = S.itemBudget(s(), 'BR-SHN', 'BHP-001');
+  const ib = S.itemBudget(s(), 'BR-UBD', 'BHP-001');
   check('Budget item: aktual 36, komitmen 0', ib.actualQty === 36 && ib.commitQty === 0, JSON.stringify([ib.actualQty, ib.commitQty]));
   check('MRF body scrub PR…02 ikut terpenuhi dari PO yang sama', call('mrf.issue', { id: 'PR20261100002' }, 'WAREHOUSE').ok && s().mrfs.find((x) => x.id === 'PR20261100002').status === 'FULFILLED');
   const budgetAfter = S.budgetView(s(), 'BGT-2026-SPA').lines.find((l) => l.p === 'PRODUCT' && l.cls === 'OPEX');
@@ -154,8 +154,8 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   // all journals balanced
   check('Semua jurnal seimbang', s().journals.every((j) => Math.round(j.lines.reduce((t, l) => t + l.dr - l.cr, 0)) === 0));
   // 14 AI insight with evidence
-  const ins = H.AI.insights(s()).find((i) => i.id === 'AI-BGT-BR-SHN-BHP-001');
-  check('Insight AI budget Massage Oil Shanti tersedia dengan bukti', ins && ins.evidence.length >= 3 && ins.statements.some((x) => x.kind === 'RECOMMENDATION'));
+  const ins = H.AI.insights(s()).find((i) => i.id === 'AI-BGT-BR-UBD-BHP-001');
+  check('Insight AI budget Massage Oil Ubud tersedia dengan bukti', ins && ins.evidence.length >= 3 && ins.statements.some((x) => x.kind === 'RECOMMENDATION'));
   check('Bukti insight memuat MRF & jejak PO/GRN/BL', ins && ins.evidence.some((e) => e.ref === m.id) && ins.evidence.some((e) => e.ref === po.id));
   check('Insight membedakan fakta/metrik/forecast/hipotesis/rekomendasi', ins && ['FACT', 'METRIC', 'FORECAST', 'HYPOTHESIS', 'RECOMMENDATION'].every((k) => ins.statements.some((x) => x.kind === k)));
   check('Tindak lanjut insight oleh manusia', call('insight.act', { id: ins.id, action: 'ACKNOWLEDGE' }, 'SUPERVISOR').ok);
@@ -176,7 +176,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Langkah berikut Asisten Manager Operasional, lalu BU Manager', S.mrfNextApprover(s(), s().mrfs.find((m) => m.id === 'PR20261100004')) === 'ASST_OM' && call('mrf.decide', { id: 'PR20261100004', decision: 'APPROVE', note: 'ok' }, 'HEAD_DIV', 'U-AOM').ok && S.mrfNextApprover(s(), s().mrfs.find((m) => m.id === 'PR20261100004')) === 'BU_MANAGER');
   r = call('mrf.decide', { id: 'PR20261100004', decision: 'APPROVE' }, 'BU_MANAGER');
   check('BU Manager approve → fulfillment', r.ok && r.data.status === 'IN_FULFILLMENT');
-  const big = call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-004', qty: 30 }] }, 'STAFF').data;
+  const big = call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-004', qty: 30 }] }, 'STAFF').data;
   check('MRF Rp 4,35 jt (outlet Spa) → Supervisor → Asisten Manager Operasional → Manager BU Operasional', big.chain.join() === 'SUPERVISOR,ASST_OM,BU_MANAGER', big.chain.join());
   {
     const ap = (role, id) => call('mrf.decide', { id: big.id, decision: 'APPROVE', note: 'ok' }, role, id);
@@ -187,7 +187,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
     const ess = call('mrf.create', { branch: 'DV-ESS-PRD', lines: [{ item: 'BHP-004', qty: 30 }] }, 'ADMIN').data;
     check('Unit di luar Divisi Operasional Spa (Essence) tidak lewat Asisten OM', ess && !ess.chain.includes('ASST_OM'), ess && ess.chain.join());
   }
-  const rev = call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-006', qty: 2 }] }, 'STAFF').data;
+  const rev = call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-006', qty: 2 }] }, 'STAFF').data;
   r = call('mrf.decide', { id: rev.id, decision: 'REVISION', note: 'Qty perlu dicek' }, 'SUPERVISOR');
   check('Minta revisi', r.ok && r.data.status === 'REVISION');
   r = call('mrf.submitDraft', { id: rev.id, lines: [{ item: 'BHP-006', qty: 3 }] }, 'STAFF');
@@ -234,15 +234,15 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('updateLine ditolak untuk budget per-baris', !call('budget.updateLine', { id: 'BGT-2027-SPA', index: 1, amount: 1800000000 }, 'FINANCE').ok);
   const b27 = () => s().budgets.find((b) => b.id === 'BGT-2027-SPA');
   const prodBefore = b27().lines.find((l) => l.p === 'PRODUCT').revised;
-  let r0 = call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-SHN', p: 'PRODUCT', name: 'Handuk wajah premium', qty: 240, price: 45000, kind: 'INVENTORY', stream: 'OPERATIONAL', routine: true }, 'FINANCE');
+  let r0 = call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-UBD', p: 'PRODUCT', name: 'Handuk wajah premium', qty: 240, price: 45000, kind: 'INVENTORY', stream: 'OPERATIONAL', routine: true }, 'FINANCE');
   check('Tambah baris draft FY2027', r0.ok && b27().lines.find((l) => l.p === 'PRODUCT').revised === prodBefore + 240 * 45000);
-  check('Profit wajib PERFORMANCE', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-SHN', p: 'PROFIT', name: 'x', qty: 1, price: 1, kind: 'OPEX' }, 'FINANCE').ok);
-  check('PERFORMANCE hanya untuk Profit', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-SHN', p: 'PRODUCT', name: 'x', qty: 1, price: 1, kind: 'PERFORMANCE' }, 'FINANCE').ok);
+  check('Profit wajib PERFORMANCE', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-UBD', p: 'PROFIT', name: 'x', qty: 1, price: 1, kind: 'OPEX' }, 'FINANCE').ok);
+  check('PERFORMANCE hanya untuk Profit', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-UBD', p: 'PRODUCT', name: 'x', qty: 1, price: 1, kind: 'PERFORMANCE' }, 'FINANCE').ok);
   check('Unit BU lain ditolak', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'DV-ESS-PRD', p: 'PRODUCT', name: 'x', qty: 1, price: 1, kind: 'OPEX' }, 'FINANCE').ok);
   check('Distribusi bulanan ≠ 100% ditolak', !call('budget.setWeights', { id: 'BGT-2027-SPA', line: r0.data.id, weights: Array(12).fill(8) }, 'FINANCE').ok);
   check('Distribusi bulanan = 100% diterima', call('budget.setWeights', { id: 'BGT-2027-SPA', line: r0.data.id, weights: [8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9] }, 'FINANCE').ok);
   check('Ajukan FY2027', call('budget.submit', { id: 'BGT-2027-SPA' }, 'BU_MANAGER').ok);
-  check('Draft terkunci saat diajukan', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-SHN', p: 'PRODUCT', name: 'x', qty: 1, price: 1, kind: 'OPEX' }, 'FINANCE').ok);
+  check('Draft terkunci saat diajukan', !call('budget.upsertPlanLine', { id: 'BGT-2027-SPA', unit: 'BR-UBD', p: 'PRODUCT', name: 'x', qty: 1, price: 1, kind: 'OPEX' }, 'FINANCE').ok);
   check('Owner tidak bisa approve sebelum Head/Finance', !call('budget.approve', { id: 'BGT-2027-SPA' }, 'OWNER').ok);
   check('Head Review (BU Manager)', call('budget.approve', { id: 'BGT-2027-SPA' }, 'BU_MANAGER').ok && S.budgetStage(s(), b27()) === 'Finance Review');
   check('Kembalikan tanpa alasan ditolak', !call('budget.approve', { id: 'BGT-2027-SPA', decision: 'REJECT' }, 'FINANCE').ok);
@@ -252,7 +252,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const rl = call('budget.requestRevision', { id: 'BGT-2027-SPA', reason: 'Harga handuk naik', changes: [{ line: pl.id, newAmount: 12000000 }] }, 'FINANCE');
   check('Usulan revisi baris tidak mengubah Revised', rl.ok && b27().plan.find((x) => x.id === pl.id).revised === 240 * 45000);
   check('Owner setujui revisi baris → Original tetap', call('budget.decideRevision', { id: rl.data.id, decision: 'APPROVE' }, 'OWNER').ok && b27().plan.find((x) => x.id === pl.id).revised === 12000000 && b27().plan.find((x) => x.id === pl.id).original === 240 * 45000);
-  const nr = call('nonroutine.create', { unit: 'BR-SHN', p: 'FACILITY', name: 'Ganti shower mixer', amount: 1800000, kind: 'OPEX', reason: 'Kerusakan mendadak' }, 'HEAD_DIV');
+  const nr = call('nonroutine.create', { unit: 'BR-UBD', p: 'FACILITY', name: 'Ganti shower mixer', amount: 1800000, kind: 'OPEX', reason: 'Kerusakan mendadak' }, 'HEAD_DIV');
   check('Non-rutin diajukan', nr.ok && nr.data.status === 'SUBMITTED');
   check('Pengaju tidak boleh memutus sendiri (SoD)', !call('nonroutine.decide', { id: nr.data.id, decision: 'APPROVE' }, 'HEAD_DIV').ok);
   check('Non-rutin disetujui BU Manager', call('nonroutine.decide', { id: nr.data.id, decision: 'APPROVE' }, 'BU_MANAGER').ok);
@@ -272,13 +272,13 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
 (function asset() {
   console.log('T5 Asset & facility');
   const { call, s } = fresh();
-  check('Supervisor tinjau MR AC Shanti', call('mt.review', { id: 'MT20261100001', decision: 'APPROVE' }, 'SUPERVISOR').ok);
+  check('Supervisor tinjau MR AC Ubud', call('mt.review', { id: 'MT20261100001', decision: 'APPROVE' }, 'SUPERVISOR').ok);
   const wo = call('wo.create', { mt: 'MT20261100001', assignee: 'CV Teknik Dingin Bali', labor: 250000 }, 'ASSET').data;
   check('WO dibuat', !!wo && wo.status === 'OPEN');
   const r = call('wo.requestPart', { id: wo.id, item: 'SP-001', qty: 1 }, 'ASSET');
   check('Suku cadang → MRF non-rutin', r.ok && r.data.mrf.type === 'NON_ROUTINE' && S.mrfChain(s(), r.data.mrf).chain.includes('BU_MANAGER'));
   check('Selesaikan WO', call('wo.complete', { id: wo.id, notes: 'Ganti kapasitor & isi freon', cost: 180000 }, 'ASSET').ok);
-  const a = s().assets.find((x) => x.id === 'AST-SHN-0001');
+  const a = s().assets.find((x) => x.id === 'AST-UBD-0001');
   check('Histori aset diperbarui', a.history[0].ref === wo.id && a.condition === 'Baik');
   check('MR selesai', s().maintenance.find((x) => x.id === 'MT20261100001').status === 'COMPLETED');
   check('Jejak WO → MRF suku cadang', S.trace(s(), wo.id).includes(r.data.mrf.id));
@@ -293,7 +293,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Cabang baru langsung bisa membuat MRF', call('mrf.create', { branch: 'BR-SMY', lines: [{ item: 'BHP-006', qty: 2 }] }, 'ADMIN').ok);
   check('Arsip cabang dengan MRF terbuka ditolak', !call('org.setStatus', { id: 'BR-SMY', status: 'ARCHIVED' }, 'ADMIN').ok);
   const snap = JSON.stringify(s().stock);
-  const bad = call('transfer.create', { from: 'WH-SHN', to: 'WH-UBD', lines: [{ item: 'BHP-001', qty: 999 }] }, 'WAREHOUSE');
+  const bad = call('transfer.create', { from: 'WH-UBD', to: 'WH-SHN', lines: [{ item: 'BHP-001', qty: 999 }] }, 'WAREHOUSE');
   check('Transfer melebihi stok ditolak & state di-rollback', !bad.ok && JSON.stringify(s().stock) === snap);
   check('Operasi tanpa kontrak ditolak', !call('hack.payAll', {}, 'OWNER').ok);
   check('HAWK API adapter tidak berpura-pura terhubung', H.createApi(H.createStore({ storage: null })).adapters.HAWK_API.call('mrf.create', {}, s().users[0]).error.code === 'NOT_CONNECTED');
@@ -342,36 +342,36 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Alokasi shared office: total ≠ 100% ditolak', !call('cc.updateAllocation', { pool: 'CC-OFC-FIN', splits: { 'BU-SPA': 0.7, 'BU-ESS': 0.2 } }, 'FINANCE').ok);
   check('Alokasi shared office: 70/30 tersimpan', call('cc.updateAllocation', { pool: 'CC-OFC-FIN', basis: 'Proporsi pendapatan', splits: { 'BU-SPA': 0.7, 'BU-ESS': 0.3 } }, 'FINANCE').ok && s().sharedAllocations.find((a) => a.pool === 'CC-OFC-FIN').splits['BU-SPA'] === 0.7);
   check('Alokasi: Purchasing tidak berwenang', !call('cc.updateAllocation', { pool: 'CC-OFC-FIN', splits: { 'BU-SPA': 1 } }, 'PURCHASING').ok);
-  check('User: role tidak terdaftar ditolak', !call('user.assignRole', { id: 'U-STF2', role: 'SUPERADMIN' }, 'ADMIN').ok);
-  check('User: scope kosong ditolak', !call('user.assignRole', { id: 'U-STF2', role: 'SUPERVISOR', scope: [] }, 'ADMIN').ok);
-  check('User: Admin mengubah role + scope', call('user.assignRole', { id: 'U-STF2', role: 'SUPERVISOR', scope: ['BR-UBD'] }, 'ADMIN').ok && s().users.find((u) => u.id === 'U-STF2').role === 'SUPERVISOR');
+  check('User: role tidak terdaftar ditolak', !call('user.assignRole', { id: 'U-SPV4', role: 'SUPERADMIN' }, 'ADMIN').ok);
+  check('User: scope kosong ditolak', !call('user.assignRole', { id: 'U-SPV4', role: 'SUPERVISOR', scope: [] }, 'ADMIN').ok);
+  check('User: Admin mengubah role + scope', call('user.assignRole', { id: 'U-SPV4', role: 'SUPERVISOR', scope: ['BR-SHN'] }, 'ADMIN').ok && s().users.find((u) => u.id === 'U-SPV4').role === 'SUPERVISOR');
   check('User: non-Admin tidak dapat mengubah role', !call('user.assignRole', { id: 'U-STF', role: 'OWNER' }, 'OWNER').ok);
   // E — cancel
   check('MRF: orang lain tidak dapat membatalkan', !call('mrf.cancel', { id: 'PR20261100004', note: 'x' }, 'SUPERVISOR', 'U-SPV2').ok);
   check('MRF: pemohon membatalkan MRF SUBMITTED', call('mrf.cancel', { id: 'PR20261100004', note: 'Event diundur' }, 'STAFF', 'U-STF').ok && s().mrfs.find((m) => m.id === 'PR20261100004').status === 'CANCELLED');
   check('MRF: yang sudah diproses tidak dapat dibatalkan', !call('mrf.cancel', { id: 'PR20261100002' }, 'STAFF', 'U-STF').ok);
   // F — emergency purchase (limit = AR-08, DEMO)
-  check('Darurat: alasan < 10 karakter ditolak', !call('po.emergency', { item: 'BHP-001', qty: 1, supplier: 'SUP-01', wh: 'WH-SHN', reason: 'cepat' }, 'SUPERVISOR').ok);
-  check('Darurat: melebihi batas AR-08 ditolak (LIMIT)', call('po.emergency', { item: 'BHP-001', qty: 500, supplier: 'SUP-01', wh: 'WH-SHN', reason: 'Stok habis mendadak sebelum tamu grup' }, 'SUPERVISOR').error.code === 'LIMIT');
-  const ep = call('po.emergency', { item: 'BHP-001', qty: 2, supplier: 'SUP-01', wh: 'WH-SHN', reason: 'Stok habis mendadak sebelum tamu grup' }, 'SUPERVISOR');
+  check('Darurat: alasan < 10 karakter ditolak', !call('po.emergency', { item: 'BHP-001', qty: 1, supplier: 'SUP-01', wh: 'WH-UBD', reason: 'cepat' }, 'SUPERVISOR').ok);
+  check('Darurat: melebihi batas AR-08 ditolak (LIMIT)', call('po.emergency', { item: 'BHP-001', qty: 500, supplier: 'SUP-01', wh: 'WH-UBD', reason: 'Stok habis mendadak sebelum tamu grup' }, 'SUPERVISOR').error.code === 'LIMIT');
+  const ep = call('po.emergency', { item: 'BHP-001', qty: 2, supplier: 'SUP-01', wh: 'WH-UBD', reason: 'Stok habis mendadak sebelum tamu grup' }, 'SUPERVISOR');
   check('Darurat: PO dibuat dengan approval susulan PENDING, tanpa jurnal', ep.ok && ep.data.emergency && ep.data.postApproval === 'PENDING' && !s().journals.some((j) => j.source === ep.data.id));
   check('Darurat: Supervisor tidak dapat menyetujui susulan sendiri', !call('po.postApprove', { id: ep.data.id, decision: 'APPROVE' }, 'SUPERVISOR').ok);
   check('Darurat: BU Manager menyetujui susulan', call('po.postApprove', { id: ep.data.id, decision: 'APPROVE', note: 'OK' }, 'BU_MANAGER').data.postApproval === 'APPROVED');
   // G — bins & stock opname
-  check('Bin: format salah ditolak', !call('bin.add', { wh: 'WH-SHN', bin: 'shn-1' }, 'WAREHOUSE').ok);
-  check('Bin: bin & rak baru ditambahkan', call('bin.add', { wh: 'WH-SHN', bin: 'SHN-Z-01' }, 'WAREHOUSE').ok && s().warehouses.find((w) => w.id === 'WH-SHN').racks.includes('Z'));
-  check('Bin: duplikat ditolak', !call('bin.add', { wh: 'WH-SHN', bin: 'SHN-Z-01' }, 'WAREHOUSE').ok);
-  const op = call('opname.start', { wh: 'WH-UBD' }, 'WAREHOUSE');
-  check('Opname: dimulai; opname kedua di gudang sama ditolak', op.ok && op.data.lines.length > 0 && !call('opname.start', { wh: 'WH-UBD' }, 'WAREHOUSE').ok);
+  check('Bin: format salah ditolak', !call('bin.add', { wh: 'WH-UBD', bin: 'ubd-1' }, 'WAREHOUSE').ok);
+  check('Bin: bin & rak baru ditambahkan', call('bin.add', { wh: 'WH-UBD', bin: 'UBD-Z-01' }, 'WAREHOUSE').ok && s().warehouses.find((w) => w.id === 'WH-UBD').racks.includes('Z'));
+  check('Bin: duplikat ditolak', !call('bin.add', { wh: 'WH-UBD', bin: 'UBD-Z-01' }, 'WAREHOUSE').ok);
+  const op = call('opname.start', { wh: 'WH-SHN' }, 'WAREHOUSE');
+  check('Opname: dimulai; opname kedua di gudang sama ditolak', op.ok && op.data.lines.length > 0 && !call('opname.start', { wh: 'WH-SHN' }, 'WAREHOUSE').ok);
   const counts = op.data.lines.map((l) => l.system);
   check('Opname: ada item belum dihitung → ditolak', !call('opname.submit', { id: op.data.id, counts: counts.slice(1), note: '' }, 'WAREHOUSE').ok);
   const surplus = counts.map((c, i) => (i === 0 ? c + 2 : c));
   check('Opname: selisih tanpa penjelasan ditolak', !call('opname.submit', { id: op.data.id, counts: surplus, note: '' }, 'WAREHOUSE').ok);
   const it0 = op.data.lines[0].item;
-  const before = stockOf(s(), 'WH-UBD', it0).onHand;
+  const before = stockOf(s(), 'WH-SHN', it0).onHand;
   check('Opname: diajukan dengan penjelasan', call('opname.submit', { id: op.data.id, counts: surplus, note: 'Ditemukan 2 botol di rak B' }, 'WAREHOUSE').ok);
   check('Opname: Gudang tidak dapat menyetujui sendiri', !call('opname.approve', { id: op.data.id }, 'WAREHOUSE').ok);
-  check('Opname: Finance menyetujui → stok +2, ledger ADJUST, jurnal seimbang', call('opname.approve', { id: op.data.id }, 'FINANCE').ok && stockOf(s(), 'WH-UBD', it0).onHand === before + 2 && s().ledger.some((l) => l.type === 'ADJUST' && l.ref === op.data.id) && balanced(op.data.id));
+  check('Opname: Finance menyetujui → stok +2, ledger ADJUST, jurnal seimbang', call('opname.approve', { id: op.data.id }, 'FINANCE').ok && stockOf(s(), 'WH-SHN', it0).onHand === before + 2 && s().ledger.some((l) => l.type === 'ADJUST' && l.ref === op.data.id) && balanced(op.data.id));
   // H — GL posting
   const pend = s().journals.find((j) => j.status === 'PENDING_REVIEW');
   if (pend) {
@@ -379,20 +379,20 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
     check('GL: Finance posting jurnal review → POSTED; posting ulang ditolak', call('gl.post', { id: pend.id }, 'FINANCE').ok && !call('gl.post', { id: pend.id }, 'FINANCE').ok);
   } else check('GL: ada jurnal PENDING_REVIEW di data demo untuk diuji', false, 'tidak ada');
   // I — asset
-  check('Laporan kerusakan: uraian kosong ditolak', !call('mt.create', { asset: 'AST-SHN-0001', issue: '' }, 'STAFF').ok);
-  const mt = call('mt.create', { asset: 'AST-SHN-0001', issue: 'AC tidak dingin sejak pagi', priority: 'HIGH' }, 'STAFF');
+  check('Laporan kerusakan: uraian kosong ditolak', !call('mt.create', { asset: 'AST-UBD-0001', issue: '' }, 'STAFF').ok);
+  const mt = call('mt.create', { asset: 'AST-UBD-0001', issue: 'AC tidak dingin sejak pagi', priority: 'HIGH' }, 'STAFF');
   check('Laporan kerusakan oleh Staff → SUBMITTED', mt.ok && mt.data.status === 'SUBMITTED' && s().maintenance[0].id === mt.data.id);
   const nAst = s().assets.length;
-  const cap = call('asset.capitalize', { name: 'Mesin Hot Stone', cat: 'Peralatan Treatment', org: 'BR-SHN', cost: 12500000, life: 5 }, 'FINANCE');
+  const cap = call('asset.capitalize', { name: 'Mesin Hot Stone', cat: 'Peralatan Treatment', org: 'BR-UBD', cost: 12500000, life: 5 }, 'FINANCE');
   check('Kapitalisasi: aset baru + jurnal aset seimbang', cap.ok && s().assets.length === nAst + 1 && balanced(cap.data.id));
-  check('Kapitalisasi: nilai 0 ditolak', !call('asset.capitalize', { name: 'X', org: 'BR-SHN', cost: 0, life: 5 }, 'FINANCE').ok);
-  check('Disposal: diusulkan PIC Aset', call('asset.dispose', { id: 'AST-SHN-0002', step: 'REQUEST', reason: 'Motor rusak permanen' }, 'ASSET').data.status === 'PENDING_DISPOSAL');
-  check('Disposal: PIC Aset tidak dapat menyetujui', !call('asset.dispose', { id: 'AST-SHN-0002', step: 'APPROVE' }, 'ASSET').ok);
-  check('Disposal: Finance menyetujui → DISPOSED + jurnal seimbang', call('asset.dispose', { id: 'AST-SHN-0002', step: 'APPROVE' }, 'FINANCE').data.status === 'DISPOSED' && balanced('AST-SHN-0002'));
-  call('asset.dispose', { id: 'AST-UBD-0001', step: 'REQUEST', reason: 'Bocor, tidak ekonomis' }, 'FINANCE');
-  check('Disposal: pengusul (Finance) tidak dapat menyetujui sendiri (SoD)', call('asset.dispose', { id: 'AST-UBD-0001', step: 'APPROVE' }, 'FINANCE').error.code === 'SOD');
+  check('Kapitalisasi: nilai 0 ditolak', !call('asset.capitalize', { name: 'X', org: 'BR-UBD', cost: 0, life: 5 }, 'FINANCE').ok);
+  check('Disposal: diusulkan PIC Aset', call('asset.dispose', { id: 'AST-UBD-0002', step: 'REQUEST', reason: 'Motor rusak permanen' }, 'ASSET').data.status === 'PENDING_DISPOSAL');
+  check('Disposal: PIC Aset tidak dapat menyetujui', !call('asset.dispose', { id: 'AST-UBD-0002', step: 'APPROVE' }, 'ASSET').ok);
+  check('Disposal: Finance menyetujui → DISPOSED + jurnal seimbang', call('asset.dispose', { id: 'AST-UBD-0002', step: 'APPROVE' }, 'FINANCE').data.status === 'DISPOSED' && balanced('AST-UBD-0002'));
+  call('asset.dispose', { id: 'AST-SHN-0001', step: 'REQUEST', reason: 'Bocor, tidak ekonomis' }, 'FINANCE');
+  check('Disposal: pengusul (Finance) tidak dapat menyetujui sendiri (SoD)', call('asset.dispose', { id: 'AST-SHN-0001', step: 'APPROVE' }, 'FINANCE').error.code === 'SOD');
   // E/F/G — fulfillment plan, PO draft edit, direct issue & return
-  const nm = call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-006', qty: 1, reason: 'Uji' }] }, 'STAFF', 'U-STF');
+  const nm = call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-006', qty: 1, reason: 'Uji' }] }, 'STAFF', 'U-STF');
   check('Rencana fulfillment: MRF belum disetujui ditolak', nm.ok && !call('mrf.planFulfillment', { id: nm.data.id }, 'SUPERVISOR', 'U-SPV').ok);
   call('mrf.decide', { id: nm.data.id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV');
   const nmL = s().mrfs.find((m) => m.id === nm.data.id).lines[0];
@@ -407,13 +407,13 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   } else check('PO draft tersedia di data demo untuk uji po.update', false, 'tidak ada');
   const sent = s().pos.find((x) => x.status === 'SENT' || x.status === 'APPROVED');
   check('PO non-draft tidak dapat diubah', !sent || !call('po.update', { id: sent.id, freight: 1 }, 'PURCHASING').ok);
-  const avail = S.available(s(), 'WH-UBD', 'BHP-003');
-  check('Pemakaian langsung: melebihi stok tersedia ditolak', !call('stock.issueDirect', { wh: 'WH-UBD', item: 'BHP-003', qty: avail + 1 }, 'WAREHOUSE').ok);
-  const oh = stockOf(s(), 'WH-UBD', 'BHP-003').onHand;
-  check('Pemakaian langsung 1: stok −1, ledger ISSUE, jurnal beban seimbang', call('stock.issueDirect', { wh: 'WH-UBD', item: 'BHP-003', qty: 1, note: 'Uji', ref: 'ISS-T7' }, 'WAREHOUSE').ok && stockOf(s(), 'WH-UBD', 'BHP-003').onHand === oh - 1 && balanced('ISS-T7'));
-  check('Retur qty 0 ditolak', !call('stock.return', { wh: 'WH-UBD', item: 'BHP-003', qty: 0 }, 'WAREHOUSE').ok);
-  check('Retur 1: stok kembali, jurnal balik seimbang', call('stock.return', { wh: 'WH-UBD', item: 'BHP-003', qty: 1, ref: 'RET-T7' }, 'WAREHOUSE').ok && stockOf(s(), 'WH-UBD', 'BHP-003').onHand === oh && balanced('RET-T7'));
-  check('Staff tidak dapat mengeluarkan stok langsung', !call('stock.issueDirect', { wh: 'WH-SHN', item: 'BHP-006', qty: 1 }, 'STAFF').ok);
+  const avail = S.available(s(), 'WH-SHN', 'BHP-003');
+  check('Pemakaian langsung: melebihi stok tersedia ditolak', !call('stock.issueDirect', { wh: 'WH-SHN', item: 'BHP-003', qty: avail + 1 }, 'WAREHOUSE').ok);
+  const oh = stockOf(s(), 'WH-SHN', 'BHP-003').onHand;
+  check('Pemakaian langsung 1: stok −1, ledger ISSUE, jurnal beban seimbang', call('stock.issueDirect', { wh: 'WH-SHN', item: 'BHP-003', qty: 1, note: 'Uji', ref: 'ISS-T7' }, 'WAREHOUSE').ok && stockOf(s(), 'WH-SHN', 'BHP-003').onHand === oh - 1 && balanced('ISS-T7'));
+  check('Retur qty 0 ditolak', !call('stock.return', { wh: 'WH-SHN', item: 'BHP-003', qty: 0 }, 'WAREHOUSE').ok);
+  check('Retur 1: stok kembali, jurnal balik seimbang', call('stock.return', { wh: 'WH-SHN', item: 'BHP-003', qty: 1, ref: 'RET-T7' }, 'WAREHOUSE').ok && stockOf(s(), 'WH-SHN', 'BHP-003').onHand === oh && balanced('RET-T7'));
+  check('Staff tidak dapat mengeluarkan stok langsung', !call('stock.issueDirect', { wh: 'WH-UBD', item: 'BHP-006', qty: 1 }, 'STAFF').ok);
   const untested = H.CONTRACTS.filter((c) => !c.read && !new RegExp("call\\('" + c.id.replace('.', '\\.') + "'").test(require('fs').readFileSync(__filename, 'utf8'))).map((c) => c.id);
   check('Setiap operasi tulis di kontrak punya tes engine', !untested.length, untested.join());
 })();
@@ -424,8 +424,8 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const { call, s } = fresh();
   const bal = (id) => { const j = s().journals.find((x) => x.id === id); return !!j && Math.abs(j.lines.reduce((a, l) => a + l.dr - l.cr, 0)) < 1; };
   const spaBefore = S.budgetView(s(), 'BGT-2026-SPA').lines.find((l) => l.p === 'FACILITY' && l.cls === 'OPEX');
-  // Acceptance: Staff Shanti, handwritten receipt
-  let r = call('spend.capture', { scenario: 'HANDWRITTEN', branch: 'BR-SHN' }, 'STAFF', 'U-STF');
+  // Acceptance: Staff Ubud, handwritten receipt
+  let r = call('spend.capture', { scenario: 'HANDWRITTEN', branch: 'BR-UBD' }, 'STAFF', 'U-STF');
   const id = r.data.id;
   const sp = () => S.spend(s(), id);
   check('Capture: draft + bukti asli tersimpan terpisah, sumber = AI SIMULATION', r.ok && sp().status === 'DRAFT' && sp().source === 'SIMULATED_AI_EXTRACTION' && S.evidence(s(), sp().evidence).image.endsWith('handwritten.svg'));
@@ -437,20 +437,20 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Koreksi harga Pasir → aritmetika cocok; koreksi tercatat terpisah dari nilai AI', S.spendMath(sp()).ok && sp().corrections.some((c) => c.field === 'line:1' && c.ai === 35000 && c.value === 350000) && sp().ai.lines[1].price === 35000);
   check('Total masih perlu konfirmasi pengguna', S.spendOpenIssues(sp()).includes('total'));
   call('spend.update', { id, confirm: ['total'], fields: { pay: 'CASH', payDate: '2026-11-07' } }, 'STAFF', 'U-STF');
-  check('Rekomendasi 7P = Facility (bukan "Procurement"), cost center CC-SHN-OPS', sp().cls.p === 'FACILITY' && sp().cc === 'CC-SHN-OPS' && !HAWK.SPEND.SPEND_P.includes('PROFIT'));
+  check('Rekomendasi 7P = Facility (bukan "Procurement"), cost center CC-UBD-OPS', sp().cls.p === 'FACILITY' && sp().cc === 'CC-UBD-OPS' && !HAWK.SPEND.SPEND_P.includes('PROFIT'));
   check('7P di luar 6 kategori belanja ditolak', !call('spend.update', { id, cls: { p: 'PROCUREMENT' } }, 'STAFF', 'U-STF').ok && !call('spend.update', { id, cls: { p: 'PROFIT' } }, 'STAFF', 'U-STF').ok);
   const bud = S.spendBudget(s(), sp());
-  check('Cek budget bulanan Shanti Facility: 18,75 jt; masih dalam budget', bud.monthly === 18750000 && bud.status === 'OK' && bud.thisAmt === 1250000);
+  check('Cek budget bulanan Ubud Facility: 18,75 jt; masih dalam budget', bud.monthly === 18750000 && bud.status === 'OK' && bud.thisAmt === 1250000);
   check('Supervisor tidak dapat mengajukan nota milik Staff', !call('spend.submit', { id }, 'SUPERVISOR', 'U-SPV').ok);
   r = call('spend.submit', { id }, 'STAFF', 'U-STF');
   check('Ajukan → SUBMITTED; rute Supervisor → Finance verifikasi → Finance bayar', r.ok && sp().status === 'SUBMITTED' && sp().steps.map((x) => x.key).join() === 'CONFIRM,APPROVE,VERIFY,SETTLE');
   check('Konfirmasi Staff ≠ approval/pembayaran/jurnal', !sp().journal && !s().payments.some((p) => p.spend === id) && sp().steps[1].status === 'PENDING');
   check('Komitmen budget Facility naik tepat 1,25 jt (belum actual)', S.budgetView(s(), 'BGT-2026-SPA').lines.find((l) => l.p === 'FACILITY' && l.cls === 'OPEX').commitment === spaBefore.commitment + 1250000);
   check('Data tidak dapat diubah setelah diajukan', !call('spend.update', { id, fields: { total: 1 } }, 'STAFF', 'U-STF').ok);
-  check('Supervisor Ubud tidak dapat menyetujui', !call('spend.approve', { id }, 'SUPERVISOR', 'U-SPV2').ok);
+  check('Supervisor Shanti tidak dapat menyetujui', !call('spend.approve', { id }, 'SUPERVISOR', 'U-SPV2').ok);
   check('Finance tidak dapat verifikasi sebelum approval', !call('spend.verify', { id }, 'FINANCE').ok);
-  check('Supervisor Shanti menyetujui', call('spend.approve', { id, decision: 'APPROVE', note: 'Perbaikan saluran taman' }, 'SUPERVISOR', 'U-SPV').ok && sp().status === 'APPROVED');
-  check('Bukti asli dapat dibuka Finance & Supervisor, tidak oleh Staff Ubud', S.canSeeEvidence(s(), s().users.find((u) => u.id === 'U-FIN'), sp()) && S.canSeeEvidence(s(), s().users.find((u) => u.id === 'U-SPV'), sp()) && !S.canSeeEvidence(s(), s().users.find((u) => u.id === 'U-STF2'), sp()));
+  check('Supervisor Ubud menyetujui', call('spend.approve', { id, decision: 'APPROVE', note: 'Perbaikan saluran taman' }, 'SUPERVISOR', 'U-SPV').ok && sp().status === 'APPROVED');
+  check('Bukti asli dapat dibuka Finance & Supervisor, tidak oleh Supervisor Bisma', S.canSeeEvidence(s(), s().users.find((u) => u.id === 'U-FIN'), sp()) && S.canSeeEvidence(s(), s().users.find((u) => u.id === 'U-SPV'), sp()) && !S.canSeeEvidence(s(), s().users.find((u) => u.id === 'U-SPV4'), sp()));
   r = call('spend.verify', { id, note: 'Perbaikan kecil, OPEX' }, 'FINANCE');
   const jv = s().journals.find((j) => j.id === sp().journal);
   check('Finance verifikasi → 1 jurnal PENDING_REVIEW seimbang: Dr 6210 Facility / Cr 2155 kas kecil', r.ok && jv && jv.status === 'PENDING_REVIEW' && bal(jv.id) && jv.lines[0].acc.startsWith('6210') && jv.lines[1].acc.startsWith('2155'));
@@ -463,7 +463,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Nota yang sama difoto ulang → DUPLICATE saat diajukan', (() => { const d = call('spend.capture', { scenario: 'HANDWRITTEN' }, 'STAFF', 'U-STF').data; call('spend.update', { id: d.id, lines: d.lines.map((l, i) => (i === 1 ? { ...l, price: 350000 } : l)), confirm: ['total'], fields: { pay: 'CASH', payDate: '2026-11-07' } }, 'STAFF', 'U-STF'); return call('spend.submit', { id: d.id }, 'STAFF', 'U-STF').error.code === 'DUPLICATE'; })());
 
   // Other scenarios
-  const cap = (k, role = 'STAFF', uid = 'U-STF') => call('spend.capture', { scenario: k, branch: 'BR-SHN' }, role, uid).data;
+  const cap = (k, role = 'STAFF', uid = 'U-STF') => call('spend.capture', { scenario: k, branch: 'BR-UBD' }, role, uid).data;
   const dup = cap('DUPLICATE');
   check('Skenario duplikat terdeteksi (sidik jari + no. nota) terhadap SM20261100001', S.spendDuplicates(s(), dup).some((h) => h.id === 'SM20261100001'));
   const blur = cap('BLURRY');
@@ -497,11 +497,11 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const rbs = call('spend.submit', { id: rb.id }, 'STAFF', 'U-STF');
   check('Reimburse persediaan: rute Supervisor → Gudang → Finance → bayar karyawan', rbs.ok && rbs.data.steps.map((x) => x.key).join() === 'CONFIRM,APPROVE,GOODS,VERIFY,SETTLE' && rbs.data.fields.payer === 'U-STF');
   const prodBefore = S.budgetView(s(), 'BGT-2026-SPA').lines.find((l) => l.p === 'PRODUCT' && l.cls === 'OPEX');
-  const stk = (S.stock(s(), 'WH-SHN', 'BHP-001') || { onHand: 0 }).onHand;
+  const stk = (S.stock(s(), 'WH-UBD', 'BHP-001') || { onHand: 0 }).onHand;
   call('spend.approve', { id: rb.id }, 'SUPERVISOR', 'U-SPV');
   check('Finance tidak dapat melewati konfirmasi gudang', !call('spend.verify', { id: rb.id }, 'FINANCE').ok);
   check('Gudang konfirmasi qty fisik berbeda → ditolak', call('spend.receive', { id: rb.id, qty: [2] }, 'WAREHOUSE').error.code === 'MISMATCH');
-  check('Gudang konfirmasi 3 → stok Shanti +3, ledger RECEIPT', call('spend.receive', { id: rb.id }, 'WAREHOUSE').ok && S.stock(s(), 'WH-SHN', 'BHP-001').onHand === stk + 3 && s().ledger.some((l) => l.type === 'RECEIPT' && l.ref === rb.id));
+  check('Gudang konfirmasi 3 → stok Ubud +3, ledger RECEIPT', call('spend.receive', { id: rb.id }, 'WAREHOUSE').ok && S.stock(s(), 'WH-UBD', 'BHP-001').onHand === stk + 3 && s().ledger.some((l) => l.type === 'RECEIPT' && l.ref === rb.id));
   check('Finance tidak dapat mengubah persediaan menjadi beban setelah barang diterima', !call('spend.verify', { id: rb.id, cls: { type: 'OPEX' } }, 'FINANCE').ok);
   call('spend.verify', { id: rb.id }, 'FINANCE');
   const rbj = s().journals.find((j) => j.id === S.spend(s(), rb.id).journal);
@@ -516,7 +516,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Faktur PO: harga 52.500 vs PO 48.000 → MISMATCH; status Smart Spend mengikuti', mt.data.status === 'MISMATCH' && mt.data.match.checks.find((c) => c.key === 'price').ok === false && S.spendStatus(s(), S.spend(s(), po.id)) === 'MISMATCH');
   check('Faktur PO: tidak ada jurnal dari Smart Spend (jurnal hanya lewat AP)', !s().journals.some((j) => j.source === po.id));
   check('Batal draft oleh pengaju', call('spend.cancel', { id: blur.id }, 'STAFF', 'U-STF').ok && S.spend(s(), blur.id).status === 'CANCELLED');
-  check('Akses daftar: Staff Ubud tidak melihat nota Shanti; Finance melihat semua', !S.spendsFor(s(), s().users.find((u) => u.id === 'U-STF2')).some((x) => x.branch === 'BR-SHN') && S.spendsFor(s(), s().users.find((u) => u.id === 'U-FIN')).length === s().spends.length);
+  check('Akses daftar: Supervisor Bisma tidak melihat nota Ubud; Finance melihat semua', !S.spendsFor(s(), s().users.find((u) => u.id === 'U-SPV4')).some((x) => x.branch === 'BR-UBD') && S.spendsFor(s(), s().users.find((u) => u.id === 'U-FIN')).length === s().spends.length);
   check('Semua jurnal Smart Spend seimbang', s().spends.filter((x) => x.journal).every((x) => bal(x.journal) && (!x.settleJournal || bal(x.settleJournal))));
 })();
 
@@ -527,12 +527,12 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const bal = (id) => { const j = s().journals.find((x) => x.id === id); return j && Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)); };
   const allBal = () => s().journals.every((j) => Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)));
   const humanOps = () => s().audit.filter((a) => a.user !== 'SYS-RULE').map((a) => a.op);
-  const b0 = S.itemBudget(s(), 'BR-SHN', 'BHP-001');
-  const shn0 = stockOf(s(), 'WH-SHN', 'BHP-001').onHand;
+  const b0 = S.itemBudget(s(), 'BR-UBD', 'BHP-001');
+  const ubd0 = stockOf(s(), 'WH-UBD', 'BHP-001').onHand;
   const auditStart = s().audit.length;
 
   // A. 3 jenis barang, qty & nilai berbeda — dalam budget → lolos otomatis (lokal + transfer + beli)
-  let r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-001', qty: 12 }, { item: 'BHP-004', qty: 4 }, { item: 'BHP-007', qty: 100 }] }, 'STAFF', 'U-STF');
+  let r = call('order.quick', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 12 }, { item: 'BHP-004', qty: 4 }, { item: 'BHP-007', qty: 100 }] }, 'STAFF', 'U-STF');
   check('A: Staff memesan 3 jenis barang', r.ok, r.error && r.error.message);
   const A0 = r.data;
   const mr = (id) => s().mrfs.find((x) => x.id === id);
@@ -544,7 +544,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const poA = S.simplePOs(s(), A);
   check('A: PO dibuat, disetujui & dikirim ke supplier default otomatis', poA.length >= 1 && poA.every((p) => p.status === 'SENT' && p.auto && p.approvedBy === 'SYS-RULE' && p.supplier === S.item(s(), p.lines[0].item).supplier), JSON.stringify(poA.map((p) => [p.id, p.status])));
   check('A: transfer antar-gudang dikirim otomatis', s().transfers.filter((t) => t.mrf === A.id).every((t) => t.status === 'IN_TRANSIT'));
-  check('A: budget item → komitmen bertambah 12 (belum realisasi)', S.itemBudget(s(), 'BR-SHN', 'BHP-001').commitQty === b0.commitQty + 12, S.itemBudget(s(), 'BR-SHN', 'BHP-001').commitQty);
+  check('A: budget item → komitmen bertambah 12 (belum realisasi)', S.itemBudget(s(), 'BR-UBD', 'BHP-001').commitQty === b0.commitQty + 12, S.itemBudget(s(), 'BR-UBD', 'BHP-001').commitQty);
   check('A: tidak ada tugas approval MRF/PO untuk Supervisor/Purchasing', !S.mrfNextApprover(s(), A) && poA.every((p) => !S.poNextApprover(s(), p)) && !S.pendingPurchase(s()).some((x) => x.mrf === A.id));
   check('A: Staff mendapat tugas tunggal "Barang diterima"', S.simpleStage(s(), A).key === 'ARRIVE');
 
@@ -561,8 +561,8 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
 
   // C. Staff "Barang diterima" — sebagian (minyak pijat kurang 2)
   const buy = al.find((a) => a.path === 'PURCHASE').qty;
-  r = call('order.receive', { id: A.id, lines: [{ item: 'BHP-001', received: 10, damaged: 0 }] }, 'STAFF', 'U-STF2');
-  check('C: Staff cabang lain tidak bisa konfirmasi terima', !r.ok && r.error.code === 'FORBIDDEN', r.error && r.error.code);
+  r = call('order.receive', { id: A.id, lines: [{ item: 'BHP-001', received: 10, damaged: 0 }] }, 'SUPERVISOR', 'U-SPV2');
+  check('C: Akun outlet lain tidak bisa konfirmasi terima', !r.ok && r.error.code === 'FORBIDDEN', r.error && r.error.code);
   r = call('order.receive', { id: A.id, lines: [{ item: 'BHP-001', received: 10, damaged: 0 }] }, 'STAFF', 'U-STF');
   A = mr(A0.id); // a refused call rolls the store back to a fresh copy — always re-read
   check('C: Staff tekan "Barang diterima" (minyak pijat 10 dari 12)', r.ok, r.error && r.error.message);
@@ -570,15 +570,15 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('C: GRN otomatis terposting & tersimpan, PO jadi PARTIAL (backorder 2)', poMin.status === 'PARTIAL' && s().grns.filter((g) => g.po === poMin.id).every((g) => g.status === 'STORED'), poMin.status);
   check('C: tagihan otomatis = harga PO × qty diterima; uang muka dikompensasi', s().bills.filter((b) => b.po === po1.id && b.auto).every((b) => b.matchStatus === 'MATCHED' && (b.po !== poMin.id || b.subtotal === (buy - 2) * 85000)), JSON.stringify(s().bills.filter((b) => b.auto).map((b) => [b.po, b.subtotal, b.status])));
   check('C: barang langsung tercatat terpakai (realisasi budget) & status sebagian', A.status === 'IN_FULFILLMENT' && S.mrfFulfillment(s(), A).issued === S.mrfFulfillment(s(), A).requested - 2, JSON.stringify(S.mrfFulfillment(s(), A)));
-  check('C: stok fisik Shanti tidak negatif & konsisten', s().stock.every((x) => x.onHand >= 0 && x.reserved >= 0 && x.reserved <= x.onHand + 0.0001));
+  check('C: stok fisik Ubud tidak negatif & konsisten', s().stock.every((x) => x.onHand >= 0 && x.reserved >= 0 && x.reserved <= x.onHand + 0.0001));
   // sisa datang
   r = call('order.receive', { id: A.id }, 'STAFF', 'U-STF');
   A = mr(A0.id);
   check('C: sisa 2 datang → "Barang diterima" lagi → pesanan SELESAI', r.ok && A.status === 'FULFILLED', (r.error && r.error.message) || A.status);
   check('C: semua PO pesanan RECEIVED', S.simplePOs(s(), A).every((p) => p.status === 'RECEIVED'));
-  const bNow = S.itemBudget(s(), 'BR-SHN', 'BHP-001');
+  const bNow = S.itemBudget(s(), 'BR-UBD', 'BHP-001');
   check('C: budget minyak pijat → realisasi +12, komitmen kembali', bNow.actualQty === b0.actualQty + 12 && bNow.commitQty === b0.commitQty, JSON.stringify([b0.actualQty, b0.commitQty, bNow.actualQty, bNow.commitQty]));
-  check('C: stok lokal Shanti tidak dobel (awal − lokal terpakai)', stockOf(s(), 'WH-SHN', 'BHP-001').onHand === shn0 - al.find((a) => a.path === 'LOCAL').qty, stockOf(s(), 'WH-SHN', 'BHP-001').onHand);
+  check('C: stok lokal Ubud tidak dobel (awal − lokal terpakai)', stockOf(s(), 'WH-UBD', 'BHP-001').onHand === ubd0 - al.find((a) => a.path === 'LOCAL').qty, stockOf(s(), 'WH-UBD', 'BHP-001').onHand);
 
   // D. Bayar SESUDAH diterima (PO lain dari pesanan A, bila ada) → bill.pay biasa
   const others = S.simplePOs(s(), A).filter((p) => S.poPayState(s(), p).rest > 0);
@@ -593,11 +593,11 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('D: manusia hanya 3 aksi (pesan · terima · bayar); approval, PO, posting, put-away & tagihan oleh SYS-RULE', ops.every((o) => ['order.quick', 'mrf.create', 'order.receive', 'grn.receive', 'transfer.receive', 'order.pay', 'bill.pay'].includes(o)) && ['mrf.decide', 'po.submit', 'po.decide', 'po.send', 'grn.post', 'grn.putaway', 'bill.approve', 'doc.verify', 'transfer.dispatch'].every((o) => !ops.includes(o)), JSON.stringify(H.U.uniq(ops)));
 
   // E. Melebihi budget → otomatis jatuh ke rantai manual (Supervisor + BU Manager)
-  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-005', qty: 20 }] }, 'STAFF', 'U-STF');
+  r = call('order.quick', { branch: 'BR-UBD', lines: [{ item: 'BHP-005', qty: 20 }] }, 'STAFF', 'U-STF');
   check('E: melebihi budget → TIDAK otomatis, alasan jelas, rantai + BU Manager', r.ok && !r.data.autoCheck.ok && r.data.status === 'SUBMITTED' && r.data.chain.includes('BU_MANAGER') && /melebihi budget/.test(r.data.autoCheck.why[0]), JSON.stringify(r.data && [r.data.autoCheck, r.data.chain]));
   check('E: tidak ada PO dibuat untuk pengecualian', S.simplePOs(s(), r.data).length === 0);
   // F. Barang tanpa budget (bahan baku Essence di outlet) → manual
-  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'ESS-RM-01', qty: 1 }] }, 'STAFF', 'U-STF');
+  r = call('order.quick', { branch: 'BR-UBD', lines: [{ item: 'ESS-RM-01', qty: 1 }] }, 'STAFF', 'U-STF');
   check('F: barang tanpa budget item → manual', r.ok && !r.data.autoCheck.ok && /belum ada budget/.test(r.data.autoCheck.why.join()), JSON.stringify(r.data && r.data.autoCheck));
   // G. Pengaturan oleh Finance / Super Admin / Owner — batas diturunkan ke Rp500rb
   r = call('autoOrder.update', { max: 500000, note: 'Uji batas kecil' }, 'STAFF');
@@ -606,7 +606,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('G: alasan perubahan wajib', !r.ok && r.error.code === 'VALIDATION');
   r = call('autoOrder.update', { max: 500000, note: 'Uji batas kecil' }, 'FINANCE');
   check('G: Finance menurunkan batas ke Rp500rb (tercatat audit before/after)', r.ok && S.autoRule(s()).max === 500000 && S.autoRule(s()).changes[0].before.max === 5000000 && s().audit[0].op === 'autoOrder.update');
-  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-003', qty: 20 }] }, 'STAFF', 'U-STF');
+  r = call('order.quick', { branch: 'BR-UBD', lines: [{ item: 'BHP-003', qty: 20 }] }, 'STAFF', 'U-STF');
   check('G: pesanan Rp760rb > batas baru → manual (Supervisor)', r.ok && !r.data.autoCheck.ok && r.data.chain[0] === 'SUPERVISOR', JSON.stringify(r.data && r.data.autoCheck));
   r = call('autoOrder.update', { active: false, note: 'Owner menonaktifkan sementara' }, 'OWNER');
   check('G: Owner bisa menonaktifkan', r.ok && S.autoRule(s()).active === false);
@@ -614,28 +614,28 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('G: Super Admin bisa mengaktifkan kembali', r.ok && S.autoRule(s()).active && S.autoRule(s()).max === 5000000 && S.autoRule(s()).version === 4);
   r = call('autoOrder.update', { max: 30000000, note: 'terlalu besar' }, 'OWNER');
   check('G: batas > Rp25 jt ditolak', !r.ok && r.error.code === 'VALIDATION');
-  // H. Ubud — beli murni dari supplier, bayar setelah terima
-  r = call('order.quick', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 20 }, { item: 'BHP-002', qty: 10 }] }, 'STAFF', 'U-STF2');
+  // H. Shanti — beli murni dari supplier, bayar setelah terima
+  r = call('order.quick', { branch: 'BR-SHN', lines: [{ item: 'BHP-001', qty: 20 }, { item: 'BHP-002', qty: 10 }] }, 'SUPERVISOR', 'U-SPV2');
   const Hm = r.data;
-  check('H: Ubud (staff lain) — 2 jenis barang lolos otomatis', r.ok && Hm.autoCheck.ok && Hm.status === 'IN_FULFILLMENT', JSON.stringify(r.data && r.data.autoCheck));
-  r = call('order.receive', { id: Hm.id, lines: [{ item: 'BHP-001', received: 20, damaged: 2 }] }, 'STAFF', 'U-STF2');
+  check('H: Shanti (Supervisor Tina) — 2 jenis barang lolos otomatis', r.ok && Hm.autoCheck.ok && Hm.status === 'IN_FULFILLMENT', JSON.stringify(r.data && r.data.autoCheck));
+  r = call('order.receive', { id: Hm.id, lines: [{ item: 'BHP-001', received: 20, damaged: 2 }] }, 'SUPERVISOR', 'U-SPV2');
   check('H: 2 botol rusak dicatat; tagihan hanya untuk yang diterima baik', r.ok && s().grns.some((g) => g.lines.some((l) => l.item === 'BHP-001' && l.damaged === 2)), r.error && r.error.message);
-  r = call('order.receive', { id: Hm.id }, 'STAFF', 'U-STF2');
+  r = call('order.receive', { id: Hm.id }, 'SUPERVISOR', 'U-SPV2');
   S.simplePOs(s(), Hm).forEach((p) => S.poPayState(s(), p).rest > 0 && call('order.pay', { po: p.id, confirm: true }, 'FINANCE'));
   check('H: setelah terima & bayar: tagihan PAID, jurnal seimbang', s().bills.filter((b) => S.simplePOs(s(), Hm).some((p) => p.id === b.po)).every((b) => b.status === 'PAID') && allBal());
   const v = S.budgetView(s(), 'BGT-2026-SPA');
   check('Dashboard: budget 7P BU Spa terbarui (realisasi Product > awal)', v.lines.find((l) => l.p === 'PRODUCT' && l.cls === 'OPEX').actual > 0);
 })();
 
-/* ============ T10. MP-HAWK-08 acceptance — Flow Intelligence Control Tower (Massage Oil Shanti 4/3/3, 1 botol terlambat) ============ */
+/* ============ T10. MP-HAWK-08 acceptance — Flow Intelligence Control Tower (Massage Oil Ubud 4/3/3, 1 botol terlambat) ============ */
 (function controlTower() {
-  console.log('T10 Control Tower — skenario Massage Oil Shanti');
+  console.log('T10 Control Tower — skenario Massage Oil Ubud');
   const { call, s } = fresh();
   const F = H.flow;
   const allBal = () => s().journals.every((j) => Math.round(H.U.sum(j.lines, (l) => l.dr)) === Math.round(H.U.sum(j.lines, (l) => l.cr)));
   check('Kebijakan SLA berversi tersedia (10 tahap) + kalender kerja', s().slaPolicies.length === 10 && s().slaPolicies.every((p) => p.version === 1) && s().workCalendar.start === 8);
   check('Bobot PFHI provisional 40/25/20/15', JSON.stringify(s().flowConfig.weights) === JSON.stringify({ onTime: 0.4, activeSla: 0.25, p90: 0.2, data: 0.15 }));
-  let r = call('mrf.create', { branch: 'BR-SHN', memo: 'Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF');
+  let r = call('mrf.create', { branch: 'BR-UBD', memo: 'Massage oil weekend', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF');
   const id = r.data.id;
   call('mrf.decide', { id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV');
   const mr = () => s().mrfs.find((x) => x.id === id);
@@ -646,7 +646,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   call('transfer.dispatch', { id: tr }, 'WAREHOUSE');
   call('transfer.receive', { id: tr }, 'WAREHOUSE');
   call('mrf.issue', { id }, 'WAREHOUSE');
-  const pend = S.pendingPurchase(s()).filter((p) => p.wh === 'WH-SHN' && p.supplier === 'SUP-001');
+  const pend = S.pendingPurchase(s()).filter((p) => p.wh === 'WH-UBD' && p.supplier === 'SUP-001');
   const po = call('po.createFromMrf', { picks: pend.map((p) => ({ mrf: p.mrf, li: p.li, ai: p.ai })), supplier: 'SUP-001' }, 'PURCHASING').data;
   call('po.submit', { id: po.id }, 'PURCHASING');
   call('po.decide', { id: po.id, decision: 'APPROVE' }, 'PURCHASING');
@@ -657,7 +657,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
     const g = call('grn.receive', { po: po.id, lines: P().lines.map((l) => ({ received: l.item === 'BHP-001' ? q : l.qty - l.received, damaged: 0 })) }, 'WAREHOUSE').data;
     call('grn.post', { id: g.id }, 'WAREHOUSE');
     const bins = {};
-    s().grns.find((x) => x.id === g.id).lines.forEach((l, i) => (bins[i] = l.item === 'BHP-001' ? 'SHN-A-01' : 'SHN-A-02'));
+    s().grns.find((x) => x.id === g.id).lines.forEach((l, i) => (bins[i] = l.item === 'BHP-001' ? 'UBD-A-01' : 'UBD-A-02'));
     call('grn.putaway', { id: g.id, bins }, 'WAREHOUSE');
     call('mrf.issue', { id }, 'WAREHOUSE');
   };
@@ -677,8 +677,8 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   call('flow.sync', {}, 'OWNER');
   call('demo.advanceClock', { hours: 1 }, 'OWNER');
   check('Tidak ada isu duplikat setelah sinkron berulang', iss().length === 1);
-  const rowsSpv = F.rows(s()).filter((x) => x.branch === 'BR-SHN' && x.id === id);
-  check('Supervisor Shanti melihat pesanannya lewat SLA', rowsSpv.length === 1 && rowsSpv[0].j.active.some((a) => a.sla === 'BREACH'));
+  const rowsSpv = F.rows(s()).filter((x) => x.branch === 'BR-UBD' && x.id === id);
+  check('Supervisor Ubud melihat pesanannya lewat SLA', rowsSpv.length === 1 && rowsSpv[0].j.active.some((a) => a.sla === 'BREACH'));
   const ai = F.ai(s(), F.journey(s(), mr()));
   check('AI: fakta & hipotesis terpisah, berlabel simulasi, ada rekomendasi', ai.facts.length >= 2 && ai.hyp.length >= 1 && ai.recs.length >= 1 && /AI SIMULATION/.test(ai.label) && ai.hyp.every((h) => h.conf));
   check('Staff tidak bisa mencatat alasan / menyelesaikan isu', !call('flow.recordReason', { id: is.id, code: 'OTHER', note: 'coba coba' }, 'STAFF').ok && !call('flow.resolve', { id: is.id, note: 'selesai' }, 'STAFF').ok);
@@ -799,7 +799,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Alokasi: porsi diubah → review BU direset (harus ditinjau ulang)', call('cc.updateAllocation', { pool: 'CC-OFC-FIN', splits: { 'BU-SPA': 0.7, 'BU-ESS': 0.3 } }, 'FINANCE').ok && !Object.keys(s().sharedAllocations[0].reviews).length);
   // tutor state & detection of a REAL button press (UI path, not the tutor)
   DX.start(store, api, 'MRF');
-  const m = call('mrf.create', { branch: 'BR-SHN', memo: 'lewat layar asli', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF').data;
+  const m = call('mrf.create', { branch: 'BR-UBD', memo: 'lewat layar asli', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF').data;
   check('Langkah terdeteksi selesai dari tombol asli (UI) dan variabel terikat ke dokumen yang sama', DX.detect(store, api) === 'MRF-01' && s().dx.vars.mrf === m.id && s().dx.steps['MRF-01'].via === 'UI');
   check('Langkah tinjauan tidak bisa ditandai dari langkah transaksi', !DX.review(store, api).ok);
   check('BLOCKED wajib catatan', !call('dx.step', { step: 'MRF-02', result: 'BLOCKED' }, 'OWNER').ok && call('dx.step', { step: 'MRF-02', result: 'BLOCKED', note: 'Tombol tidak ada' }, 'OWNER').ok);
@@ -816,7 +816,7 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   const bApi = H.createApi(B);
   const uS = A.state.users.find((u) => u.id === 'U-STF');
   const uP = A.state.users.find((u) => u.id === 'U-SPV');
-  const r1 = aApi.call('mrf.create', { branch: 'BR-SHN', memo: 'jendela A', lines: [{ item: 'BHP-001', qty: 2, reason: 'Pemakaian rutin' }] }, uS);
+  const r1 = aApi.call('mrf.create', { branch: 'BR-UBD', memo: 'jendela A', lines: [{ item: 'BHP-001', qty: 2, reason: 'Pemakaian rutin' }] }, uS);
   const r2 = bApi.call('mrf.decide', { id: r1.data.id, decision: 'APPROVE', note: 'jendela B' }, uP);
   check('State bersama: jendela B melihat MRF dari jendela A sebelum bertindak (tanpa kehilangan data)', r2.ok && B.state.mrfs.find((x) => x.id === r1.data.id).status !== 'SUBMITTED');
   check('State bersama: jendela A sinkron dari penyimpanan', A.sync() && A.state.meta.rev === B.state.meta.rev && A.state.mrfs.find((x) => x.id === r1.data.id).status !== 'SUBMITTED');
@@ -827,14 +827,17 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   console.log('T12 Penerimaan di outlet — therapist / receptionist / attendant / supervisor, identitas otomatis');
   const { call, s } = fresh();
   const a = S.assignment(s(), 'U-RCP');
-  check('Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan', a && a.branch === 'BR-SHN' && a.branchName === 'Spa Shanti' && a.division === 'Operasional Spa' && a.dept === 'Receptionist' && a.reportsTo === 'U-SPV' && a.bu === 'BU-SPA' && a.buName === 'JAENS Spa' && a.title === 'Receptionist Spa Shanti');
+  check('Akun receptionist: outlet, divisi, BU terbaca otomatis dari penugasan', a && a.branch === 'BR-UBD' && a.branchName === 'JAENS Spa Center (Ubud)' && a.division === 'Operasional Spa' && a.dept === 'Receptionist' && a.reportsTo === 'U-SPV' && a.bu === 'BU-SPA' && a.buName === 'JAENS Spa' && a.title === 'Receptionist JAENS Spa Center');
   const chain = (id) => { const out = []; let x = S.user(s(), id); while (x) { out.push(x.id); x = x.reportsTo && S.user(s(), x.reportsTo); } return out.join('>'); };
-  check('Struktur: outlet Spa di bawah Divisi Operasional Spa (BU JAENS Spa); departemen Receptionist, Spa Therapist, Attendant, Security', ['BR-UBD', 'BR-SHN', 'BR-TRK', 'BR-BSM'].every((b) => S.org(s(), b).parent === 'DV-SPA-OPS' && S.buOf(s(), b) === 'BU-SPA') && ['U-RCP', 'U-STF', 'U-ATD', 'U-SEC'].map((u) => S.assignment(s(), u).dept).join() === 'Receptionist,Spa Therapist,Attendant,Security');
+  check('Struktur: outlet Spa di bawah Divisi Operasional Spa (BU JAENS Spa); departemen Receptionist, Spa Therapist, Attendant, Security', ['BR-SHN', 'BR-UBD', 'BR-TRK', 'BR-BSM'].every((b) => S.org(s(), b).parent === 'DV-SPA-OPS' && S.buOf(s(), b) === 'BU-SPA') && ['U-RCP', 'U-STF', 'U-ATD', 'U-SEC'].map((u) => S.assignment(s(), u).dept).join() === 'Receptionist,Spa Therapist,Attendant,Security');
   check('Rantai atasan: staf → Supervisor outlet → Asisten Manager Operasional → Manager BU Operasional → Owner', chain('U-SEC') === 'U-SEC>U-SPV>U-AOM>U-BUM>U-OWN');
+  { const sup = (br) => s().users.filter((u) => u.role === 'SUPERVISOR' && u.scope.includes(br)).map((u) => u.name).join(',');
+    check('Supervisor tiap outlet (Owner 9 Nov 2026): Center/Ubud Mila, Shanti Tina, Triloka Dewik, Bisma Wahyudi; semua lapor ke Asisten OM', sup('BR-UBD') === 'Mila' && sup('BR-SHN') === 'Tina' && sup('BR-TRK') === 'Dewik' && sup('BR-BSM') === 'Wahyudi' && s().users.filter((u) => u.role === 'SUPERVISOR').every((u) => u.reportsTo === 'U-AOM'));
+    check('Akun fiktif lama dihapus, Security = Joni di JAENS Spa Center', !s().users.some((u) => ['Komang Ayu', 'Ni Luh Sari', 'Nengah Budi'].includes(u.name) || u.id === 'U-STF2') && S.org(s(), 'BR-UBD').name === 'JAENS Spa Center (Ubud)' && s().users.find((u) => u.id === 'U-SEC').name === 'Joni' && s().users.find((u) => u.id === 'U-SEC').scope[0] === 'BR-UBD'); }
   check('Asisten Operational Manager: divisi Operasional Spa, BU JAENS Spa', S.assignment(s(), 'U-AOM').division === 'Operasional Spa' && S.assignment(s(), 'U-AOM').bu === 'BU-SPA');
   const m0 = call('mrf.create', { memo: 'tanpa isi unit', lines: [{ item: 'BHP-001', qty: 10, reason: 'Pemakaian rutin' }] }, 'STAFF', 'U-ATD');
-  check('Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Shanti)', m0.ok && m0.data.branch === 'BR-SHN' && m0.data.requestedBy.dept === 'Attendant' && m0.data.requestedBy.division === 'Operasional Spa' && m0.data.requestedBy.bu === 'BU-SPA');
-  check('Akun outlet tidak bisa memesan atas nama outlet lain', call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 1 }] }, 'STAFF', 'U-STF').error.code === 'FORBIDDEN');
+  check('Order tanpa mengisi unit → outlet terisi otomatis dari akun (attendant Ubud)', m0.ok && m0.data.branch === 'BR-UBD' && m0.data.requestedBy.dept === 'Attendant' && m0.data.requestedBy.division === 'Operasional Spa' && m0.data.requestedBy.bu === 'BU-SPA');
+  check('Akun outlet tidak bisa memesan atas nama outlet lain', call('mrf.create', { branch: 'BR-SHN', lines: [{ item: 'BHP-001', qty: 1 }] }, 'STAFF', 'U-STF').error.code === 'FORBIDDEN');
   // full chain: approve → PO → sent
   call('mrf.decide', { id: m0.data.id, decision: 'APPROVE', note: 'ok' }, 'SUPERVISOR', 'U-SPV');
   const m = () => s().mrfs.find((x) => x.id === m0.data.id);
@@ -847,13 +850,13 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
     if (s().pos.find((x) => x.id === po.id).status === 'PENDING_APPROVAL') call('po.decide', { id: po.id, decision: 'APPROVE' }, 'PURCHASING');
     call('po.send', { id: po.id }, 'PURCHASING');
   }
-  check('Therapist outlet lain (Ubud) tidak bisa menerima barang Shanti', call('order.receive', { id: m0.data.id }, 'STAFF', 'U-STF2').error.code === 'FORBIDDEN');
-  check('Supervisor outlet lain (Ubud) tidak bisa menerima barang Shanti', call('order.receive', { id: m0.data.id }, 'SUPERVISOR', 'U-SPV2').error.code === 'FORBIDDEN');
+  check('Supervisor outlet lain (Bisma) tidak bisa menerima barang Ubud', call('order.receive', { id: m0.data.id }, 'SUPERVISOR', 'U-SPV4').error.code === 'FORBIDDEN');
+  check('Supervisor outlet lain (Shanti) tidak bisa menerima barang Ubud', call('order.receive', { id: m0.data.id }, 'SUPERVISOR', 'U-SPV2').error.code === 'FORBIDDEN');
   const grnBefore = s().grns.length;
   const r = call('order.receive', { id: m0.data.id }, 'STAFF', 'U-RCP');
   const g = s().grns.slice(0, s().grns.length - grnBefore).find((x) => x.receivedBy);
-  check('Receptionist Shanti menerima barang (bukan pemesan, tanpa orang gudang) → selesai', r.ok && m().status === 'FULFILLED', r.error && r.error.message);
-  check('Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)', (!picks.length || (g && g.receivedBy.user === 'U-RCP' && g.receivedBy.dept === 'Receptionist' && g.receivedBy.buName === 'JAENS Spa')) && m().receipts.at(-1).by.branch === 'BR-SHN' && /Receptionist/.test(m().history.at(-1).note));
+  check('Receptionist Ubud menerima barang (bukan pemesan, tanpa orang gudang) → selesai', r.ok && m().status === 'FULFILLED', r.error && r.error.message);
+  check('Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)', (!picks.length || (g && g.receivedBy.user === 'U-RCP' && g.receivedBy.dept === 'Receptionist' && g.receivedBy.buName === 'JAENS Spa')) && m().receipts.at(-1).by.branch === 'BR-UBD' && /Receptionist/.test(m().history.at(-1).note));
   check('Tidak bisa diterima dua kali', !call('order.receive', { id: m0.data.id }, 'STAFF', 'U-ATD').ok);
   check('Jurnal tetap seimbang', s().journals.every((j) => Math.abs(j.lines.reduce((x, l) => x + l.dr - l.cr, 0)) < 1));
 })();
