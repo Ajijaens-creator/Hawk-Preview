@@ -1,5 +1,5 @@
 {
- "pass": 410,
+ "pass": 420,
  "fail": 0,
  "results": [
   {
@@ -2049,6 +2049,56 @@
   },
   {
    "name": "FY2027: diturunkan dari rencana NV-15 (bukan data basi), tanpa aktual",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken: role Owner + flag Super Admin",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken melihat semua 62 layar seperti Owner",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken boleh menjalankan semua operasi Owner dan semua operasi Super Admin",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken: kube 7P seluruh unit (Spa, Essence, Office) + ekspor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken: semua budget BU & divisi (FY2026 + FY2027) terbuka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken tetap bisa mengubah aturan approval (fungsi Super Admin)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Maker-checker tetap berlaku: Niken tidak bisa menerbitkan draft buatannya sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Draft Niken diterbitkan Owner Aji (orang berbeda)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Niken membuat unit organisasi baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akun lain tidak ikut naik hak (Supervisor tetap terbatas)",
    "ok": true,
    "info": ""
   }

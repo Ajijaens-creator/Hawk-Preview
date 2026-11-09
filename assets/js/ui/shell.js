@@ -187,7 +187,7 @@
     const ctx = {
       nv, q, s: store.state, S, U, ui, user: u, role: u.role, scope: sc, L: ui.local[nv],
       inScope: (org) => inScope(org, sc),
-      can: (op) => api.can(op, u.role),
+      can: (op) => api.can(op, u),
       act(op, payload, okMsg, after) {
         const r = api.call(op, payload, u);
         if (r.ok) {
@@ -398,7 +398,7 @@
         <li><span class="ic-h">5 · Peran penanggung jawab</span><div><b>${esc(HAWK.ROLE_LABEL[i.owner] || i.owner)}</b> <span class="tiny muted">· alur: ${esc(i.workflow)}</span></div></li>
         <li><span class="ic-h">6 · Keputusan manusia</span><div>${ui.status(st.status)} ${st.by ? `<span class="tiny muted">${esc(S.userName(s, st.by))} · ${U.datetime(st.ts)}${st.note ? ' · ' + esc(st.note) : ''}</span>` : '<span class="tiny muted">belum ada keputusan — AI tidak mengeksekusi apa pun</span>'}</div></li>
       </ol></div>`;
-    const canAct = api.can('insight.act', user().role);
+    const canAct = api.can('insight.act', user());
     const foot = canAct
       ? `<button class="btn ghost sm" data-ins-act="DISMISS" data-ins="${i.id}">Abaikan…</button><button class="btn ghost sm" data-ins-act="ACKNOWLEDGE" data-ins="${i.id}">Akui</button><button class="btn ghost sm" data-ins-act="ASSIGN" data-ins="${i.id}">Tugaskan ke ${HAWK.ROLE_LABEL[i.owner]}</button><button class="btn sm" data-ins-act="DONE" data-ins="${i.id}">Tandai selesai</button>`
       : '<span class="small muted">Role ini hanya dapat melihat insight.</span>';

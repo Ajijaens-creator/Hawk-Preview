@@ -5,6 +5,7 @@
 | Account (demo) | Role | Visible scope | Lines FY2026 | Viewpoints | Export | Note |
 |---|---|---|---|---|---|---|
 | Aji Jaens | OWNER | Spa + Essence + Office consolidation | 126 | All units | ✓ | revenue & profit consolidated with eliminations |
+| Niken | OWNER + `superAdmin` (Super Admin) | identical to Owner: all units, all BU & division budgets | 126 | All units | ✓ | Owner request 9 Nov 2026. Keeps Super Admin functions (org, users, approval rules). Maker-checker still applies: an approval-rule draft by Niken must be published by someone else (Aji) |
 | Asri | FINANCE | all units | 126 | All units | ✓ | financial control & reconciliation |
 | Idha | FINANCE · `TAX_ADMIN` | all units + tax dimensions | 126 | Cross-unit tax review | ✓ | tax decisions remain human; SIMULATION |
 | Eni Restini | BU_MANAGER Spa | BU JAENS Spa | 96 | My BU's budget | ✓ | |

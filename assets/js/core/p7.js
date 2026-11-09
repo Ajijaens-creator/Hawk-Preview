@@ -810,7 +810,7 @@
   if (baseSeed && !baseSeed.__p7) {
     HAWK.seed = function () {
       const s = baseSeed();
-      s.meta.schema = 12;
+      s.meta.schema = 13; // 13: Niken Super Admin = akses penuh setara Owner (9 Nov 2026)
       seedExt(s);
       return s;
     };

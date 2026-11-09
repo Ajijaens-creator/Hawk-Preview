@@ -962,6 +962,25 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('FY2027: diturunkan dari rencana NV-15 (bukan data basi), tanpa aktual', q27.rows.length > 0 && q27.totals.actual === 0);
 })();
 
+/* ============ T14. Owner 9 Nov 2026 — Niken (Super Admin) akses penuh setara Owner ============ */
+(function nikenFull() {
+  console.log('T14 Niken Super Admin — akses penuh setara Owner + tetap fungsi Super Admin');
+  const { call, s, api } = fresh();
+  const nk = s().users.find((u) => u.id === 'U-ADM');
+  const own = s().users.find((u) => u.id === 'U-OWN');
+  check('Niken: role Owner + flag Super Admin', nk.name === 'Niken' && nk.role === 'OWNER' && nk.superAdmin === true);
+  check('Niken melihat semua 62 layar seperti Owner', H.SCREENS.every((x) => H.canSee(nk.role, x.nv) === H.canSee(own.role, x.nv)));
+  check('Niken boleh menjalankan semua operasi Owner dan semua operasi Super Admin', H.CONTRACTS.every((c) => !c.roles.includes('OWNER') || api.can(c.id, nk)) && H.CONTRACTS.every((c) => !c.roles.includes('ADMIN') || api.can(c.id, nk)));
+  check('Niken: kube 7P seluruh unit (Spa, Essence, Office) + ekspor', H.P7.query(s(), nk, {}).rows.length === H.P7.query(s(), own, {}).rows.length && H.P7.access(s(), nk).export);
+  check('Niken: semua budget BU & divisi (FY2026 + FY2027) terbuka', s().budgets.every((b) => H.P7.access(s(), nk).ok));
+  const ed = call('approval.updateRule', { id: 'AR-01', max: 1400000 }, 'OWNER', 'U-ADM');
+  check('Niken tetap bisa mengubah aturan approval (fungsi Super Admin)', ed.ok, ed.error && ed.error.message);
+  check('Maker-checker tetap berlaku: Niken tidak bisa menerbitkan draft buatannya sendiri', call('approval.publishRule', { id: 'AR-01', decision: 'APPROVE' }, 'OWNER', 'U-ADM').error.code === 'SOD');
+  check('Draft Niken diterbitkan Owner Aji (orang berbeda)', call('approval.publishRule', { id: 'AR-01', decision: 'APPROVE' }, 'OWNER', 'U-OWN').ok);
+  check('Niken membuat unit organisasi baru', call('org.upsertUnit', { type: 'DIVISION', name: 'Divisi Uji Niken', code: 'DUN', parent: 'BU-SPA' }, 'OWNER', 'U-ADM').ok);
+  check('Akun lain tidak ikut naik hak (Supervisor tetap terbatas)', !api.can('approval.updateRule', s().users.find((u) => u.id === 'U-SPV')));
+})();
+
 console.log(`\n${pass} lulus, ${failN} gagal`);
 require('fs').writeFileSync(path.join(__dirname, 'workflow-results.json'), JSON.stringify({ pass, fail: failN, results }, null, 1));
 process.exit(failN ? 1 : 0);

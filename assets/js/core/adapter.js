@@ -22,7 +22,7 @@
       const contract = HAWK.contract(op);
       if (!contract) return { ok: false, error: { code: 'NO_CONTRACT', message: 'Operasi tidak terdaftar di kontrak: ' + op } };
       // DEMO permission check — the production backend MUST enforce this independently (UI checks are not security)
-      if (!contract.roles.includes(user.role)) return { ok: false, error: { code: 'FORBIDDEN', message: `Role ${HAWK.ROLE_LABEL[user.role] || user.role} tidak berwenang untuk ${op}` } };
+      if (!HAWK.roleAllows(contract.roles, user)) return { ok: false, error: { code: 'FORBIDDEN', message: `Role ${HAWK.ROLE_LABEL[user.role] || user.role} tidak berwenang untuk ${op}` } };
       // UI-state simulation (MP-HAWK-03 §4): FAIL mode returns a retryable transport error and changes nothing
       if (this.net === 'FAIL') return { ok: false, error: { code: 'NETWORK_ERROR', retryable: true, message: 'Simulasi gagal koneksi — tidak ada data yang berubah. Coba lagi, atau kembalikan Kondisi ke Normal.' } };
       try {
@@ -69,14 +69,16 @@
       call(op, payload, user) {
         return api.adapters[api.mode].call(op, payload, user);
       },
-      can(op, role) {
+      can(op, who) {
         const c = HAWK.contract(op);
-        return !!c && c.roles.includes(role);
+        return !!c && HAWK.roleAllows(c.roles, typeof who === 'string' ? { role: who } : who);
       },
     };
     return api;
   };
 
+  /* Super Admin (Owner 9 Nov 2026): an OWNER-role account flagged superAdmin also keeps every Super Admin (ADMIN) operation. */
+  HAWK.roleAllows = (roles, user) => !!user && (roles.includes(user.role) || (!!user.superAdmin && roles.includes('ADMIN')));
   HAWK.ROLE_LABEL = {
     OWNER: 'Owner / Eksekutif', BU_MANAGER: 'BU Manager', HEAD_DIV: 'Head of Division', SUPERVISOR: 'Supervisor Outlet', STAFF: 'Staff / Therapist / Housekeeping',
     PURCHASING: 'Purchasing', WAREHOUSE: 'Gudang / Receiving', FINANCE: 'Finance / Accounting', ASSET: 'Asset / Facility PIC', ADMIN: 'System Administrator',

@@ -881,7 +881,7 @@
   H['mrf.cancel'] = (s, p, ctx) => {
     const m = get(s.mrfs, p.id, 'MRF');
     need(['DRAFT', 'SUBMITTED', 'REVISION'].includes(m.status), 'STATE', 'MRF yang sudah disetujui tidak dapat dibatalkan pemohon');
-    need(m.requester === ctx.user.id || ctx.user.role === 'ADMIN', 'FORBIDDEN', 'Hanya pemohon');
+    need(m.requester === ctx.user.id || ctx.user.role === 'ADMIN' || ctx.user.superAdmin, 'FORBIDDEN', 'Hanya pemohon');
     m.status = 'CANCELLED';
     hist(m, ctx, 'CANCEL', p.note);
     log(s, ctx, 'mrf.cancel', m.id, 'Batal');

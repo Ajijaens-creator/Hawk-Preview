@@ -103,7 +103,7 @@ BU JAENS Spa
 | Purchasing | Etya | PURCHASING |
 | Inventory & Aset | Diana | ASSET |
 | Warehouse Officer | Supri | WAREHOUSE |
-| Super Admin Sistem | Niken | ADMIN |
+| Super Admin Sistem — akses penuh setara Owner (9 Nov 2026) | Niken | OWNER + superAdmin (tetap memegang fungsi Super Admin; maker-checker tetap berlaku) |
 | IT Developer | Dewa & Tim HAWK | ADMIN |
 | Manager Divisi HRD | Made Gunarsa | HEAD_DIV (Divisi HRD) |
 | Manager Divisi Komersil | Dedik | HEAD_DIV (Divisi Komersil) |

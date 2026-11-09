@@ -90,7 +90,7 @@
       { id: 'U-WHS', name: 'Supri', role: 'WAREHOUSE', title: 'Warehouse Officer', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-FIN', name: 'Asri', role: 'FINANCE', title: 'Finance Manager', dept: 'Finance & Accounting', reportsTo: 'U-OWN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-AST', name: 'Diana', role: 'ASSET', title: 'Inventory & Aset', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
-      { id: 'U-ADM', name: 'Niken', role: 'ADMIN', title: 'Super Admin Sistem', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
+      { id: 'U-ADM', name: 'Niken', role: 'OWNER', superAdmin: true, title: 'Super Admin Sistem — akses penuh setara Owner', reportsTo: 'U-OWN', scope: ['BU-SPA', 'BU-ESS', 'BU-OFC'] },
       { id: 'U-SPV2', name: 'Tina', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Shanti', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-SHN'] },
       { id: 'U-SPV3', name: 'Dewik', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Triloka', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-TRK'] },
       { id: 'U-SPV4', name: 'Wahyudi', role: 'SUPERVISOR', title: 'Supervisor Outlet JAENS Spa Bisma', dept: 'Supervisor Outlet', reportsTo: 'U-AOM', scope: ['BR-BSM'] },
