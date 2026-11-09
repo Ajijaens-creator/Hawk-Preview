@@ -161,6 +161,14 @@
     return chain[done] || null;
   };
 
+  /* MP-HAWK-14: per item, qty issued to the requester (mrf.issue) minus qty the staff already confirmed as handed over */
+  S.handoverPending = (s, m) =>
+    m.lines.map((l) => {
+      const issued = U.sum(l.alloc || [], (a) => a.issuedQty);
+      const confirmed = U.sum((m.handovers || []).flatMap((h) => h.lines.filter((x) => x.item === l.item)), (x) => x.qty);
+      const short = U.sum((m.handovers || []).flatMap((h) => (h.short || []).filter((x) => x.item === l.item)), (x) => x.qty); // reported missing — goes to the Supervisor, not re-asked
+      return { item: l.item, requested: l.qty, issued, confirmed, short, qty: Math.max(0, issued - confirmed - short) };
+    });
   S.mrfFulfillment = (s, m) => {
     const req = U.sum(m.lines, (l) => l.qty);
     const all = m.lines.flatMap((l) => l.alloc || []);
@@ -878,6 +886,32 @@
     log(s, ctx, 'mrf.issue', m.id, `Issue ${issuedTotal}`);
     return m;
   };
+  /* MP-HAWK-14: staff confirms the HANDOVER of goods already issued to them by the warehouse / authorized PIC (mrf.issue).
+     This is an acknowledgement only — it is NOT a vendor Goods Receipt (GRN), moves no stock and posts no journal. */
+  H['mrf.confirmHandover'] = (s, p, ctx) => {
+    const m = get(s.mrfs, p.id, 'MRF');
+    const u = ctx.user;
+    need(m.requester === u.id || (u.scope || []).includes(m.branch) || ['OWNER', 'ADMIN'].includes(u.role) || u.superAdmin, 'FORBIDDEN', 'Hanya pemohon atau akun outlet ' + S.orgName(s, m.branch));
+    const pend = S.handoverPending(s, m);
+    need(pend.some((x) => x.qty > 0), 'NOTHING_READY', 'Belum ada barang yang diserahkan gudang / PIC untuk dikonfirmasi');
+    const lines = (p.lines || pend.map((x) => ({ item: x.item, qty: x.qty }))).map((l) => ({ item: l.item, qty: Math.max(0, Math.round(+l.qty || 0)) }));
+    lines.forEach((l) => {
+      const pd = pend.find((x) => x.item === l.item);
+      need(pd, 'VALIDATION', 'Item tidak ada di permintaan ini');
+      need(l.qty <= pd.qty, 'VALIDATION', `${S.itemName(s, l.item)}: maksimal ${pd.qty} (yang sudah diserahkan)`);
+    });
+    need(lines.some((l) => l.qty > 0), 'VALIDATION', 'Isi jumlah yang diterima');
+    const short = lines.some((l) => l.qty < (pend.find((x) => x.item === l.item) || {}).qty);
+    const condition = p.condition === 'ISSUE' || short ? 'ISSUE' : 'OK';
+    if (condition === 'ISSUE') need(p.note && String(p.note).trim().length >= 5, 'VALIDATION', 'Jelaskan kekurangan / kerusakan (minimal 5 karakter)');
+    m.handovers = m.handovers || [];
+    const shortL = lines.map((l) => ({ item: l.item, qty: (pend.find((x) => x.item === l.item) || {}).qty - l.qty })).filter((x) => x.qty > 0);
+    const h = { id: U.nextId(s, 'HO'), at: ctx.now, by: S.assignment(s, u), lines: lines.filter((l) => l.qty > 0), short: shortL, condition, note: p.note || '', photos: (p.photos || []).slice(0, 3), from: p.from || null, kind: 'HANDOVER' };
+    m.handovers.push(h);
+    hist(m, ctx, 'HANDOVER_CONFIRM', `${h.lines.map((l) => `${S.itemName(s, l.item)} ${l.qty}`).join(', ')} · ${condition === 'OK' ? 'sesuai & baik' : 'ada catatan: ' + h.note}`);
+    log(s, ctx, 'mrf.confirmHandover', m.id, condition === 'OK' ? 'Serah terima sesuai' : 'Serah terima dengan catatan');
+    return h;
+  };
   H['mrf.cancel'] = (s, p, ctx) => {
     const m = get(s.mrfs, p.id, 'MRF');
     need(['DRAFT', 'SUBMITTED', 'REVISION'].includes(m.status), 'STATE', 'MRF yang sudah disetujui tidak dapat dibatalkan pemohon');
@@ -1555,13 +1589,21 @@
 
   /* ---- Asset & facility (Module I) ---- */
   H['mt.create'] = (s, p, ctx) => {
-    const a = get(s.assets, p.asset, 'Aset');
+    // MP-HAWK-14: a facility report may name an area (e.g. "Ruang Treatment 2 — wastafel") instead of a registered asset
+    const a = p.asset ? get(s.assets, p.asset, 'Aset') : null;
+    const me = S.assignment(s, ctx.user);
+    const branch = a ? a.org : p.branch || (me && me.branch);
+    need(a || (p.area && String(p.area).trim().length >= 3), 'VALIDATION', 'Pilih aset atau tulis area / fasilitas');
+    need(branch && S.org(s, branch), 'VALIDATION', 'Lokasi wajib');
+    if (['STAFF', 'SUPERVISOR'].includes(ctx.user.role)) need((ctx.user.scope || []).includes(branch), 'FORBIDDEN', 'Akun outlet hanya melapor untuk outlet tempat ia ditugaskan');
     need(p.issue && p.issue.length >= 5, 'VALIDATION', 'Uraian masalah wajib');
+    need(!p.priority || ['LOW', 'MEDIUM', 'HIGH'].includes(p.priority), 'VALIDATION', 'Prioritas tidak dikenal');
+    need(!p.kind || ['DAMAGE', 'ROUTINE', 'FACILITY'].includes(p.kind), 'VALIDATION', 'Jenis laporan tidak dikenal');
     const id = U.nextId(s, 'MT');
-    const m = { id, date: ctx.now, asset: a.id, reporter: ctx.user.id, branch: a.org, issue: p.issue, priority: p.priority || 'MEDIUM', status: 'SUBMITTED', wo: null, history: [] };
+    const m = { id, date: ctx.now, asset: a ? a.id : null, area: p.area || (a ? a.location : ''), kind: p.kind || 'DAMAGE', photos: (p.photos || []).slice(0, 3), reporter: ctx.user.id, reportedBy: me, branch, issue: p.issue, priority: p.priority || 'MEDIUM', status: 'SUBMITTED', wo: null, history: [] };
     hist(m, ctx, 'SUBMIT');
     s.maintenance.unshift(m);
-    log(s, ctx, 'mt.create', id, a.name);
+    log(s, ctx, 'mt.create', id, a ? a.name : m.area);
     return m;
   };
   H['mt.review'] = (s, p, ctx) => {
@@ -1589,7 +1631,7 @@
   H['wo.requestPart'] = (s, p, ctx) => {
     const w = get(s.workOrders, p.id, 'WO');
     need(['OPEN', 'WAITING_PARTS'].includes(w.status), 'STATE', 'WO tidak aktif');
-    const a = S.asset(s, w.asset);
+    const a = S.asset(s, w.asset) || { org: (s.maintenance.find((x) => x.id === w.mt) || {}).branch, name: (s.maintenance.find((x) => x.id === w.mt) || {}).area || 'fasilitas' };
     const mrf = H['mrf.create'](s, { branch: a.org, type: 'NON_ROUTINE', memo: `Suku cadang untuk ${w.id} (${a.name})`, purpose: 'Maintenance', lines: [{ item: p.item, qty: p.qty, reason: 'Work order ' + w.id }], links: { wo: w.id } }, ctx);
     w.parts.push({ item: p.item, qty: +p.qty, mrf: mrf.id });
     w.status = 'WAITING_PARTS';

@@ -60,6 +60,13 @@
 
   /* ---------- routing ---------- */
   function parseHash() {
+    const mm = location.hash.match(/^#\/m(?:\/(\d{1,2}))?(?:\?(.*))?$/);
+    if (mm) {
+      const q = {};
+      (mm[2] || '').split('&').filter(Boolean).forEach((kv) => { const [k, v] = kv.split('='); q[k] = decodeURIComponent(v || ''); });
+      if (mm[1]) q.ms = mm[1].padStart(2, '0');
+      return { nv: 100, q, ms: true };
+    }
     const m = location.hash.match(/^#\/nv\/(\d+)(?:\?(.*))?$/);
     if (!m) return { nv: HAWK.ROLE_HOME[user().role] || 1, q: {} };
     const q = {};
@@ -155,7 +162,7 @@
       s.maintenance.filter((m) => m.status === 'SUBMITTED' && (role === 'ASSET' || u.scope.includes(m.branch))).forEach((m) => add({ type: 'MAINTENANCE', ref: m.id, unit: S.orgName(s, m.branch), title: m.issue, status: m.status, nv: 55, kind: 'approval' }));
     if (role === 'ASSET') {
       s.maintenance.filter((m) => m.status === 'APPROVED').forEach((m) => add({ type: 'MAINTENANCE', ref: m.id, unit: S.orgName(s, m.branch), title: 'Buat work order', status: m.status, nv: 55, kind: 'wo' }));
-      s.workOrders.filter((w) => ['OPEN', 'WAITING_PARTS'].includes(w.status)).forEach((w) => add({ type: 'WO', ref: w.id, unit: S.asset(s, w.asset).name, title: 'Selesaikan work order', status: w.status, nv: 55, kind: 'wo' }));
+      s.workOrders.filter((w) => ['OPEN', 'WAITING_PARTS'].includes(w.status)).forEach((w) => add({ type: 'WO', ref: w.id, unit: (S.asset(s, w.asset) || { name: (s.maintenance.find((x) => x.id === w.mt) || {}).area || w.id }).name, title: 'Selesaikan work order', status: w.status, nv: 55, kind: 'wo' }));
     }
     (s.spends || []).forEach((sp) => {
       const st = S.canActSpend && S.canActSpend(s, sp, u);
@@ -221,7 +228,8 @@
       })
       .join('');
     const dx = EMBED ? '' : `<a class="nav-dx ${isDx() ? 'cur' : ''}" href="#/dx">${ui.icon('play', 16)}<span><b>Demo Experience Center</b><small>Test Lab · 5 layar · 7 skenario</small></span></a>`;
-    $('#nav').innerHTML = dx + mods;
+    const ms = `<a class="nav-dx nav-ms ${isMs() ? 'cur' : ''}" href="#/m">${ui.icon('user', 16)}<span><b>Smart Staff Mobile</b><small>MS-01–12 · Pandu Saya 5 skenario</small></span></a>`;
+    $('#nav').innerHTML = dx + ms + mods;
   }
 
   /* ---------- topbar ---------- */
@@ -450,8 +458,30 @@
   const loadingState = () => `<div class="stack" aria-busy="true" aria-live="polite"><div class="tiny muted">${ui.icon('clock', 14)} Memuat data dari adapter…</div><div class="grid g4">${'<div class="card skel" style="height:86px"></div>'.repeat(4)}</div><div class="card skel" style="height:220px"></div></div>`;
   const errorState = (scr) => `<div class="card state-err" role="alert" style="max-width:680px"><h3>${ui.icon('alert', 16)} Data ${scr.code} tidak dapat dimuat</h3><p class="small">Adapter mengembalikan <span class="mono">NETWORK_ERROR</span> (simulasi). Tidak ada data yang berubah; transaksi yang sedang diisi tidak dikirim. Backend HAWK sebenarnya harus mengembalikan kode error terstruktur + <i>retryable</i>, dan operasi tulis wajib idempoten agar aman diulang.</p><div class="row" style="gap:8px"><button class="btn sm" data-retry>Coba lagi</button><button class="btn sm ghost" data-net-reset>Kembalikan ke Normal</button></div></div>`;
   const isDx = () => !EMBED && /^#\/dx/.test(location.hash);
+  const isMs = () => /^#\/m(\/|\?|$)/.test(location.hash);
   function render() {
     document.documentElement.classList.toggle('dx-page', isDx());
+    document.documentElement.classList.toggle('ms-page', isMs());
+    if (isMs() && HAWK.views[100]) {
+      const u = user();
+      const { q } = parseHash();
+      renderSidebar(100, u);
+      renderTopbar(u);
+      const ctx = makeCtx(100, q);
+      let html;
+      try { html = HAWK.views[100].render(ctx); } catch (e) {
+        console.error(e);
+        html = `<div class="card state-err"><h3>${ui.icon('alert', 16)} Gagal menampilkan Smart Staff</h3><p class="small">${esc(e.message)}</p><button class="btn sm" data-retry>Coba lagi</button></div>`;
+      }
+      $('#view').innerHTML = html;
+      $('#view').dataset.nv = '100';
+      document.title = 'Smart Staff Mobile — HAWK × JAENS (DEMO)';
+      $('#mode-label').textContent = api.mode === 'MOCK' ? 'Mock Adapter' : 'HAWK API (tidak terhubung)';
+      if (HAWK.views[100].mount) HAWK.views[100].mount(ctx);
+      renderTour();
+      $('#sidebar').classList.remove('on');
+      return;
+    }
     if (isDx() && HAWK.dxCenter) {
       const u = user();
       renderSidebar(0, u);

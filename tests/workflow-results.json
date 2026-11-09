@@ -1,6 +1,6 @@
 {
- "pass": 420,
- "fail": 0,
+ "pass": 419,
+ "fail": 1,
  "results": [
   {
    "name": "Staff dapat membuat MRF",
@@ -984,8 +984,8 @@
   },
   {
    "name": "Setiap operasi tulis di kontrak punya tes engine",
-   "ok": true,
-   "info": ""
+   "ok": false,
+   "info": "mrf.confirmHandover"
   },
   {
    "name": "Capture: draft + bukti asli tersimpan terpisah, sumber = AI SIMULATION",
