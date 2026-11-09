@@ -1,5 +1,5 @@
 {
- "pass": 377,
+ "pass": 410,
  "fail": 0,
  "results": [
   {
@@ -1618,7 +1618,7 @@
    "info": ""
   },
   {
-   "name": "Katalog: 6 skenario wajib, setiap langkah punya user, layar & target ID stabil yang terdaftar",
+   "name": "Katalog: 7 skenario wajib (termasuk 7P), setiap langkah punya user, layar & target ID stabil yang terdaftar",
    "ok": true,
    "info": ""
   },
@@ -1739,6 +1739,16 @@
   },
   {
    "name": "OFFICE: setelah dikunci, porsi tidak bisa diubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario SEVENP: 8 langkah selesai end-to-end, setup tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario SEVENP: semua jurnal seimbang",
    "ok": true,
    "info": ""
   },
@@ -1884,6 +1894,161 @@
   },
   {
    "name": "Jurnal tetap seimbang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kube FY2026: 126 budget line, setiap line punya 7P, BU, lokasi, divisi, departemen, subkategori",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rekonsiliasi: jumlah line = agregat Budget 7P (NV-23) per BU × 7P × kelas, untuk revised/actual/komitmen",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Drill dua arah: total 7P-first = total org-first = total kube (budget & actual)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kasus A: P4 Process → JAENS Spa → Shanti → … → item; anak selalu menjumlah ke induk di setiap level",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kasus B: urutan org-first menghasilkan baris & angka identik dengan 7P-first",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Item → transaksi: bukti tersedia, transaksi simulasi berlabel SIM-, total aktual cocok dengan line",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "P7 Profit tidak pernah dijumlahkan ke biaya operasional",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laba konsolidasi: dilaporkan terpisah, eliminasi margin antar-BU 18 jt, margin dihitung dari pendapatan konsolidasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pendapatan konsolidasi: eliminasi penjualan antar-BU 312 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Office / divisi tidak punya pendapatan langsung → N/A (bukan 0%, bukan pembagian palsu)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Biaya Office per BU penerima manfaat = memo (tidak menambah total)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter kelas: OPEX, CAPEX, Inventory terpisah, jumlahnya = total (CAPEX/Inventory tidak masuk OPEX)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Periode: Q1+Q2+Q3+Q4 = setahun penuh (budget)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF disetujui → komitmen naik sekali; PO dari MRF yang sama tidak menambah lagi (tanpa hitung ganda)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kube tetap rekonsiliasi dengan NV-23 setelah transaksi live",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner & Finance melihat semua unit (Spa, Essence, Office)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Mila hanya melihat outlet JAENS Spa Center (Ubud)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "BU Manager hanya BU sendiri; Staff tidak punya akses kube",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "HRD Made Gunarsa: mode \"divisi sendiri\" + \"steward People lintas unit\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Komersil Dedik: mode \"divisi sendiri\" + \"steward Promotion lintas unit\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Gaji tim Komersil = P1 People, pemilik budget Dedik, steward HRD — dihitung sekali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tax Idha melihat dimensi pajak (PPh 21/23/PPN) dengan status TO VERIFY",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner mengekspor XLSX → tercatat di audit (EXPORT_7P)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor tidak dapat mengekspor (FORBIDDEN), Staff juga tidak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Format selain xlsx/pdf ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Isi ekspor mengikuti hak akses (data Supervisor hanya outlet sendiri)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "File XLSX valid: ZIP OOXML berisi workbook, 2 sheet, styles, content types",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI insight 7P: temuan, sumber, as-of, bukti, dampak, rekomendasi, role, persetujuan manusia; berlabel SIMULATION",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI insight tidak mengubah data (read-only): jumlah jurnal & budget tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Adapter 7P: semua operasi berstatus TO VERIFY / NOT CONNECTED (tidak mengklaim API HAWK terhubung)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "FY2027: diturunkan dari rencana NV-15 (bukan data basi), tanpa aktual",
    "ok": true,
    "info": ""
   }

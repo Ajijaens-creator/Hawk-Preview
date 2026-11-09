@@ -394,27 +394,29 @@ Menyusun budget tahunan per BU dalam struktur 7P (draft FY2027).
 
 ### NV-16 7P Budget Allocation Overview
 
-Alokasi 7P per BU & cabang; Profit sebagai hasil, bukan belanja.
+Alokasi 7P per BU & cabang; Profit sebagai hasil, bukan belanja. MP-HAWK-11: 7P Master Drill-Down dua arah (7P → organisasi / organisasi → 7P).
 
 | Aspek | Spesifikasi |
 |---|---|
-| Role akses | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting |
-| Komponen | Kartu 7P berwarna, bar alokasi cabang, tabel |
-| Field | Original, revised per P |
-| Aksi | Drill ke BvA → `nav:23` |
-| Filter | Budget |
-| Drawer/modal | — |
-| Input | — |
-| Validasi | — |
+| Role akses | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Supervisor Outlet |
+| Komponen | Filter global, breadcrumb, pohon hierarki expand/collapse, toggle urutan, panel rincian seleksi + bukti rekonsiliasi, tab alokasi per budget |
+| Field | Revised, actual, committed, available, forecast, utilisasi, % lingkup |
+| Aksi | Drill / fokus level → `ui:filter`; Lihat semua 7P unit ini → `ui:filter`; Transaksi & evidence → `nav:23`; Export Excel/PDF → `report.export7P` |
+| Filter | FY, periode, BU, outlet/office, divisi, departemen, 7P, subkategori, jenis dana, stream, sudut pandang (stewardship) |
+| Drawer/modal | Ringkasan budget line |
+| Input | Filter |
+| Validasi | Lingkup akun (DEMO; server wajib menegakkan) |
 | Transisi status | Read |
 | Approval | — |
-| Pengecualian | Profit tidak dijumlah ke belanja |
+| Pengecualian | Profit tidak dijumlah ke belanja; total kedua jalur identik |
 | Responsif | Desktop/tablet data-rich; tabel scroll horizontal di mobile; drawer layar penuh di mobile |
-| Layar terkait | NV-23 |
-| Format ID | BGT-* |
+| Layar terkait | NV-15, 17, 20, 22, 23, 57, 61 |
+| Format ID | BL26-*, BL27-* |
 
 **Operasi adapter:**
 
+- `budget.getPerformanceCube` — **NEW INTEGRATION REQUIRED** · HAWK: Budget 7P + GL/AP + MRF/PO + Inventory (agregasi baca) — belum ada di HAWK v2.11.6 · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Finance / Accounting · input `{ fy, per, bu?, loc?, div?, dept?, p?, sub?, cls?, stream?, view? }` → { asOf, totals{original,revised,actual,commitment,available,forecast}, rows[] } · transisi: Read-only · audit: — (baca)
+- `report.export7P` — **NEW INTEGRATION REQUIRED** · HAWK: — (export server dengan logging) · izin: Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting · input `{ filters, format: xlsx\|pdf }` → { rows, total, format } · transisi: File dibuat untuk lingkup & filter aktif · audit: EXPORT_7P (user, role, lingkup, periode, filter, jumlah baris)
 
 ### NV-17 Routine Item / BHP Budget Planning
 
@@ -574,20 +576,21 @@ Original, Revised, Actual, Commitment, Forecast per 7P — bergerak dengan trans
 | Role akses | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Supervisor Outlet |
 | Komponen | KPI, bar bertumpuk per P, tabel 5 kolom, legenda definisi |
 | Field | Original, Revised, Actual, Commitment, Forecast, sisa |
-| Aksi | Drill ke transaksi → `ui:drawer` |
-| Filter | Budget |
-| Drawer/modal | — |
+| Aksi | Drill ke transaksi → `ui:drawer`; Detail budget line & evidence → `budget.getBudgetLineLineage`; Export → `report.export7P` |
+| Filter | Budget; tab budget line: filter 7P global |
+| Drawer/modal | Evidence SIMULASI |
 | Input | — |
 | Validasi | — |
 | Transisi status | Read |
 | Approval | — |
-| Pengecualian | Forecast = estimasi |
+| Pengecualian | Forecast = estimasi; COA & pajak TO VERIFY |
 | Responsif | Desktop/tablet data-rich; tabel scroll horizontal di mobile; drawer layar penuh di mobile |
-| Layar terkait | MRF, ledger |
-| Format ID | BGT-* |
+| Layar terkait | MRF, PO, GRN, AP, GL, Asset, NV-16, NV-62 |
+| Format ID | BGT-*, BL26-*, SIM-* |
 
 **Operasi adapter:**
 
+- `budget.getBudgetLineLineage` — **NEW INTEGRATION REQUIRED** · HAWK: PR/PO/GRN/AP/GL/Payroll/Asset — TO VERIFY per dokumen · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Finance / Accounting · input `{ id }` → { line, txns[] } · transisi: Read-only · audit: EVIDENCE_VIEW (disarankan)
 
 ## Modul E — MRF & Supervisor Approval
 
@@ -1468,22 +1471,25 @@ Ringkasan eksekutif Spa–Essence + insight AI berprioritas (tanpa konsolidasi g
 | Role akses | Owner / Eksekutif, BU Manager, Finance / Accounting, Head of Division |
 | Komponen | KPI, donut BU, tren, panel insight |
 | Field | Revenue, profit, OPEX |
-| Aksi | Buka insight → `ui:drawer`; Tindak lanjut → `insight.act` |
-| Filter | Periode |
+| Aksi | Buka insight → `ui:drawer`; Tindak lanjut → `insight.act`; Klik 7P / BU / KPI → drill → `nav:16`; Export → `report.export7P` |
+| Filter | FY, periode, BU, outlet, divisi, departemen, 7P, jenis dana, stream |
 | Drawer/modal | Insight + bukti |
 | Input | — |
 | Validasi | — |
 | Transisi status | Read |
 | Approval | — |
-| Pengecualian | Grup di luar lingkup |
+| Pengecualian | Grup di luar lingkup; P7 Profit terpisah dari belanja; rasio N/A tanpa pendapatan langsung |
 | Responsif | Desktop/tablet data-rich; tabel scroll horizontal di mobile; drawer layar penuh di mobile |
-| Layar terkait | NV-60 |
-| Format ID | AI-* |
+| Layar terkait | NV-10, 16, 23, 60 |
+| Format ID | AI-*, P7I-* |
 
 **Operasi adapter:**
 
 - `ai.insights` — **UI-ONLY SIMULATION** · HAWK: Analytics (menu utama HAWK) — sumber data saja · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator · input `{ scope, role, asOf }` → Insight[] { kind FACT\|METRIC\|FORECAST\|HYPOTHESIS\|RECOMMENDATION, finding, evidence[], source, asOf, impact, recommendation, owner } · transisi: Read-only · audit: AI_INSIGHT_VIEWED (opsional)
 - `insight.act` — **NEW INTEGRATION REQUIRED** · HAWK: — · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC · input `{ id, action ACKNOWLEDGE\|ASSIGN\|DONE\|DISMISS, note, owner }` → InsightState · transisi: OPEN → ACKNOWLEDGED → ASSIGNED → DONE \| DISMISSED · audit: AI_RECOMMENDATION_ACTION
+- `budget.getPerformanceCube` — **NEW INTEGRATION REQUIRED** · HAWK: Budget 7P + GL/AP + MRF/PO + Inventory (agregasi baca) — belum ada di HAWK v2.11.6 · izin: Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Finance / Accounting · input `{ fy, per, bu?, loc?, div?, dept?, p?, sub?, cls?, stream?, view? }` → { asOf, totals{original,revised,actual,commitment,available,forecast}, rows[] } · transisi: Read-only · audit: — (baca)
+- `finance.getAuthorizedRevenueProfit` — **TO VERIFY** · HAWK: GL pendapatan & laba — TO VERIFY · izin: Owner / Eksekutif, BU Manager, Finance / Accounting · input `{ fy, per, bu?, loc? }` → { revenue, profit } atau N/A + alasan · transisi: Read-only · audit: —
+- `report.export7P` — **NEW INTEGRATION REQUIRED** · HAWK: — (export server dengan logging) · izin: Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting · input `{ filters, format: xlsx\|pdf }` → { rows, total, format } · transisi: File dibuat untuk lingkup & filter aktif · audit: EXPORT_7P (user, role, lingkup, periode, filter, jumlah baris)
 
 ### NV-58 Division / Supervisor AI Insights
 

@@ -41,6 +41,8 @@
     clock: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2',
     rack: 'M4 3v18M20 3v18M4 8h16M4 14h16M4 20h16',
     wrench: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z',
+    filter: 'M3 5h18l-7 8v6l-4 2v-8z',
+    download: 'M12 3v12m0 0-5-5m5 5 5-5M4 19h16',
   };
   ui.icon = (n, s = 18, cls = '') => `<svg class="ic ${cls}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${P[n] || P.doc}"/></svg>`;
 

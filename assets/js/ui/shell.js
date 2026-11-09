@@ -220,7 +220,7 @@
         <div class="nav-items">${items.map((s) => `<a href="#/nv/${s.nv}" class="${s.nv === nv ? 'cur' : ''}"><span class="nvc">${s.code}</span><span>${esc(s.name)}</span></a>`).join('')}</div></div>`;
       })
       .join('');
-    const dx = EMBED ? '' : `<a class="nav-dx ${isDx() ? 'cur' : ''}" href="#/dx">${ui.icon('play', 16)}<span><b>Demo Experience Center</b><small>Test Lab · 5 layar · 6 skenario</small></span></a>`;
+    const dx = EMBED ? '' : `<a class="nav-dx ${isDx() ? 'cur' : ''}" href="#/dx">${ui.icon('play', 16)}<span><b>Demo Experience Center</b><small>Test Lab · 5 layar · 7 skenario</small></span></a>`;
     $('#nav').innerHTML = dx + mods;
   }
 

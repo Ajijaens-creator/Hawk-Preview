@@ -4,7 +4,7 @@
 'use strict';
 const path = require('path');
 const fs = require('fs');
-['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
+['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'p7', 'adapter', 'ai', 'registry'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
 const H = globalThis.HAWK;
 const out = path.join(__dirname, '../docs');
 fs.mkdirSync(out, { recursive: true });

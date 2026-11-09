@@ -249,9 +249,17 @@
       const forecast = b.fy === 2026 ? Math.max(actual + commitment, actual + runRate * (12 - me)) : l.revised;
       return { ...l, actual, commitment, forecast, remaining: l.revised - actual - commitment, utilization: l.revised ? (actual + commitment) / l.revised : 0, dynActual: dynA, dynCommit: dynC };
     });
+    // FY2026: forecast is the sum of the 7P budget-line forecasts (HAWK.P7) so NV-23 and the 7P cube reconcile to the rupiah
+    if (b.fy === 2026 && HAWK.P7 && (s.p7lines || []).some((x) => x.budget === b.id)) {
+      const cube = HAWK.P7.lines(s, 2026).filter((x) => x.budget === b.id);
+      lines.forEach((l) => {
+        const ls = cube.filter((x) => x.p === l.p && x.cls === l.cls);
+        if (ls.length) l.forecast = U.sum(ls, (x) => x.forecast);
+      });
+    }
     const spend = lines.filter((l) => l.cls !== 'OUTCOME');
     const tot = (k) => U.sum(spend, (l) => l[k]);
-    return { ...b, lines, totals: { original: tot('original'), revised: tot('revised'), actual: tot('actual'), commitment: tot('commitment'), forecast: tot('forecast') }, profit: lines.find((l) => l.cls === 'OUTCOME') };
+    return { ...b, lines, totals: { original: tot('original'), revised: tot('revised'), actual: tot('actual'), commitment: tot('commitment'), forecast: tot('forecast') }, profit: lines.find((l) => l.cls === 'OUTCOME') || { p: 'PROFIT', cls: 'OUTCOME', original: 0, revised: 0, actual: 0, commitment: 0, forecast: 0, none: true } }; // cost-centre budgets (Shared Office) have no P7 target
   };
 
   S.asset = (s, id) => s.assets.find((a) => a.id === id);
