@@ -10,8 +10,8 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 
 | Status | Jumlah |
 |---|---|
-| TO VERIFY | 51 |
-| NEW INTEGRATION REQUIRED | 37 |
+| TO VERIFY | 52 |
+| NEW INTEGRATION REQUIRED | 40 |
 | UI-ONLY SIMULATION | 9 |
 
 | Operasi | Jenis | Modul HAWK existing (perkiraan) | Hook paket Owner (placeholder) | Status | Diuji di engine |
@@ -111,6 +111,10 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | `dx.step` | tulis | — (hasil uji demo, bukan transaksi HAWK) | — | UI-ONLY SIMULATION | ya |
 | `dx.verdict` | tulis | — (laporan UAT demo) | — | UI-ONLY SIMULATION | ya |
 | `demo.advanceClock` | tulis | — (hanya demo) | — | UI-ONLY SIMULATION | ya |
+| `budget.getPerformanceCube` | baca | Budget 7P + GL/AP + MRF/PO + Inventory (agregasi baca) — belum ada di HAWK v2.11.6 | — | NEW INTEGRATION REQUIRED | — (baca) |
+| `budget.getBudgetLineLineage` | baca | PR/PO/GRN/AP/GL/Payroll/Asset — TO VERIFY per dokumen | — | NEW INTEGRATION REQUIRED | — (baca) |
+| `finance.getAuthorizedRevenueProfit` | baca | GL pendapatan & laba — TO VERIFY | — | TO VERIFY | — (baca) |
+| `report.export7P` | tulis | — (export server dengan logging) | — | NEW INTEGRATION REQUIRED | belum |
 | `audit.list` | baca | Riwayat (ikon jam di toolbar HAWK) | — | TO VERIFY | — (baca) |
 | `search.global` | baca | Purchases › FIND tab | — | TO VERIFY | — (baca) |
 

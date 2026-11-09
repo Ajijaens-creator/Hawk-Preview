@@ -25,7 +25,7 @@
     { key: 'STAFF', user: 'U-STF', label: 'Staff / Therapist', device: 'mobile', home: 24 },
   ];
   // roles that the current app requires for some steps but that are not one of the five demo screens
-  const SUPPORT = { 'U-WHS': 'Gudang pusat (peran pendukung)', 'U-RCP': 'Receptionist outlet (peran pendukung)', 'U-ATD': 'Attendant outlet (peran pendukung)', 'U-AOM': 'Asisten Manager Operasional (peran pendukung)', 'U-GAS': 'General Accounting Supervisor (peran pendukung)', 'U-BUE': 'Manager BU JAENS Essence (peran pendukung)', 'U-AST': 'Inventory & Aset (peran pendukung)', 'U-OWN': 'Owner (peran pendukung)' };
+  const SUPPORT = { 'U-WHS': 'Gudang pusat (peran pendukung)', 'U-RCP': 'Receptionist outlet (peran pendukung)', 'U-ATD': 'Attendant outlet (peran pendukung)', 'U-AOM': 'Asisten Manager Operasional (peran pendukung)', 'U-GAS': 'General Accounting Supervisor (peran pendukung)', 'U-BUE': 'Manager BU JAENS Essence (peran pendukung)', 'U-AST': 'Inventory & Aset (peran pendukung)', 'U-OWN': 'Owner (peran pendukung)', 'U-HRD': 'Manager Divisi HRD (peran pendukung)', 'U-HOD': 'Manager Divisi Komersil (peran pendukung)', 'U-TAX': 'Tax Administration (peran pendukung)' };
   const DEVICES = { desktop: { w: 1280, h: 860, label: 'Desktop' }, ipad: { w: 834, h: 1112, label: 'iPad' }, mobile: { w: 390, h: 844, label: 'Mobile' } };
 
   /* ---- stable target IDs → selector in the REAL screen (contract for developers; see docs/DEMO_EXPERIENCE_CENTER.md) ---- */
@@ -68,6 +68,12 @@
     'dx-alloc-edit': { nv: 7, sel: '[data-a="save"][data-pool="CC-OFC-FIN"]', label: 'Alokasi bersama › isi 60/40 lalu Simpan formula' },
     'dx-alloc-review': { nv: 7, sel: '[data-a="reviewAlloc"][data-pool="CC-OFC-FIN"][data-bu="{bu}"]', label: 'Alokasi bersama › Setuju' },
     'dx-alloc-lock': { nv: 7, sel: '[data-a="lockAlloc"][data-pool="CC-OFC-FIN"]', label: 'Alokasi bersama › Kunci periode' },
+    'dx-7p-cockpit': { nv: 57, sel: '#p7-cockpit .p7-kpis', label: '7P Cockpit › KPI Owner' },
+    'dx-7p-cat': { nv: 57, sel: '#p7-cockpit [data-p7row="PROCESS"] .p7-cat', label: '7P Cockpit › P4 Process' },
+    'dx-7p-drill': { nv: 16, sel: '#p7-drill .p7-tree tbody tr:first-child .p7-drill', label: '7P Drill-Down › level berikut' },
+    'dx-7p-recon': { nv: 16, sel: '#p7-sel .p7-recon', label: 'Rincian seleksi › bukti rekonsiliasi' },
+    'dx-7p-evidence': { nv: 23, sel: '#p7-line', label: 'Budget line › transaksi & evidence' },
+    'dx-7p-xlsx': { nv: 57, sel: '[data-a="p7xlsx"]', label: 'Export Excel .xlsx' },
   };
   const fill = (tpl, v) => String(tpl).replace(/\{(\w+)\}/g, (m, k) => (v && v[k] !== undefined ? v[k] : m));
   const target = (tid, v) => {
@@ -268,6 +274,23 @@
         { id: 'OFC-04', as: 'U-FIN', tid: 'dx-alloc-lock', title: 'Finance mengunci periode', what: 'Setelah semua BU setuju, Finance mengunci. Porsi tidak bisa diubah lagi periode ini.',
           run: (c) => c('cc.lockAllocation', { pool: 'CC-OFC-FIN' }, 'U-FIN'),
           check: (s) => s.sharedAllocations.find((x) => x.pool === 'CC-OFC-FIN').locked && {} },
+      ],
+    },
+    {
+      id: 'SEVENP', name: '7P Master Control — Owner → Finance → HRD & Komersil', short: '7P drill-down & rekonsiliasi',
+      story: 'Owner membaca cockpit 7P, turun dari P4 Process sampai transaksi software appointment di Shanti, membandingkan jalur organisasi-first, lalu Finance, HRD dan Komersil melihat angka yang sama dari sudut pandang mereka. Semua angka DEMO.',
+      setup: (c, s) => ({ line: ((s().p7lines || []).find((l) => l.loc === 'BR-SHN' && l.name === 'Software appointment & integrasi') || {}).id }),
+      steps: [
+        { id: 'P7-01', as: 'U-OWN', tid: 'dx-7p-cockpit', review: true, title: 'Owner membaca 7P cockpit', what: 'Target vs aktual revenue, budget P1–P6, realisasi, komitmen, sisa, forecast, dan P7 Profit terpisah dari belanja.' },
+        { id: 'P7-02', as: 'U-OWN', tid: 'dx-7p-drill', q: () => ({ p7: 1, p: 'PROCESS', mode: 'P7' }), review: true, title: 'Drill P4 Process → BU → outlet → divisi → departemen', what: 'Klik JAENS Spa → JAENS Spa Shanti → Operasional Spa → Treatment → Operational Software. Breadcrumb menyimpan jalur; tombol Kembali membatalkan langkah.' },
+        { id: 'P7-03', as: 'U-OWN', tid: 'dx-7p-evidence', q: (v) => ({ p7: 1, line: v.line, tab: 'lines' }), review: true, title: 'Buka transaksi & evidence', what: 'Detail budget line: original/revised/aktual/komitmen/sisa/forecast, pemilik budget ≠ steward, COA TO VERIFY, pajak sebagai dimensi terpisah, evidence SIMULASI.' },
+        { id: 'P7-04', as: 'U-OWN', tid: 'dx-7p-recon', q: () => ({ p7: 1, mode: 'ORG', bu: 'BU-SPA', loc: 'BR-SHN', div: 'DV-SPA-OPS', dept: 'DP-SHN-TRT', p: 'PROCESS' }), review: true, title: 'Jalur organisasi-first memberi total yang sama', what: 'JAENS Spa → Shanti → Operasional → Treatment → P4 Process: total identik dengan jalur 7P-first.' },
+        { id: 'P7-05', as: 'U-OWN', tid: 'dx-7p-xlsx', title: 'Export laporan terfilter', what: 'Excel .xlsx berisi ringkasan + detail sesuai filter & lingkup akun; tercatat di audit EXPORT_7P.',
+          run: (c) => c('report.export7P', { filters: { fy: 2026, per: 'FY', p: 'PROCESS' }, format: 'xlsx' }, 'U-OWN'),
+          check: (s) => s.audit.some((a) => a.op === 'report.export7P') && {} },
+        { id: 'P7-06', as: 'U-FIN', tid: 'dx-7p-evidence', q: (v) => ({ p7: 1, line: v.line, tab: 'lines' }), review: true, title: 'Finance memastikan angka sama', what: 'Finance Manager membuka budget line yang sama: nilai, transaksi dan status COA identik dengan tampilan Owner.' },
+        { id: 'P7-07', as: 'U-HRD', tid: 'dx-7p-drill', q: () => ({ p7: 1, view: 'steward', mode: 'P7' }), review: true, title: 'HRD: stewardship People', what: 'Made Gunarsa melihat People lintas unit (agregat payroll), sementara budget divisi HRD sendiri juga berisi Process, Place dan Facility.' },
+        { id: 'P7-08', as: 'U-HOD', tid: 'dx-7p-drill', q: () => ({ p7: 1, view: 'steward', mode: 'P7' }), review: true, title: 'Komersil: stewardship Promotion', what: 'Dedik melihat Promotion lintas unit dan cost center sebenarnya. Gaji tim Komersil tetap People (steward HRD) — dicatat sekali.' },
       ],
     },
   ];

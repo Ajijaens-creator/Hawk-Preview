@@ -52,7 +52,7 @@ Tooltip tidak menunjuk posisi layar, tetapi **Target ID** yang dipetakan ke sele
 | dx-bill-pay | 50 | `[data-a="pay"][data-p="{bill}"]` |
 | dx-alloc-lock | 7 | `[data-a="lockAlloc"][data-pool="CC-OFC-FIN"]` |
 
-`{mrf}`, `{bill}` dst. diisi dari variabel skenario yang terikat ke dokumen nyata. Bila HAWK produksi mengganti markup, cukup ubah selector di tabel ini. Uji: setiap langkah dari 6 skenario menemukan targetnya di layar asli role-nya (`tests/e2e-demo-center.js` bagian E).
+`{mrf}`, `{bill}` dst. diisi dari variabel skenario yang terikat ke dokumen nyata. Bila HAWK produksi mengganti markup, cukup ubah selector di tabel ini. Uji: setiap langkah dari 7 skenario menemukan targetnya di layar asli role-nya (`tests/e2e-demo-center.js` bagian E).
 
 ## 5. Navigasi sesuai porsi role
 
@@ -101,9 +101,9 @@ Nama endpoint di atas adalah **usulan**, bukan API HAWK yang ada.
 
 | Berkas | Isi |
 |---|---|
-| `assets/js/core/dx.js` | Definisi role, device, Target ID, 6 skenario, runner (start / detect / runStep / review / block / report) |
+| `assets/js/core/dx.js` | Definisi role, device, Target ID, 7 skenario (termasuk SEVENP — 7P Control Center), runner (start / detect / runStep / review / block / report) |
 | `assets/js/screens/x-demo.js` | Halaman `#/dx`: dua mode, frame, tutor, feed, export; kartu Aksi cepat per role |
 | `assets/js/ui/shell.js` | Mode embed (`?embed=1&as=`), route `#/dx`, sinkron antar jendela, `HAWK.dxFocus/dxClear` |
 | `assets/js/core/store.js` | `meta.rev`, `store.sync()`, operasi review/kunci alokasi, operasi `dx.*` |
-| `tests/workflow.test.js` T11 | 6 skenario di engine, tanpa posting ganda, state bersama |
-| `tests/e2e-demo-center.js` | 35 cek di Chromium: 5 layar, klik asli lintas layar, 6 skenario lewat tutor, device, reset, export |
+| `tests/workflow.test.js` T11 | 7 skenario di engine, tanpa posting ganda, state bersama |
+| `tests/e2e-demo-center.js` | 35 cek di Chromium: 5 layar, klik asli lintas layar, 7 skenario lewat tutor, device, reset, export |

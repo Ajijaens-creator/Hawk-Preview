@@ -25,7 +25,7 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | NV-13 | Strategic Project & Investment Proposal | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |
 | NV-14 | Investment Approval, Milestone & Progress | ✓ | ✓ |  |  |  |  |  |  |  |  |
 | NV-15 | Annual Budget Creation | ✓ | ✓ | ✓ |  |  |  |  | ✓ |  |  |
-| NV-16 | 7P Budget Allocation Overview | ✓ | ✓ | ✓ |  |  |  |  | ✓ |  |  |
+| NV-16 | 7P Budget Allocation Overview | ✓ | ✓ | ✓ | ✓ |  |  |  | ✓ |  |  |
 | NV-17 | Routine Item / BHP Budget Planning | ✓ | ✓ | ✓ | ✓ |  |  |  | ✓ |  |  |
 | NV-18 | Non-Routine & Exceptional Budget | ✓ | ✓ | ✓ |  |  |  |  | ✓ |  |  |
 | NV-19 | OPEX, CAPEX & Other Spending Classification | ✓ | ✓ |  |  |  |  |  | ✓ |  |  |
@@ -172,6 +172,10 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `dx.step` | tulis | E | E | E | E | E | E | E | E | E | E |
 | `dx.verdict` | tulis | E | E | E | E | E | E | E | E | E | E |
 | `demo.advanceClock` | tulis | E | E | E | E | E | E | E | E | E | E |
+| `budget.getPerformanceCube` | baca | B | B | B | B |  |  |  | B |  |  |
+| `budget.getBudgetLineLineage` | baca | B | B | B | B |  |  |  | B |  |  |
+| `finance.getAuthorizedRevenueProfit` | baca | B | B |  |  |  |  |  | B |  |  |
+| `report.export7P` | tulis | E | E | E |  |  |  |  | E |  |  |
 | `audit.list` | baca | B |  |  |  |  |  |  | B |  | B |
 | `search.global` | baca | B | B | B | B | B | B | B | B | B | B |
 

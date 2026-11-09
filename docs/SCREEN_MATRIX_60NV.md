@@ -12,7 +12,7 @@ _Dibuat otomatis oleh `node tools/gen-docs.js`. Status uji dihitung dari isi fil
 
 Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 62 NV, 0 error, 0 tombol tanpa handler) dan `responsive.js` (1440/834/390 px).
 
-**Ringkasan:** 62 layar · E2E 29 · Engine 18 · Sebagian 0 · Render 15 · BELUM 0
+**Ringkasan:** 62 layar · E2E 29 · Engine 18 · Sebagian 1 · Render 14 · BELUM 0
 
 ## Modul A — Navigation & Role Workspace
 
@@ -48,14 +48,14 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 62 NV
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
 | NV-15 | D | Annual Budget Creation | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | `budget.updateLine`, `budget.submit` | NEW INTEGRATION REQUIRED | Engine |
-| NV-16 | D | 7P Budget Allocation Overview | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | — (baca) | — | Render |
+| NV-16 | D | 7P Budget Allocation Overview | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Supervisor Outlet | `report.export7P` | NEW INTEGRATION REQUIRED | Sebagian — belum dites: `report.export7P` |
 | NV-17 | D | Routine Item / BHP Budget Planning | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Supervisor Outlet | — (baca) | NEW INTEGRATION REQUIRED | Render |
 | NV-18 | D | Non-Routine & Exceptional Budget | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | — (baca) | — | Render |
 | NV-19 | D | OPEX, CAPEX & Other Spending Classification | Owner / Eksekutif, BU Manager, Finance / Accounting | — (baca) | — | Render |
 | NV-20 | D | Quarterly & Monthly Budget Distribution | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | — (baca) | — | Render |
 | NV-21 | D | Budget Submission & Approval | Owner / Eksekutif, BU Manager, Finance / Accounting | `budget.submit`, `budget.approve` | NEW INTEGRATION REQUIRED | Engine |
 | NV-22 | D | Budget Revision & Quarterly Reforecast | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | `budget.requestRevision`, `budget.decideRevision` | NEW INTEGRATION REQUIRED | Engine |
-| NV-23 | D | Budget vs Actual vs Commitment vs Forecast | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Supervisor Outlet | — (baca) | — | E2E |
+| NV-23 | D | Budget vs Actual vs Commitment vs Forecast | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting, Supervisor Outlet | — (baca) | NEW INTEGRATION REQUIRED | E2E |
 
 ## Modul E — MRF & Supervisor Approval
 
@@ -119,7 +119,7 @@ Semua layar yang memiliki view juga lulus `browser-all.js` (12 pengguna × 62 NV
 
 | NV | Mod | Nama resmi | Role akses | Operasi tulis | Status integrasi terendah | Status implementasi & uji |
 |---|---|---|---|---|---|---|
-| NV-57 | J | Executive & BU AI Intelligence Dashboard | Owner / Eksekutif, BU Manager, Finance / Accounting, Head of Division | `insight.act` | UI-ONLY SIMULATION | E2E |
+| NV-57 | J | Executive & BU AI Intelligence Dashboard | Owner / Eksekutif, BU Manager, Finance / Accounting, Head of Division | `insight.act`, `report.export7P` | UI-ONLY SIMULATION | E2E — belum dites: `report.export7P` |
 | NV-58 | J | Division / Supervisor AI Insights | Supervisor Outlet, Head of Division, BU Manager, Purchasing, Gudang / Receiving, Asset / Facility PIC, Owner / Eksekutif | `insight.act` | UI-ONLY SIMULATION | E2E |
 | NV-59 | J | 7P Productivity, Efficiency & Effectiveness Analytics | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | — (baca) | UI-ONLY SIMULATION | Render |
 | NV-60 | J | AI Scenario Forecast & Evidence Drill-Down | Owner / Eksekutif, BU Manager, Finance / Accounting | — (baca) | UI-ONLY SIMULATION | Render |

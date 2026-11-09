@@ -3,7 +3,7 @@
    and checks quantities, statuses, financial classifications and references.  Usage: node tests/workflow.test.js */
 'use strict';
 const path = require('path');
-['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'adapter', 'ai', 'registry', 'dx'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
+['util', 'seed', 'contracts', 'store', 'spend', 'flow', 'p7', 'adapter', 'ai', 'registry', 'dx'].forEach((f) => require(path.join(__dirname, '../assets/js/core', f + '.js')));
 const H = globalThis.HAWK;
 const S = H.selectors;
 
@@ -726,12 +726,12 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   }
 })();
 
-/* ============ T11. MP-HAWK-09 Demo Experience Center — 6 skenario terpandu lewat operasi HAWK yang sama ============ */
+/* ============ T11. MP-HAWK-09 Demo Experience Center — 7 skenario terpandu lewat operasi HAWK yang sama ============ */
 (function demoCenter() {
-  console.log('T11 Demo Experience Center — 6 skenario, state bersama, tanpa posting ganda');
+  console.log('T11 Demo Experience Center — 7 skenario, state bersama, tanpa posting ganda');
   const { store, api, call, s } = fresh();
   const DX = H.dx;
-  check('Katalog: 6 skenario wajib, setiap langkah punya user, layar & target ID stabil yang terdaftar', DX.SCENARIOS.map((x) => x.id).join() === 'MRF,NOTA,SLA,BUDGET,ASSET,OFFICE' && DX.SCENARIOS.every((sc) => sc.steps.every((st) => st.as && DX.TARGETS[st.tid] && DX.TARGETS[st.tid].nv && (st.review || (st.run && st.check)))));
+  check('Katalog: 7 skenario wajib (termasuk 7P), setiap langkah punya user, layar & target ID stabil yang terdaftar', DX.SCENARIOS.map((x) => x.id).join() === 'MRF,NOTA,SLA,BUDGET,ASSET,OFFICE,SEVENP' && DX.SCENARIOS.every((sc) => sc.steps.every((st) => st.as && DX.TARGETS[st.tid] && DX.TARGETS[st.tid].nv && (st.review || (st.run && st.check)))));
   check('5 role demo = Finance, Purchasing, BU Manager, Supervisor, Staff (desktop/desktop/desktop/iPad/mobile)', DX.ROLE5.map((r) => r.key + ':' + r.device).join() === 'FINANCE:desktop,PURCHASING:desktop,BU_MANAGER:desktop,SUPERVISOR:ipad,STAFF:mobile');
   check('Setiap layar target dapat dibuka oleh role langkahnya (tanpa memperluas hak akses)', DX.SCENARIOS.every((sc) => sc.steps.every((st) => H.canSee(s().users.find((u) => u.id === st.as).role, DX.TARGETS[st.tid].nv))));
   const counts = {};
@@ -859,6 +859,107 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Penerima tercatat otomatis: nama, jabatan, outlet, divisi, BU (dari akun, bukan form)', (!picks.length || (g && g.receivedBy.user === 'U-RCP' && g.receivedBy.dept === 'Receptionist' && g.receivedBy.buName === 'JAENS Spa')) && m().receipts.at(-1).by.branch === 'BR-UBD' && /Receptionist/.test(m().history.at(-1).note));
   check('Tidak bisa diterima dua kali', !call('order.receive', { id: m0.data.id }, 'STAFF', 'U-ATD').ok);
   check('Jurnal tetap seimbang', s().journals.every((j) => Math.abs(j.lines.reduce((x, l) => x + l.dr - l.cr, 0)) < 1));
+})();
+
+/* ============ T13. MP-HAWK-11/12 — 7P Master Financial Control Center (cube, drill-down, RBAC, export) ============ */
+(function sevenP() {
+  console.log('T13 7P Master Financial Control Center — rekonsiliasi, drill dua arah, RBAC, ekspor');
+  const { call, s, user } = fresh();
+  const P7 = H.P7;
+  const U = H.U;
+  const own = user('OWNER');
+  const uid = (id) => s().users.find((x) => x.id === id);
+  const L = P7.lines(s(), 2026);
+  check('Kube FY2026: 126 budget line, setiap line punya 7P, BU, lokasi, divisi, departemen, subkategori', L.length === 126 && L.every((l) => l.p && l.bu && l.loc && l.div && l.dept && l.sub && l.name));
+  const bad = [];
+  ['BGT-2026-SPA', 'BGT-2026-ESS', 'BGT-2026-OFC'].forEach((id) => S.budgetView(s(), id).lines.filter((a) => a.cls !== 'OUTCOME').forEach((a) => {
+    const ls = L.filter((l) => l.budget === id && l.p === a.p && l.cls === a.cls);
+    ['revised', 'actual', 'commitment'].forEach((k) => { if (U.sum(ls, (l) => l[k]) !== a[k]) bad.push(id + ' ' + a.p + ' ' + a.cls + ' ' + k); });
+  }));
+  check('Rekonsiliasi: jumlah line = agregat Budget 7P (NV-23) per BU × 7P × kelas, untuk revised/actual/komitmen', !bad.length, bad.join('; '));
+  const q = P7.query(s(), own, {});
+  const byP = P7.group(s(), q, 'p');
+  const byBu = P7.group(s(), q, 'bu');
+  const eq = (a, b) => Math.abs(a - b) < 1;
+  check('Drill dua arah: total 7P-first = total org-first = total kube (budget & actual)', eq(U.sum(byP, (g) => g.budget), q.totals.budget) && eq(U.sum(byBu, (g) => g.budget), q.totals.budget) && eq(U.sum(byP, (g) => g.actual), U.sum(byBu, (g) => g.actual)));
+  const lvP = P7.LEVELS.P7;
+  let ok = true;
+  let f = {};
+  let path = [];
+  lvP.slice(0, -1).forEach((lv) => {
+    const qq = P7.query(s(), own, f);
+    const gs = P7.group(s(), qq, lv);
+    if (!eq(U.sum(gs, (g) => g.budget), qq.totals.budget)) ok = false;
+    const pick = gs.find((g) => g.key === { p: 'PROCESS', bu: 'BU-SPA', loc: 'BR-SHN' }[lv]) || gs[0];
+    f = { ...f, [lv]: pick.key };
+    path.push(pick.key);
+  });
+  check('Kasus A: P4 Process → JAENS Spa → Shanti → … → item; anak selalu menjumlah ke induk di setiap level', ok && path[0] === 'PROCESS' && path[2] === 'BR-SHN' && P7.query(s(), own, f).rows.length >= 1, path.join(' > '));
+  const qA = P7.query(s(), own, { p: 'PROCESS', loc: 'BR-SHN', sub: 'Operational Software' });
+  const qB = P7.query(s(), own, { bu: 'BU-SPA', loc: 'BR-SHN', p: 'PROCESS', sub: 'Operational Software' });
+  check('Kasus B: urutan org-first menghasilkan baris & angka identik dengan 7P-first', qA.rows.map((r) => r.id).join() === qB.rows.map((r) => r.id).join() && qA.totals.budget === qB.totals.budget && qA.rows.some((r) => r.id === 'BL26-037'));
+  const tx = P7.txns(s(), qA.rows.find((r) => r.id === 'BL26-037'), own);
+  check('Item → transaksi: bukti tersedia, transaksi simulasi berlabel SIM-, total aktual cocok dengan line', tx.length > 0 && tx.filter((t) => t.counted !== false && /^SIM-/.test(t.id)).length > 0);
+  check('P7 Profit tidak pernah dijumlahkan ke biaya operasional', !q.rows.some((l) => l.p === 'PROFIT') && byP.every((g) => g.key !== 'PROFIT') && eq(q.totals.budget, U.sum(byP.filter((g) => P7.SPEND.includes(g.key)), (g) => g.budget)));
+  const pr = P7.profit(s(), {}, own);
+  check('Laba konsolidasi: dilaporkan terpisah, eliminasi margin antar-BU 18 jt, margin dihitung dari pendapatan konsolidasi', !pr.na && pr.elimination === 18000000 && pr.margin > 0 && pr.margin < 1);
+  const rv = P7.revenue(s(), {}, own);
+  check('Pendapatan konsolidasi: eliminasi penjualan antar-BU 312 jt', rv.elimination === 312000000 && rv.actual > 0);
+  check('Office / divisi tidak punya pendapatan langsung → N/A (bukan 0%, bukan pembagian palsu)', P7.revenue(s(), { bu: 'BU-OFC' }).na && P7.revenue(s(), { div: 'DV-SPA-OPS' }).na && P7.profit(s(), { bu: 'BU-OFC' }).na);
+  const ben = P7.beneficiary(s(), q);
+  check('Biaya Office per BU penerima manfaat = memo (tidak menambah total)', Object.keys(ben).length >= 1 && eq(U.sum(byBu, (g) => g.budget), q.totals.budget));
+  const ox = P7.query(s(), own, { cls: 'OPEX' }).totals.budget;
+  const cx = P7.query(s(), own, { cls: 'CAPEX' }).totals.budget;
+  const ix = P7.query(s(), own, { cls: 'INVENTORY' }).totals.budget;
+  check('Filter kelas: OPEX, CAPEX, Inventory terpisah, jumlahnya = total (CAPEX/Inventory tidak masuk OPEX)', cx > 0 && ox > 0 && eq(ox + cx + ix, q.totals.budget), [ox, cx, ix, q.totals.budget].join('/'));
+  check('Periode: Q1+Q2+Q3+Q4 = setahun penuh (budget)', eq(['Q1', 'Q2', 'Q3', 'Q4'].reduce((t, p) => t + P7.query(s(), own, { per: p }).totals.budget, 0), q.totals.budget));
+  // MRF commitment counted once (MRF and PO lineage)
+  const prod0 = P7.query(s(), own, { p: 'PRODUCT', loc: 'BR-UBD' }).totals.commitment;
+  const m = call('mrf.create', { branch: 'BR-UBD', lines: [{ item: 'BHP-001', qty: 4, reason: 'Uji 7P' }] }, 'STAFF', 'U-STF').data;
+  call('mrf.decide', { id: m.id, decision: 'APPROVE', note: 'ok' }, 'SUPERVISOR', 'U-SPV');
+  const prod1 = P7.query(s(), own, { p: 'PRODUCT', loc: 'BR-UBD' }).totals.commitment;
+  const picks = S.pendingPurchase(s()).filter((x) => x.mrf === m.id).map((x) => ({ mrf: x.mrf, li: x.li, ai: x.ai }));
+  if (picks.length) call('po.createFromMrf', { picks, supplier: 'SUP-001' }, 'PURCHASING');
+  const prod2 = P7.query(s(), own, { p: 'PRODUCT', loc: 'BR-UBD' }).totals.commitment;
+  check('MRF disetujui → komitmen naik sekali; PO dari MRF yang sama tidak menambah lagi (tanpa hitung ganda)', prod1 > prod0 && prod2 === prod1, [prod0, prod1, prod2].join('/'));
+  check('Kube tetap rekonsiliasi dengan NV-23 setelah transaksi live', (() => { const v = S.budgetView(s(), 'BGT-2026-SPA'); const L2 = P7.lines(s()); return v.lines.filter((a) => a.cls !== 'OUTCOME').every((a) => U.sum(L2.filter((l) => l.budget === 'BGT-2026-SPA' && l.p === a.p && l.cls === a.cls), (l) => l.commitment) === a.commitment); })());
+  // RBAC
+  const rows = (id, fl) => P7.query(s(), uid(id), fl || {}).rows;
+  check('Owner & Finance melihat semua unit (Spa, Essence, Office)', rows('U-OWN').length === 126 && rows('U-FIN').length === 126);
+  check('Supervisor Mila hanya melihat outlet JAENS Spa Center (Ubud)', rows('U-SPV').length > 0 && rows('U-SPV').every((l) => l.loc === 'BR-UBD'));
+  check('BU Manager hanya BU sendiri; Staff tidak punya akses kube', rows('U-BUM').every((l) => l.bu === 'BU-SPA') && !P7.access(s(), uid('U-STF')).ok && rows('U-STF').length === 0);
+  const hrd = P7.access(s(), uid('U-HRD'));
+  const kom = P7.access(s(), uid('U-HOD'));
+  check('HRD Made Gunarsa: mode "divisi sendiri" + "steward People lintas unit"', hrd.modes.length === 2 && hrd.steward.includes('PEOPLE') && rows('U-HRD', { view: hrd.modes[1].key }).every((l) => l.p === 'PEOPLE') && rows('U-HRD', { view: hrd.modes[1].key }).some((l) => l.bu === 'BU-SPA'));
+  check('Komersil Dedik: mode "divisi sendiri" + "steward Promotion lintas unit"', kom.modes.length === 2 && kom.steward.includes('PROMOTION') && rows('U-HOD', { view: kom.modes[1].key }).every((l) => l.p === 'PROMOTION'));
+  const kp = L.find((l) => l.id === 'BL26-114');
+  check('Gaji tim Komersil = P1 People, pemilik budget Dedik, steward HRD — dihitung sekali', kp.p === 'PEOPLE' && P7.ownerOf(s(), kp).id === 'U-HOD' && P7.stewardOf(s(), kp).org === 'DV-HRD' && L.filter((l) => l.id === 'BL26-114').length === 1);
+  check('Tax Idha melihat dimensi pajak (PPh 21/23/PPN) dengan status TO VERIFY', P7.access(s(), uid('U-TAX')).tax && L.some((l) => /PPh|PPN/.test(JSON.stringify(P7.tax(l)))));
+  // export
+  const e1 = call('report.export7P', { format: 'xlsx', filters: { p: 'PROCESS' } }, 'OWNER');
+  check('Owner mengekspor XLSX → tercatat di audit (EXPORT_7P)', e1.ok && s().audit.some((a) => /EXPORT_7P xlsx/.test(a.detail || a.note || JSON.stringify(a))), e1.error && e1.error.message);
+  check('Supervisor tidak dapat mengekspor (FORBIDDEN), Staff juga tidak', call('report.export7P', { format: 'xlsx' }, 'SUPERVISOR', 'U-SPV').error.code === 'FORBIDDEN' && !call('report.export7P', { format: 'pdf' }, 'STAFF', 'U-STF').ok);
+  check('Format selain xlsx/pdf ditolak', call('report.export7P', { format: 'csv' }, 'FINANCE').error.code === 'VALIDATION');
+  const ex = P7.exportSheets(s(), uid('U-SPV'), {});
+  check('Isi ekspor mengikuti hak akses (data Supervisor hanya outlet sendiri)', ex.sheets.length >= 2 && !JSON.stringify(ex.sheets).includes('JAENS Spa Bisma'));
+  const z = Buffer.from(P7.xlsx(P7.exportSheets(s(), own, {}).sheets));
+  const names = [];
+  for (let i = 0; i < z.length - 4; ) {
+    if (z.readUInt32LE(i) !== 0x04034b50) break;
+    const n = z.readUInt16LE(i + 26);
+    const xl = z.readUInt16LE(i + 28);
+    const sz = z.readUInt32LE(i + 18);
+    names.push(z.slice(i + 30, i + 30 + n).toString());
+    i += 30 + n + xl + sz;
+  }
+  check('File XLSX valid: ZIP OOXML berisi workbook, 2 sheet, styles, content types', z.readUInt32LE(0) === 0x04034b50 && ['[Content_Types].xml', 'xl/workbook.xml', 'xl/worksheets/sheet1.xml', 'xl/worksheets/sheet2.xml', 'xl/styles.xml'].every((n) => names.includes(n)), names.join());
+  // AI insights
+  const ins = P7.insights(s(), own, {});
+  check('AI insight 7P: temuan, sumber, as-of, bukti, dampak, rekomendasi, role, persetujuan manusia; berlabel SIMULATION', ins.length >= 3 && ins.every((i) => i.fact && i.source && i.asOf && i.evidence && i.impact && i.rec && i.role && i.approval) && ins.every((i) => /SIMULATION|manusia|Owner|Finance/i.test(i.approval + i.source)));
+  check('AI insight tidak mengubah data (read-only): jumlah jurnal & budget tetap', (() => { const j = s().journals.length; const b = JSON.stringify(s().budgets); P7.insights(s(), own, {}); return s().journals.length === j && JSON.stringify(s().budgets) === b; })());
+  check('Adapter 7P: semua operasi berstatus TO VERIFY / NOT CONNECTED (tidak mengklaim API HAWK terhubung)', P7.OPS.length >= 6 && P7.OPS.every((o) => !/CONFIRMED/.test(o.status) || /EXISTING/.test(o.status)) && /DEMO|NOT_CONNECTED/.test(JSON.stringify(P7.adapter)));
+  const q27 = P7.query(s(), own, { fy: 2027 });
+  check('FY2027: diturunkan dari rencana NV-15 (bukan data basi), tanpa aktual', q27.rows.length > 0 && q27.totals.actual === 0);
 })();
 
 console.log(`\n${pass} lulus, ${failN} gagal`);

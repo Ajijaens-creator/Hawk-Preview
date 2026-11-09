@@ -7,8 +7,8 @@ _Dibuat otomatis oleh `node tools/gen-docs.js` dari `assets/js/core/contracts.js
 | Status | Jumlah | Arti |
 |---|---|---|
 | CONFIRMED EXISTING | 0 | Hanya dengan dokumentasi/verifikasi engine — belum ada |
-| TO VERIFY | 51 | UI HAWK v2.11.6 menunjukkan kemampuan terkait (screenshot 7 Nov 2026), API belum terdokumentasi |
-| NEW INTEGRATION REQUIRED | 37 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
+| TO VERIFY | 52 | UI HAWK v2.11.6 menunjukkan kemampuan terkait (screenshot 7 Nov 2026), API belum terdokumentasi |
+| NEW INTEGRATION REQUIRED | 40 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
 | UI-ONLY SIMULATION | 9 | Hanya prototipe (AI/OCR/skenario); tidak boleh disajikan sebagai live |
 
 Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi, skema request/response, permission di server, state workflow, audit event, **idempotency key** untuk operasi tulis, error terstruktur (`code`, `message`, `retryable`), dan bukti tes.
@@ -56,6 +56,7 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `nonroutine.decide` | — | — (ref. Modul D handoff: approval.request — TO VERIFY) | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | `{ id, decision, note }` | NonRoutineBudget | SUBMITTED → APPROVED \| REJECTED | Pengaju ≠ pemutus (SoD); alasan wajib saat tolak | NONROUTINE_DECISION |
 | `budget.requestRevision` | `budget.submitRevision` | — | **NEW INTEGRATION REQUIRED** | BU Manager, Finance / Accounting, Head of Division | `{ id, quarter, reason, changes:[{p, delta}] \| [{line, newAmount}] }` | BudgetRevision | — → SUBMITTED | Budget LOCKED; alasan wajib; realokasi antar-7P net nol; usulan baris tidak mengubah Revised sebelum disetujui | BUDGET_REVISION_REQUEST |
 | `budget.decideRevision` | — | — | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif | `{ id, decision }` | BudgetRevision | SUBMITTED → APPROVED (Revised += delta, version+1) \| REJECTED | Original tidak pernah diubah | BUDGET_REVISION_DECISION |
+| `budget.getBudgetLineLineage` (baca) | — | PR/PO/GRN/AP/GL/Payroll/Asset — TO VERIFY per dokumen | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Finance / Accounting | `{ id }` | { line, txns[] } | Read-only | Hanya baris dalam lingkup; payroll hanya agregat | EVIDENCE_VIEW (disarankan) |
 
 ## Modul D/E
 
@@ -197,6 +198,19 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `dx.start` | — | — (Demo Experience Center — hanya sandbox demo) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ scenario }` | state.dx | Mulai skenario terpandu pada data demo yang baru di-reset | ID skenario terdaftar | DX_START |
 | `dx.step` | — | — (hasil uji demo, bukan transaksi HAWK) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ step, result DONE\|REVIEWED\|BLOCKED, note? }` | state.dx.steps[step] | Catat hasil langkah tutorial | Langkah ada di skenario aktif | DX_STEP |
 | `dx.verdict` | — | — (laporan UAT demo) | **UI-ONLY SIMULATION** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Staff / Therapist / Housekeeping, Purchasing, Gudang / Receiving, Finance / Accounting, Asset / Facility PIC, System Administrator | `{ verdict PASS\|FAIL\|BLOCKED, note }` | state.dx.verdict | Catat hasil uji skenario | FAIL/BLOCKED wajib catatan | DX_VERDICT |
+
+## Modul D/J
+
+| Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
+|---|---|---|---|---|---|---|---|---|---|
+| `budget.getPerformanceCube` (baca) | — | Budget 7P + GL/AP + MRF/PO + Inventory (agregasi baca) — belum ada di HAWK v2.11.6 | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Supervisor Outlet, Finance / Accounting | `{ fy, per, bu?, loc?, div?, dept?, p?, sub?, cls?, stream?, view? }` | { asOf, totals{original,revised,actual,commitment,available,forecast}, rows[] } | Read-only | Lingkup data difilter server per akun (BU / divisi / outlet / stewardship) | — (baca) |
+| `report.export7P` | — | — (export server dengan logging) | **NEW INTEGRATION REQUIRED** | Owner / Eksekutif, BU Manager, Head of Division, Finance / Accounting | `{ filters, format: xlsx\|pdf }` | { rows, total, format } | File dibuat untuk lingkup & filter aktif | Hanya data dalam lingkup akun; payroll tidak per individu; Supervisor/Staff tidak boleh export | EXPORT_7P (user, role, lingkup, periode, filter, jumlah baris) |
+
+## Modul H/J
+
+| Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
+|---|---|---|---|---|---|---|---|---|---|
+| `finance.getAuthorizedRevenueProfit` (baca) | — | GL pendapatan & laba — TO VERIFY | **TO VERIFY** | Owner / Eksekutif, BU Manager, Finance / Accounting | `{ fy, per, bu?, loc? }` | { revenue, profit } atau N/A + alasan | Read-only | Konsolidasi mengeliminasi transaksi antar-BU; Office tanpa pendapatan langsung = N/A | — |
 
 ## Modul A/B
 

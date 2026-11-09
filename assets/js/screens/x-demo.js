@@ -297,8 +297,8 @@
   function render() {
     return `<div data-dx-root class="dx">
       <div class="dx-hero"><div><div class="eyebrow">HAWK × JAENS · DX-HAWK-01 · GUIDED DEVELOPER DEMO</div><h1>Demo Experience Center</h1>
-        <p>Belajar alur kerja lengkap dengan menekan tombol asli aplikasi HAWK. Lima role, enam skenario, satu data sandbox bersama. Tidak terhubung ke HAWK produksi.</p></div>
-        <div class="dx-hero-r"><span class="badge demo">DEMO / NO LIVE API</span><span class="dx-pill">62 NV · 5 role · 6 skenario</span><span class="dx-pill" id="dx-hero-prog"></span></div></div>
+        <p>Belajar alur kerja lengkap dengan menekan tombol asli aplikasi HAWK. Lima role, tujuh skenario (termasuk 7P), satu data sandbox bersama. Tidak terhubung ke HAWK produksi.</p></div>
+        <div class="dx-hero-r"><span class="badge demo">DEMO / NO LIVE API</span><span class="dx-pill">62 NV · 5 role · 7 skenario</span><span class="dx-pill" id="dx-hero-prog"></span></div></div>
       <div class="row" style="gap:8px;flex-wrap:wrap"><button class="dx-tab" data-dx="mode" data-mode="lab">Option 1 · Scenario Test Lab</button><button class="dx-tab" data-dx="mode" data-mode="sim">Option 2 · Simulator 5 Layar</button>
         <span class="tiny muted" style="align-self:center">Setiap layar adalah aplikasi HAWK yang sebenarnya (bukan gambar) dengan hak akses role-nya.</span></div>
       <div class="dx-main">
