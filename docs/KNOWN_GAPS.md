@@ -22,3 +22,17 @@ A gap analysis against the MP-HAWK-11 prompt and MP-HAWK-12 domain update v1.2. 
 | G-16 | Existing HAWK COA | TO VERIFY | `finance.resolveExistingCOAMapping` |
 | G-17 | Production performance (large cube, pagination) | NOT VERIFIED | the prototype computes in the browser over 126 lines; production needs a cube/aggregation on the server |
 | G-18 | Vercel preview of the review branch | protected by Vercel Authentication (401) | testing is done locally via Playwright; the live preview changes only after merging to main with the Owner's approval |
+
+## MP-HAWK-14 — Smart Staff Mobile (`#/m`)
+
+Details in `docs/SMART_STAFF_MOBILE.md` §10.
+
+| # | Requirement | Status | Explanation / next step |
+|---|---|---|---|
+| S-01 | Mobile basket uses the existing MRF approval (`mrf.create`), not AR-13 auto-approval | Owner decision | Order Sederhana (AR-13) stays on NV-24 |
+| S-02 | Push notifications | NOT BUILT | toast only; NEW INTEGRATION REQUIRED |
+| S-03 | Server-side storage for receiving / facility / receipt photos | NOT BUILT | browser sandbox = DEMO, not permanent and not secure |
+| S-04 | Receipt OCR | UI-ONLY SIMULATION | OCR provider must be called from the server, never with a key in the browser |
+| S-05 | Handover confirmation `mrf.confirmHandover` | BUILT (prototype) · NEW INTEGRATION REQUIRED | not a GRN; does not change stock or journals |
+| S-06 | Physical iPhone / Android / iPad devices | NOT VERIFIED | tested in Chromium emulation 390 px & 834 px |
+| S-07 | Staff "Allowance" = remaining 7P item budget in units | TO VERIFY | not a formal per-person quota |

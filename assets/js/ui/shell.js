@@ -459,7 +459,15 @@
   const errorState = (scr) => `<div class="card state-err" role="alert" style="max-width:680px"><h3>${ui.icon('alert', 16)} Data ${scr.code} tidak dapat dimuat</h3><p class="small">Adapter mengembalikan <span class="mono">NETWORK_ERROR</span> (simulasi). Tidak ada data yang berubah; transaksi yang sedang diisi tidak dikirim. Backend HAWK sebenarnya harus mengembalikan kode error terstruktur + <i>retryable</i>, dan operasi tulis wajib idempoten agar aman diulang.</p><div class="row" style="gap:8px"><button class="btn sm" data-retry>Coba lagi</button><button class="btn sm ghost" data-net-reset>Kembalikan ke Normal</button></div></div>`;
   const isDx = () => !EMBED && /^#\/dx/.test(location.hash);
   const isMs = () => /^#\/m(\/|\?|$)/.test(location.hash);
+  // Re-entrancy guard: replacing #view removes a focused input, whose blur can fire a 'change' that renders again
+  // while innerHTML is still being set. Such nested renders are deferred to the next tick instead.
+  let rendering = false;
   function render() {
+    if (rendering) { setTimeout(render, 0); return; }
+    rendering = true;
+    try { renderNow(); } finally { rendering = false; }
+  }
+  function renderNow() {
     document.documentElement.classList.toggle('dx-page', isDx());
     document.documentElement.classList.toggle('ms-page', isMs());
     if (isMs() && HAWK.views[100]) {

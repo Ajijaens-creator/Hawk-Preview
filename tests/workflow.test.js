@@ -981,6 +981,51 @@ const stockOf = (s, wh, it) => (S.stock(s, wh, it) || { onHand: 0, reserved: 0 }
   check('Akun lain tidak ikut naik hak (Supervisor tetap terbatas)', !api.can('approval.updateRule', s().users.find((u) => u.id === 'U-SPV')));
 })();
 
+/* ============ T15. MP-HAWK-14 Smart Staff Mobile — serah terima internal & laporan fasilitas per area ============ */
+(function smartStaff() {
+  console.log('T15 Smart Staff Mobile — serah terima (bukan GRN), laporan fasilitas tanpa aset, skenario R1–R5 via engine');
+  const { call, s, api } = fresh();
+  const S = H.selectors;
+  // R1: keranjang → mrf.create (bukan order.quick / AR-13) → antre di Supervisor
+  const r1 = call('mrf.create', { lines: [{ item: 'BHP-001', qty: 2, reason: 'Pemakaian rutin' }, { item: 'BHP-003', qty: 4, reason: 'Pemakaian rutin' }], memo: 'Dari aplikasi staf' }, 'STAFF', 'U-STF');
+  const m1 = r1.ok && s().mrfs.find((m) => m.id === r1.data.id);
+  check('R1 MRF staf: auto-isi outlet Ubud, status SUBMITTED, penyetuju berikutnya Supervisor (Mila)', m1 && m1.branch === 'BR-UBD' && m1.status === 'SUBMITTED' && S.mrfNextApprover(s(), m1) === 'SUPERVISOR' && S.canApproveStep(s(), s().users.find((u) => u.id === 'U-SPV'), 'SUPERVISOR', m1), r1.error && r1.error.message);
+  check('Stok dan jatah adalah angka berbeda (BHP-001 Ubud)', S.itemBudget(s(), 'BR-UBD', 'BHP-001').availableQty !== S.available(s(), S.whOfOrg(s(), 'BR-UBD').id, 'BHP-001'));
+  // R2: Mila setuju → stok lokal + sisa ke Purchasing
+  const r2 = call('mrf.create', { lines: [{ item: 'BHP-001', qty: 10, reason: 'Akhir pekan' }] }, 'STAFF', 'U-STF');
+  check('R2 Mila setujui', call('mrf.decide', { id: r2.data.id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV').ok);
+  const m2 = s().mrfs.find((m) => m.id === r2.data.id);
+  check('R2 pemenuhan: sebagian LOCAL, sisanya PURCHASE (masuk antrean PO)', m2.lines[0].alloc.some((a) => a.path === 'LOCAL') && m2.lines[0].alloc.some((a) => a.path === 'PURCHASE') && S.pendingPurchase(s()).some((x) => x.mrf === m2.id));
+  // R3: serah terima
+  const r3 = call('mrf.create', { lines: [{ item: 'BHP-003', qty: 4, reason: 'Shift pagi' }] }, 'STAFF', 'U-STF');
+  call('mrf.decide', { id: r3.data.id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV');
+  check('Sebelum barang diserahkan, konfirmasi ditolak (tidak ada yang menunggu)', !call('mrf.confirmHandover', { id: r3.data.id, lines: [{ item: 'BHP-003', qty: 4 }], condition: 'OK' }, 'STAFF', 'U-STF').ok);
+  check('R3 Supri (Gudang) menyerahkan barang', call('mrf.issue', { id: r3.data.id }, 'WAREHOUSE', 'U-WHS').ok);
+  const m3 = () => s().mrfs.find((m) => m.id === r3.data.id);
+  check('Menunggu konfirmasi: 4 handuk', S.handoverPending(s(), m3()).find((x) => x.item === 'BHP-003').qty === 4);
+  check('Akun outlet lain tidak bisa mengonfirmasi', !call('mrf.confirmHandover', { id: r3.data.id, lines: [{ item: 'BHP-003', qty: 4 }], condition: 'OK' }, 'SUPERVISOR', 'U-SPV2').ok);
+  check('Jumlah melebihi yang diserahkan ditolak', !call('mrf.confirmHandover', { id: r3.data.id, lines: [{ item: 'BHP-003', qty: 5 }], condition: 'OK' }, 'STAFF', 'U-STF').ok);
+  check('Kurang tanpa catatan ditolak', !call('mrf.confirmHandover', { id: r3.data.id, lines: [{ item: 'BHP-003', qty: 3 }], condition: 'OK' }, 'STAFF', 'U-STF').ok);
+  check('Kondisi bermasalah tanpa catatan ditolak', !call('mrf.confirmHandover', { id: r3.data.id, lines: [{ item: 'BHP-003', qty: 4 }], condition: 'ISSUE', note: '' }, 'STAFF', 'U-STF').ok);
+  const snap = JSON.stringify({ l: s().ledger.length, j: s().journals.length, st: s().stock, g: s().grns.length });
+  const ho = call('mrf.confirmHandover', { id: r3.data.id, lines: [{ item: 'BHP-003', qty: 3 }], condition: 'ISSUE', note: 'Handuk kurang 1', photos: ['data:image/png;base64,AA=='] }, 'STAFF', 'U-STF');
+  check('Indah konfirmasi 3 dari 4 dengan catatan', ho.ok, ho.error && ho.error.message);
+  const h = m3().handovers[0];
+  check('Serah terima: atas nama Indah (auto dari akun), jenis HANDOVER, kurang 1 tercatat', h.by.user === 'U-STF' && h.by.branch === 'BR-UBD' && h.kind === 'HANDOVER' && h.short.some((x) => x.item === 'BHP-003' && x.qty === 1));
+  check('Konfirmasi serah terima tidak mengubah stok, ledger, jurnal, atau GRN', JSON.stringify({ l: s().ledger.length, j: s().journals.length, st: s().stock, g: s().grns.length }) === snap);
+  check('Tidak ada lagi yang menunggu konfirmasi', S.handoverPending(s(), m3()).every((x) => x.qty === 0));
+  check('Riwayat MRF mencatat HANDOVER_CONFIRM', m3().history.some((x) => x.action === 'HANDOVER_CONFIRM'));
+  // R5: laporan fasilitas per area (tanpa aset)
+  const mt = call('mt.create', { area: 'Ruang Treatment 2', kind: 'DAMAGE', issue: 'Kran wastafel bocor, air terus menetes.', priority: 'HIGH', photos: ['data:image/png;base64,AA=='] }, 'STAFF', 'U-ATD');
+  const mtr = mt.ok && s().maintenance.find((x) => x.id === mt.data.id);
+  check('R5 Dewa lapor kerusakan area tanpa aset: outlet auto Ubud, foto & prioritas tersimpan', mtr && mtr.branch === 'BR-UBD' && mtr.area === 'Ruang Treatment 2' && mtr.priority === 'HIGH' && mtr.photos.length === 1 && mtr.reporter === 'U-ATD', mt.error && mt.error.message);
+  check('Staf tidak bisa melapor untuk outlet lain', !call('mt.create', { area: 'Lobby', branch: 'BR-SHN', kind: 'DAMAGE', issue: 'Lampu mati di lobby', priority: 'LOW' }, 'STAFF', 'U-ATD').ok);
+  check('Laporan tanpa aset dan tanpa area ditolak', !call('mt.create', { kind: 'DAMAGE', issue: 'Ada yang rusak', priority: 'LOW' }, 'STAFF', 'U-ATD').ok);
+  check('Mila menyetujui laporan → APPROVED', call('mt.review', { id: mt.data.id, decision: 'APPROVE', note: 'OK' }, 'SUPERVISOR', 'U-SPV').ok && s().maintenance.find((x) => x.id === mt.data.id).status === 'APPROVED');
+  check('Kontrak mrf.confirmHandover: NEW INTEGRATION REQUIRED (tidak diklaim terhubung)', H.CONTRACTS.find((c) => c.id === 'mrf.confirmHandover').status === 'NEW INTEGRATION REQUIRED');
+  check('Purchasing/Finance tidak bisa mengonfirmasi serah terima', !api.can('mrf.confirmHandover', s().users.find((u) => u.id === 'U-PUR')) && !api.can('mrf.confirmHandover', s().users.find((u) => u.id === 'U-FIN')));
+})();
+
 console.log(`\n${pass} lulus, ${failN} gagal`);
 require('fs').writeFileSync(path.join(__dirname, 'workflow-results.json'), JSON.stringify({ pass, fail: failN, results }, null, 1));
 process.exit(failN ? 1 : 0);

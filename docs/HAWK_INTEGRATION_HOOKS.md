@@ -11,7 +11,7 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | Status | Jumlah |
 |---|---|
 | TO VERIFY | 52 |
-| NEW INTEGRATION REQUIRED | 40 |
+| NEW INTEGRATION REQUIRED | 41 |
 | UI-ONLY SIMULATION | 9 |
 
 | Operasi | Jenis | Modul HAWK existing (perkiraan) | Hook paket Owner (placeholder) | Status | Diuji di engine |
@@ -46,6 +46,7 @@ Semua aksi tulis melewati satu fungsi: `HAWK.api.call(op, payload, user)` di `as
 | `mrf.decide` | tulis | Purchase Request — APPROVE STATUS / APPROVE BY | `mrf.approve` | TO VERIFY | ya |
 | `mrf.planFulfillment` | tulis | PO Request register — tombol TRANSFER dan PO, kolom TRANSFER ID / PO ID | — | TO VERIFY | ya |
 | `mrf.issue` | tulis | Inventory — pengeluaran stok (belum terlihat di screenshot) | `mrf.getFulfillment / inventory.issue` | TO VERIFY | ya |
+| `mrf.confirmHandover` | tulis | — (serah terima barang gudang → pemohon belum terlihat di HAWK v2.11.6) | — | NEW INTEGRATION REQUIRED | ya |
 | `mrf.cancel` | tulis | Purchase Request — CANCEL | — | TO VERIFY | ya |
 | `autoOrder.update` | tulis | — (pengaturan aturan baru) | — | NEW INTEGRATION REQUIRED | ya |
 | `order.quick` | tulis | Purchase Request → Purchase Order (engine yang sama, dipicu aturan) | — | NEW INTEGRATION REQUIRED | ya |

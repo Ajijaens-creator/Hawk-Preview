@@ -1,0 +1,356 @@
+{
+ "pass": 70,
+ "fail": 0,
+ "results": [
+  {
+   "name": "Rute #/m terbuka sebagai MS-01 untuk staf (Indah)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Menu sidebar \"Smart Staff Mobile\" ada",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-0 Tunjukkan menyorot kontrol — Indah buka katalog",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-0 Indah buka katalog",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-1 Tunjukkan menyorot kontrol — tambah 2 Minyak Pijat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-1 tambah 2 Minyak Pijat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf tidak melihat harga di katalog",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok dan Jatah tampil terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-2 Tunjukkan menyorot kontrol — tambah 4 Handuk",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-2 tambah 4 Handuk",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-03 bottom sheet terbuka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-3 Tunjukkan menyorot kontrol — ke keranjang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-3 ke keranjang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-4 Tunjukkan menyorot kontrol — lanjut ke ringkasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-4 lanjut ke ringkasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-05 menampilkan penyetuju Mila (Supervisor)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-5 Tunjukkan menyorot kontrol — kirim permintaan (mrf.create)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-5 kirim permintaan (mrf.create)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF dari keranjang: SUBMITTED, Ubud, Indah, 2 minyak + 4 handuk, menunggu Supervisor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1-6 lihat status di Permintaan Saya",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1 selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-0 Tunjukkan menyorot kontrol — Indah buka perjalanan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-0 Indah buka perjalanan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-1 Tunjukkan menyorot kontrol — Mila setujui dari Tugas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-1 Mila setujui dari Tugas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setelah disetujui: sebagian dari stok outlet, sisanya PURCHASE",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah Etya menampilkan \"Lakukan untuk saya\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-2 PO dibuat & dikirim lewat alur PO HAWK",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-3 Tunjukkan menyorot kontrol — Indah lihat Dalam pengiriman",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2-3 Indah lihat Dalam pengiriman",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Perjalanan menampilkan \"Dalam pengiriman\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3-0 Tunjukkan menyorot kontrol — Supri serahkan barang (mrf.issue)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3-0 Supri serahkan barang (mrf.issue)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3-1 Tunjukkan menyorot kontrol — Indah pilih kondisi Sesuai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3-1 Indah pilih kondisi Sesuai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3-2 Tunjukkan menyorot kontrol — Indah konfirmasi penerimaan (mrf.confirmHandover)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3-2 Indah konfirmasi penerimaan (mrf.confirmHandover)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Serah terima dicatat atas nama Indah, jenis HANDOVER, tanpa GRN",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Issue mengubah ledger/jurnal; konfirmasi serah terima tidak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-0 Tunjukkan menyorot kontrol — jepret nota (spend.capture)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-0 jepret nota (spend.capture)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-10 berlabel AI SIMULASI",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-1 Tunjukkan menyorot kontrol — koreksi harga Pasir 350000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-1 koreksi harga Pasir 350000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-2 Tunjukkan menyorot kontrol — konfirmasi total & pilih Tunai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-2 konfirmasi total & pilih Tunai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-3 Tunjukkan menyorot kontrol — ajukan nota (spend.submit)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R4-3 ajukan nota (spend.submit)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Nota diajukan, tidak ada jurnal baru, bukti asli tersimpan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-0 Tunjukkan menyorot kontrol — Dewa pilih Kerusakan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-0 Dewa pilih Kerusakan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-1 Tunjukkan menyorot kontrol — tambah foto contoh",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-1 tambah foto contoh",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-2 Tunjukkan menyorot kontrol — pilih area & uraian",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-2 pilih area & uraian",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-3 Tunjukkan menyorot kontrol — prioritas Mendesak & kirim (mt.create)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-3 prioritas Mendesak & kirim (mt.create)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan: area Ruang Treatment 2, HIGH, 1 foto, Ubud, oleh Dewa",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-4 Tunjukkan menyorot kontrol — Mila setujui laporan (mt.review)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5-4 Mila setujui laporan (mt.review)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5 selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-12 tampil untuk indah tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-12 tampil untuk mila tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-12 tampil untuk supri tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-12 tampil untuk etya tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MS-12 tampil untuk asri tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: 12 layar tanpa overflow horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reset data demo mengembalikan data awal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tablet 834 px: tanpa overflow",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error JavaScript",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

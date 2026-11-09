@@ -91,6 +91,7 @@
 "Operasi","mrf.decide","tulis","EKSEKUSI","EKSEKUSI","EKSEKUSI","EKSEKUSI","","","","","",""
 "Operasi","mrf.planFulfillment","tulis","EKSEKUSI","EKSEKUSI","EKSEKUSI","EKSEKUSI","","","EKSEKUSI","","",""
 "Operasi","mrf.issue","tulis","","","","EKSEKUSI","","","EKSEKUSI","","",""
+"Operasi","mrf.confirmHandover","tulis","","EKSEKUSI","EKSEKUSI","EKSEKUSI","EKSEKUSI","","","","EKSEKUSI","EKSEKUSI"
 "Operasi","mrf.cancel","tulis","","","","EKSEKUSI","EKSEKUSI","","","","","EKSEKUSI"
 "Operasi","autoOrder.update","tulis","EKSEKUSI","","","","","","","EKSEKUSI","","EKSEKUSI"
 "Operasi","order.quick","tulis","","EKSEKUSI","EKSEKUSI","EKSEKUSI","EKSEKUSI","","","","EKSEKUSI","EKSEKUSI"

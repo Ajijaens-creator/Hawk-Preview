@@ -107,6 +107,7 @@ Role: `OWNER` = Owner / Eksekutif · `BU_MANAGER` = BU Manager · `HEAD_DIV` = H
 | `mrf.decide` | tulis | E | E | E | E |  |  |  |  |  |  |
 | `mrf.planFulfillment` | tulis | E | E | E | E |  |  | E |  |  |  |
 | `mrf.issue` | tulis |  |  |  | E |  |  | E |  |  |  |
+| `mrf.confirmHandover` | tulis |  | E | E | E | E |  |  |  | E | E |
 | `mrf.cancel` | tulis |  |  |  | E | E |  |  |  |  | E |
 | `autoOrder.update` | tulis | E |  |  |  |  |  |  | E |  | E |
 | `order.quick` | tulis |  | E | E | E | E |  |  |  | E | E |

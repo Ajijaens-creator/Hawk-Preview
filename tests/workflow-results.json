@@ -1,6 +1,6 @@
 {
- "pass": 419,
- "fail": 1,
+ "pass": 442,
+ "fail": 0,
  "results": [
   {
    "name": "Staff dapat membuat MRF",
@@ -984,8 +984,8 @@
   },
   {
    "name": "Setiap operasi tulis di kontrak punya tes engine",
-   "ok": false,
-   "info": "mrf.confirmHandover"
+   "ok": true,
+   "info": ""
   },
   {
    "name": "Capture: draft + bukti asli tersimpan terpisah, sumber = AI SIMULATION",
@@ -2099,6 +2099,116 @@
   },
   {
    "name": "Akun lain tidak ikut naik hak (Supervisor tetap terbatas)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R1 MRF staf: auto-isi outlet Ubud, status SUBMITTED, penyetuju berikutnya Supervisor (Mila)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Stok dan jatah adalah angka berbeda (BHP-001 Ubud)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2 Mila setujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R2 pemenuhan: sebagian LOCAL, sisanya PURCHASE (masuk antrean PO)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sebelum barang diserahkan, konfirmasi ditolak (tidak ada yang menunggu)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R3 Supri (Gudang) menyerahkan barang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Menunggu konfirmasi: 4 handuk",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akun outlet lain tidak bisa mengonfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jumlah melebihi yang diserahkan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kurang tanpa catatan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kondisi bermasalah tanpa catatan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Indah konfirmasi 3 dari 4 dengan catatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Serah terima: atas nama Indah (auto dari akun), jenis HANDOVER, kurang 1 tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konfirmasi serah terima tidak mengubah stok, ledger, jurnal, atau GRN",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada lagi yang menunggu konfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Riwayat MRF mencatat HANDOVER_CONFIRM",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "R5 Dewa lapor kerusakan area tanpa aset: outlet auto Ubud, foto & prioritas tersimpan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf tidak bisa melapor untuk outlet lain",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan tanpa aset dan tanpa area ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mila menyetujui laporan → APPROVED",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kontrak mrf.confirmHandover: NEW INTEGRATION REQUIRED (tidak diklaim terhubung)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Purchasing/Finance tidak bisa mengonfirmasi serah terima",
    "ok": true,
    "info": ""
   }

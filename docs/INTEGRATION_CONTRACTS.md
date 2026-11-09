@@ -8,7 +8,7 @@ _Dibuat otomatis oleh `node tools/gen-docs.js` dari `assets/js/core/contracts.js
 |---|---|---|
 | CONFIRMED EXISTING | 0 | Hanya dengan dokumentasi/verifikasi engine — belum ada |
 | TO VERIFY | 52 | UI HAWK v2.11.6 menunjukkan kemampuan terkait (screenshot 7 Nov 2026), API belum terdokumentasi |
-| NEW INTEGRATION REQUIRED | 40 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
+| NEW INTEGRATION REQUIRED | 41 | Tidak ada bukti di engine; butuh pekerjaan backend/konfigurasi |
 | UI-ONLY SIMULATION | 9 | Hanya prototipe (AI/OCR/skenario); tidak boleh disajikan sebagai live |
 
 Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi, skema request/response, permission di server, state workflow, audit event, **idempotency key** untuk operasi tulis, error terstruktur (`code`, `message`, `retryable`), dan bukti tes.
@@ -72,6 +72,7 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 | `mrf.create` | `mrf.create` | Purchases › Transaction › DATA ENTRY \| PURCHASE REQUEST (ID PR20261100001) | **TO VERIFY** | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Asset / Facility PIC, System Administrator | `{ branch (REQUEST LOCATION), type ROUTINE\|NON_ROUTINE, memo (MEMO), purpose, lines:[{item, qty (REQUEST), reason (REASON)}], draft? }  — EMPLOYEE & DATE diisi dari sesi` | MRF = PR { id PRyyyymm#####, status OPEN/SUBMITTED, chain[] } | — → DRAFT \| SUBMITTED | Qty bulat 1–9999; unit aktif; ≥1 item | PR_CREATE (source: MRF UI) |
 | `mrf.submitDraft` | — | Purchase Request (STATUS OPEN) | **TO VERIFY** | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Asset / Facility PIC | `{ id, lines? }` | MRF | DRAFT\|REVISION → SUBMITTED | — | PR_SUBMIT |
 | `mrf.decide` | `mrf.approve` | Purchase Request — APPROVE STATUS / APPROVE BY | **TO VERIFY** | Supervisor Outlet, Head of Division, BU Manager, Owner / Eksekutif | `{ id, decision APPROVE\|REJECT\|REVISION\|ESCALATE, note }` | MRF | SUBMITTED → (rantai) → APPROVED → IN_FULFILLMENT \| REJECTED \| REVISION \| ESCALATED | Hanya approver langkah aktif; catatan wajib untuk non-approve; supervisor hanya unitnya | PR_APPROVAL_DECISION (with budget snapshot) |
+| `mrf.confirmHandover` | — | — (serah terima barang gudang → pemohon belum terlihat di HAWK v2.11.6) | **NEW INTEGRATION REQUIRED** | Staff / Therapist / Housekeeping, Supervisor Outlet, Head of Division, BU Manager, Asset / Facility PIC, System Administrator | `{ id, lines[{ item, qty }], condition: OK\|ISSUE, note?, photos?[] }` | Handover HO… { by (otomatis dari akun), lines, short, condition } | Barang yang sudah di-issue gudang/PIC → dikonfirmasi diterima pemohon (bukan GRN vendor) | Hanya pemohon / akun outlet; qty ≤ qty yang sudah diserahkan dan belum dikonfirmasi; catatan wajib bila kurang/rusak | MRF_HANDOVER_CONFIRM (tidak mengubah stok & tidak memposting jurnal) |
 | `mrf.cancel` | — | Purchase Request — CANCEL | **TO VERIFY** | Staff / Therapist / Housekeeping, Supervisor Outlet, System Administrator | `{ id, note }` | MRF | DRAFT\|SUBMITTED\|REVISION → CANCELLED | Hanya pemohon | PR_CANCEL |
 
 ## Modul E/G
@@ -149,7 +150,7 @@ Setiap operasi yang diimplementasikan wajib punya: endpoint/method terverifikasi
 
 | Operasi | Hook paket Owner | Modul HAWK existing | Status | Role | Input | Output | Transisi | Validasi | Audit |
 |---|---|---|---|---|---|---|---|---|---|
-| `mt.create` | — | Asset Management (menu utama HAWK) | **TO VERIFY** | Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC | `{ asset, issue, priority }` | MaintenanceRequest MT… | — → SUBMITTED | Aset aktif; uraian wajib | MAINT_REQUEST |
+| `mt.create` | — | Asset Management (menu utama HAWK) | **TO VERIFY** | Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC | `{ asset? \| area, branch?, kind: DAMAGE\|ROUTINE\|FACILITY, issue, priority: LOW\|MEDIUM\|HIGH, photos?[] }` | MaintenanceRequest MT… | — → SUBMITTED | Aset aktif ATAU area fasilitas; uraian wajib; akun outlet hanya untuk outletnya; foto = bukti DEMO (produksi: object storage server) | MAINT_REQUEST |
 | `mt.review` | — | Asset Management | **TO VERIFY** | Supervisor Outlet, Asset / Facility PIC | `{ id, decision, note }` | MaintenanceRequest | SUBMITTED → APPROVED \| REJECTED | Supervisor hanya unitnya | MAINT_REVIEW |
 | `wo.create` | `asset.createWorkOrder` | Purchases register tab WORK ORDER | **TO VERIFY** | Asset / Facility PIC | `{ mt, assignee, labor }` | WorkOrder WO… | APPROVED MT → IN_PROGRESS; WO OPEN | MT disetujui | WO_CREATE |
 | `wo.complete` | — | Work Order | **TO VERIFY** | Asset / Facility PIC | `{ id, notes, cost }` | WO COMPLETED + Asset.history + Journal beban pemeliharaan | OPEN\|WAITING_PARTS → COMPLETED | Catatan wajib | WO_COMPLETE |

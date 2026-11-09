@@ -1403,7 +1403,7 @@ Detail aset, lokasi, siklus hidup, jadwal & riwayat.
 
 **Operasi adapter:**
 
-- `mt.create` — **TO VERIFY** · HAWK: Asset Management (menu utama HAWK) · izin: Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC · input `{ asset, issue, priority }` → MaintenanceRequest MT… · transisi: — → SUBMITTED · audit: MAINT_REQUEST
+- `mt.create` — **TO VERIFY** · HAWK: Asset Management (menu utama HAWK) · izin: Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC · input `{ asset? \| area, branch?, kind: DAMAGE\|ROUTINE\|FACILITY, issue, priority: LOW\|MEDIUM\|HIGH, photos?[] }` → MaintenanceRequest MT… · transisi: — → SUBMITTED · audit: MAINT_REQUEST
 
 ### NV-55 Maintenance Request & Work Order
 
@@ -1428,7 +1428,7 @@ Request → review supervisor → WO → suku cadang (MRF) → selesai → histo
 
 **Operasi adapter:**
 
-- `mt.create` — **TO VERIFY** · HAWK: Asset Management (menu utama HAWK) · izin: Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC · input `{ asset, issue, priority }` → MaintenanceRequest MT… · transisi: — → SUBMITTED · audit: MAINT_REQUEST
+- `mt.create` — **TO VERIFY** · HAWK: Asset Management (menu utama HAWK) · izin: Staff / Therapist / Housekeeping, Supervisor Outlet, Asset / Facility PIC · input `{ asset? \| area, branch?, kind: DAMAGE\|ROUTINE\|FACILITY, issue, priority: LOW\|MEDIUM\|HIGH, photos?[] }` → MaintenanceRequest MT… · transisi: — → SUBMITTED · audit: MAINT_REQUEST
 - `mt.review` — **TO VERIFY** · HAWK: Asset Management · izin: Supervisor Outlet, Asset / Facility PIC · input `{ id, decision, note }` → MaintenanceRequest · transisi: SUBMITTED → APPROVED \| REJECTED · audit: MAINT_REVIEW
 - `wo.create` — **TO VERIFY** · HAWK: Purchases register tab WORK ORDER · izin: Asset / Facility PIC · input `{ mt, assignee, labor }` → WorkOrder WO… · transisi: APPROVED MT → IN_PROGRESS; WO OPEN · audit: WO_CREATE
 - `wo.requestPart` — **TO VERIFY** · HAWK: Work Order → Purchase Request · izin: Asset / Facility PIC · input `{ id, item, qty }` → { wo, mrf } · transisi: WO → WAITING_PARTS; MRF NON_ROUTINE SUBMITTED · audit: WO_PART_REQUEST

@@ -150,7 +150,7 @@
     const approvedAt = (m.approvals || []).slice(-1)[0];
     const stepsArr = [
       { t: 'Permintaan diajukan', d: U.datetime(m.date), done: true },
-      { t: chain.length > 1 ? `Persetujuan atasan (${appr}/${chain.length})` : 'Persetujuan Supervisor', d: approvedAt ? `${U.datetime(approvedAt.ts)} · ${esc(S.userName(s, approvedAt.by))}` : x.k === 'stop' ? x.t : 'Menunggu ' + chain.slice(appr).map((r) => HAWK.ROLE_LABEL[r] || r).join(' → '), done: at > 0, cur: at === 0 },
+      { t: chain.length > 1 ? `Persetujuan atasan (${appr}/${chain.length})` : 'Persetujuan Supervisor', d: approvedAt ? `${U.datetime(approvedAt.ts)} · ${esc(S.userName(s, approvedAt.by))}` : x.k === 'stop' ? x.t : at > 0 ? 'Disetujui' : 'Menunggu ' + chain.slice(appr).map((r) => HAWK.ROLE_LABEL[r] || r).join(' → '), done: at > 0, cur: at === 0 },
       { t: x.k === 'proc' || m.lines.some((l) => (l.alloc || []).some((a) => a.path === 'PURCHASE')) ? 'Dalam pengadaan' : 'Disiapkan gudang', d: x.k === 'proc' ? 'Sedang disiapkan oleh Purchasing' : 'Diambil dari stok outlet / gudang', done: at > 2 || (at > 1 && x.k !== 'proc'), cur: at === 1 || at === 2 },
       { t: 'Dalam pengiriman', d: x.k === 'ship' ? 'Barang dalam perjalanan ke outlet' : 'Menunggu pengiriman ke outlet (bila perlu)', done: at > 3, cur: at === 3 },
       { t: 'Siap diterima', d: x.k === 'ready' ? 'Konfirmasi penerimaan barang' : 'Konfirmasi saat barang diserahkan', done: at > 4, cur: at === 4 },
@@ -535,7 +535,7 @@
     let extra = '';
     if (x.approve) {
       const m = ctx.s.mrfs.find((y) => y.id === x.approve);
-      extra = `<span class="tiny ms-lines">${m.lines.map((l) => `${esc(S.itemName(ctx.s, l.item))} × ${l.qty}`).join(' · ')}${money(ctx) ? ' · ' + U.rp(S.mrfValue(ctx.s, m)) : ''} · budget: ${esc(m.budgetSnapshot || S.mrfBudgetCheck(ctx.s, m).status)}</span>`;
+      extra = `<span class="tiny ms-lines">${m.lines.map((l) => `${esc(S.itemName(ctx.s, l.item))} × ${l.qty}`).join(' · ')}${money(ctx) ? ' · ' + U.rp(S.mrfValue(ctx.s, m)) : ''} · budget: ${(() => { const b = m.budgetSnapshot || S.mrfBudgetCheck(ctx.s, m).status; return esc({ OK: 'aman', WARN: 'mendekati batas', OVER: 'melebihi', NONE: 'tanpa budget' }[b] || b); })()}</span>`;
     }
     return `<div class="ms-feed ${x.dot ? 'new' : ''}" data-ms-feed="${esc(x.t || '')}"><button class="ms-feed-main" ${target || 'disabled'}><span class="ms-art sm">${x.icon}</span><span class="ms-grow"><b>${esc(x.title)}</b><span class="tiny muted">${esc(x.sub)}</span>${extra}<span class="tiny muted">${rel(x.ts, ctx.s)}</span></span>${x.dot ? '<i class="ms-dot"></i>' : ''}${target ? '<span class="ms-chev">›</span>' : ''}</button>${act}</div>`;
   }
@@ -611,7 +611,7 @@
   }
   function tutorPanel(ctx) {
     const t = T();
-    if (!t.open && !t.sc) return `<button class="ms-guide-fab" data-a="mstut" data-k="open" data-ms-t="guide">🧭 Pandu Saya</button>`;
+    if (!t.open && !t.sc) return '';
     if (!t.sc)
       return `<div class="ms-guide list" role="dialog" aria-label="Pandu Saya"><div class="ms-row"><b>🧭 Pandu Saya</b><span class="ms-grow"></span><button class="ms-ib sm" data-a="mstut" data-k="close" aria-label="Tutup">✕</button></div><p class="tiny">Pilih skenario. Setiap langkah: <b>Tunjukkan</b> → <b>Coba</b> sendiri → <b>Lanjut</b>.</p>
         ${SCEN.map((x, i) => `<button class="ms-sc" data-a="mstut" data-k="start" data-v="${x.id}" data-ms-sc="${x.id}"><span class="ms-art sm">${x.icon}</span><span class="ms-grow"><b>${i + 1}. ${esc(x.title)}</b><span class="tiny muted">${esc(x.who)} · ${x.steps.length} langkah</span></span>›</button>`).join('')}
@@ -636,6 +636,7 @@
     const step = sc && sc.steps[t.i];
     if (!step) return;
     if (ctx.user.id !== step.as) HAWK.setUser(step.as, {});
+    t.min = true; // collapse the guide to a pill so the highlighted control stays visible
     const sel = typeof step.t === 'function' ? step.t(t.v) : step.t;
     const q = step.ms === '07' || step.ms === '08' ? { id: t.v.mrf } : step.ms === '10' ? { id: t.v.sp } : null;
     const curMs = (location.hash.match(/^#\/m\/(\d\d)/) || [])[1];
@@ -666,7 +667,7 @@
     const L = st();
     delete L.err;
     const acc = DEMO_ACCOUNTS.map(([id, n, r]) => `<button class="${ctx.user.id === id ? 'on' : ''}" data-a="msas" data-u="${id}">${n}<span>${r}</span></button>`).join('');
-    return `<div class="ms-shell" data-ms="${code}"><div class="ms-meta"><span class="ms-chip gold">MS-${code}</span><span class="tiny">${esc(scr.name)} · terhubung ke <button class="ms-link" data-nav="${scr.nv}">NV-${String(scr.nv).padStart(2, '0')}</button></span><span class="ms-grow"></span><span class="badge demo">DEMO</span></div>
+    return `<div class="ms-shell" data-ms="${code}"><div class="ms-meta"><span class="ms-chip gold">MS-${code}</span><span class="tiny">${esc(scr.name)} · terhubung ke <button class="ms-link" data-nav="${scr.nv}">NV-${String(scr.nv).padStart(2, '0')}</button></span><span class="ms-grow"></span><button class="ms-guide-fab" data-a="mstut" data-k="open" data-ms-t="guide">🧭 Pandu Saya</button><span class="badge demo">DEMO</span></div>
       <div class="ms-accts" aria-label="Akun demo">${acc}</div>
       <div class="ms-app ${code === '09' ? 'dark' : ''}">${code === '01' ? head(ctx, '', null, right).replace('<h1></h1>', '<h1 class="ms-logo">HAWK<span>×</span>JAENS</h1>') : head(ctx, scr.title, back, right)}${body}${['09', '05', '08', '10', '11'].includes(code) ? '' : tabbar(ctx, code)}${tutorPanel(ctx)}</div>
       <p class="tiny muted ms-foot">Smart Staff Mobile (MP-HAWK-14) · data demo bersama dengan semua layar HAWK · ${esc(meLine(ctx))}</p></div>`;
@@ -855,7 +856,11 @@
       rer();
     },
     msf(el, ctx) {
-      const r = call(ctx, 'spend.update', { id: ctx.q.id || (S.spend(ctx.s, ctx.q.id) || {}).id, fields: { [el.dataset.k]: el.value } });
+      const sp = S.spend(ctx.s, ctx.q.id);
+      const fields = { [el.dataset.k]: el.value };
+      // a paid receipt needs a payment date: default it to the receipt date (staff can still change it)
+      if (sp && el.dataset.k === 'pay' && HAWK.SPEND.PAY[el.value] && HAWK.SPEND.PAY[el.value].flow === 'PAID' && !sp.fields.payDate) fields.payDate = sp.fields.date || ctx.s.meta.demoDate;
+      const r = call(ctx, 'spend.update', { id: ctx.q.id, fields });
       if (!r.ok) return errTo(ctx, r);
       rer();
     },
