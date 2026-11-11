@@ -48,41 +48,86 @@ ok('Refund (komisi belum dibayar): booking keluar dari revenue dan komisi', t.re
 s = HAWK.fresh(); HAWK.update(s, 'task', { id: 'TASK-02' });
 ok('Verifikasi tugas Sales menambah jumlah selesai', s.tasks.filter(x => x.team === 'Sales' && x.status === 'done').length === 1);
 
-/* SER reconciliation (visual/F1-02-spec.md) */
+/* SER reconciliation · fixture 4 outlet (Center/Ubud, Shanti, Triloka, Bisma) · NB Commercial + KPI audit */
 s = HAWK.fresh();
 let a = SER.summary(s, '2026-08', 'all').cur;
-ok('SER Agu semua outlet: revenue Rp2.820 jt', a.revenue === 2820 * JT, String(a.revenue));
-ok('SER Agu semua outlet: target Rp3.190 jt', a.target === 3190 * JT);
-ok('SER Agu semua outlet: 3.195 pelanggan unik, 3.260 order', a.customers === 3195 && a.orders === 3260);
+ok('SER Agu semua outlet: revenue Rp4.130 jt', a.revenue === 4130 * JT, String(a.revenue));
+ok('SER Agu semua outlet: target Rp4.550 jt', a.target === 4550 * JT);
+ok('SER Agu semua outlet: 4.885 pelanggan unik, 4.990 order, 5.574 tamu', a.customers === 4885 && a.orders === 4990 && a.guests === 5574);
 let u = SER.summary(s, '2026-08', 'ubud').cur;
 ok('SER Agu Ubud: revenue Rp1.680 jt, 1.880 pelanggan', u.revenue === 1680 * JT && u.customers === 1880);
 ok('SER Agu Ubud: pagu Rp120 jt, realisasi Rp63 jt', u.pagu === 120 * JT && u.actual === 63 * JT);
-ok('Effective Target Rate = revenue ÷ target', Math.abs(a.etr - 2820 / 3190) < 1e-12);
-ok('AOV = revenue ÷ order (bukan pelanggan)', a.aov === a.revenue / a.orders);
+ok('Revenue Target Attainment = revenue ÷ target', Math.abs(a.etr - 4130 / 4550) < 1e-12);
+ok('Country Forecast Accuracy terpisah dari attainment (1 − WAPE, ada bias)', a.forecastAccuracy > 0 && a.forecastAccuracy <= 1 && a.forecastAccuracy !== a.etr && typeof a.forecastBias === 'number');
+ok('AOV = revenue ÷ order (bukan pelanggan); revenue per guest terpisah', a.aov === a.revenue / a.orders && a.rpg === a.revenue / a.guests);
+ok('ROMI warisan SER = revenue ÷ biaya marketing, dipisah dari ROMI kontribusi', Math.abs(a.romiLegacy - a.revenue / a.actual) < 1e-9 && a.romi !== a.romiLegacy);
+ok('Coverage atribusi di antara 0 dan 1', a.coverage > 0 && a.coverage <= 1);
 ok('Refund dikecualikan dari revenue dan order', a.refunded.length > 0 && a.paid.every(x => x.status === 'paid'));
 const jul = SER.summary(s, '2026-07', 'all').cur;
-ok('Filter Juli: angka berbeda dan merekonsiliasi ke histori (Rp2.590 jt)', jul.revenue === 2590 * JT);
-const b = SER.summary(s, '2026-08', 'bisma').cur;
-ok('Fallback outlet tanpa data: hasData=false, rasio = null ("—")', !b.hasData && b.etr === null && b.aov === null && b.romi === null);
+ok('Filter Juli: Rp3.765 jt; Bisma tanpa target → attainment hanya atas outlet bertarget', jul.revenue === 3765 * JT && jul.missingTarget.join() === 'OUT-BSM' && Math.abs(jul.etr - ['ubud', 'shanti', 'triloka'].reduce((x, o) => x + SER.summary(s, '2026-07', o).cur.revenue, 0) / jul.target) < 1e-12);
+const sep = SER.summary(s, '2026-09', 'all').cur;
+ok('Periode belum ditutup (Sep): hasData=false, rasio = null ("—")', !sep.hasData && sep.etr === null && sep.aov === null && sep.romi === null && sep.revenue === 0);
 const S = SER.summary(s, '2026-08', 'all');
 ok('Channel group: jumlah grup = total revenue', S.groups.reduce((x, g) => x + g.revenue, 0) === a.revenue);
 ok('Country: jumlah negara = total pelanggan unik', S.countries.reduce((x, c) => x + c.customers, 0) === a.customers);
-ok('Annual chart Agu 2026 = KPI revenue', S.annual[7].y2026 === a.revenue);
-ok('Semua outlet = Ubud + Shanti (+ Bisma 0)', a.revenue === u.revenue + SER.summary(s, '2026-08', 'shanti').cur.revenue);
+ok('Annual chart 2023–2026; Agu 2026 = KPI revenue; bulan kosong = null', S.annual[7].y2026 === a.revenue && S.annual[7].y2023 > 0 && S.annual[8].y2026 === null);
+ok('Semua outlet = Center + Shanti + Triloka + Bisma', a.revenue === ['ubud', 'shanti', 'triloka', 'bisma'].reduce((x, o) => x + SER.summary(s, '2026-08', o).cur.revenue, 0));
+ok('Lost reason: inquiry lost dan booking batal dipisah', S.cancel.every(c => c.total === c.lost + c.cancelled));
 ok('ID transaksi POS unik', new Set(S.ds.tx.map(x => x.id)).size === S.ds.tx.length);
 /* Sandbox connection */
 HAWK.update(s, 'request', { amount: '2000000' }); HAWK.update(s, 'approve', { id: 'MRF-002' });
 u = SER.summary(s, '2026-08', 'ubud').cur;
 ok('Sandbox → SER: komitmen CMP-001 Rp2 jt muncul di Budget Ubud, sisa turun', u.committed === 2 * JT && u.remaining === (120 - 63 - 2) * JT);
 HAWK.update(s, 'post', { id: 'MRF-002' }); u = SER.summary(s, '2026-08', 'ubud').cur;
-ok('Sandbox → SER: posting memindah ke realisasi Rp65 jt', u.committed === 0 && u.actual === 65 * JT);
+ok('Sandbox → SER: posting memindah ke realisasi Rp65 jt (sekali)', u.committed === 0 && u.actual === 65 * JT && !!throws(() => HAWK.update(s, 'post', { id: 'MRF-002' })));
 HAWK.update(s, 'book', { id: 'LEAD-001', slot: '11.00' }); ['checkin', 'complete', 'pay'].forEach(x => HAWK.update(s, x, { id: 'BK-002' }));
 a = SER.summary(s, '2026-08', 'all').cur;
-ok('Sandbox → SER: booking LEAD-001 dibayar menambah Rp750.000 sekali', a.revenue === 2820 * JT + 750000 && a.paid.filter(x => x.booking === 'BK-002').length === 1);
+ok('Sandbox → SER: booking LEAD-001 dibayar menambah Rp750.000 sekali', a.revenue === 4130 * JT + 750000 && a.paid.filter(x => x.booking === 'BK-002').length === 1);
 HAWK.update(s, 'refund', { id: 'BK-002' }); a = SER.summary(s, '2026-08', 'all').cur;
-ok('Sandbox → SER: refund mengeluarkan transaksi dari revenue', a.revenue === 2820 * JT && a.refunded.some(x => x.booking === 'BK-002'));
+ok('Sandbox → SER: refund mengeluarkan transaksi dari revenue', a.revenue === 4130 * JT && a.refunded.some(x => x.booking === 'BK-002'));
 HAWK.update(s, 'refund', { id: 'BK-001' }); a = SER.summary(s, '2026-08', 'all').cur;
-ok('Sandbox → SER: refund BK-001 (bagian fixture Agustus) ikut keluar dari revenue', a.revenue === 2820 * JT - 750000);
+ok('Sandbox → SER: refund BK-001 (bagian fixture Agustus) ikut keluar dari revenue', a.revenue === 4130 * JT - 750000);
+
+/* Commercial Budget: tolak pengajuan */
+s = HAWK.fresh(); HAWK.update(s, 'request', { amount: '1500000', campaign: 'CMP-001', pos: 'Promotion', note: 'Boost Reels' });
+ok('Tolak pengajuan butuh alasan ≥5 karakter', !!throws(() => HAWK.update(s, 'reject', { id: 'MRF-002', reason: 'x' })));
+HAWK.update(s, 'reject', { id: 'MRF-002', reason: 'Belum ada brief kreatif' });
+ok('Pengajuan ditolak: status rejected, histori tercatat, sisa tidak berubah', s.requests.find(r => r.id === 'MRF-002').status === 'rejected' && HAWK.totals(s).remaining === 21.5e6 && s.requests.find(r => r.id === 'MRF-002').history.length >= 2);
+
+/* Fase 2A · Campaign, Content Studio, Brand (CX) */
+global.CX = require(path.join(__dirname, '../../hawk-live/commercial-model.js'));
+s = HAWK.fresh(); const cx = CX.ensure(s); const by = 'MBR-C01';
+ok('Campaign baru dari brief → Draft', /^CMP-/.test(CX.update(s, 'cmp-create', { template: 'TPL-01', name: 'Uji Campaign', outlet: 'OUT-SHT', utm: 'uji_baru', by })));
+ok('UTM bentrok pada outlet yang sama ditolak', /UTM|utm/.test(throws(() => CX.update(s, 'cmp-create', { template: 'TPL-01', name: 'Uji Dua', outlet: 'OUT-SHT', utm: 'uji_baru', by })) || ''));
+ok('Pause campaign wajib alasan', !!throws(() => CX.update(s, 'cmp-pause', { id: 'CMP-001', note: '' })));
+ok('Tutup campaign wajib retrospektif', !!throws(() => CX.update(s, 'cmp-close', { id: 'CMP-001', note: 'ok' })));
+ok('Konten tanpa PIC tidak bisa ke Planned', /PIC/.test(throws(() => CX.update(s, 'cnt-stage', { id: 'CNT-001', to: 'Planned' })) || ''));
+ok('Konten belum approve tidak bisa dijadwalkan', /belum disetujui/.test(throws(() => CX.update(s, 'cnt-schedule', { id: 'CNT-003', platform: 'Instagram', at: '2026-08-25 18:00' })) || ''));
+CX.update(s, 'cnt-revise', { id: 'CNT-003', note: 'Ganti foto slide 2' });
+const ast2 = cx.assets.find(x => x.id === 'AST-002');
+ok('Minta revisi: kembali ke Editing, versi aset naik', cx.content.find(c => c.id === 'CNT-003').stage === 'Editing' && ast2.version >= 2);
+CX.update(s, 'cnt-submit', { id: 'CNT-003' }); CX.update(s, 'cnt-approve', { id: 'CNT-003' });
+const c3 = cx.content.find(c => c.id === 'CNT-003');
+ok('Approve: tahap Approved, aset approved', c3.stage === 'Approved' && ast2.status === 'approved');
+const p1 = CX.update(s, 'cnt-schedule', { id: 'CNT-003', platform: 'Instagram', at: '2026-08-25 18:00' });
+const p2 = CX.update(s, 'cnt-schedule', { id: 'CNT-003', platform: 'Facebook', at: '2026-08-25 18:00' });
+ok('Satu aset → dua publikasi (Instagram + Facebook)', p1 !== p2 && cx.publications.filter(p => p.content === 'CNT-003').length === 2);
+{ const sc = HAWK.fresh(); CX.ensure(sc); CX.update(sc, 'cnt-submit', { id: 'CNT-002' }); CX.update(sc, 'cnt-approve', { id: 'CNT-002' });
+  ok('Bentrok akun + platform + jam ditolak', /Bentrok/.test(throws(() => CX.update(sc, 'cnt-schedule', { id: 'CNT-002', platform: 'TikTok', account: '@jaensspa', at: '2026-08-24 19:00' })) || '')); }
+CX.update(s, 'pub-publish', { id: p1 });
+ok('Satu platform terbit → konten belum Published', c3.stage !== 'Published');
+CX.update(s, 'pub-publish', { id: p2 });
+ok('Semua platform terbit → Published', c3.stage === 'Published');
+s = HAWK.fresh(); const cx2 = CX.ensure(s);
+CX.update(s, 'cnt-asset', { id: 'CNT-004' });
+ok('Aset baru setelah approve → kembali Review, jadwal dibatalkan', cx2.content.find(c => c.id === 'CNT-004').stage === 'Review' && cx2.publications.filter(p => p.content === 'CNT-004').every(p => p.status === 'draft'));
+ok('Reuse hanya aset approved', !!throws(() => CX.update(s, 'cnt-reuse', { id: 'CNT-001', asset: 'AST-004' })));
+const t1 = CX.update(s, 'task-create', { key: 'insight-x', action: 'Uji' }), t2 = CX.update(s, 'task-create', { key: 'insight-x', action: 'Uji' });
+ok('Buat tindakan idempoten (kunci sama → satu tugas)', t1 === t2 && cx2.tasks.filter(t => t.key === 'insight-x').length === 1);
+const br = cx2.brands[0]; const before2 = CX.brandProgress(br).done;
+const el = CX.BRAND_ELEMENTS.find(([k]) => br.els[k][0] === 'review');
+if (el) CX.update(s, 'brand-approve', { id: br.id, el: el[0] });
+ok('Brand progress = bobot elemen approved (naik setelah approve)', !el || CX.brandProgress(br).done === before2 + el[2]);
 
 console.log(`\n${pass} lulus, ${fail} gagal`);
 require('fs').writeFileSync(path.join(__dirname, 'model-results.json'), JSON.stringify({ ranAt: new Date().toISOString(), pass, fail, results }, null, 1));

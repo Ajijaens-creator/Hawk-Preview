@@ -1,7 +1,7 @@
 {
- "ranAt": "2026-11-11T10:33:05.245Z",
+ "ranAt": "2026-11-11T12:37:17.145Z",
  "base": "http://localhost:8811/hawk-live/",
- "pass": 43,
+ "pass": 45,
  "fail": 0,
  "results": [
   {
@@ -50,12 +50,22 @@
    "info": ""
   },
   {
-   "name": "F1-02 revenue Agustus semua outlet Rp 2.820 jt",
+   "name": "F1-02 revenue Agustus semua outlet Rp 4.130 jt",
    "ok": true,
-   "info": "Rp 2.820 jt"
+   "info": "Rp 4.130 jt"
   },
   {
-   "name": "F1-02 pelanggan 3.195",
+   "name": "F1-02 Total Guests 5.574 (KPI ke-2)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 KPI audit: Revenue Target Attainment dan Country Forecast Accuracy terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 sidebar: Commercial Budget tepat setelah Executive Summary",
    "ok": true,
    "info": ""
   },
@@ -90,7 +100,7 @@
    "info": ""
   },
   {
-   "name": "F1-02 fallback tanpa data: status kosong dan KPI \"—\"",
+   "name": "F1-02 periode belum ditutup (Sep) tanpa data: status kosong dan KPI \"—\"",
    "ok": true,
    "info": ""
   },
@@ -160,7 +170,7 @@
    "info": ""
   },
   {
-   "name": "Reset Demo mengembalikan Rp 2.820 jt",
+   "name": "Reset Demo mengembalikan Rp 4.130 jt",
    "ok": true,
    "info": ""
   },

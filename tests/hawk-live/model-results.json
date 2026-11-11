@@ -1,6 +1,6 @@
 {
- "ranAt": "2026-11-11T10:32:57.347Z",
- "pass": 37,
+ "ranAt": "2026-11-11T12:39:02.421Z",
+ "pass": 59,
  "fail": 0,
  "results": [
   {
@@ -89,17 +89,17 @@
    "info": ""
   },
   {
-   "name": "SER Agu semua outlet: revenue Rp2.820 jt",
+   "name": "SER Agu semua outlet: revenue Rp4.130 jt",
    "ok": true,
-   "info": "2820000000"
+   "info": "4130000000"
   },
   {
-   "name": "SER Agu semua outlet: target Rp3.190 jt",
+   "name": "SER Agu semua outlet: target Rp4.550 jt",
    "ok": true,
    "info": ""
   },
   {
-   "name": "SER Agu semua outlet: 3.195 pelanggan unik, 3.260 order",
+   "name": "SER Agu semua outlet: 4.885 pelanggan unik, 4.990 order, 5.574 tamu",
    "ok": true,
    "info": ""
   },
@@ -114,12 +114,27 @@
    "info": ""
   },
   {
-   "name": "Effective Target Rate = revenue ÷ target",
+   "name": "Revenue Target Attainment = revenue ÷ target",
    "ok": true,
    "info": ""
   },
   {
-   "name": "AOV = revenue ÷ order (bukan pelanggan)",
+   "name": "Country Forecast Accuracy terpisah dari attainment (1 − WAPE, ada bias)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AOV = revenue ÷ order (bukan pelanggan); revenue per guest terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ROMI warisan SER = revenue ÷ biaya marketing, dipisah dari ROMI kontribusi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Coverage atribusi di antara 0 dan 1",
    "ok": true,
    "info": ""
   },
@@ -129,12 +144,12 @@
    "info": ""
   },
   {
-   "name": "Filter Juli: angka berbeda dan merekonsiliasi ke histori (Rp2.590 jt)",
+   "name": "Filter Juli: Rp3.765 jt; Bisma tanpa target → attainment hanya atas outlet bertarget",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Fallback outlet tanpa data: hasData=false, rasio = null (\"—\")",
+   "name": "Periode belum ditutup (Sep): hasData=false, rasio = null (\"—\")",
    "ok": true,
    "info": ""
   },
@@ -149,12 +164,17 @@
    "info": ""
   },
   {
-   "name": "Annual chart Agu 2026 = KPI revenue",
+   "name": "Annual chart 2023–2026; Agu 2026 = KPI revenue; bulan kosong = null",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Semua outlet = Ubud + Shanti (+ Bisma 0)",
+   "name": "Semua outlet = Center + Shanti + Triloka + Bisma",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Lost reason: inquiry lost dan booking batal dipisah",
    "ok": true,
    "info": ""
   },
@@ -169,7 +189,7 @@
    "info": ""
   },
   {
-   "name": "Sandbox → SER: posting memindah ke realisasi Rp65 jt",
+   "name": "Sandbox → SER: posting memindah ke realisasi Rp65 jt (sekali)",
    "ok": true,
    "info": ""
   },
@@ -185,6 +205,96 @@
   },
   {
    "name": "Sandbox → SER: refund BK-001 (bagian fixture Agustus) ikut keluar dari revenue",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tolak pengajuan butuh alasan ≥5 karakter",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pengajuan ditolak: status rejected, histori tercatat, sisa tidak berubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Campaign baru dari brief → Draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "UTM bentrok pada outlet yang sama ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pause campaign wajib alasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tutup campaign wajib retrospektif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konten tanpa PIC tidak bisa ke Planned",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konten belum approve tidak bisa dijadwalkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Minta revisi: kembali ke Editing, versi aset naik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Approve: tahap Approved, aset approved",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Satu aset → dua publikasi (Instagram + Facebook)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bentrok akun + platform + jam ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Satu platform terbit → konten belum Published",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Semua platform terbit → Published",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Aset baru setelah approve → kembali Review, jadwal dibatalkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reuse hanya aset approved",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Buat tindakan idempoten (kunci sama → satu tugas)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Brand progress = bobot elemen approved (naik setelah approve)",
    "ok": true,
    "info": ""
   }

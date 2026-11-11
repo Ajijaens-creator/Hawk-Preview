@@ -35,19 +35,21 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('Browser back kembali ke Commercial Executive Summary', p.url().endsWith('#commercial') && (await text('h1')) === 'Executive Performance Summary');
   /* F1-02 */
   const rev = () => p.locator('.kpi-row .kpi').nth(0).locator('.val').innerText();
-  ok('F1-02 revenue Agustus semua outlet Rp 2.820 jt', (await rev()) === 'Rp 2.820 jt', await rev());
-  ok('F1-02 pelanggan 3.195', (await p.locator('.kpi-row .kpi').nth(1).locator('.val').innerText()) === '3.195');
+  ok('F1-02 revenue Agustus semua outlet Rp 4.130 jt', (await rev()) === 'Rp 4.130 jt', await rev());
+  ok('F1-02 Total Guests 5.574 (KPI ke-2)', (await p.locator('.kpi-row .kpi').nth(1).locator('.val').innerText()) === '5.574');
+  ok('F1-02 KPI audit: Revenue Target Attainment dan Country Forecast Accuracy terpisah', (await text('.kpi-row')).includes('Revenue Target Attainment') && (await text('.support-row')).includes('Country Forecast Accuracy'));
+  ok('F1-02 sidebar: Commercial Budget tepat setelah Executive Summary', (await p.locator('#nav .nav-mod.active a > span:nth-child(2)').allInnerTexts()).slice(0, 2).map(s => s.split('\n')[0]).join('|') === 'Executive Summary|Commercial Budget');
   ok('F1-02 label DATA DEMO / SIMULASI tampil', (await p.locator('.badge').first().innerText()).includes('DEMO'));
   ok('F1-02 susunan: 4 KPI, 3 panel tengah, 3 panel bawah, insight', (await p.locator('.kpi-row > *').count()) === 4 && (await p.locator('.g-mid > section').count()) === 3 && (await p.locator('.g-bottom > section').count()) === 3 && (await p.locator('.insight').count()) === 1);
   await p.selectOption('#filters [name=outlet]', 'ubud'); await p.waitForTimeout(150);
   ok('F1-02 filter outlet Ubud: Rp 1.680 jt dan URL berisi filter', (await rev()) === 'Rp 1.680 jt' && p.url().includes('outlet=ubud'), await rev());
-  ok('F1-02 filter aktif ditampilkan', (await text('.active-filters')).includes('Giant Spa Ubud'));
+  ok('F1-02 filter aktif ditampilkan', (await text('.active-filters')).includes('Jaens Spa Center'));
   await p.selectOption('#filters [name=period]', '2026-07'); await p.waitForTimeout(150);
   ok('F1-02 filter Juli Ubud: Rp 1.520 jt', (await rev()) === 'Rp 1.520 jt', await rev());
   await p.click('[data-action="filter-reset"]'); await p.waitForTimeout(150);
-  ok('F1-02 Reset filter kembali ke Agustus · Semua outlet', (await rev()) === 'Rp 2.820 jt');
-  await p.selectOption('#filters [name=outlet]', 'bisma'); await p.waitForTimeout(150);
-  ok('F1-02 fallback tanpa data: status kosong dan KPI "—"', (await p.locator('.empty-state').count()) === 1 && (await rev()) === '—');
+  ok('F1-02 Reset filter kembali ke Agustus · Semua outlet', (await rev()) === 'Rp 4.130 jt');
+  await p.selectOption('#filters [name=period]', '2026-09'); await p.waitForTimeout(150);
+  ok('F1-02 periode belum ditutup (Sep) tanpa data: status kosong dan KPI "—"', (await p.locator('.empty-state').count()) === 1 && (await rev()) === '—');
   await p.goto(BASE + 'index.html#commercial?state=error'); await p.waitForTimeout(100);
   ok('F1-02 status error simulasi tanpa angka', (await p.locator('.error-state').count()) === 1 && (await p.locator('.kpi-row .kpi').count()) === 0);
   await p.click('[data-action="retry"]'); await p.waitForTimeout(150);
@@ -67,12 +69,12 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('F1-03 cari transaksi BK-001 (sandbox) ditemukan', (await p.locator('tbody tr').filter({ hasText: 'POS-BK-001' }).count()) === 1);
   await p.click('a.back'); await p.waitForTimeout(150);
   ok('F1-03 kembali ke ringkasan dengan filter tetap', p.url().includes('outlet=ubud') && (await rev()) === 'Rp 1.680 jt');
-  await p.locator('.g-bottom .bar-link').first().click(); await p.waitForTimeout(150);
+  await p.locator('.g-bottom .donut-legend a').first().click(); await p.waitForTimeout(150);
   ok('F1-03 klik bar channel membuka baris grup Paid', p.url().includes('metric=channel') && decodeURIComponent(p.url()).includes('group=Paid'));
   await p.goto(BASE + 'index.html#commercial-drill?metric=budget&period=2026-08&outlet=ubud'); await p.waitForTimeout(150);
   ok('F1-03 budget Ubud: baris CMP-001 dari sandbox', (await text('table')).length > 0 && (await p.locator('td').filter({ hasText: 'BGL-UBD-2608-01' }).count()) === 1);
   /* sandbox → SER through the UI */
-  await p.goto(BASE + 'index.html#commercial-budget'); await p.click('form[data-submit=request] button');
+  await p.goto(BASE + 'index.html#commercial-budget?view=requests'); await p.click('form[data-submit=request] button');
   await p.goto(BASE + 'index.html#mrf'); await p.click('[data-action=approve]'); await p.click('[data-action=post]');
   await p.goto(BASE + 'index.html#reservation'); await p.selectOption('form[data-submit=book] [name=id]', 'LEAD-001'); await p.click('form[data-submit=book] button');
   await p.goto(BASE + 'index.html#pos');
@@ -81,7 +83,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('Sandbox UI → SER: revenue Ubud jadi Rp 1.680,75 jt', (await rev()) === 'Rp 1.680,75 jt', await rev());
   ok('Sandbox UI → SER: realisasi budget Ubud Rp 65 jt', (await text('.g-mid')).includes('Rp 65 jt'));
   await p.goto(BASE + 'index.html#screens'); await p.click('[data-action=reset]'); await p.goto(BASE + 'index.html#commercial'); await p.waitForSelector('.kpi-row .kpi');
-  ok('Reset Demo mengembalikan Rp 2.820 jt', (await rev()) === 'Rp 2.820 jt');
+  ok('Reset Demo mengembalikan Rp 4.130 jt', (await rev()) === 'Rp 4.130 jt');
   /* F1-04 + F7-01 */
   await p.goto(BASE + 'index.html#sales-home'); await p.waitForTimeout(100);
   ok('F1-04 sidebar Sales berurutan', (await p.locator('#nav .nav-mod.active a > span:nth-child(2)').allInnerTexts()).slice(0, 7).map(s => s.split('\n')[0]).join('|') === 'Beranda Sales|Sales Manager|Owner Eagle Eye|Sales B2C & Reservasi|Sales B2B|Driver & Referral|Client Portal');

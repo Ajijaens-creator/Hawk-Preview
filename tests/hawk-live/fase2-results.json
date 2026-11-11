@@ -1,0 +1,103 @@
+{
+ "ranAt": "2026-11-11T12:38:49.615Z",
+ "base": "http://localhost:8811/hawk-live/",
+ "pass": 19,
+ "fail": 0,
+ "results": [
+  {
+   "name": "Insight \"Buat tindakan\" membuat satu tugas",
+   "ok": true,
+   "info": "TASK-C04"
+  },
+  {
+   "name": "Baris insight kini menautkan tugas (tombol tidak dobel)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik ulang/retry dengan kunci sama tetap satu tugas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Campaign baru → terbuka di Campaign Detail berstatus Draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "UTM bentrok di outlet sama ditolak dengan pesan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konten belum approve: jadwal dikunci",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Satu aset dijadwalkan ke Instagram dan Facebook",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Satu platform terbit: konten belum Published",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kedua platform terbit: konten Published, post ID tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Content Studio tampilan board tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Content Studio tampilan calendar tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Content Studio tampilan list tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Content Studio tampilan library tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Content Studio tampilan tasks tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pengajuan dari Commercial Budget masuk antrean Finance (Menunggu Finance)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pengajuan ditolak dengan alasan, status Ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Brand Foundation menampilkan progress per brand",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: tanpa scroll horizontal di 13 rute Commercial",
+   "ok": true,
+   "info": "commercial 390"
+  },
+  {
+   "name": "Tidak ada console error",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

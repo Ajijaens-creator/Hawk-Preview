@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-11T10:32:57.137Z">
+<meta name="hawk-standalone" content="2026-11-11T12:39:02.067Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Preview empat portal</title>
 <style>
@@ -1394,6 +1394,97 @@ dialog#picker::backdrop { background: rgba(10, 10, 10, 0.6); }
 @media (max-width: 720px) { .def:not(.compact) { grid-template-columns: 1fr; gap: 2px; } .def:not(.compact) dd { margin-bottom: 6px; } }
 @media (max-width: 720px) { .hero .scene { opacity: 0.22; } }
 
+/* ===== Fase 1 revisi + Fase 2 Commercial (pakai token hawk.css, tanpa :root) ===== */
+.sr { position: absolute; left: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.support-row .kpi { min-height: 0; }
+.donut { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; }
+.donut svg { width: 120px; height: 120px; }
+.donut-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 12px; min-width: 0; }
+.donut-legend a { display: flex; gap: 6px; align-items: center; color: var(--ink-2); text-decoration: none; }
+.donut-legend a:hover span { text-decoration: underline; }
+.donut-legend i, .dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; margin-right: 4px; vertical-align: -1px; }
+.donut-legend span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stack-bars { display: grid; gap: 10px; margin-bottom: 8px; }
+.stack-row { display: grid; gap: 4px; color: var(--ink); text-decoration: none; }
+.stack { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line-2); }
+.stack i { display: block; height: 100%; }
+.bad-t { color: var(--bad); font-weight: 700; }
+.warn-t { color: var(--warn); font-weight: 700; }
+.status-chip.bad { background: var(--bad-bg); color: var(--bad); }
+a.status-chip { text-decoration: none; }
+.status-chip.on { outline: 2px solid var(--gold); outline-offset: 1px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+.inline-form { display: flex; flex-wrap: wrap; gap: 6px; align-items: end; margin: 6px 0; }
+.inline-form label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+.inline-form input, .inline-form select, .inline-form textarea, .stack-form input, .stack-form select, .stack-form textarea { min-width: 0; max-width: 100%; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 6px 8px; font: inherit; font-size: 13px; background: #fff; }
+.stack-form { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.stack-form label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+.stack-form .btn { justify-self: start; align-self: end; }
+.timeline { padding: 8px 0; border-bottom: 1px solid var(--line-2); }
+.timeline ol, .history { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.checklist li { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+.check { width: 22px; height: 22px; border: 1.5px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; flex: none; }
+.check.on { background: var(--gold-grad); border-color: transparent; }
+.check.on::after { content: '✓'; color: #1b1505; font-weight: 800; font-size: 13px; }
+.cmp-grid .cmp-card { display: grid; gap: 6px; align-content: start; }
+.cmp-head .card-head { flex-wrap: wrap; gap: 8px; }
+.cmp-head .r { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+.studio-board { grid-auto-columns: 230px; }
+.board-col { background: var(--surface, #faf8f3); border: 1px solid var(--line); border-radius: var(--r); padding: 8px; display: grid; gap: 8px; align-content: start; min-height: 120px; }
+.board-col > h3 { font-size: 12.5px; margin: 0; display: flex; justify-content: space-between; }
+.board-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px; font-size: 12.5px; display: grid; gap: 4px; }
+.board-card a { color: var(--ink); text-decoration: none; }
+.board-card.sel { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201, 154, 46, .25); }
+.gantt { display: grid; gap: 6px; overflow-x: auto; }
+.gantt-head, .gantt-row { display: grid; grid-template-columns: minmax(150px, 220px) minmax(360px, 1fr); gap: 8px; align-items: center; font-size: 12.5px; }
+.gantt-scale { display: grid; grid-template-columns: repeat(3, 1fr); color: var(--muted); font-weight: 700; font-size: 12px; }
+.gantt-track { position: relative; height: 26px; background: repeating-linear-gradient(90deg, var(--line-2) 0 1px, transparent 1px 33.33%); border-radius: 6px; }
+.gantt-bar { position: absolute; top: 3px; bottom: 3px; border-radius: 5px; font-size: 11px; font-weight: 700; padding: 2px 6px; overflow: hidden; white-space: nowrap; background: #ece8de; color: var(--ink-2); }
+.gantt-bar.ready { background: var(--ok-bg); color: var(--ok); }
+.gantt-bar.sandbox { background: var(--warn-bg); color: var(--warn); }
+.gantt-bar.bad { background: var(--bad-bg); color: var(--bad); }
+.gantt-today { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--gold); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.cal-h { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; }
+.cal-d { min-height: 84px; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 4px; background: #fff; display: grid; gap: 3px; align-content: start; min-width: 0; }
+.cal-d.empty { background: transparent; border-style: dashed; }
+.cal-d.today { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+.cal-n { font-size: 11px; color: var(--muted); font-weight: 700; }
+.cal-item { display: block; font-size: 11px; padding: 2px 4px; border-radius: 4px; background: var(--info-bg); color: var(--info); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal-item.overdue { background: var(--bad-bg); color: var(--bad); }
+.cal-item.today, .cal-item.scheduled { background: var(--warn-bg); color: var(--warn); }
+.cal-item.published { background: var(--ok-bg); color: var(--ok); }
+.library { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.asset { display: grid; gap: 4px; align-content: start; }
+.asset h3 { margin: 4px 0 0; font-size: 13px; }
+.thumb { aspect-ratio: 4 / 3; border-radius: var(--r-sm); background: var(--dark-grad); color: var(--champagne); display: grid; place-content: center; text-align: center; font-weight: 800; letter-spacing: .04em; }
+.thumb small { font-size: 10px; opacity: .7; font-weight: 600; }
+.thumb.reels, .thumb.video { background: linear-gradient(135deg, #1a1a1a, #4a3a12); }
+.studio-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; align-items: start; }
+.new-content > summary { list-style: none; cursor: pointer; }
+.new-content > summary::-webkit-details-marker { display: none; }
+.new-content[open] > form { margin-top: 8px; background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 12px; max-width: 640px; }
+.studio-wrap { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+.studio-wrap.has-panel { grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); }
+.studio-main { min-width: 0; }
+.panel { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 14px; box-shadow: var(--shadow); align-self: start; position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; min-width: 0; }
+.panel-foot { border-top: 1px solid var(--line-2); margin-top: 12px; padding-top: 10px; }
+.tbl .wrap, td.wrap { white-space: normal; min-width: 180px; }
+@media (max-width: 1180px) { .studio-wrap.has-panel { grid-template-columns: minmax(0, 1fr); } .panel { position: static; max-height: none; } }
+@media (max-width: 720px) {
+  .donut { grid-template-columns: 96px 1fr; } .donut svg { width: 96px; height: 96px; }
+  .cal { grid-template-columns: 1fr; } .cal-h, .cal-d.empty { display: none; } .cal-d { min-height: 0; grid-template-columns: 34px 1fr; }
+  .stack-form { grid-template-columns: 1fr; }
+  .inline-form > * { flex: 1 1 140px; }
+}
+.grid > *, .studio-main, .board, .tbl-wrap, .gantt { min-width: 0; max-width: 100%; }
+.def dd, .cmp-card, .board-card { overflow-wrap: anywhere; }
+.board, .tbl-wrap, .gantt { position: relative; }
+.insight .tbl td, .panel .tbl td { white-space: normal; min-width: 110px; } .insight .tbl td:first-child { min-width: 200px; }
+@media (max-width: 720px) { .cal-d:not(:has(.cal-item)):not(.today) { display: none; } }
+
 </style>
 </head>
 <body data-portal="">
@@ -1431,7 +1522,7 @@ dialog#picker::backdrop { background: rgba(10, 10, 10, 0.6); }
 const HAWK = (() => {
   const SEED = {
     budget: 25000000,
-    requests: [{id:'MRF-001',campaign:'CMP-001',amount:3500000,status:'posted'}],
+    requests: [{id:'MRF-001',campaign:'CMP-001',line:'BGL-UBD-2608-01',pos:'Promotion',amount:3500000,status:'posted',note:'Boost Reels teaser',history:[{status:'submitted',at:'2026-08-03'},{status:'approved',at:'2026-08-04'},{status:'posted',at:'2026-08-05',ref:'PST-2608-0001'}]}],
     leads: [{id:'LEAD-001',name:'Tamu Demo',source:'Instagram',channel:'WhatsApp',campaign:'CMP-001',status:'new'}],
     bookings: [{id:'BK-001',lead:'LEAD-HISTORY',source:'Organic',channel:'Website',campaign:'',partner:'',slot:'10.00',amount:750000,status:'paid',commissionRate:0,payout:false}],
     tasks: [{id:'TASK-01',team:'Commercial',person:'Rani',group:'Content',label:'Review materi Wellness Escape',status:'planned'},{id:'TASK-02',team:'Sales',person:'Dewa',group:'Reservasi',label:'Tindak lanjut lead WhatsApp',status:'planned'}],
@@ -1459,7 +1550,8 @@ const HAWK = (() => {
       case 'request': {
         const amount=Number(input.amount);
         requireState(Number.isSafeInteger(amount)&&amount>0,'Masukkan nominal rupiah yang valid.');
-        state.requests.push({id:nextId('MRF',state.requests),campaign:'CMP-001',amount,status:'submitted'});
+        const id=nextId('MRF',state.requests);
+        state.requests.push({id,campaign:input.campaign||'CMP-001',line:'BGL-UBD-2608-01',pos:input.pos||'Promotion',amount,status:'submitted',note:String(input.note||'').slice(0,120),history:[{status:'submitted',at:'2026-08-22'}]});
         break;
       }
       case 'approve': {
@@ -1467,12 +1559,23 @@ const HAWK = (() => {
         requireState(request?.status==='submitted','Pengajuan sudah diproses.');
         requireState(request.amount<=totals(state).remaining,'Sisa pagu tidak mencukupi.');
         request.status='approved';
+        (request.history=request.history||[]).push({status:'approved',at:'2026-08-22'});
         break;
       }
       case 'post': {
         const request=row(state.requests);
         requireState(request?.status==='approved','Setujui pengajuan sebelum realisasi.');
         request.status='posted';
+        (request.history=request.history||[]).push({status:'posted',at:'2026-08-22',ref:'PST-2608-'+request.id.slice(4).padStart(4,'0')});
+        break;
+      }
+      case 'reject': {
+        const request=row(state.requests);
+        requireState(request?.status==='submitted','Pengajuan sudah diproses.');
+        const reason=String(input.reason||'').trim();
+        requireState(reason.length>=5,'Tulis alasan penolakan (min. 5 karakter).');
+        request.status='rejected'; request.reason=reason.slice(0,160);
+        (request.history=request.history||[]).push({status:'rejected',at:'2026-08-22',reason:request.reason});
         break;
       }
       case 'lead': {
@@ -1553,20 +1656,25 @@ if (typeof module !== 'undefined') module.exports = HAWK;
      are stored as separate fields. Revenue = POS transactions with status "paid" (refunds excluded).
      Pipeline / contract value never enters revenue.
 
-   Reconciliation targets (from visual/F1-02-spec.md, at Reset Demo):
-     Aug 2026 all outlets: revenue Rp2.820 jt, target Rp3.190 jt, 3.195 customers, 3.260 orders.
-     Aug 2026 Ubud: revenue Rp1.680 jt, 1.880 customers, marketing budget Rp120 jt, actual Rp63 jt.
+   Outlets follow the SER source workbooks (Center, Shanti, Triloka, Bisma). All values are synthetic.
+   Reconciliation targets (at Reset Demo):
+     Aug 2026 Center (Ubud): revenue Rp1.680 jt, 1.880 customers, marketing budget Rp120 jt, actual Rp63 jt
+     (unchanged from visual/F1-02-spec.md). Aug 2026 four outlets: Rp4.130 jt revenue = Σ outlet rows.
+     Bisma opened April 2026; its July target is intentionally missing ("Belum ditetapkan").
+     September 2026 is listed but not closed: every panel shows the empty state.
 
    The sandbox model (model.js) is connected: its bookings become POS rows in Giant Spa Ubud,
    August 2026, and its Commercial Budget (CMP-001) is one line of Ubud's August marketing budget. */
 const SER = (() => {
   const JT = 1000000;
   const OUTLETS = [
-    { id: 'OUT-UBD', key: 'ubud', code: 'UBD', name: 'Giant Spa Ubud' },
-    { id: 'OUT-SHT', key: 'shanti', code: 'SHT', name: 'Giant Spa Shanti' },
-    { id: 'OUT-BSM', key: 'bisma', code: 'BSM', name: 'Giant Spa Bisma', note: 'Pembukaan September 2026 · belum ada transaksi POS' }
+    { id: 'OUT-UBD', key: 'ubud', code: 'UBD', name: 'Jaens Spa Center', area: 'Ubud' },
+    { id: 'OUT-SHT', key: 'shanti', code: 'SHT', name: 'Jaens Spa Shanti', area: 'Ubud' },
+    { id: 'OUT-TRL', key: 'triloka', code: 'TRL', name: 'Jaens Spa Triloka', area: 'Ubud' },
+    { id: 'OUT-BSM', key: 'bisma', code: 'BSM', name: 'Jaens Spa Bisma', area: 'Ubud', opened: '2026-04' }
   ];
   const PERIODS = [
+    { id: '2026-09', month: 9, label: 'September 2026', open: true, note: 'Periode belum ditutup · transaksi POS belum tersedia' },
     { id: '2026-08', month: 8, label: 'Agustus 2026' },
     { id: '2026-07', month: 7, label: 'Juli 2026' }
   ];
@@ -1575,16 +1683,21 @@ const SER = (() => {
   /* Monthly revenue history, Rp juta. 2025 = full year; 2026 = Jan–Aug. Jun–Aug 2026 are also
      generated as POS rows below and reconcile exactly to these values. */
   const HISTORY = {
-    ubud: { y2026: [1080, 1110, 1240, 1210, 1300, 1410, 1520, 1680], y2025: [940, 1020, 1110, 1140, 1130, 1260, 1350, 1440, 1490, 1450, 1520, 1610] },
-    shanti: { y2026: [760, 780, 840, 890, 940, 980, 1070, 1140], y2025: [620, 675, 690, 740, 810, 830, 870, 930, 970, 960, 990, 1050] },
-    bisma: { y2026: [], y2025: [] }
+    ubud: { y2026: [1080, 1110, 1240, 1210, 1300, 1410, 1520, 1680], y2025: [940, 1020, 1110, 1140, 1130, 1260, 1350, 1440, 1490, 1450, 1520, 1610],
+      y2024: [820, 870, 960, 990, 1000, 1090, 1180, 1260, 1300, 1270, 1330, 1420], y2023: [690, 720, 800, 830, 860, 930, 1010, 1090, 1120, 1100, 1150, 1230] },
+    shanti: { y2026: [760, 780, 840, 890, 940, 980, 1070, 1140], y2025: [620, 675, 690, 740, 810, 830, 870, 930, 970, 960, 990, 1050],
+      y2024: [540, 580, 600, 640, 700, 720, 760, 810, 840, 830, 860, 920], y2023: [450, 480, 500, 530, 580, 600, 640, 690, 710, 700, 730, 780] },
+    triloka: { y2026: [610, 630, 660, 650, 690, 720, 745, 790], y2025: [540, 560, 590, 600, 610, 640, 670, 700, 720, 700, 730, 780],
+      y2024: [470, 490, 520, 530, 540, 560, 590, 620, 640, 620, 650, 690], y2023: [390, 410, 430, 440, 460, 480, 500, 530, 550, 540, 560, 600] },
+    bisma: { y2026: [null, null, null, 210, 280, 350, 430, 520], y2025: [], y2024: [], y2023: [] }
   };
+  const YEARS = ['y2023', 'y2024', 'y2025', 'y2026'];
   /* Per outlet-month plan fixture: paid orders, unique customers, revenue target (jt),
      marketing budget (jt), marketing actual (jt). */
   const PLAN = {
-    6: { ubud: [1650, 1640, 1710, 105, 51], shanti: [1190, 1170, 1270, 80, 40] },
-    7: { ubud: [1760, 1740, 1800, 115, 56], shanti: [1260, 1240, 1290, 82, 45] },
-    8: { ubud: [1920, 1880, 1850, 120, 63], shanti: [1340, 1315, 1340, 90, 48] }
+    6: { ubud: [1650, 1640, 1710, 105, 51], shanti: [1190, 1170, 1270, 80, 40], triloka: [930, 905, 760, 60, 31], bisma: [520, 510, 380, 45, 30] },
+    7: { ubud: [1760, 1740, 1800, 115, 56], shanti: [1260, 1240, 1290, 82, 45], triloka: [960, 935, 780, 62, 33], bisma: [610, 600, null, 48, 32] },
+    8: { ubud: [1920, 1880, 1850, 120, 63], shanti: [1340, 1315, 1340, 90, 48], triloka: [1010, 985, 800, 65, 36], bisma: [720, 705, 560, 50, 35] }
   };
   const TREATMENTS = [
     { id: 'TRT-REF60', name: 'Reflexology', minutes: 60, price: 350000, w: 10 },
@@ -1598,12 +1711,16 @@ const SER = (() => {
     { id: 'CMP-001', name: 'Wellness Escape', outlet: 'OUT-UBD', channel: 'Instagram', sandbox: true },
     { id: 'CMP-002', name: 'Sunset Ritual Shanti', outlet: 'OUT-SHT', channel: 'Instagram' },
     { id: 'CMP-003', name: 'Google Search Always-on', outlet: '', channel: 'Google Ads' },
-    { id: 'CMP-004', name: 'Bali Wellness Week KOL', outlet: '', channel: 'KOL' }
+    { id: 'CMP-004', name: 'Bali Wellness Week KOL', outlet: '', channel: 'KOL' },
+    { id: 'CMP-007', name: 'Triloka Always-on Meta', outlet: 'OUT-TRL', channel: 'Meta Ads' },
+    { id: 'CMP-006', name: 'Bisma Grand Opening', outlet: 'OUT-BSM', channel: 'TikTok' }
   ];
   const PARTNERS = [
     { id: 'PTN-001', type: 'Hotel', name: 'Ubud Hotel Demo', outlet: 'OUT-UBD', contract: 'KTR-001', model: 'Guest Referral', rate: 0.15 },
     { id: 'PTN-002', type: 'Villa', name: 'Villa Sawah Demo', outlet: 'OUT-UBD', contract: 'KTR-002', model: 'Guest Referral', rate: 0.12 },
     { id: 'PTN-003', type: 'Hotel', name: 'Shanti Resort Demo', outlet: 'OUT-SHT', contract: 'KTR-003', model: 'Guest Referral', rate: 0.15 },
+    { id: 'PTN-004', type: 'Villa', name: 'Triloka Villa Demo', outlet: 'OUT-TRL', contract: 'KTR-004', model: 'Guest Referral', rate: 0.12 },
+    { id: 'PTN-005', type: 'Hotel', name: 'Bisma Boutique Demo', outlet: 'OUT-BSM', contract: 'KTR-005', model: 'Guest Referral', rate: 0.15 },
     { id: 'DRV-001', type: 'Driver', name: 'Driver Demo', outlet: '', contract: 'KTR-D01', model: 'Driver Referral', rate: 0.1 },
     { id: 'DRV-002', type: 'Driver', name: 'Driver Demo 2', outlet: '', contract: 'KTR-D02', model: 'Driver Referral', rate: 0.1 }
   ];
@@ -1629,8 +1746,12 @@ const SER = (() => {
   ];
   const GROUPS = ['Paid', 'Organic & Direct', 'Partner & Referral', 'Tidak diketahui'];
   const COUNTRIES = [['Indonesia', 0.46], ['Australia', 0.26], ['Singapura', 0.06], ['Amerika Serikat', 0.05], ['Inggris', 0.04], ['Jepang', 0.04], ['Malaysia', 0.03], ['Lainnya', 0.03], ['Tidak diketahui', 0.03]];
-  const CANCEL_REASONS = { Jadwal: 'Jadwal tamu berubah', Tamu: 'Tamu membatalkan' };
+  /* Lost / cancellation reason codes follow the SER "Refund/Cancellation Value" header. Event type is separate:
+     inquiry lost (no booking) vs booking cancelled. Neither creates POS revenue. */
+  const LOST_REASONS = ['No Response', 'Fully Booked', 'Price', 'Distance', 'Specific Therapist', 'No Therapist', 'Service Time', 'No Room', 'Facilities', 'Ambience', 'No Parking', 'No Treatment'];
+  const LOST_MIX = { ubud: [30, 9, 6, 4, 4, 3, 3, 2, 2, 1, 1, 1], shanti: [5, 4, 4, 2, 2, 1, 1, 1, 1, 1, 0, 0], triloka: [5, 5, 3, 3, 1, 1, 2, 1, 0, 1, 1, 0], bisma: [2, 3, 2, 2, 1, 2, 1, 1, 1, 0, 1, 1] };
   const SANDBOX_DATE = '2026-08-31';
+  const CAMP_OF = { ubud: 'CMP-001', shanti: 'CMP-002', triloka: 'CMP-007', bisma: 'CMP-006' };
 
   /* Deterministic PRNG so every Reset Demo gives the same rows. */
   function rng(seed) {
@@ -1683,9 +1804,9 @@ const SER = (() => {
           const guests = t.id === 'TRT-CPL120' ? 1 : (r() < 0.14 ? 2 : 1);
           const [contact, confirm] = contactFor(s.group, s.source, r);
           let campaign = '', partner = '', code = '';
-          if (s.source === 'Meta Ads') campaign = outlet.key === 'ubud' ? (r() < 0.7 ? 'CMP-001' : 'CMP-004') : (r() < 0.7 ? 'CMP-002' : 'CMP-004');
+          if (s.source === 'Meta Ads') campaign = r() < 0.7 ? CAMP_OF[outlet.key] : 'CMP-004';
           else if (s.source === 'Google Ads') campaign = 'CMP-003';
-          else if (s.source === 'Organic Social' && r() < 0.35) campaign = outlet.key === 'ubud' ? 'CMP-001' : 'CMP-002';
+          else if (s.source === 'Organic Social' && r() < 0.35) campaign = CAMP_OF[outlet.key];
           if (s.source === 'Hotel Partner') { const ps = PARTNERS.filter(p => p.outlet === outlet.id); partner = ps[Math.floor(r() * ps.length)].id; }
           if (s.source === 'Driver Referral') { partner = r() < 0.6 ? 'DRV-001' : 'DRV-002'; code = partner === 'DRV-001' ? 'REF-DRV001' : 'REF-DRV002'; }
           const method = s.source === 'Hotel Partner' ? 'B2B' : s.source === 'Driver Referral' ? 'Referral' : 'B2C';
@@ -1727,14 +1848,20 @@ const SER = (() => {
         /* Leads: converted (linked to a booking) plus open/lost leads without POS. */
         rows.filter(x => x.lead && x.status === 'paid').forEach(x => leads.push({ id: x.lead, outlet: outlet.id, period, source: x.source || 'Tidak diketahui', contact: x.contact, campaign: x.campaign, status: 'booked', booking: x.booking }));
         const open = Math.round(leads.filter(l => l.period === period && l.outlet === outlet.id).length * 0.45);
-        for (let i = 0; i < open; i++) { const s = pick(r, SOURCES.filter(s => s.group === 'Paid' || s.source === 'Organic Social'), x => x.p); leads.push({ id: `LEAD-${outlet.code}-${period.slice(2).replace('-', '')}-N${pad(i + 1, 4)}`, outlet: outlet.id, period, source: s.source, contact: contactFor(s.group, s.source, r)[0], campaign: s.source === 'Google Ads' ? 'CMP-003' : (outlet.key === 'ubud' ? 'CMP-001' : 'CMP-002'), status: r() < 0.6 ? 'lost' : 'open', booking: '' }); }
-        /* Cancellations by branch and reason (no POS row). */
-        const sched = outlet.key === 'ubud' ? 11 + m : 7 + m, guest = outlet.key === 'ubud' ? 8 + m : 5 + m;
-        [['Jadwal', sched], ['Tamu', guest]].forEach(([reason, n]) => { for (let i = 0; i < n; i++) cancellations.push({ id: `BK-${outlet.code}-${period.slice(2).replace('-', '')}-C${reason[0]}${pad(i + 1, 3)}`, outlet: outlet.id, period, date: `${period}-${pad(1 + Math.floor(r() * daysIn(m)), 2)}`, reason, reasonLabel: CANCEL_REASONS[reason], treatment: pick(r, TREATMENTS, x => x.w).name }); });
+        for (let i = 0; i < open; i++) { const s = pick(r, SOURCES.filter(s => s.group === 'Paid' || s.source === 'Organic Social'), x => x.p); leads.push({ id: `LEAD-${outlet.code}-${period.slice(2).replace('-', '')}-N${pad(i + 1, 4)}`, outlet: outlet.id, period, source: s.source, contact: contactFor(s.group, s.source, r)[0], campaign: s.source === 'Google Ads' ? 'CMP-003' : CAMP_OF[outlet.key], status: r() < 0.6 ? 'lost' : 'open', booking: '' }); }
+        /* Lost inquiries and cancelled bookings by branch and reason code (no POS row). */
+        LOST_REASONS.forEach((reason, ri) => {
+          const n = Math.round(LOST_MIX[outlet.key][ri] * (m === 8 ? 1 : m === 7 ? 0.9 : 0.85) * (outlet.key === 'ubud' ? 1.2 : 1));
+          for (let i = 0; i < n; i++) {
+            const event = ['No Response', 'Price', 'Distance', 'Fully Booked'].includes(reason) && r() < 0.8 ? 'Inquiry lost' : 'Booking batal';
+            const yymm = period.slice(2).replace('-', '');
+            cancellations.push({ id: event === 'Inquiry lost' ? `LOST-${outlet.code}-${yymm}-${pad(ri + 1, 2)}${pad(i + 1, 2)}` : `BK-${outlet.code}-${yymm}-C${pad(ri + 1, 2)}${pad(i + 1, 2)}`, event, outlet: outlet.id, period, date: `${period}-${pad(1 + Math.floor(r() * daysIn(m)), 2)}`, reason, treatment: pick(r, TREATMENTS, x => x.w).name, estValue: Math.round(pick(r, TREATMENTS, x => x.w).price / 1000) * 1000 });
+          }
+        });
         /* Marketing budget lines (Rp). Ubud August contains the sandbox campaign CMP-001. */
         const lines = outlet.key === 'ubud' && m === 8
           ? [['BGL-UBD-2608-01', 'CMP-001 Wellness Escape (sandbox)', 'ads', 25, null, 'CMP-001'], ['BGL-UBD-2608-02', 'Meta Ads always-on', 'ads', 40, 29.5, 'CMP-004'], ['BGL-UBD-2608-03', 'Google Ads search', 'ads', 30, 18, 'CMP-003'], ['BGL-UBD-2608-04', 'KOL & media partner', 'kol', 15, 8, 'CMP-004'], ['BGL-UBD-2608-05', 'Brand & materi cetak', 'brand', 10, 4, '']]
-          : [['01', 'Meta Ads', 'ads', 0.4, 0.45], ['02', 'Google Ads search', 'ads', 0.28, 0.3], ['03', 'KOL & media partner', 'kol', 0.17, 0.15], ['04', 'Brand & materi cetak', 'brand', 0.15, 0.1]].map(([n, name, type, bs, ss]) => [`BGL-${outlet.code}-${period.slice(2).replace('-', '')}-${n}`, name, type, budget * bs, spend * ss, type === 'ads' ? (outlet.key === 'ubud' ? 'CMP-001' : 'CMP-002') : '']);
+          : [['01', 'Meta Ads', 'ads', 0.4, 0.45], ['02', 'Google Ads search', 'ads', 0.28, 0.3], ['03', 'KOL & media partner', 'kol', 0.17, 0.15], ['04', 'Brand & materi cetak', 'brand', 0.15, 0.1]].map(([n, name, type, bs, ss]) => [`BGL-${outlet.code}-${period.slice(2).replace('-', '')}-${n}`, name, type, budget * bs, spend * ss, type === 'ads' ? CAMP_OF[outlet.key] : '']);
         lines.forEach(([id, name, type, pagu, actual, campaign], i) => budgetLines.push({ id, outlet: outlet.id, period, name, type, campaign, pagu: Math.round(pagu * JT), actual: actual === null ? null : Math.round(actual * JT), committed: 0, mrf: actual === null ? 'sandbox' : `MRF-${outlet.code}-${period.slice(2).replace('-', '')}-${pad(i + 1, 2)}` }));
         /* round the generated line split so totals equal the plan exactly */
         const own = budgetLines.filter(b => b.outlet === outlet.id && b.period === period);
@@ -1742,12 +1869,15 @@ const SER = (() => {
           own[own.length - 1].pagu += budget * JT - own.reduce((s, b) => s + b.pagu, 0);
           own[own.length - 1].actual += spend * JT - own.reduce((s, b) => s + b.actual, 0);
         }
-        Object.assign(PLAN_INDEX[`${outlet.id}|${period}`] = {}, { target: target * JT, budget: budget * JT, spend: spend * JT });
+        Object.assign(PLAN_INDEX[`${outlet.id}|${period}`] = {}, { target: target === null ? null : target * JT, budget: budget * JT, spend: spend * JT });
+        /* Country forecast, versioned before the period (demo): actual base mix ± deterministic error. */
+        const counts = {}; new Set(rows.filter(x => x.status === 'paid').map(x => x.customer)).forEach(id => { const c = customers.get(id).country; counts[c] = (counts[c] || 0) + 1; });
+        FORECAST[`${outlet.id}|${period}`] = Object.fromEntries(COUNTRIES.filter(([c]) => c !== 'Tidak diketahui').map(([c]) => [c, Math.max(0, Math.round((counts[c] || 0) * (0.55 + r() * 0.9)))]));
       }
     }
     return { tx, customers, leads, cancellations, budgetLines };
   }
-  const PLAN_INDEX = {};
+  const PLAN_INDEX = {}, FORECAST = {};
   const BASE = generateBase();
 
   /* ---------- connect the sandbox (model.js state) ---------- */
@@ -1783,18 +1913,29 @@ const SER = (() => {
   const outletIds = (outlet) => outlet === 'all' ? OUTLETS.map(o => o.id) : [OUTLETS.find(o => o.key === outlet || o.id === outlet)?.id].filter(Boolean);
   const prevPeriod = (p) => { const m = Number(p.slice(5)) - 1; return `2026-${pad(m, 2)}`; };
 
+  let currentCustomers = null;
+  const customerIdsCountry = (paid) => [...new Set(paid.map(x => x.customer))].map(id => currentCustomers.get(id)?.country || 'Tidak diketahui');
   function slice(ds, period, outlet) {
+    currentCustomers = ds.customers;
     const ids = outletIds(outlet);
     const inScope = x => ids.includes(x.outlet) && x.period === period;
     const tx = ds.tx.filter(inScope);
     const paid = tx.filter(x => x.status === 'paid');
     const refunded = tx.filter(x => x.status === 'refunded');
     const lines = ds.budgetLines.filter(inScope);
-    const plans = ids.map(id => PLAN_INDEX[`${id}|${period}`]).filter(Boolean);
+    const plans = ids.map(id => ({ id, plan: PLAN_INDEX[`${id}|${period}`] })).filter(x => x.plan);
     const revenue = sum(paid, x => x.amount);
-    const orders = paid.length;
+    const orders = paid.length, guests = sum(paid, x => x.guests);
     const customerIds = new Set(paid.map(x => x.customer));
-    const target = sum(plans, p => p.target);
+    /* Revenue Target Attainment uses only outlets that have a target; missing targets are reported, never treated as 0. */
+    const withTarget = plans.filter(x => x.plan.target !== null), missingTarget = plans.filter(x => x.plan.target === null).map(x => x.id);
+    const target = withTarget.length ? sum(withTarget, x => x.plan.target) : null;
+    const revenueWithTarget = sum(paid.filter(x => withTarget.some(w => w.id === x.outlet)), x => x.amount);
+    /* Country Forecast Accuracy = 1 − Σ|forecast − actual| ÷ Σ actual (1 − WAPE); bias = (Σforecast − Σactual) ÷ Σactual. */
+    const actualByCountry = {}; customerIdsCountry(paid).forEach(c => { actualByCountry[c] = (actualByCountry[c] || 0) + 1; });
+    const fc = {}; ids.forEach(id => Object.entries(FORECAST[`${id}|${period}`] || {}).forEach(([c, v]) => { fc[c] = (fc[c] || 0) + v; }));
+    const fcCountries = Object.keys(fc), fcActual = sum(fcCountries, c => actualByCountry[c] || 0);
+    const fcAbs = sum(fcCountries, c => Math.abs(fc[c] - (actualByCountry[c] || 0))), fcSum = sum(fcCountries, c => fc[c]);
     const pagu = sum(lines, b => b.pagu), actual = sum(lines, b => b.actual), committed = sum(lines, b => b.committed);
     const attributed = paid.filter(x => x.campaign);
     const contribution = sum(attributed, x => x.amount - x.directCost - x.commission);
@@ -1803,8 +1944,10 @@ const SER = (() => {
     const newCustomers = [...customerIds].filter(id => ds.customers.get(id)?.firstPeriod === period).length;
     return {
       period, outlet, ids, tx, paid, refunded, lines, hasData: tx.length > 0,
-      revenue, orders, customers: customerIds.size, customerIds, target, newCustomers,
-      etr: div(revenue, target), aov: div(revenue, orders),
+      revenue, orders, guests, customers: customerIds.size, customerIds, target, newCustomers, missingTarget,
+      etr: target === null ? null : div(revenueWithTarget, target), aov: div(revenue, orders), rpg: div(revenue, guests),
+      forecastAccuracy: fcActual ? 1 - fcAbs / fcActual : null, forecastBias: fcActual ? (fcSum - fcActual) / fcActual : null, forecastTotal: fcSum, forecastActual: fcActual, forecast: fc, actualByCountry,
+      romiLegacy: div(revenue, actual), coverage: div(sum(paid.filter(x => x.group !== 'Tidak diketahui'), x => x.amount), revenue),
       pagu, actual, committed, remaining: pagu - committed - actual, realization: div(actual, pagu),
       contribution, romi: div(contribution - actual, actual), roas: div(adRevenue, adSpend), adRevenue, adSpend,
       cac: div(actual, newCustomers),
@@ -1820,7 +1963,7 @@ const SER = (() => {
   }
   function cancellations(ds, period, outlet) {
     const ids = outletIds(outlet);
-    return ids.map(id => { const rows = ds.cancellations.filter(c => c.outlet === id && c.period === period); return { outlet: id, name: OUTLETS.find(o => o.id === id).name, Jadwal: rows.filter(c => c.reason === 'Jadwal').length, Tamu: rows.filter(c => c.reason === 'Tamu').length, rows }; });
+    return ids.map(id => { const rows = ds.cancellations.filter(c => c.outlet === id && c.period === period); return { outlet: id, name: OUTLETS.find(o => o.id === id).name, total: rows.length, lost: rows.filter(c => c.event === 'Inquiry lost').length, cancelled: rows.filter(c => c.event === 'Booking batal').length, reasons: Object.fromEntries(LOST_REASONS.map(rs => [rs, rows.filter(c => c.reason === rs).length])), rows }; });
   }
   function annual(ds, period, outlet) {
     const ids = outletIds(outlet), month = Number(period.slice(5));
@@ -1828,34 +1971,357 @@ const SER = (() => {
     return MONTHS.map((label, i) => {
       const m = i + 1, p = `2026-${pad(m, 2)}`;
       const fromPos = m >= 6 && m <= 8;
-      const y2026 = m > month ? null : fromPos ? sum(ds.tx.filter(x => ids.includes(x.outlet) && x.period === p && x.status === 'paid'), x => x.amount) : sum(keys, k => (HISTORY[k].y2026[i] || 0) * JT);
-      const y2025 = sum(keys, k => (HISTORY[k].y2025[i] || 0) * JT);
-      return { label, month: m, y2026, y2025, source2026: m > month ? '—' : fromPos ? 'Transaksi POS demo' : 'Agregat histori demo' };
+      const hist = (y) => { const vals = keys.map(k => HISTORY[k][y][i]).filter(v => v !== null && v !== undefined); return vals.length ? sum(vals, v => v) * JT : null; };
+      const y2026 = m > month ? null : fromPos ? sum(ds.tx.filter(x => ids.includes(x.outlet) && x.period === p && x.status === 'paid'), x => x.amount) : hist('y2026');
+      return { label, month: m, y2026, y2025: hist('y2025'), y2024: hist('y2024'), y2023: hist('y2023'), source2026: m > month ? 'Belum tersedia' : fromPos ? 'Transaksi POS demo' : 'Agregat histori demo' };
     });
   }
   function summary(state, period, outlet) {
     const ds = dataset(state);
     const cur = slice(ds, period, outlet), prev = slice(ds, prevPeriod(period), outlet);
     const ly = annual(ds, period, outlet)[Number(period.slice(5)) - 1];
-    return { ds, cur, prev, sameMonthLastYear: ly.y2025, groups: byGroup(cur), countries: byCountry(ds, cur), cancel: cancellations(ds, period, outlet), annual: annual(ds, period, outlet) };
+    return { ds, cur, prev, sameMonthLastYear: ly.y2025, periodInfo: PERIODS.find(x => x.id === period), groups: byGroup(cur), countries: byCountry(ds, cur), cancel: cancellations(ds, period, outlet), annual: annual(ds, period, outlet) };
   }
 
   const DEFINITIONS = {
-    revenue: { title: 'Total Revenue', formula: 'Σ nilai transaksi POS berstatus dibayar pada periode dan outlet terpilih.', numerator: 'Nilai transaksi POS dibayar', denominator: '—', note: 'Refund dan pembatalan tidak dihitung. Nilai pipeline dan kontrak tidak masuk revenue.' },
-    customers: { title: 'Total Customers', formula: 'Jumlah ID pelanggan unik yang punya ≥1 transaksi POS dibayar.', numerator: 'Pelanggan unik', denominator: '—', note: 'Pelanggan yang datang di dua outlet dihitung sekali per outlet (ID pelanggan per outlet pada fixture ini).' },
-    etr: { title: 'Effective Target Rate', formula: 'Revenue aktual ÷ target revenue.', numerator: 'Revenue aktual (POS dibayar)', denominator: 'Target revenue periode × outlet', note: 'Definisi demo sesuai prompt. Rumus resmi menunggu konfirmasi pemilik data.' },
-    aov: { title: 'Average Order Value', formula: 'Revenue ÷ jumlah order dibayar.', numerator: 'Revenue', denominator: 'Order POS dibayar (bukan jumlah pelanggan)', note: 'Satu order = satu transaksi POS; tamu ganda dalam satu order tetap satu order.' },
-    annual: { title: 'Annual Revenue Comparison', formula: 'Revenue bulanan 2026 vs 2025.', numerator: 'Revenue per bulan', denominator: '—', note: 'Jun–Agu 2026 dihitung dari transaksi POS demo; bulan lain dari agregat histori demo.' },
-    budget: { title: 'Budget Realization', formula: 'Realisasi ÷ pagu marketing. Sisa = pagu − komitmen − realisasi.', numerator: 'Realisasi (MRF diposting)', denominator: 'Pagu marketing (Budget 7P · Promotion)', note: 'Baris CMP-001 dibaca langsung dari sandbox Commercial Budget.' },
-    romi: { title: 'Return on Marketing Investment', formula: '(Kontribusi teratribusi sebelum biaya marketing − biaya marketing) ÷ biaya marketing.', numerator: 'Kontribusi teratribusi − biaya marketing', denominator: 'Biaya marketing (realisasi)', note: 'Kontribusi = revenue transaksi ber-campaign − biaya langsung − komisi. Margin dan atribusi resmi belum difinalisasi.' },
-    channel: { title: 'Tracking by Channel Group', formula: 'Revenue POS dibayar per grup sumber akuisisi.', numerator: 'Revenue grup', denominator: 'Total revenue', note: 'Sumber kosong ditampilkan sebagai "Tidak diketahui".' },
+    revenue: { title: 'Total Revenue', formula: 'Σ nilai transaksi POS berstatus dibayar (settled) pada periode dan outlet terpilih.', numerator: 'Nilai transaksi POS dibayar', denominator: '—', note: 'Refund dan pembatalan tidak dihitung. Nilai pipeline dan kontrak tidak masuk revenue.' },
+    guests: { title: 'Total Guests', formula: 'Σ jumlah tamu pada transaksi POS dibayar.', numerator: 'Tamu per transaksi', denominator: '—', note: 'Guest, pelanggan unik, dan order adalah tiga grain berbeda. Pelanggan unik tidak dijumlahkan lintas outlet.' },
+    customers: { title: 'Pelanggan unik', formula: 'Jumlah ID pelanggan unik yang punya ≥1 transaksi POS dibayar.', numerator: 'Pelanggan unik', denominator: '—', note: 'ID pelanggan per outlet pada fixture ini.' },
+    etr: { title: 'Revenue Target Attainment', formula: 'Revenue aktual ÷ target revenue (definisi demo “Effective Target Rate”).', numerator: 'Revenue aktual outlet yang punya target', denominator: 'Target revenue periode × outlet', note: 'Di SER, Effective Target Rate adalah akurasi forecast negara. HAWK memisahkannya menjadi Revenue Target Attainment dan Country Forecast Accuracy. Target kosong tampil “Belum ditetapkan”, tidak dianggap nol.' },
+    forecast: { title: 'Country Forecast Accuracy', formula: '1 − Σ|forecast − aktual| ÷ Σ aktual, per negara (1 − WAPE). Bias = (Σ forecast − Σ aktual) ÷ Σ aktual.', numerator: 'Σ |forecast − aktual| pelanggan per negara', denominator: 'Σ pelanggan aktual pada negara yang punya forecast', note: 'Forecast demo diversikan sebelum periode. “Tidak diketahui” dikeluarkan dari forecast.' },
+    aov: { title: 'Average Order Value', formula: 'Revenue ÷ jumlah order dibayar.', numerator: 'Revenue', denominator: 'Order POS dibayar (bukan tamu atau pelanggan)', note: 'Revenue per guest ditampilkan terpisah (SER lama memakai guest sebagai penyebut).' },
+    rpg: { title: 'Revenue per Guest', formula: 'Revenue ÷ total tamu.', numerator: 'Revenue', denominator: 'Tamu pada transaksi dibayar', note: 'Pembanding untuk angka AOV SER lama.' },
+    annual: { title: 'Annual Revenue Comparison', formula: 'Revenue bulanan 2023–2026 per outlet.', numerator: 'Revenue per bulan', denominator: '—', note: 'Jun–Agu 2026 dari transaksi POS demo; bulan lain dari agregat histori demo. Bulan setelah periode terpilih dan bulan sebelum outlet buka tampil kosong, bukan nol.' },
+    budget: { title: 'Budget Realization', formula: 'Realisasi ÷ pagu marketing. Sisa tersedia = pagu − komitmen terbuka − realisasi.', numerator: 'Realisasi (MRF diposting)', denominator: 'Pagu marketing (Budget 7P · Promotion)', note: 'Baris CMP-001 dibaca langsung dari sandbox Commercial Budget. Sisa historis SER (pagu − realisasi) berbeda dari sisa tersedia.' },
+    romi: { title: 'Return on Marketing Investment', formula: 'ROMI kontribusi = (kontribusi teratribusi sebelum biaya marketing − biaya marketing) ÷ biaya marketing.', numerator: 'Kontribusi teratribusi − biaya marketing', denominator: 'Biaya marketing (realisasi)', note: 'Kontribusi = revenue transaksi ber-campaign − biaya langsung 34% (demo) − komisi. ROMI warisan SER = revenue ÷ biaya marketing ditampilkan terpisah dengan label definisi lama.' },
+    channel: { title: 'Tracking by Channel Group', formula: 'Revenue POS dibayar per grup sumber akuisisi.', numerator: 'Revenue grup', denominator: 'Total revenue', note: 'Sumber kosong ditampilkan sebagai “Tidak diketahui”. Coverage atribusi = revenue bersumber ÷ total revenue.' },
     country: { title: 'Tracking by Country', formula: 'Pelanggan unik per negara (bila diketahui).', numerator: 'Pelanggan unik negara', denominator: 'Total pelanggan unik', note: 'Negara anonim tingkat pelanggan; tanpa nama/kontak.' },
-    cancel: { title: 'Cancellation Reason by Branch', formula: 'Jumlah booking batal per outlet dan alasan.', numerator: 'Booking batal', denominator: '—', note: 'Pembatalan tidak membuat transaksi POS.' }
+    cancel: { title: 'Cancellation & Lost Reason by Branch', formula: 'Jumlah inquiry lost dan booking batal per outlet dan reason code.', numerator: 'Kejadian lost/batal', denominator: '—', note: 'Jenis kejadian dipisah: inquiry lost tidak punya booking. Tidak ada yang mengurangi revenue POS; refund memakai ID transaksi.' }
   };
 
-  return { JT, OUTLETS, PERIODS, MONTHS, MONTH_NAMES, CAMPAIGNS, PARTNERS, MEMBERS, TREATMENTS, GROUPS, DEFINITIONS, dataset, slice, summary, prevPeriod, outletIds, div };
+  return { JT, OUTLETS, PERIODS, MONTHS, MONTH_NAMES, YEARS, LOST_REASONS, CAMPAIGNS, PARTNERS, MEMBERS, TREATMENTS, GROUPS, COUNTRIES, DEFINITIONS, PLAN_INDEX, dataset, slice, summary, prevPeriod, outletIds, div };
 })();
 if (typeof module !== 'undefined') module.exports = SER;
+
+;
+/* HAWK ERP · Commercial workspace model (Fase 2) — DATA DEMO / SIMULASI
+   Campaign Planner (F2-02/F2-03), Content Studio (F2-04), Brand & Communications (F2-01),
+   Media Partner & KOL (F2-07), Social (F2-06) records, and the work items (tasks) that the
+   insight panels and Daily Race read. One record per object with stable IDs:
+     CMP-* campaign · CNT-* content · AST-* asset (versioned) · PUB-* publication per platform
+     BR-* brand · MSG-* message · COM-* communication · REQ-OFF-* offline design request
+     KOL-* partner · DLV-* deliverable · TASK-* work item.
+   Budget requests (MRF) stay in model.js so Finance and Commercial read the same record.
+   State lives in state.cx (created on first use) so Reset Demo restores this seed. */
+const CX = (() => {
+  const TODAY = '2026-08-22';
+  const STAGES = ['Reference', 'Idea', 'Approved Idea', 'Planned', 'Pre-production', 'Production', 'Editing', 'Review', 'Approved', 'Scheduled', 'Published', 'Analysed'];
+  /* Which PIC slot owns each stage. */
+  const STAGE_ROLE = { Reference: 'planner', Idea: 'planner', 'Approved Idea': 'planner', Planned: 'planner', 'Pre-production': 'creator', Production: 'creator', Editing: 'editor', Review: 'reviewer', Approved: 'publisher', Scheduled: 'publisher', Published: 'analyst', Analysed: 'analyst' };
+  const PEOPLE = [
+    { id: 'MBR-C01', name: 'Rani', role: 'Content Lead · reviewer' },
+    { id: 'MBR-C02', name: 'Bayu', role: 'Digital Marketing' },
+    { id: 'MBR-C03', name: 'Dita', role: 'Creator / videografer' },
+    { id: 'MBR-C04', name: 'Arya', role: 'Editor' },
+    { id: 'MBR-C05', name: 'Wulan', role: 'Social Media Admin' },
+    { id: 'MBR-C06', name: 'Made', role: 'Brand Designer' },
+    { id: 'MBR-S01', name: 'Dewa', role: 'Reservasi B2C' }
+  ];
+  const PILLARS = ['Wellness ritual', 'Treatment showcase', 'Promo & offer', 'Behind the scene', 'Brand story'];
+  const PLATFORMS = ['Instagram', 'TikTok', 'Facebook', 'Google Ads', 'Website'];
+  const CAMPAIGN_FLOW = ['Draft', 'Approved', 'Scheduled', 'Running', 'Paused', 'Closed'];
+  const BRAND_ELEMENTS = [['logo', 'Logo', 15], ['palette', 'Palet warna', 10], ['font', 'Font', 10], ['grid', 'Layout grid', 10], ['tone', 'Tone of voice', 15], ['tagline', 'Tagline', 10], ['brandbook', 'Brandbook', 15], ['template', 'Template', 5], ['thumbnail', 'Thumbnail', 5], ['merch', 'Merchandise', 5]];
+  const TEMPLATES = [
+    { id: 'TPL-01', name: 'Promo treatment musiman', objective: 'Booking treatment unggulan dari social → WhatsApp', channels: ['Instagram', 'Meta Ads'], days: 30, window: 14 },
+    { id: 'TPL-02', name: 'Grand opening outlet', objective: 'Awareness dan booking pertama outlet baru', channels: ['TikTok', 'Instagram', 'KOL'], days: 21, window: 21 },
+    { id: 'TPL-03', name: 'Kolaborasi KOL', objective: 'Reach audiens baru lewat kreator dengan kode tracking', channels: ['KOL', 'Instagram'], days: 14, window: 30 },
+    { id: 'TPL-04', name: 'Search always-on', objective: 'Tangkap intent pencarian spa di Ubud', channels: ['Google Ads', 'Website'], days: 30, window: 7 }
+  ];
+
+  const h = (status, at, by, note) => ({ status, at, by, note: note || '' });
+  const SEED = {
+    seq: { CMP: 7, CNT: 8, AST: 8, PUB: 3, TASK: 3, COM: 6, MSG: 4 },
+    campaigns: [
+      { id: 'CMP-001', name: 'Wellness Escape', template: 'TPL-01', objective: 'Booking Wellness Massage dari Instagram → WhatsApp', audience: 'Wisatawan domestik & Australia 25–45 tahun', offer: 'Wellness Massage 60 menit + welcome drink', outlets: ['OUT-UBD'], start: '2026-08-01', end: '2026-08-31', channels: ['Instagram', 'Meta Ads', 'WhatsApp'], pic: 'MBR-C02', status: 'Running', budgetLine: 'BGL-UBD-2608-01', budgetPlan: 25000000, target: { leads: 820, bookings: 400, revenue: 350000000 }, baseline: 'Juli 2026 · 375 booking teratribusi (Instagram/Meta)', utm: 'cmp001_wellness_escape', window: 14, sandbox: true, history: [h('Draft', '2026-07-20', 'MBR-C02'), h('Approved', '2026-07-24', 'Commercial Manager'), h('Scheduled', '2026-07-28', 'MBR-C02'), h('Running', '2026-08-01', 'MBR-C02')], retro: '' },
+      { id: 'CMP-002', name: 'Sunset Ritual Shanti', template: 'TPL-01', objective: 'Isi slot sore Shanti dengan paket sunset', audience: 'Pasangan wisatawan 25–40', offer: 'Couple Package sore hari', outlets: ['OUT-SHT'], start: '2026-08-05', end: '2026-09-05', channels: ['Instagram', 'TikTok'], pic: 'MBR-C05', status: 'Running', budgetLine: 'BGL-SHT-2608-01', budgetPlan: 36000000, target: { leads: 560, bookings: 270, revenue: 225000000 }, baseline: 'Juli 2026 · 240 booking teratribusi', utm: 'cmp002_sunset_ritual', window: 14, history: [h('Draft', '2026-07-25', 'MBR-C05'), h('Approved', '2026-07-29', 'Commercial Manager'), h('Running', '2026-08-05', 'MBR-C05')], retro: '' },
+      { id: 'CMP-003', name: 'Google Search Always-on', template: 'TPL-04', objective: 'Tangkap pencarian “spa ubud”', audience: 'Pencari spa di Ubud', offer: 'Booking online tanpa antre', outlets: ['OUT-UBD', 'OUT-SHT', 'OUT-TRL', 'OUT-BSM'], start: '2026-01-01', end: '2026-12-31', channels: ['Google Ads', 'Website'], pic: 'MBR-C02', status: 'Running', budgetLine: 'BGL-UBD-2608-03', budgetPlan: 30000000, target: { leads: 1200, bookings: 700, revenue: 600000000 }, baseline: 'Rata-rata Q2 2026', utm: 'cmp003_search_always_on', window: 7, history: [h('Running', '2026-01-01', 'MBR-C02')], retro: '' },
+      { id: 'CMP-004', name: 'Bali Wellness Week KOL', template: 'TPL-03', objective: 'Reach audiens Australia lewat dua kreator', audience: 'Wisatawan Australia', offer: 'Kode KOL diskon 10%', outlets: ['OUT-UBD', 'OUT-SHT'], start: '2026-08-10', end: '2026-08-31', channels: ['KOL', 'Instagram'], pic: 'MBR-C01', status: 'Running', budgetLine: 'BGL-UBD-2608-04', budgetPlan: 15000000, target: { leads: 380, bookings: 380, revenue: 320000000 }, baseline: 'Belum ada baseline KOL', utm: 'cmp004_wellness_week_kol', window: 30, history: [h('Draft', '2026-07-30', 'MBR-C01'), h('Approved', '2026-08-03', 'Commercial Manager'), h('Running', '2026-08-10', 'MBR-C01')], retro: '' },
+      { id: 'CMP-005', name: 'Triloka Couple Retreat', template: 'TPL-01', objective: 'Naikkan booking Couple Package di Triloka', audience: 'Pasangan honeymoon', offer: 'Couple Package + bunga', outlets: ['OUT-TRL'], start: '2026-09-01', end: '2026-09-30', channels: ['Meta Ads', 'Instagram'], pic: 'MBR-C02', status: 'Draft', budgetLine: '', budgetPlan: 15000000, target: { leads: 90, bookings: 45, revenue: 40000000 }, baseline: 'Belum ada · mulai September', utm: 'cmp005_couple_retreat', window: 14, history: [h('Draft', '2026-08-18', 'MBR-C02')], retro: '' },
+      { id: 'CMP-006', name: 'Bisma Grand Opening', template: 'TPL-02', objective: 'Booking pertama dan awareness Bisma', audience: 'Warga lokal & ekspat Ubud', offer: 'Diskon pembukaan 15%', outlets: ['OUT-BSM'], start: '2026-07-01', end: '2026-08-31', channels: ['TikTok', 'Instagram'], pic: 'MBR-C05', status: 'Paused', budgetLine: 'BGL-BSM-2608-01', budgetPlan: 20000000, target: { leads: 320, bookings: 160, revenue: 110000000 }, baseline: 'Outlet baru · tanpa baseline', utm: 'cmp006_bisma_opening', window: 21, history: [h('Draft', '2026-06-10', 'MBR-C05'), h('Approved', '2026-06-15', 'Commercial Manager'), h('Running', '2026-07-01', 'MBR-C05'), h('Paused', '2026-08-15', 'Commercial Manager', 'Kapasitas terapis Bisma belum cukup untuk slot sore')], retro: '' },
+      { id: 'CMP-007', name: 'Triloka Always-on Meta', template: 'TPL-04', objective: 'Jaga arus booking Triloka dari Meta Ads', audience: 'Wisatawan di Ubud 25–45', offer: 'Booking WhatsApp tanpa antre', outlets: ['OUT-TRL'], start: '2026-07-01', end: '2026-12-31', channels: ['Meta Ads', 'Instagram'], pic: 'MBR-C02', status: 'Running', budgetLine: 'BGL-TRL-2608-01', budgetPlan: 18000000, target: { leads: 420, bookings: 210, revenue: 160000000 }, baseline: 'Juli 2026 · 187 booking teratribusi', utm: 'cmp007_triloka_meta', window: 14, history: [h('Draft', '2026-06-20', 'MBR-C02'), h('Approved', '2026-06-24', 'MBR-C01'), h('Scheduled', '2026-06-26', 'MBR-C02'), h('Running', '2026-07-01', 'MBR-C02')], retro: '' }
+    ],
+    assets: [
+      { id: 'AST-001', title: 'Reels teaser Wellness Escape', format: 'Reels', brand: 'BR-SPA', version: 2, status: 'approved', content: 'CNT-005' },
+      { id: 'AST-002', title: 'Carousel 5 manfaat wellness', format: 'Carousel', brand: 'BR-SPA', version: 1, status: 'review', content: 'CNT-003' },
+      { id: 'AST-003', title: 'Reels Wellness Escape 60 detik', format: 'Reels', brand: 'BR-SPA', version: 1, status: 'draft', content: 'CNT-002' },
+      { id: 'AST-004', title: 'Reels Sunset Ritual', format: 'Reels', brand: 'BR-SPA', version: 3, status: 'approved', content: 'CNT-004' },
+      { id: 'AST-005', title: 'Logo Jaens Spa (master)', format: 'Logo', brand: 'BR-SPA', version: 4, status: 'approved', content: '' },
+      { id: 'AST-006', title: 'Template carousel promo', format: 'Template', brand: 'BR-SPA', version: 2, status: 'approved', content: '' },
+      { id: 'AST-007', title: 'Video Couple Retreat', format: 'Reels', brand: 'BR-SPA', version: 2, status: 'draft', content: 'CNT-008' },
+      { id: 'AST-008', title: 'Banner Essence katalog', format: 'Static', brand: 'BR-ESS', version: 1, status: 'approved', content: 'CNT-007' }
+    ],
+    content: [
+      { id: 'CNT-001', title: 'Ide: ritual pagi di Triloka', campaign: 'CMP-005', pillar: 'Wellness ritual', format: 'Reels', channels: ['Instagram'], brand: 'BR-SPA', stage: 'Idea', priority: 'Sedang', due: '2026-08-28', pics: {}, assets: [], checklist: [], reviews: [], log: [{ at: '2026-08-19', by: 'MBR-C02', text: 'Ide dibuat dari brief CMP-005' }], archived: false, source: 'campaign' },
+      { id: 'CNT-002', title: 'Reels Wellness Escape 60 detik', campaign: 'CMP-001', pillar: 'Treatment showcase', format: 'Reels', channels: ['Instagram', 'TikTok'], brand: 'BR-SPA', stage: 'Editing', priority: 'Tinggi', due: '2026-08-20', pics: { planner: 'MBR-C02', creator: 'MBR-C03', editor: 'MBR-C04', reviewer: 'MBR-C01', publisher: 'MBR-C05', analyst: 'MBR-C02' }, assets: ['AST-003'], checklist: [['Script disetujui', true], ['Shooting selesai', true], ['Subtitle', false], ['CTA WhatsApp + kode', false]], reviews: [], log: [{ at: '2026-08-12', by: 'MBR-C03', text: 'Shooting selesai di Center' }, { at: '2026-08-15', by: 'MBR-C04', text: 'Masuk Editing' }], archived: false, source: 'campaign' },
+      { id: 'CNT-003', title: 'Carousel 5 manfaat wellness', campaign: 'CMP-001', pillar: 'Brand story', format: 'Carousel', channels: ['Instagram', 'Facebook'], brand: 'BR-SPA', stage: 'Review', priority: 'Sedang', due: '2026-08-23', pics: { planner: 'MBR-C02', creator: 'MBR-C06', editor: 'MBR-C06', reviewer: 'MBR-C01', publisher: 'MBR-C05', analyst: 'MBR-C02' }, assets: ['AST-002'], checklist: [['Copy final', true], ['Desain 5 slide', true], ['Cek brand guideline', true]], reviews: [], log: [{ at: '2026-08-20', by: 'MBR-C06', text: 'Diajukan ke review' }], archived: false, source: 'campaign' },
+      { id: 'CNT-004', title: 'Reels Sunset Ritual', campaign: 'CMP-002', pillar: 'Treatment showcase', format: 'Reels', channels: ['Instagram', 'TikTok'], brand: 'BR-SPA', stage: 'Scheduled', priority: 'Tinggi', due: '2026-08-24', pics: { planner: 'MBR-C05', creator: 'MBR-C03', editor: 'MBR-C04', reviewer: 'MBR-C01', publisher: 'MBR-C05', analyst: 'MBR-C02' }, assets: ['AST-004'], checklist: [['Disetujui', true]], reviews: [{ at: '2026-08-19', by: 'MBR-C01', decision: 'approve', note: 'Siap tayang', version: 3 }], approvedAt: '2026-08-19', log: [{ at: '2026-08-19', by: 'MBR-C01', text: 'Approved v3' }, { at: '2026-08-20', by: 'MBR-C05', text: 'Dijadwalkan Instagram + TikTok' }], archived: false, source: 'campaign' },
+      { id: 'CNT-005', title: 'Reels teaser Wellness Escape', campaign: 'CMP-001', pillar: 'Promo & offer', format: 'Reels', channels: ['Instagram'], brand: 'BR-SPA', stage: 'Published', priority: 'Tinggi', due: '2026-08-05', pics: { planner: 'MBR-C02', creator: 'MBR-C03', editor: 'MBR-C04', reviewer: 'MBR-C01', publisher: 'MBR-C05', analyst: 'MBR-C02' }, assets: ['AST-001'], checklist: [['Disetujui', true], ['Terbit', true]], reviews: [{ at: '2026-08-03', by: 'MBR-C01', decision: 'revise', note: 'Tambahkan kode campaign di caption', version: 1 }, { at: '2026-08-04', by: 'MBR-C01', decision: 'approve', note: 'OK', version: 2 }], approvedAt: '2026-08-04', results: { views: 48200, clicks: 1240, leads: 46, bookings: 19, revenue: 14250000 }, log: [{ at: '2026-08-05', by: 'MBR-C05', text: 'Terbit di Instagram' }], archived: false, source: 'campaign' },
+      { id: 'CNT-006', title: 'Countdown Bisma Grand Opening', campaign: 'CMP-006', pillar: 'Promo & offer', format: 'Carousel', channels: ['TikTok', 'Instagram'], brand: 'BR-SPA', stage: 'Approved Idea', priority: 'Rendah', due: '2026-09-02', pics: { planner: 'MBR-C05' }, assets: [], checklist: [], reviews: [], log: [{ at: '2026-08-14', by: 'MBR-C05', text: 'Ide disetujui' }], archived: false, source: 'campaign' },
+      { id: 'CNT-007', title: 'Banner katalog Jaens Essence', campaign: '', pillar: 'Brand story', format: 'Static', channels: ['Website'], brand: 'BR-ESS', stage: 'Analysed', priority: 'Rendah', due: '2026-07-20', pics: { planner: 'MBR-C06', creator: 'MBR-C06', reviewer: 'MBR-C01', publisher: 'MBR-C05', analyst: 'MBR-C02' }, assets: ['AST-008'], checklist: [], reviews: [{ at: '2026-07-18', by: 'MBR-C01', decision: 'approve', note: 'OK', version: 1 }], approvedAt: '2026-07-18', results: { views: 3100, clicks: 210, leads: 0, bookings: 0, revenue: 0 }, log: [{ at: '2026-07-31', by: 'MBR-C02', text: 'Analisis selesai' }], archived: true, source: 'brand' },
+      { id: 'CNT-008', title: 'Video Couple Retreat (revisi)', campaign: 'CMP-005', pillar: 'Treatment showcase', format: 'Reels', channels: ['Instagram'], brand: 'BR-SPA', stage: 'Editing', priority: 'Sedang', due: '2026-08-27', pics: { planner: 'MBR-C02', creator: 'MBR-C03', editor: 'MBR-C04', reviewer: 'MBR-C01', publisher: 'MBR-C05', analyst: 'MBR-C02' }, assets: ['AST-007'], checklist: [['CTA WhatsApp', false]], reviews: [{ at: '2026-08-21', by: 'MBR-C01', decision: 'revise', note: 'CTA WhatsApp belum ada dan durasi terlalu panjang', version: 1 }], log: [{ at: '2026-08-21', by: 'MBR-C01', text: 'Minta revisi → kembali ke Editing (v2)' }], archived: false, source: 'campaign' }
+    ],
+    publications: [
+      { id: 'PUB-001', content: 'CNT-005', platform: 'Instagram', account: '@jaensspa', scheduledAt: '2026-08-05 18:00', status: 'published', postId: 'IG-DEMO-1001', url: 'https://example.invalid/IG-DEMO-1001', utm: 'cmp001_wellness_escape&utm_content=reels_teaser', publishedAt: '2026-08-05 18:02' },
+      { id: 'PUB-002', content: 'CNT-004', platform: 'Instagram', account: '@jaensspa.shanti', scheduledAt: '2026-08-24 18:00', status: 'scheduled', postId: '', url: '', utm: 'cmp002_sunset_ritual&utm_content=reels' },
+      { id: 'PUB-003', content: 'CNT-004', platform: 'TikTok', account: '@jaensspa', scheduledAt: '2026-08-24 19:00', status: 'scheduled', postId: '', url: '', utm: 'cmp002_sunset_ritual&utm_content=tiktok' }
+    ],
+    brands: [
+      { id: 'BR-SPA', name: 'Jaens Spa', unit: 'Spa', els: { logo: ['approved', 4], palette: ['approved', 3], font: ['approved', 2], grid: ['approved', 2], tone: ['review', 2], tagline: ['approved', 1], brandbook: ['approved', 3], template: ['approved', 2], thumbnail: ['approved', 1], merch: ['draft', 1] } },
+      { id: 'BR-ESS', name: 'Jaens Essence', unit: 'Essence', els: { logo: ['approved', 2], palette: ['approved', 2], font: ['approved', 1], grid: ['approved', 1], tone: ['draft', 1], tagline: ['approved', 1], brandbook: ['approved', 1], template: ['approved', 1], thumbnail: ['approved', 1], merch: ['approved', 1] } },
+      { id: 'BR-ACD', name: 'Jaens Academy', unit: 'Academy', els: { logo: ['approved', 1], palette: ['approved', 1], font: ['approved', 1], grid: ['review', 1], tone: ['draft', 1], tagline: ['review', 1], brandbook: ['draft', 1], template: ['approved', 1], thumbnail: ['approved', 1], merch: ['none', 0] } },
+      { id: 'BR-CARE', name: 'Care Estate', unit: 'Care', els: { logo: ['approved', 1], palette: ['approved', 1], font: ['review', 1], grid: ['draft', 1], tone: ['draft', 1], tagline: ['approved', 1], brandbook: ['draft', 1], template: ['review', 1], thumbnail: ['none', 0], merch: ['none', 0] } }
+    ],
+    messages: [
+      { id: 'MSG-001', brand: 'BR-SPA', title: 'Ritual penyembuhan khas Ubud', text: 'Tenang dulu, baru pulang. Ritual Bali yang dikerjakan terapis bersertifikat.', version: 3, status: 'approved', owner: 'MBR-C01' },
+      { id: 'MSG-002', brand: 'BR-SPA', title: 'CTA reservasi', text: 'Pesan slot lewat WhatsApp dengan kode campaign agar promo tercatat.', version: 2, status: 'approved', owner: 'MBR-C02' },
+      { id: 'MSG-003', brand: 'BR-ESS', title: 'Bahan alami', text: 'Minyak esensial racikan sendiri, dari kebun ke botol.', version: 1, status: 'review', owner: 'MBR-C06' },
+      { id: 'MSG-004', brand: 'BR-ACD', title: 'Karier terapis', text: 'Belajar dari terapis senior Jaens, praktik langsung di spa.', version: 1, status: 'draft', owner: 'MBR-C06' }
+    ],
+    comms: [
+      { id: 'COM-001', date: '2026-08-05', title: 'Peluncuran Wellness Escape', audience: 'Followers Instagram', channel: 'Instagram', type: 'Digital', status: 'Terdistribusi', campaign: 'CMP-001', locations: [] },
+      { id: 'COM-002', date: '2026-08-12', title: 'Brosur Sunset Ritual di lobby hotel partner', audience: 'Tamu hotel', channel: 'Brosur', type: 'Offline', status: 'Terdistribusi', campaign: 'CMP-002', locations: ['Shanti Resort Demo', 'Ubud Hotel Demo'] },
+      { id: 'COM-003', date: '2026-08-20', title: 'Email member: menu Agustus', audience: 'Member aktif', channel: 'Email', type: 'Digital', status: 'Disetujui', campaign: '', locations: [] },
+      { id: 'COM-004', date: '2026-08-25', title: 'Standing banner Bisma', audience: 'Pejalan kaki Jl. Bisma', channel: 'Banner', type: 'Offline', status: 'Menunggu approval', campaign: 'CMP-006', locations: ['Jaens Spa Bisma'] },
+      { id: 'COM-005', date: '2026-08-28', title: 'Poster Couple Retreat', audience: 'Tamu Triloka', channel: 'Poster', type: 'Offline', status: 'Draft', campaign: 'CMP-005', locations: ['Jaens Spa Triloka'] },
+      { id: 'COM-006', date: '2026-09-01', title: 'Siaran WhatsApp member', audience: 'Member opt-in', channel: 'WhatsApp', type: 'Digital', status: 'Draft', campaign: '', locations: [] }
+    ],
+    offline: Array.from({ length: 30 }, (_, i) => {
+      const n = i + 1, types = ['Brosur', 'Poster', 'Standing banner', 'Menu board', 'Voucher', 'Signage'], depts = ['Operational', 'Sales B2B', 'Commercial', 'Academy'];
+      const status = n <= 26 ? 'Terdistribusi' : n <= 28 ? 'Disetujui' : 'Produksi';
+      return { id: `REQ-OFF-${String(n).padStart(2, '0')}`, type: types[i % types.length], dept: depts[i % depts.length], pic: n % 2 ? 'MBR-C06' : 'MBR-C03', due: `2026-08-${String(Math.min(28, 2 + i)).padStart(2, '0')}`, done: status === 'Produksi' ? '' : `2026-08-${String(Math.min(28, 2 + i + (n % 7 === 0 ? 2 : 0))).padStart(2, '0')}`, status, rework: n % 9 === 0 ? 1 : 0, placements: status === 'Terdistribusi' ? 1 + (n % 3) : 0 };
+    }),
+    tasks: [
+      { id: 'TASK-C01', key: 'content:CNT-003:review', object: 'CNT-003', type: 'content', action: 'Review konten Carousel 5 manfaat', pic: 'MBR-C01', due: '2026-08-23', status: 'planned', source: 'Content Studio' },
+      { id: 'TASK-C02', key: 'lead:LEAD-001:followup', object: 'LEAD-001', type: 'lead', action: 'Follow-up lead Instagram → WhatsApp', pic: 'MBR-S01', due: '2026-08-22', status: 'planned', source: 'Sales B2C' },
+      { id: 'TASK-C03', key: 'experiment:CTA-WA', object: 'CMP-001', type: 'campaign', action: 'Evaluasi uji CTA WhatsApp 7 hari', pic: 'MBR-C02', due: '2026-08-29', status: 'planned', source: 'AI Mentor (simulasi)' }
+    ]
+  };
+
+  const fresh = () => JSON.parse(JSON.stringify(SEED));
+  const ensure = (state) => { if (!state.cx) state.cx = fresh(); return state.cx; };
+  const need = (cond, msg) => { if (!cond) throw Error(msg); };
+  const next = (cx, prefix) => { cx.seq[prefix] = (cx.seq[prefix] || 0) + 1; return `${prefix}-${String(cx.seq[prefix]).padStart(3, '0')}`; };
+  const person = (id) => PEOPLE.find(p => p.id === id);
+  const personName = (id) => person(id)?.name || 'Belum ditentukan';
+  const stagePic = (c) => c.pics[STAGE_ROLE[c.stage]] || '';
+  const campaign = (cx, id) => cx.campaigns.find(c => c.id === id);
+  const content = (cx, id) => cx.content.find(c => c.id === id);
+
+  /* Brand progress = Σ weight of approved elements ÷ Σ weight of applicable elements ("none" = not applicable). */
+  function brandProgress(b) {
+    const applicable = BRAND_ELEMENTS.filter(([k]) => b.els[k][0] !== 'none');
+    const total = applicable.reduce((s, e) => s + e[2], 0), done = applicable.filter(([k]) => b.els[k][0] === 'approved').reduce((s, e) => s + e[2], 0);
+    return { done, total, ratio: total ? done / total : null, pending: applicable.filter(([k]) => b.els[k][0] !== 'approved').map(e => e[1]) };
+  }
+
+  /* Content can be scheduled only after Approved; asset change after approval sends it back to Review. */
+  function moveStage(cx, c, to, by) {
+    need(STAGES.includes(to), 'Tahap tidak dikenal.');
+    const from = STAGES.indexOf(c.stage), dest = STAGES.indexOf(to);
+    need(c.stage !== to, 'Konten sudah di tahap ini.');
+    if (dest > from) {
+      if (dest >= STAGES.indexOf('Planned')) need(!!c.pics.planner, 'Tetapkan PIC sebelum merencanakan konten.');
+      if (dest >= STAGES.indexOf('Scheduled')) need(!!c.approvedAt, 'Konten belum disetujui reviewer, belum bisa dijadwalkan.');
+      if (to === 'Approved') need(false, 'Gunakan tombol Approve di panel Review.');
+      if (to === 'Published') need(false, 'Status Published mengikuti publikasi per platform.');
+    }
+    c.log.push({ at: TODAY, by, text: `Tahap ${c.stage} → ${to}` });
+    c.stage = to;
+  }
+
+  function update(state, action, input = {}) {
+    const cx = ensure(state);
+    const by = input.by || 'MBR-C01';
+    switch (action) {
+      /* ----- campaign ----- */
+      case 'cmp-create': {
+        const tpl = TEMPLATES.find(t => t.id === input.template) || TEMPLATES[0];
+        const name = String(input.name || '').trim();
+        need(name.length >= 4, 'Nama campaign minimal 4 karakter.');
+        const utm = String(input.utm || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+        need(utm.length >= 4, 'Isi kode UTM campaign.');
+        const outlets = [input.outlet || 'OUT-UBD'];
+        const clash = cx.campaigns.find(c => c.utm === utm && c.status !== 'Closed' && c.outlets.some(o => outlets.includes(o)));
+        need(!clash, `UTM “${utm}” sudah dipakai ${clash?.id} pada outlet yang sama.`);
+        const id = next(cx, 'CMP');
+        cx.campaigns.push({ id, name, template: tpl.id, objective: input.objective || tpl.objective, audience: input.audience || 'Belum diisi', offer: input.offer || 'Belum diisi', outlets, start: input.start || '2026-09-01', end: input.end || '2026-09-30', channels: tpl.channels.slice(), pic: input.pic || 'MBR-C02', status: 'Draft', budgetLine: '', budgetPlan: Number(input.budget) || 0, target: { leads: Number(input.leads) || 0, bookings: Number(input.bookings) || 0, revenue: Number(input.revenue) || 0 }, baseline: 'Belum dipilih', utm, window: tpl.window, history: [h('Draft', TODAY, by)], retro: '' });
+        return id;
+      }
+      case 'cmp-approve': case 'cmp-schedule': case 'cmp-run': case 'cmp-pause': case 'cmp-resume': case 'cmp-close': {
+        const c = campaign(cx, input.id); need(c, 'Campaign tidak ditemukan.');
+        const t = { 'cmp-approve': [['Draft'], 'Approved'], 'cmp-schedule': [['Approved'], 'Scheduled'], 'cmp-run': [['Scheduled'], 'Running'], 'cmp-pause': [['Running'], 'Paused'], 'cmp-resume': [['Paused'], 'Running'], 'cmp-close': [['Running', 'Paused'], 'Closed'] }[action];
+        need(t[0].includes(c.status), `Status campaign sudah ${c.status}.`);
+        const note = String(input.note || '').trim();
+        if (action === 'cmp-pause') need(note.length >= 5, 'Tulis alasan pause.');
+        if (action === 'cmp-close') { need(note.length >= 5, 'Isi retrospektif singkat sebelum menutup campaign.'); c.retro = note; }
+        c.status = t[1]; c.history.push(h(t[1], TODAY, by, note));
+        return c.id;
+      }
+      /* ----- content ----- */
+      case 'cnt-create': {
+        const title = String(input.title || '').trim();
+        need(title.length >= 4, 'Judul konten minimal 4 karakter.');
+        const cmp = input.campaign ? campaign(cx, input.campaign) : null;
+        const id = next(cx, 'CNT');
+        const pics = input.pic ? { planner: input.pic } : {};
+        cx.content.push({ id, title, campaign: cmp ? cmp.id : '', pillar: input.pillar || PILLARS[0], format: input.format || 'Reels', channels: [input.channel || 'Instagram'], brand: 'BR-SPA', stage: input.from === 'reference' ? 'Reference' : 'Idea', priority: input.priority || 'Sedang', due: input.due || '2026-08-31', pics, assets: [], checklist: [], reviews: [], log: [{ at: TODAY, by, text: `Dibuat dari ${input.from === 'reference' ? 'reference' : cmp ? 'brief ' + cmp.id : 'nol'}` }], archived: false, source: cmp ? 'campaign' : 'manual' });
+        return id;
+      }
+      case 'cnt-stage': {
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        moveStage(cx, c, input.to, by);
+        return c.id;
+      }
+      case 'cnt-assign': {
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        need(PEOPLE.some(p => p.id === input.pic), 'PIC tidak valid.');
+        const role = input.role || STAGE_ROLE[c.stage];
+        const old = c.pics[role];
+        c.pics[role] = input.pic;
+        c.log.push({ at: TODAY, by, text: `PIC ${role}: ${personName(old)} → ${personName(input.pic)}` });
+        return c.id;
+      }
+      case 'cnt-submit': {
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        need(['Production', 'Editing'].includes(c.stage), 'Hanya konten di Production/Editing yang bisa diajukan review.');
+        need(c.assets.length, 'Tambahkan aset sebelum review.');
+        moveStage(cx, c, 'Review', by);
+        c.assets.forEach(a => { const as = cx.assets.find(x => x.id === a); if (as && as.status === 'draft') as.status = 'review'; });
+        return c.id;
+      }
+      case 'cnt-approve': case 'cnt-revise': {
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        need(c.stage === 'Review', 'Konten tidak sedang di Review.');
+        const note = String(input.note || '').trim();
+        const asset = cx.assets.find(a => a.id === c.assets[0]);
+        if (action === 'cnt-revise') {
+          need(note.length >= 5, 'Tulis catatan revisi.');
+          c.reviews.push({ at: TODAY, by, decision: 'revise', note, version: asset?.version || 1 });
+          if (asset) { asset.status = 'draft'; asset.version += 1; }
+          c.log.push({ at: TODAY, by, text: `Minta revisi → Editing (aset v${asset?.version || 1})` });
+          c.stage = 'Editing'; c.approvedAt = '';
+        } else {
+          c.reviews.push({ at: TODAY, by, decision: 'approve', note: note || 'Disetujui', version: asset?.version || 1 });
+          if (asset) asset.status = 'approved';
+          c.approvedAt = TODAY; c.stage = 'Approved';
+          c.log.push({ at: TODAY, by, text: `Approved v${asset?.version || 1}` });
+        }
+        return c.id;
+      }
+      case 'cnt-asset': {
+        /* new asset version: after approval it must be reviewed again */
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        let asset = cx.assets.find(a => a.id === c.assets[0]);
+        if (!asset) { asset = { id: next(cx, 'AST'), title: c.title, format: c.format, brand: c.brand, version: 1, status: 'draft', content: c.id }; cx.assets.push(asset); c.assets.push(asset.id); c.log.push({ at: TODAY, by, text: `Aset ${asset.id} v1 ditambahkan` }); return c.id; }
+        asset.version += 1; asset.status = 'draft';
+        const wasApproved = !!c.approvedAt;
+        if (wasApproved) { c.approvedAt = ''; if (STAGES.indexOf(c.stage) >= STAGES.indexOf('Approved') && c.stage !== 'Published' && c.stage !== 'Analysed') { c.stage = 'Review'; cx.publications.filter(p => p.content === c.id && p.status === 'scheduled').forEach(p => { p.status = 'draft'; }); } }
+        c.log.push({ at: TODAY, by, text: `Aset ${asset.id} v${asset.version}${wasApproved ? ' · perlu review ulang' : ''}` });
+        return c.id;
+      }
+      case 'cnt-reuse': {
+        const c = content(cx, input.id), asset = cx.assets.find(a => a.id === input.asset);
+        need(c && asset, 'Konten atau aset tidak ditemukan.');
+        need(asset.status === 'approved', 'Hanya aset yang disetujui yang bisa dipakai ulang.');
+        need(!c.assets.includes(asset.id), 'Aset sudah dipakai di konten ini.');
+        c.assets.push(asset.id); c.log.push({ at: TODAY, by, text: `Memakai aset ${asset.id} v${asset.version} (referensi)` });
+        return c.id;
+      }
+      case 'cnt-schedule': {
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        need(c.approvedAt, 'Konten belum disetujui, belum bisa dijadwalkan.');
+        const platform = input.platform || c.channels[0];
+        need(c.channels.includes(platform), 'Platform tidak ada di daftar channel konten.');
+        const at = String(input.at || '').replace('T', ' ');
+        need(/^2026-\d\d-\d\d \d\d:\d\d$/.test(at), 'Isi tanggal dan jam publikasi.');
+        const account = input.account || (platform === 'TikTok' ? '@jaensspa' : '@jaensspa');
+        const clash = cx.publications.find(p => p.account === account && p.platform === platform && p.scheduledAt === at && p.status !== 'draft' && p.content !== c.id);
+        need(!clash, `Bentrok: ${clash?.id} sudah terjadwal di ${account} ${platform} pada ${at}.`);
+        let pub = cx.publications.find(p => p.content === c.id && p.platform === platform && p.status !== 'published');
+        if (!pub) { pub = { id: next(cx, 'PUB'), content: c.id, platform, account, scheduledAt: at, status: 'scheduled', postId: '', url: '', utm: (campaign(cx, c.campaign)?.utm || 'organic') + '&utm_content=' + c.id.toLowerCase() }; cx.publications.push(pub); }
+        else Object.assign(pub, { scheduledAt: at, status: 'scheduled', account });
+        if (STAGES.indexOf(c.stage) < STAGES.indexOf('Scheduled')) c.stage = 'Scheduled';
+        c.log.push({ at: TODAY, by, text: `Jadwal ${platform} ${at}` });
+        return pub.id;
+      }
+      case 'pub-publish': {
+        const p = cx.publications.find(x => x.id === input.id); need(p && p.status === 'scheduled', 'Publikasi tidak sedang terjadwal.');
+        const c = content(cx, p.content);
+        p.status = 'published'; p.publishedAt = p.scheduledAt; p.postId = `${p.platform.slice(0, 2).toUpperCase()}-DEMO-${1000 + cx.publications.indexOf(p) + 1}`; p.url = `https://example.invalid/${p.postId}`;
+        c.log.push({ at: TODAY, by, text: `Terbit di ${p.platform} · ${p.postId}` });
+        const done = c.channels.every(ch => cx.publications.some(x => x.content === c.id && x.platform === ch && x.status === 'published'));
+        if (done) { c.stage = 'Published'; if (!c.results) c.results = { views: 0, clicks: 0, leads: 0, bookings: 0, revenue: 0 }; }
+        return p.id;
+      }
+      case 'cnt-analyse': {
+        const c = content(cx, input.id); need(c && c.stage === 'Published', 'Konten belum Published.');
+        c.stage = 'Analysed'; c.log.push({ at: TODAY, by, text: 'Analisis hasil dicatat' });
+        return c.id;
+      }
+      case 'cnt-archive-done': {
+        const done = cx.content.filter(c => c.stage === 'Analysed' && !c.archived);
+        done.forEach(c => { c.archived = true; c.log.push({ at: TODAY, by, text: 'Diarsipkan' }); });
+        return done.length;
+      }
+      case 'cnt-check': {
+        const c = content(cx, input.id); need(c, 'Konten tidak ditemukan.');
+        const i = Number(input.index); need(c.checklist[i], 'Checklist tidak ditemukan.');
+        c.checklist[i][1] = !c.checklist[i][1];
+        return c.id;
+      }
+      /* ----- brand ----- */
+      case 'brand-submit': case 'brand-approve': case 'brand-revise': {
+        const b = cx.brands.find(x => x.id === input.id); need(b && b.els[input.el], 'Elemen brand tidak ditemukan.');
+        const el = b.els[input.el];
+        const t = { 'brand-submit': ['draft', 'review'], 'brand-approve': ['review', 'approved'], 'brand-revise': ['approved', 'draft'] }[action];
+        need(el[0] === t[0], `Status elemen sudah ${el[0]}.`);
+        el[0] = t[1]; if (action === 'brand-revise') el[1] += 1;
+        return b.id;
+      }
+      case 'msg-version': {
+        const m = cx.messages.find(x => x.id === input.id); need(m, 'Pesan tidak ditemukan.');
+        if (m.status === 'review') { m.status = 'approved'; return m.id; }
+        need(String(input.text || '').trim().length >= 10, 'Tulis versi pesan baru (min. 10 karakter).');
+        m.text = String(input.text).trim().slice(0, 200); m.version += 1; m.status = 'review';
+        return m.id;
+      }
+      case 'com-advance': {
+        const m = cx.comms.find(x => x.id === input.id); need(m, 'Komunikasi tidak ditemukan.');
+        const flow = ['Draft', 'Menunggu approval', 'Disetujui', 'Terdistribusi'];
+        const i = flow.indexOf(m.status); need(i < flow.length - 1, 'Sudah terdistribusi.');
+        m.status = flow[i + 1];
+        return m.id;
+      }
+      /* ----- work items (Daily Race link). Same key → same task (retry-safe). ----- */
+      case 'task-create': {
+        const key = String(input.key || ''); need(key, 'Kunci tindakan kosong.');
+        const existing = cx.tasks.find(t => t.key === key);
+        if (existing) return existing.id;
+        const id = `TASK-C${String(cx.seq.TASK = (cx.seq.TASK || 0) + 1).padStart(2, '0')}`;
+        cx.tasks.push({ id, key, object: input.object || '', type: input.type || 'insight', action: String(input.action || '').slice(0, 160), pic: input.pic || 'MBR-C02', due: input.due || '2026-08-29', status: 'planned', source: input.source || 'Executive Insight', metric: input.metric || '' });
+        return id;
+      }
+      case 'task-done': {
+        const t = cx.tasks.find(x => x.id === input.id); need(t && t.status === 'planned', 'Tugas sudah diproses.');
+        t.status = 'done'; t.doneAt = TODAY; return t.id;
+      }
+      default: throw Error('Aksi Commercial tidak tersedia.');
+    }
+  }
+
+  return { TODAY, STAGES, STAGE_ROLE, PEOPLE, PILLARS, PLATFORMS, CAMPAIGN_FLOW, BRAND_ELEMENTS, TEMPLATES, fresh, ensure, update, person, personName, stagePic, brandProgress };
+})();
+if (typeof module !== 'undefined') module.exports = CX;
 
 ;
 /* HAWK ERP · four-portal preview shell (Finance → Operational → Commercial → Sales)
@@ -1868,20 +2334,20 @@ const ERP = 'https://preview.hawk.jaens.id/';
 const PORTALS = {
   Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
-  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['campaign', 'Campaign Planner', 'F2-02', 'sandbox'], ['studio', 'Content Studio', 'F2-04', 'sandbox'], ['brand', 'Brand & Communications', 'F2-01', 'sandbox'], ['digital', 'Digital Marketing', 'F2-05', 'sandbox'], ['social', 'Social Media', 'F2-06', 'sandbox'], ['kol', 'Media Partner & KOL', 'F2-07', 'sandbox'], ['attribution', 'Audience & Attribution', 'F2-08', 'sandbox'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'sandbox'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'sandbox'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
+  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'sandbox'], ['social', 'Social Media', 'F2-06', 'sandbox'], ['kol', 'Media Partner & KOL', 'F2-07', 'sandbox'], ['attribution', 'Audience & Attribution', 'F2-08', 'sandbox'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'sandbox'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
 const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
 const SCREENS = [
   ['F1-01', 'Pemilih Portal', 1, 'picker', 'ready', 'Semua role'], ['F1-02', 'Commercial Executive Summary', 1, 'commercial', 'ready', 'Commercial Manager, Owner'], ['F1-03', 'Drill-down Executive Summary', 1, 'commercial-drill?metric=revenue', 'ready', 'Commercial Manager, Owner'], ['F1-04', 'Beranda Sales', 1, 'sales-home', 'ready', 'Sales Manager, Owner, staf'],
-  ['F2-01', 'Brand & Communications', 2, 'brand', 'sandbox'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'sandbox'], ['F2-03', 'Campaign Detail', 2, 'campaign', 'sandbox'], ['F2-04', 'Content Studio', 2, 'studio', 'sandbox'], ['F2-05', 'Digital Marketing', 2, 'digital', 'sandbox'], ['F2-06', 'Social Media', 2, 'social', 'sandbox'], ['F2-07', 'Media & KOL', 2, 'kol', 'sandbox'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'sandbox'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'sandbox'], ['F2-10', 'AI Mentor', 2, 'mentor', 'sandbox'],
+  ['F2-01', 'Brand & Communications', 2, 'brand', 'ready', 'Commercial Manager, Brand Designer'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'ready', 'Commercial Manager, Digital'], ['F2-03', 'Campaign Detail', 2, 'campaign-detail?id=CMP-001', 'ready', 'Commercial Manager, PIC campaign'], ['F2-04', 'Content Studio', 2, 'studio', 'ready', 'Content Lead, Creator, Editor, Reviewer'], ['F2-05', 'Digital Marketing', 2, 'digital', 'sandbox'], ['F2-06', 'Social Media', 2, 'social', 'sandbox'], ['F2-07', 'Media & KOL', 2, 'kol', 'sandbox'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'sandbox'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'ready', 'Commercial Manager, Finance'], ['F2-10', 'AI Mentor', 2, 'mentor', 'sandbox'],
   ['F3-01', 'Owner Eagle Eye', 3, 'owner', 'sandbox'], ['F3-02', 'Sales Manager Command Center', 3, 'sales', 'sandbox'], ['F3-03', 'Channel & Method Effectiveness', 3, '', 'planned'], ['F3-04', 'My Workspace', 3, '', 'planned'], ['F3-05', 'B2B Pipeline & Accounts', 3, 'b2b', 'sandbox'], ['F3-06', 'Partner & Opportunity Detail', 3, 'b2b', 'sandbox'],
   ['F4-01', 'Reservation Supervisor', 4, '', 'planned'], ['F4-02', 'Omnichannel Inbox', 4, 'reservation', 'sandbox'], ['F4-03', 'Booking Desk', 4, 'reservation', 'sandbox'], ['F4-04', 'Client Booking (mobile)', 4, 'client', 'sandbox'], ['F4-05', 'My Bookings & My Visits (mobile)', 4, 'client', 'sandbox'], ['F4-06', 'My Membership & Profile (mobile)', 4, '', 'planned'], ['F4-07', 'Operational & POS Mock', 4, 'pos', 'sandbox'],
   ['F5-01', 'Driver & Referral Manager', 5, 'driver', 'sandbox'], ['F5-02', 'Commission Review', 5, 'commission', 'sandbox'], ['F5-03', 'Onboarding Driver (mobile)', 5, 'driver', 'sandbox'], ['F5-04', 'Katalog & Reservasi Driver (mobile)', 5, 'driver', 'sandbox'], ['F5-05', 'Komisi & Pesan Driver (mobile)', 5, '', 'planned'],
   ['F6-01', 'Daily Race', 6, 'sales-team', 'sandbox'], ['F6-02', 'Weekly Race', 6, '', 'planned'], ['F6-03', 'Monthly Reflection & STRACON', 6, '', 'planned'], ['F6-04', 'Kinerja & KPI Overview', 6, 'sales-kpi', 'planned'], ['F6-05', 'XScore & People Performance', 6, '', 'planned'], ['F6-06', 'KPI Library & Kontrak', 6, '', 'planned'], ['F6-07', 'Status Tim', 6, 'sales-status', 'planned'],
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution', 'sandbox']
 ];
-const STATUS_LABEL = { ready: 'Tersedia · Fase 1', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
+const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
 const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
@@ -1934,7 +2400,8 @@ const itemOf = (id) => Object.values(PORTALS).flatMap(p => p.items).find(([r]) =
 const filtersOf = (params) => ({ period: SER.PERIODS.some(p => p.id === params.period) ? params.period : '2026-08', outlet: ['all', ...SER.OUTLETS.map(o => o.key)].includes(params.outlet) ? params.outlet : 'all' });
 
 /* ---------- original sandbox screens (kept routes and interactions) ---------- */
-const requests = () => table(['ID', 'Campaign', 'Nominal', 'Status', 'Aksi'], state.requests.map(r => [r.id, r.campaign, rp(r.amount), r.status, r.status === 'submitted' ? button('approve', 'Setujui', r.id) : r.status === 'approved' ? button('post', 'Catat realisasi', r.id) : '—']));
+const REQ_LABEL = { submitted: 'Menunggu approval', approved: 'Disetujui · komitmen', posted: 'Diposting · realisasi', rejected: 'Ditolak' };
+const requests = () => table(['ID', 'Campaign', 'Pos 7P', 'Nominal', 'Status', 'Aksi Finance'], state.requests.map(r => [r.id, r.campaign, r.pos || 'Promotion', rp(r.amount), `<span class="status-chip ${r.status === 'rejected' ? 'bad' : r.status === 'posted' ? 'ready' : 'sandbox'}">${REQ_LABEL[r.status] || r.status}</span>${r.reason ? `<br><small class="muted">${esc(r.reason)}</small>` : ''}`, r.status === 'submitted' ? button('approve', 'Setujui', r.id) + ` <form class="inline-form" data-submit="reject"><input type="hidden" name="id" value="${r.id}"><label class="sr" for="rj-${r.id}">Alasan tolak ${r.id}</label><input id="rj-${r.id}" name="reason" placeholder="Alasan tolak" required minlength="5"><button class="btn ghost sm">Tolak</button></form>` : r.status === 'approved' ? button('post', 'Catat realisasi', r.id) : '—']));
 const bookingRows = (rows, actions = false) => table(['Booking', 'Lead', 'Slot', 'Nilai', 'Status', ...(actions ? ['Aksi'] : [])], rows.map(b => [b.id, b.lead || '—', b.slot, rp(b.amount), b.status, ...(actions ? [
   ({ confirmed: () => button('checkin', 'Check-in', b.id) + ' ' + button('cancel', 'Batalkan', b.id), 'checked-in': () => button('complete', 'Selesaikan', b.id), completed: () => button('pay', 'Bayar', b.id), paid: () => b.payout ? 'Perlu penyesuaian Finance' : button('refund', 'Refund', b.id) })[b.status]?.() || '—'
 ] : [])]));
@@ -2006,8 +2473,8 @@ function delta(cur, prev, label = 'vs bulan lalu', ratioPoints = false) {
 }
 function filterBar(f, params, extra = '') {
   return `<form id="filters" class="filters" aria-label="Filter laporan">
-    <label>Periode <select name="period">${SER.PERIODS.map(p => `<option value="${p.id}" ${p.id === f.period ? 'selected' : ''}>${p.label}</option>`).join('')}</select></label>
-    <label>Outlet <select name="outlet"><option value="all">Semua outlet</option>${SER.OUTLETS.map(o => `<option value="${o.key}" ${o.key === f.outlet ? 'selected' : ''}>${o.name}${o.note ? ' (belum ada data)' : ''}</option>`).join('')}</select></label>
+    <label>Periode <select name="period">${SER.PERIODS.map(p => `<option value="${p.id}" ${p.id === f.period ? 'selected' : ''}>${p.label}${p.open ? ' (belum ditutup)' : ''}</option>`).join('')}</select></label>
+    <label>Outlet <select name="outlet"><option value="all">Semua outlet</option>${SER.OUTLETS.map(o => `<option value="${o.key}" ${o.key === f.outlet ? 'selected' : ''}>${o.name}</option>`).join('')}</select></label>
     ${extra}
     <button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
 }
@@ -2016,71 +2483,104 @@ function gauge(v) {
   const p = v === null ? 0 : Math.min(v * 100, 100);
   return `<svg class="gauge" viewBox="0 0 104 58" aria-hidden="true"><path d="M5 52 A47 47 0 0 1 99 52" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><path d="M5 52 A47 47 0 0 1 99 52" pathLength="100" stroke-dasharray="${p} 100" fill="none" stroke="${v !== null && v < 0.9 ? '#e5c66a' : '#9ff0c4'}" stroke-width="9"/><text x="5" y="57" font-size="7">0%</text><text x="99" y="57" font-size="7" text-anchor="end">100%</text></svg>`;
 }
+const YEAR_STYLE = { y2026: ['2026', '#c99a2e', 3, ''], y2025: ['2025', '#8a8478', 2, '5 4'], y2024: ['2024', '#0f9d8a', 1.6, ''], y2023: ['2023', '#8b5cf6', 1.4, '2 3'] };
 function trendChart(rows, f) {
-  const vals = rows.flatMap(r => [r.y2026, r.y2025]).filter(v => v !== null);
+  const vals = rows.flatMap(r => SER.YEARS.map(y => r[y])).filter(v => v !== null);
   const max = Math.max(1, ...vals);
   const x = i => 44 + i * 29, y = v => 124 - v / max * 100;
-  const pts = (key) => rows.filter(r => r[key] !== null).map((r, i) => `${x(i)},${y(r[key])}`).join(' ');
-  return `<a class="chart-link" href="${drillHref('annual', f)}" aria-label="Buka rincian revenue bulanan"><svg class="chart" viewBox="0 0 390 156" role="img" aria-label="Revenue bulanan 2026 dibanding 2025, Rp juta. Nilai lengkap ada di tabel di bawah grafik.">
-  ${[0, max / 2, max].map(v => `<path d="M44 ${y(v)}H370" stroke="#e3e0d7"/><text x="0" y="${y(v) + 3}">${num(v / 1e6)}</text>`).join('')}
-  <polyline points="${pts('y2025')}" fill="none" stroke="#625d52" stroke-width="2" stroke-dasharray="5 4"/>
-  <polyline points="${pts('y2026')}" fill="none" stroke="#AD7D36" stroke-width="3"/>
-  ${rows.filter(r => r.y2026 !== null).map((r, i) => `<circle cx="${x(i)}" cy="${y(r.y2026)}" r="3" fill="#AD7D36"/>`).join('')}
+  const line = (key) => { const segs = []; let cur = []; rows.forEach((r, i) => { if (r[key] === null) { if (cur.length) segs.push(cur); cur = []; } else cur.push(`${x(i)},${y(r[key])}`); }); if (cur.length) segs.push(cur); return segs.map(s => `<polyline points="${s.join(' ')}" fill="none" stroke="${YEAR_STYLE[key][1]}" stroke-width="${YEAR_STYLE[key][2]}" ${YEAR_STYLE[key][3] ? `stroke-dasharray="${YEAR_STYLE[key][3]}"` : ''}/>`).join(''); };
+  return `<a class="chart-link" href="${drillHref('annual', f)}" aria-label="Buka rincian revenue bulanan"><svg class="chart" viewBox="0 0 390 156" role="img" aria-label="Revenue bulanan 2023 sampai 2026, Rp juta. Nilai lengkap ada di tabel di bawah grafik.">
+  ${[0, max / 2, max].map(v => `<path d="M44 ${y(v)}H370" stroke="#e7e4dc"/><text x="0" y="${y(v) + 3}">${num(v / 1e6)}</text>`).join('')}
+  ${['y2023', 'y2024', 'y2025', 'y2026'].map(line).join('')}
+  ${rows.map((r, i) => r.y2026 === null ? '' : `<circle cx="${x(i)}" cy="${y(r.y2026)}" r="3" fill="#c99a2e"/>`).join('')}
   ${rows.map((r, i) => `<text x="${x(i)}" y="146" text-anchor="middle">${r.label}</text>`).join('')}</svg></a>
-  <div class="legend"><span><i class="swatch solid"></i>2026 s.d. periode terpilih</span><span><i class="swatch dashed"></i>2025</span><span>Rp juta</span></div>
-  <details><summary>Lihat tabel revenue bulanan</summary>${table(['Bulan', '2026', '2025', 'Sumber 2026'], rows.map(r => [r.label, r.y2026 === null ? '—' : jt(r.y2026, 0), jt(r.y2025, 0), r.source2026]))}</details>`;
+  <div class="legend">${['y2026', 'y2025', 'y2024', 'y2023'].map(k => `<span><i class="swatch" style="border-top:${YEAR_STYLE[k][2]}px ${YEAR_STYLE[k][3] ? 'dashed' : 'solid'} ${YEAR_STYLE[k][1]}"></i>${YEAR_STYLE[k][0]}</span>`).join('')}<span>Rp juta</span></div>
+  <details><summary>Lihat tabel revenue bulanan</summary>${table(['Bulan', '2026', '2025', '2024', '2023', 'Sumber 2026'], rows.map(r => [r.label, ...['y2026', 'y2025', 'y2024', 'y2023'].map(k => r[k] === null ? '—' : jt(r[k], 0)), r.source2026]))}</details>`;
+}
+const DONUT_COLORS = ['#c99a2e', '#0f9d8a', '#7c4dff', '#2f6fde', '#f08a24', '#64748b', '#c53030', '#8b6914', '#b8b2a5'];
+/* Donut with labelled legend (value + share) and a table alternative. items: [{key,label,value,href}] */
+function donut(items, total, fmt, label) {
+  let acc = 0;
+  const C = 2 * Math.PI * 38;
+  const arcs = items.filter(i => i.value > 0).map((it, i) => { const share = total ? it.value / total : 0; const a = `<circle cx="50" cy="50" r="38" fill="none" stroke="${DONUT_COLORS[i % DONUT_COLORS.length]}" stroke-width="16" stroke-dasharray="${share * C} ${C}" stroke-dashoffset="${-acc * C}" transform="rotate(-90 50 50)"/>`; acc += share; return a; }).join('');
+  return `<div class="donut"><svg viewBox="0 0 100 100" role="img" aria-label="${label}. Rincian di legenda."><circle cx="50" cy="50" r="38" fill="none" stroke="#f0ede6" stroke-width="16"/>${arcs}<text x="50" y="48" text-anchor="middle" font-size="9" fill="#8a8478">Total</text><text x="50" y="60" text-anchor="middle" font-size="10" font-weight="800" fill="#17140f">${fmt(total, true)}</text></svg>
+  <ul class="donut-legend">${items.map((it, i) => `<li><a href="${it.href}"><i style="background:${it.value > 0 ? DONUT_COLORS[items.filter(x => x.value > 0).indexOf(it) % DONUT_COLORS.length] : '#e7e4dc'}"></i><span>${esc(it.label)}</span><b>${fmt(it.value)}</b><small>${pct(SER.div(it.value, total))}</small></a></li>`).join('')}</ul></div>`;
+}
+const REASON_COLORS = { 'No Response': '#c53030', 'Fully Booked': '#c99a2e', Price: '#2f6fde', Distance: '#0f9d8a', 'Specific Therapist': '#7c4dff' };
+function lostBars(cancel, f) {
+  const top = Object.keys(REASON_COLORS);
+  const max = Math.max(1, ...cancel.map(x => x.total));
+  return `<div class="stack-bars">${cancel.map(x => { const other = x.total - top.reduce((s, r) => s + x.reasons[r], 0); return `<a class="stack-row" href="${drillHref('cancel', f, { branch: x.outlet })}"><span class="metric-row"><span>${esc(x.name)}</span><b>${num(x.total)}</b></span><span class="stack" style="width:${Math.max(4, x.total / max * 100)}%">${top.map(r => x.reasons[r] ? `<i style="flex:${x.reasons[r]};background:${REASON_COLORS[r]}" title="${r}: ${x.reasons[r]}"></i>` : '').join('')}${other ? `<i style="flex:${other};background:#b8b2a5" title="Lainnya: ${other}"></i>` : ''}</span><small class="muted">${num(x.lost)} inquiry lost · ${num(x.cancelled)} booking batal</small></a>`; }).join('')}</div>
+  <div class="legend">${top.map(r => `<span><i class="dot" style="background:${REASON_COLORS[r]}"></i>${r}</span>`).join('')}<span><i class="dot" style="background:#b8b2a5"></i>Lainnya</span></div>
+  <details><summary>Tabel alasan per outlet</summary>${table(['Alasan', ...cancel.map(x => esc(x.name)), 'Total'], SER.LOST_REASONS.map(r => [r, ...cancel.map(x => num(x.reasons[r])), `<b>${num(cancel.reduce((s, x) => s + x.reasons[r], 0))}</b>`]))}</details>`;
 }
 const barLink = (href, label, value, ratio, color = '') => `<a class="bar-link" href="${href}"><span class="metric-row"><span>${label}</span><b>${value}</b></span><span class="meter" aria-hidden="true"><span class="${color}" style="width:${Math.max(0, Math.min(100, (ratio || 0) * 100))}%"></span></span></a>`;
+/* Executive Insight: finding → hypothesis → action → PIC → review date; "Buat tindakan" creates one task per key. */
+function insightItems(S, f) {
+  const c = S.cur, p = S.prev, items = [];
+  if (c.etr !== null && c.etr < 1 && c.target) { const gap = c.target - c.revenue; items.push({ key: `ins:${f.period}:${f.outlet}:target`, finding: `Revenue ${pct(c.etr)} dari target; selisih ${jt(gap)}.`, hypo: 'Volume order belum cukup pada AOV saat ini.', action: `Kejar ±${num(Math.ceil(gap / c.aov))} order: dorong slot kosong lewat campaign aktif.`, pic: 'MBR-C02', metric: 'Revenue Target Attainment', review: '2026-08-29' }); }
+  const worst = S.cancel.slice().sort((a, b) => b.reasons['No Response'] - a.reasons['No Response'])[0];
+  if (worst && worst.reasons['No Response']) items.push({ key: `ins:${f.period}:${f.outlet}:noresponse`, finding: `${num(worst.reasons['No Response'])} lost “No Response” di ${worst.name}.`, hypo: 'Antrean chat menumpuk pada jam tertentu (hipotesis).', action: 'Periksa umur antrean dan sebaran jam masuk; uji pembagian antrean di jam sibuk.', pic: 'MBR-S01', metric: 'SLA median/p90 dan jumlah No Response', review: '2026-08-29' });
+  const unknown = S.groups.find(g => g.key === 'Tidak diketahui');
+  if (unknown && unknown.revenue) items.push({ key: `ins:${f.period}:${f.outlet}:coverage`, finding: `${jt(unknown.revenue)} revenue tanpa sumber akuisisi (coverage ${pct(c.coverage)}).`, hypo: 'Isian sumber kosong saat booking walk-in/telepon.', action: 'Wajibkan pilihan sumber saat booking; buat antrean perbaikan mapping.', pic: 'MBR-C02', metric: 'Coverage atribusi', review: '2026-09-05' });
+  if (c.forecastAccuracy !== null && c.forecastAccuracy < 0.8) items.push({ key: `ins:${f.period}:${f.outlet}:forecast`, finding: `Country Forecast Accuracy ${pct(c.forecastAccuracy)} (bias ${c.forecastBias >= 0 ? '+' : ''}${pct(c.forecastBias)}).`, hypo: 'Forecast negara belum memakai tren booking terbaru.', action: 'Perbarui forecast negara bulan depan dari pipeline booking.', pic: 'MBR-C02', metric: 'Country Forecast Accuracy', review: '2026-09-05' });
+  return items.slice(0, 4);
+}
 function insight(S, f) {
   const c = S.cur, p = S.prev;
   if (!c.hasData || !p.hasData) return `<p>Data tidak cukup untuk membuat insight pada filter ini. Pilih periode atau outlet yang sudah punya transaksi POS.</p>`;
+  const cx = CX.ensure(state);
   const revCh = c.revenue / p.revenue - 1, ordCh = c.orders / p.orders - 1, aovCh = c.aov / p.aov - 1;
   const driver = Math.abs(ordCh) >= Math.abs(aovCh) ? `volume order (${ordCh >= 0 ? '+' : ''}${num(ordCh * 100, 1)}%)` : `nilai per order (${aovCh >= 0 ? '+' : ''}${num(aovCh * 100, 1)}%)`;
-  const worst = S.cancel.filter(x => x.Jadwal + x.Tamu).sort((a, b) => (b.Jadwal + b.Tamu) - (a.Jadwal + a.Tamu))[0];
-  const unknown = S.groups.find(g => g.key === 'Tidak diketahui');
-  const gap = c.target - c.revenue;
-  const acts = [];
-  if (c.etr !== null && c.etr < 1) acts.push(`Kejar selisih target ${jt(gap)}: setara ±${num(Math.ceil(gap / c.aov))} order pada AOV saat ini.`);
-  if (worst) acts.push(`Tinjau ${worst.Jadwal + worst.Tamu} pembatalan di ${worst.name} (${worst.Jadwal} karena jadwal). Uji pengingat H-1 dan opsi reschedule di Booking Desk.`);
-  if (unknown && unknown.revenue) acts.push(`${jt(unknown.revenue)} revenue belum punya sumber akuisisi. Wajibkan isian sumber saat booking agar atribusi lengkap.`);
-  return `<p>Revenue ${revCh >= 0 ? 'naik' : 'turun'} <b>${num(Math.abs(revCh) * 100, 1)}%</b> dibanding bulan lalu, terutama dari ${driver}. Pencapaian target <b>${pct(c.etr)}</b>; ROMI <b>${dec(c.romi)}×</b>.</p>
-  <h3>Tindakan yang disarankan</h3><ol>${acts.map(a => `<li>${a}</li>`).join('')}</ol>
-  <p class="muted">Aturan deterministik (simulasi), bukan model AI. Angka pendukung dapat dibuka dari setiap kartu.</p>`;
+  const rows = insightItems(S, f).map(it => { const t = cx.tasks.find(x => x.key === it.key); return [esc(it.finding), `<i>${esc(it.hypo)}</i>`, esc(it.action), CX.personName(it.pic), it.review, t ? `<a href="#commercial-team">${t.id}</a> · ${t.status === 'done' ? 'selesai' : 'direncanakan'}` : `<button type="button" class="btn sm" data-action="cx:task-create" data-key="${it.key}" data-object="${f.outlet}:${f.period}" data-pic="${it.pic}" data-due="${it.review}" data-metric="${esc(it.metric)}" data-text="${esc(it.action)}">Buat tindakan</button>`]; });
+  return `<p>Revenue ${revCh >= 0 ? 'naik' : 'turun'} <b>${num(Math.abs(revCh) * 100, 1)}%</b> dibanding bulan lalu, terutama dari ${driver}. Pencapaian target <b>${c.etr === null ? 'belum ditetapkan' : pct(c.etr)}</b>; ROMI kontribusi <b>${dec(c.romi)}×</b>.</p>
+  ${table(['Temuan', 'Hipotesis', 'Tindakan', 'PIC', 'Review', 'Status'], rows, 'wrap')}
+  <p class="muted small">Aturan deterministik (simulasi), bukan model AI. “Buat tindakan” membuat satu tugas Daily Race per temuan; menekan ulang tidak membuat tugas ganda.</p>`;
 }
+const condSelect = (cond) => `<label>Kondisi data <select name="state"><option value="normal">Normal</option><option value="loading" ${cond === 'loading' ? 'selected' : ''}>Loading (simulasi)</option><option value="error" ${cond === 'error' ? 'selected' : ''}>Error (simulasi)</option></select></label>`;
 function summaryScreen(params) {
   const f = filtersOf(params);
   const cond = params.state || 'normal';
-  const condSel = `<label>Kondisi data <select name="state"><option value="normal">Normal</option><option value="loading" ${cond === 'loading' ? 'selected' : ''}>Loading (simulasi)</option><option value="error" ${cond === 'error' ? 'selected' : ''}>Error (simulasi)</option></select></label>`;
   const role = prefs.role;
-  const head = hero(`Ringkasan ${ROLES.find(r => r[0] === role)[1]}`, ROLE_SUMMARY[role], [[`${drillHref('revenue', f)}`, 'Rincian revenue'], [`${drillHref('budget', f)}`, 'Budget vs realisasi'], ['#screens', 'Peta layar']]);
-  const top = `<div class="heading-row">${filterBar(f, params, condSel)}</div>${activeFilters(f)}`;
+  const head = hero(`Ringkasan ${ROLES.find(r => r[0] === role)[1]}`, ROLE_SUMMARY[role], [[`${drillHref('revenue', f)}`, 'Rincian revenue'], ['#commercial-budget' + qs({ period: f.period, outlet: f.outlet }), 'Commercial Budget'], ['#screens', 'Peta layar']]);
+  const top = `<div class="heading-row">${filterBar(f, params, condSelect(cond))}</div>${activeFilters(f)}`;
   if (cond === 'loading') { setTimeout(() => { if (parseHash().params.state === 'loading') go('commercial', { ...f, state: '' }, true); }, 1200); return top + head + `<div class="loading" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Memuat data POS dan budget (simulasi)…</div><div class="skeleton-grid" aria-hidden="true">${'<div class="card skeleton"></div>'.repeat(10)}</div>`; }
   if (cond === 'error') return top + head + `<div class="card error-state" role="alert"><h2>Data belum dapat dimuat (simulasi)</h2><p>Sumber POS demo tidak merespons. Tidak ada angka yang ditampilkan agar tidak menyesatkan.</p><button type="button" class="btn" data-action="retry">Coba lagi</button></div>`;
   const S = SER.summary(state, f.period, f.outlet), c = S.cur, p = S.prev;
-  if (!c.hasData) return top + head + `<div class="card empty-state" role="status"><h2>Belum ada transaksi POS</h2><p>${esc(SER.OUTLETS.find(o => o.key === f.outlet)?.note || 'Tidak ada data untuk filter ini.')}</p><p>Semua KPI ditampilkan “—”. Pilih outlet lain atau ${'<button type="button" class="btn ghost" data-action="filter-reset">reset filter</button>'}.</p></div>` + kpiRow(c, p, f, S);
-  const maxG = Math.max(1, ...S.groups.map(g => g.revenue));
-  const maxC = Math.max(1, ...S.countries.map(x => x.customers));
+  if (!c.hasData) return top + head + `<div class="card empty-state" role="status"><h2>Belum ada transaksi POS</h2><p>${esc(S.periodInfo?.note || 'Tidak ada data untuk filter ini.')}</p><p>Semua KPI ditampilkan “—”, bukan nol. Pilih periode lain atau <button type="button" class="btn ghost sm" data-action="filter-reset">reset filter</button>.</p></div>` + kpiRow(c, p, f, S);
   const sb = HAWK.totals(state);
+  const groups = S.groups.map(g => ({ key: g.key, label: g.key, value: g.revenue, href: drillHref('channel', f, { group: g.key }) }));
+  const topC = S.countries.slice(0, 6), restC = S.countries.slice(6).reduce((s, x) => s + x.customers, 0);
+  const countries = topC.map(x => ({ key: x.key, label: x.key, value: x.customers, href: drillHref('country', f, { country: x.key }) })).concat(restC ? [{ key: 'other', label: `${S.countries.length - 6} negara lain`, value: restC, href: drillHref('country', f) }] : []);
+  const comm = Math.min(100, SER.div(c.committed, c.pagu) * 100 || 0), real = Math.min(100, (c.realization || 0) * 100);
   return top + head + kpiRow(c, p, f, S) + `
+  <div class="grid g4 keep2 support-row">
+    <a class="kpi-btn" href="${drillHref('forecast', f)}"><div class="kpi"><div class="lbl">Country Forecast Accuracy</div><div class="val">${pct(c.forecastAccuracy)}</div><div class="sub">bias ${c.forecastBias === null ? '—' : (c.forecastBias >= 0 ? '+' : '') + pct(c.forecastBias)} · ${num(c.forecastTotal)} forecast vs ${num(c.forecastActual)} aktual</div></div></a>
+    <a class="kpi-btn" href="${drillHref('customers', f)}"><div class="kpi"><div class="lbl">Pelanggan unik</div><div class="val">${num(c.customers)}</div><div class="sub">${num(c.newCustomers)} baru · ${delta(c.customers, p.customers)}</div></div></a>
+    <a class="kpi-btn" href="${drillHref('rpg', f)}"><div class="kpi"><div class="lbl">Revenue per guest</div><div class="val">${rp(c.rpg)}</div><div class="sub">Pembanding AOV SER lama (penyebut tamu)</div></div></a>
+    <a class="kpi-btn" href="${drillHref('channel', f)}"><div class="kpi"><div class="lbl">Coverage atribusi</div><div class="val">${pct(c.coverage)}</div><div class="sub">revenue bersumber ÷ total revenue</div></div></a>
+  </div>
   <div class="grid g-mid">
     <section class="card"><div class="card-head"><h2>Annual Revenue Comparison</h2><a href="${drillHref('annual', f)}">Rincian ›</a></div>${trendChart(S.annual, f)}</section>
-    <section class="card"><div class="card-head"><h2>Budget Realization</h2><a href="${drillHref('budget', f)}">Rincian ›</a></div><div class="budget"><div class="ring" style="--value:${Math.min(100, (c.realization || 0) * 100)}%" role="img" aria-label="Realisasi ${pct(c.realization)} dari pagu"><b>${pct(c.realization)}</b></div><dl><dt>Pagu</dt><dd>${jt(c.pagu)}</dd><dt>Komitmen</dt><dd>${jt(c.committed)}</dd><dt>Realisasi</dt><dd>${jt(c.actual)}</dd><dt>Sisa</dt><dd>${jt(c.remaining)}</dd></dl></div><p class="muted small">Sisa = pagu − komitmen − realisasi. ${c.ids.includes('OUT-UBD') && f.period === '2026-08' ? `Termasuk CMP-001 dari sandbox: komitmen ${rp(sb.committed)}, realisasi ${rp(sb.actual)}.` : ''}</p></section>
-    <section class="card"><div class="card-head"><h2>Return on Marketing Investment</h2><a href="${drillHref('romi', f)}">Rincian ›</a></div><strong class="number">${dec(c.romi)}×</strong><div>${delta(c.romi, p.romi)}</div><p class="muted small">(Kontribusi teratribusi sebelum biaya marketing − biaya marketing) ÷ biaya marketing. Kontribusi ${jt(c.contribution)} · biaya ${jt(c.actual)}.</p><p class="muted small">ROAS iklan ${dec(c.roas)}× · CAC ${rp(c.cac)} per pelanggan baru (${num(c.newCustomers)})</p></section>
+    <section class="card"><div class="card-head"><h2>Budget Realization</h2><a href="${drillHref('budget', f)}">Rincian ›</a></div><div class="budget"><div class="ring" style="background:conic-gradient(var(--gold) 0 ${real}%, var(--champagne) ${real}% ${real + comm}%, var(--line-2) 0)" role="img" aria-label="Realisasi ${pct(c.realization)} dari pagu"><b>${pct(c.realization)}</b></div><dl><dt>Pagu</dt><dd>${jt(c.pagu)}</dd><dt><i class="dot" style="background:var(--champagne)"></i> Komitmen terbuka</dt><dd>${jt(c.committed)}</dd><dt><i class="dot" style="background:var(--gold)"></i> Realisasi</dt><dd>${jt(c.actual)}</dd><dt>Sisa tersedia</dt><dd>${jt(c.remaining)}</dd></dl></div><p class="muted small">Sisa tersedia = pagu − komitmen − realisasi. ${c.ids.includes('OUT-UBD') && f.period === '2026-08' ? `Termasuk CMP-001 dari sandbox: komitmen ${rp(sb.committed)}, realisasi ${rp(sb.actual)}.` : ''} <a href="#commercial-budget${qs({ period: f.period, outlet: f.outlet })}">Buka Commercial Budget ›</a></p></section>
+    <section class="card"><div class="card-head"><h2>Return on Marketing Investment</h2><a href="${drillHref('romi', f)}">Rincian ›</a></div><strong class="number">${dec(c.romi)}×</strong><div>${delta(c.romi, p.romi)}</div><p class="muted small">ROMI kontribusi = (kontribusi teratribusi − biaya marketing) ÷ biaya marketing. Kontribusi ${jt(c.contribution)} · biaya ${jt(c.actual)}.</p><dl class="def compact"><dt>ROMI warisan SER</dt><dd>${dec(c.romiLegacy)}× <small class="muted">(revenue ÷ biaya marketing)</small></dd><dt>ROAS iklan</dt><dd>${dec(c.roas)}×</dd><dt>CAC</dt><dd>${rp(c.cac)} · ${num(c.newCustomers)} pelanggan baru</dd></dl></section>
   </div>
   <div class="grid g3 g-bottom">
-    <section class="card"><div class="card-head"><h2>Tracking by Channel Group</h2><a href="${drillHref('channel', f)}">Rincian ›</a></div><p class="muted small">Revenue POS dibayar per grup sumber akuisisi</p>${S.groups.map((g, i) => barLink(drillHref('channel', f, { group: g.key }), `${g.key} · ${pct(SER.div(g.revenue, c.revenue))}`, jt(g.revenue), g.revenue / maxG, 'c' + i)).join('')}</section>
-    <section class="card"><div class="card-head"><h2>Tracking by Country</h2><a href="${drillHref('country', f)}">Rincian ›</a></div><p class="muted small">Pelanggan unik per negara</p>${S.countries.slice(0, 6).map(x => barLink(drillHref('country', f, { country: x.key }), x.key, num(x.customers), x.customers / maxC)).join('')}${S.countries.length > 6 ? `<p class="muted small">+${S.countries.length - 6} negara lain di rincian</p>` : ''}</section>
-    <section class="card"><div class="card-head"><h2>Cancellation Reason by Branch</h2><a href="${drillHref('cancel', f)}">Rincian ›</a></div>${table(['Outlet', 'Jadwal', 'Tamu', 'Total'], S.cancel.map(x => [`<a href="${drillHref('cancel', f, { branch: x.outlet })}">${esc(x.name)}</a>`, x.Jadwal, x.Tamu, `<b>${x.Jadwal + x.Tamu}</b>`]))}</section>
+    <section class="card"><div class="card-head"><h2>Tracking by Channel Group</h2><a href="${drillHref('channel', f)}">Rincian ›</a></div><p class="muted small">Revenue POS dibayar per grup sumber akuisisi · penyebut ${jt(c.revenue)}</p>${donut(groups, c.revenue, (v, t) => t ? num(v / 1e6, 0) + ' jt' : jt(v), 'Revenue per grup channel')}</section>
+    <section class="card"><div class="card-head"><h2>Tracking by Country</h2><a href="${drillHref('country', f)}">Rincian ›</a></div><p class="muted small">Pelanggan unik per negara · penyebut ${num(c.customers)}</p>${donut(countries, c.customers, v => num(v), 'Pelanggan per negara')}</section>
+    <section class="card"><div class="card-head"><h2>Cancellation Reason by Branch</h2><a href="${drillHref('cancel', f)}">Rincian ›</a></div><p class="muted small">Inquiry lost + booking batal per outlet dan reason code</p>${lostBars(S.cancel, f)}</section>
   </div>
-  <section class="card insight"><div class="card-head"><h2>Executive Insight <span class="badge">SIMULASI</span></h2></div>${insight(S, f)}</section>`;
+  <section class="card insight"><div class="card-head"><h2>Executive Insight <span class="badge demo">SIMULASI</span></h2></div>${insight(S, f)}</section>`;
 }
 function kpiRow(c, p, f, S) {
   const k = (metric, title, value, sub, cls) => `<a class="kpi-btn" href="${drillHref(metric, f)}"><div class="kpi ${cls}"><div class="lbl">${title}</div><div class="val">${value}</div><div class="sub">${sub}</div><span class="more">Rincian ›</span></div></a>`;
+  const missing = c.missingTarget && c.missingTarget.length;
+  const etrSub = c.hasData && c.target === null ? '<span class="muted">Target belum ditetapkan</span>' : `${gauge(c.etr)}<span class="muted">Target ${jt(c.hasData ? c.target : null)}${missing ? ` · ${missing} outlet tanpa target` : ''} · ${delta(c.etr, p.etr, 'vs bulan lalu', true)}</span>`;
   return `<div class="grid g4 keep2 kpis kpi-row">
-    ${k('revenue', 'Total Revenue', jt(c.hasData ? c.revenue : null), `${delta(c.hasData ? c.revenue : null, p.revenue)}<br><span class="muted">${S && S.sameMonthLastYear ? delta(c.revenue, S.sameMonthLastYear, 'vs Agu/Jul 2025').replace('Agu/Jul', SER.MONTHS[Number(f.period.slice(5)) - 1]) : ''}</span>`, 'g-teal')}
-    ${k('customers', 'Total Customers', c.hasData ? num(c.customers) : '—', delta(c.hasData ? c.customers : null, p.customers) + `<br><span class="muted">${c.hasData ? num(c.newCustomers) + ' pelanggan baru' : ''}</span>`, 'g-violet')}
-    ${k('etr', 'Effective Target Rate', pct(c.etr), `${gauge(c.etr)}<span class="muted">Target ${jt(c.hasData ? c.target : null)} · ${delta(c.etr, p.etr, 'vs bulan lalu', true)}</span>`, 'g-blue')}
-    ${k('aov', 'Average Order Value', rp(c.aov), delta(c.aov, p.aov) + `<br><span class="muted">${c.hasData ? num(c.orders) + ' order dibayar' : ''}</span>`, 'g-gold')}
+    ${k('revenue', 'Total Revenue', jt(c.hasData ? c.revenue : null), `${delta(c.hasData ? c.revenue : null, p.revenue)}<br><span class="muted">${S && S.sameMonthLastYear ? delta(c.revenue, S.sameMonthLastYear, 'vs ' + SER.MONTHS[Number(f.period.slice(5)) - 1] + ' 2025') : ''}</span>`, 'g-teal')}
+    ${k('guests', 'Total Guests', c.hasData ? num(c.guests) : '—', delta(c.hasData ? c.guests : null, p.guests) + `<br><span class="muted">${c.hasData ? num(c.customers) + ' pelanggan unik · ' + num(c.orders) + ' order' : ''}</span>`, 'g-violet')}
+    ${k('etr', 'Revenue Target Attainment', c.hasData && c.target === null ? 'Belum ditetapkan' : pct(c.etr), etrSub, 'g-blue')}
+    ${k('aov', 'Average Order Value', rp(c.aov), delta(c.aov, p.aov) + `<br><span class="muted">${c.hasData ? 'revenue per guest ' + rp(c.rpg) : ''}</span>`, 'g-gold')}
   </div>`;
 }
 
@@ -2111,13 +2611,14 @@ function drillScreen(params) {
 }
 function comparison(metric, S, f) {
   const c = S.cur, p = S.prev;
-  const fmt = { revenue: v => jt(v), customers: v => num(v), etr: v => pct(v), aov: v => rp(v), annual: v => jt(v), budget: v => pct(v), romi: v => dec(v) + '×', channel: v => jt(v), country: v => num(v), cancel: v => num(v) }[metric];
-  const pick = { revenue: s => s.hasData ? s.revenue : null, customers: s => s.hasData ? s.customers : null, etr: s => s.etr, aov: s => s.aov, annual: s => s.hasData ? s.revenue : null, budget: s => s.realization, romi: s => s.romi, channel: s => s.hasData ? s.revenue : null, country: s => s.hasData ? s.customers : null, cancel: () => null }[metric];
+  const fmt = { revenue: v => jt(v), guests: v => num(v), customers: v => num(v), etr: v => pct(v), forecast: v => pct(v), aov: v => rp(v), rpg: v => rp(v), annual: v => jt(v), budget: v => pct(v), romi: v => dec(v) + '×', channel: v => jt(v), country: v => num(v), cancel: v => num(v) }[metric];
+  const pick = { revenue: s => s.hasData ? s.revenue : null, guests: s => s.hasData ? s.guests : null, customers: s => s.hasData ? s.customers : null, etr: s => s.etr, forecast: s => s.forecastAccuracy, aov: s => s.aov, rpg: s => s.rpg, annual: s => s.hasData ? s.revenue : null, budget: s => s.realization, romi: s => s.romi, channel: s => s.hasData ? s.revenue : null, country: s => s.hasData ? s.customers : null, cancel: () => null }[metric];
   const prevLabel = SER.MONTH_NAMES[Number(SER.prevPeriod(f.period).slice(5)) - 1] + ' 2026';
   const curLabel = SER.PERIODS.find(x => x.id === f.period).label;
-  if (metric === 'cancel') { const tot = S.cancel.reduce((s, x) => s + x.Jadwal + x.Tamu, 0); return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd>${num(tot)} booking batal</dd><dt>Basis</dt><dd>Booking batal tidak punya transaksi POS dan tidak mengurangi revenue.</dd></dl>`); }
+  if (metric === 'cancel') { const lost = S.cancel.reduce((s, x) => s + x.lost, 0), bc = S.cancel.reduce((s, x) => s + x.cancelled, 0); return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd>${num(lost)} inquiry lost · ${num(bc)} booking batal</dd><dt>Basis</dt><dd>Inquiry lost dan booking batal tidak punya transaksi POS dan tidak mengurangi revenue. Refund tercatat di transaksi POS.</dd></dl>`); }
+  if (!c.hasData) return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd>${esc(S.periodInfo?.note || 'Belum ada data')} · nilai “—”</dd></dl>`);
   const ly = metric === 'revenue' || metric === 'annual' ? `<dt>${SER.MONTHS[Number(f.period.slice(5)) - 1]} 2025</dt><dd>${jt(S.sameMonthLastYear)} ${delta(c.revenue, S.sameMonthLastYear, 'YoY')}</dd>` : '';
-  const parts = metric === 'etr' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${jt(c.target)}</dd>` : metric === 'aov' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${num(c.orders)} order</dd>` : metric === 'romi' ? `<dt>Rincian</dt><dd>(${jt(c.contribution)} − ${jt(c.actual)}) ÷ ${jt(c.actual)}</dd>` : metric === 'budget' ? `<dt>Rincian</dt><dd>${jt(c.actual)} ÷ ${jt(c.pagu)} · sisa ${jt(c.remaining)}</dd>` : '';
+  const parts = metric === 'etr' ? `<dt>Rincian</dt><dd>${c.target === null ? 'Target belum ditetapkan' : `${jt(c.revenue)} ÷ ${jt(c.target)}`}${c.missingTarget.length ? ` · tanpa target: ${c.missingTarget.map(outletName).join(', ')} (dikeluarkan dari pembilang dan penyebut)` : ''}</dd>` : metric === 'forecast' ? `<dt>Rincian</dt><dd>1 − ${num(Math.round((1 - (c.forecastAccuracy || 0)) * c.forecastActual))} ÷ ${num(c.forecastActual)} · bias ${pct(c.forecastBias)}</dd>` : metric === 'rpg' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${num(c.guests)} tamu</dd>` : metric === 'guests' ? `<dt>Grain lain</dt><dd>${num(c.customers)} pelanggan unik · ${num(c.orders)} order</dd>` : metric === 'aov' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${num(c.orders)} order</dd>` : metric === 'romi' ? `<dt>Rincian</dt><dd>(${jt(c.contribution)} − ${jt(c.actual)}) ÷ ${jt(c.actual)}</dd>` : metric === 'budget' ? `<dt>Rincian</dt><dd>${jt(c.actual)} ÷ ${jt(c.pagu)} · sisa ${jt(c.remaining)}</dd>` : '';
   return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd><b>${fmt(pick(c))}</b></dd><dt>${prevLabel}</dt><dd>${fmt(pick(p))} ${delta(pick(c), pick(p), 'vs bulan lalu', metric === 'etr' || metric === 'budget')}</dd>${ly}${parts}<dt>Refund dikecualikan</dt><dd>${num(c.refunded.length)} transaksi · ${jt(c.refundAmount)}</dd></dl>`);
 }
 const outletName = (id) => SER.OUTLETS.find(o => o.id === id)?.name || id;
@@ -2141,14 +2642,17 @@ function drillRows(metric, S, params) {
       return { title: `Pelanggan unik (${num(list.length)})`, searchable: true, searchLabel: 'pelanggan', headers: ['Pelanggan (anonim)', 'Outlet', 'Negara', 'Baru / repeat', 'Order', 'Revenue'], data: list.sort((a, b) => b.revenue - a.revenue).map(x => ({ key: x.id, cells: [x.id, esc(outletName(x.outlet)), x.country, x.firstPeriod === c.period ? 'Baru' : 'Repeat', num(x.orders), rp(x.revenue)] })),
         breakdown: metric === 'country' ? card('Distribusi negara', table(['Negara', 'Pelanggan', 'Pangsa'], S.countries.map(x => [`<a href="${drillHref('country', filtersOf(params), { country: x.key })}">${x.key}</a>`, num(x.customers), pct(SER.div(x.customers, c.customers))]))) : byOutlet('Per outlet', ['Outlet', 'Pelanggan unik', 'Pelanggan baru', 'Order'], (id, s) => [esc(outletName(id)), num(s.customers), num(s.newCustomers), num(s.orders)]) };
     }
-    case 'etr': return { title: 'Transaksi POS pembentuk revenue', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Target vs aktual per outlet', ['Outlet', 'Target', 'Revenue aktual', 'Effective Target Rate', 'Selisih'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.target : null), jt(s.hasData ? s.revenue : null), pct(s.etr), jt(s.hasData ? s.revenue - s.target : null)]) };
+    case 'etr': return { title: 'Transaksi POS pembentuk revenue', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Target vs aktual per outlet', ['Outlet', 'Target', 'Revenue aktual', 'Attainment', 'Selisih'], (id, s) => [esc(outletName(id)), s.hasData && s.target === null ? 'Belum ditetapkan' : jt(s.hasData ? s.target : null), jt(s.hasData ? s.revenue : null), s.hasData && s.target === null ? '—' : pct(s.etr), s.hasData && s.target !== null ? jt(s.revenue - s.target) : '—']) };
+    case 'forecast': { const keys = Object.keys(c.forecast); return { title: 'Forecast vs aktual per negara', searchable: false, headers: ['Negara', 'Forecast (versi sebelum periode)', 'Aktual pelanggan', 'Selisih', 'Error absolut'], data: keys.map(k => { const a = c.actualByCountry[k] || 0, fc = c.forecast[k]; return { key: k, cells: [k, num(fc), num(a), (fc - a >= 0 ? '+' : '') + num(fc - a), num(Math.abs(fc - a))] }; }), foot: `<p class="muted small">Σ forecast ${num(c.forecastTotal)} · Σ aktual ${num(c.forecastActual)} · ${num(c.actualByCountry['Tidak diketahui'] || 0)} pelanggan “Tidak diketahui” tidak dibandingkan.</p>`, breakdown: byOutlet('Akurasi per outlet', ['Outlet', 'Accuracy', 'Bias'], (id, s) => [esc(outletName(id)), pct(s.forecastAccuracy), s.forecastBias === null ? '—' : pct(s.forecastBias)]) }; }
+    case 'guests': return { title: 'Transaksi POS dibayar (kolom tamu di detail)', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Tamu, pelanggan unik, dan order per outlet', ['Outlet', 'Tamu', 'Pelanggan unik', 'Order'], (id, s) => [esc(outletName(id)), num(s.guests), num(s.customers), num(s.orders)]) };
+    case 'rpg': return { title: 'Transaksi POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Revenue per guest vs AOV per outlet', ['Outlet', 'Revenue', 'Tamu', 'Revenue per guest', 'Order', 'AOV'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.guests), rp(s.rpg), num(s.orders), rp(s.aov)]) };
     case 'aov': return { title: 'Order POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('AOV per outlet', ['Outlet', 'Revenue', 'Order', 'AOV'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.orders), rp(s.aov)]) };
-    case 'annual': return { title: 'Revenue bulanan', searchable: false, headers: ['Bulan', '2026', '2025', 'Perubahan', 'Sumber 2026'], data: S.annual.map(r => ({ key: r.label, cells: [r.label, r.y2026 === null ? '—' : jt(r.y2026, 0), jt(r.y2025, 0), r.y2026 === null || !r.y2025 ? '—' : delta(r.y2026, r.y2025, 'YoY'), r.source2026] })) };
+    case 'annual': return { title: 'Revenue bulanan 2023–2026', searchable: false, headers: ['Bulan', '2026', '2025', '2024', '2023', '2026 vs 2025', 'Sumber 2026'], data: S.annual.map(r => ({ key: r.label, cells: [r.label, ...['y2026', 'y2025', 'y2024', 'y2023'].map(k => r[k] === null ? '—' : jt(r[k], 0)), r.y2026 === null || !r.y2025 ? '—' : delta(r.y2026, r.y2025, 'YoY'), r.source2026] })), foot: '<p class="muted small">Kosong = bulan belum tersedia atau outlet belum buka (bukan nol).</p>' };
     case 'budget': return { title: 'Baris budget marketing (Budget 7P · Promotion)', searchable: false, headers: ['Baris budget', 'Outlet', 'Tipe', 'Campaign', 'Pagu', 'Komitmen', 'Realisasi', 'Sisa', 'Referensi MRF'], data: c.lines.map(b => ({ key: b.id, cells: [`${b.id}<br><small>${esc(b.name)}</small>`, esc(outletName(b.outlet)), b.type, campaignName(b.campaign), rp(b.pagu), rp(b.committed), rp(b.actual), rp(b.pagu - b.committed - b.actual), b.campaign === 'CMP-001' && b.outlet === 'OUT-UBD' && c.period === '2026-08' ? `${b.mrf} · ${link('commercial-budget', 'sandbox')}` : b.mrf] })), foot: `<p class="muted small">Total pagu ${rp(c.pagu)} · komitmen ${rp(c.committed)} · realisasi ${rp(c.actual)} · sisa ${rp(c.remaining)}. Approval dan posting dilakukan di ${link('mrf', 'Finance › Purchasing & MRF')}.</p>` };
     case 'romi': return { title: 'Transaksi teratribusi campaign', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid.filter(x => x.campaign)), breakdown: card('Kontribusi per campaign', table(['Campaign', 'Transaksi', 'Revenue', 'Biaya langsung', 'Komisi', 'Kontribusi'], SER.CAMPAIGNS.map(cp => { const r = c.paid.filter(x => x.campaign === cp.id); return [campaignName(cp.id), num(r.length), rp(r.reduce((s, x) => s + x.amount, 0)), rp(r.reduce((s, x) => s + x.directCost, 0)), rp(r.reduce((s, x) => s + x.commission, 0)), rp(r.reduce((s, x) => s + x.amount - x.directCost - x.commission, 0))]; }).filter(r => r[1] !== '0'))) };
     case 'channel': return { title: `Transaksi POS${params.group ? ' · ' + esc(params.group) : ''}`, searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid.filter(x => !params.group || x.group === params.group)), breakdown: card('Per grup dan sumber', table(['Grup', 'Sumber akuisisi', 'Order', 'Revenue', 'Pangsa'], SER.GROUPS.flatMap(g => [...new Set(c.paid.filter(x => x.group === g).map(x => x.source))].map(src => { const r = c.paid.filter(x => x.group === g && x.source === src); return [`<a href="${drillHref('channel', filtersOf(params), { group: g })}">${g}</a>`, src || 'Tidak diketahui', num(r.length), rp(r.reduce((s, x) => s + x.amount, 0)), pct(SER.div(r.reduce((s, x) => s + x.amount, 0), c.revenue))]; })))) };
-    case 'cancel': { const rows = S.cancel.flatMap(x => x.rows).filter(x => !params.branch || x.outlet === params.branch); return { title: `Booking batal (${rows.length})`, searchable: true, searchLabel: 'booking', headers: ['Booking', 'Tanggal', 'Outlet', 'Alasan', 'Treatment'], data: rows.sort((a, b) => b.date.localeCompare(a.date)).map(x => ({ key: x.id, cells: [x.id, x.date, esc(outletName(x.outlet)), x.reasonLabel, x.treatment] })) }; }
-    default: return { title: 'Transaksi POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Per outlet', ['Outlet', 'Revenue', 'Order', 'Refund dikecualikan'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.orders), `${num(s.refunded.length)} · ${rp(s.refundAmount)}`]), foot: c.refunded.length ? `<details><summary>Lihat ${c.refunded.length} transaksi refund yang dikecualikan</summary>${table(TX_HEAD, c.refunded.map(txCells))}</details>` : '' };
+    case 'cancel': { const rows = S.cancel.flatMap(x => x.rows).filter(x => !params.branch || x.outlet === params.branch); return { title: `Inquiry lost dan booking batal (${rows.length})`, searchable: true, searchLabel: 'kejadian', headers: ['ID kejadian', 'Jenis', 'Tanggal', 'Outlet', 'Reason code', 'Treatment diminati', 'Estimasi nilai peluang'], data: rows.sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id)).map(x => ({ key: x.id, cells: [x.id, x.event, x.date, esc(outletName(x.outlet)), x.reason, x.treatment, rp(x.estValue)] })), breakdown: card('Reason code per outlet', table(['Outlet', 'Inquiry lost', 'Booking batal', ...SER.LOST_REASONS.slice(0, 5), 'Lainnya', 'Total'], S.cancel.map(x => { const top = SER.LOST_REASONS.slice(0, 5); return [`<a href="${drillHref('cancel', filtersOf(params), { branch: x.outlet })}">${esc(x.name)}</a>`, num(x.lost), num(x.cancelled), ...top.map(r => num(x.reasons[r])), num(x.total - top.reduce((s, r) => s + x.reasons[r], 0)), `<b>${num(x.total)}</b>`]; }))), foot: '<p class="muted small">Estimasi nilai peluang adalah harga daftar treatment yang diminati (demo), bukan kerugian revenue.</p>' }; }
+    default: return { title: 'Transaksi POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: card('Rekonsiliasi per outlet', table(['Outlet', 'Revenue', 'Tamu', 'Order', 'Refund dikecualikan'], c.ids.map(id => { const s = SER.slice(ds, c.period, id); return [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.guests), num(s.orders), `${num(s.refunded.length)} · ${rp(s.refundAmount)}`]; }).concat(c.ids.length > 1 ? [[`<b>Total ${c.ids.length} outlet</b>`, `<b>${jt(c.revenue)}</b>`, `<b>${num(c.guests)}</b>`, `<b>${num(c.orders)}</b>`, `<b>${num(c.refunded.length)} · ${rp(c.refundAmount)}</b>`]] : []))), foot: c.refunded.length ? `<details><summary>Lihat ${c.refunded.length} transaksi refund yang dikecualikan</summary>${table(TX_HEAD, c.refunded.map(txCells))}</details>` : '' };
   }
 }
 
@@ -2176,7 +2680,9 @@ function screensMap() {
 }
 
 /* ---------- render ---------- */
+const REGISTRY = {};
 function screen(id, params) {
+  if (REGISTRY[id]) return REGISTRY[id](params);
   switch (id) {
     case 'bridge': case 'picker': return bridge();
     case 'screens': return screensMap();
@@ -2194,6 +2700,7 @@ function titleOf(id) {
   if (id === 'commercial') return 'Executive Performance Summary';
   if (id === 'commercial-drill') return 'Rincian Executive Summary';
   if (id === 'screens') return 'Peta Preview';
+  if (REGISTRY[id] && REGISTRY[id].title) return REGISTRY[id].title(parseHash().params);
   if (id === 'bridge' || id === 'picker') return 'Alur lintas portal';
   return itemOf(id)?.[1] || 'Alur lintas portal';
 }
@@ -2223,6 +2730,7 @@ function renderRole() {
 const setNav = (open) => { $('#sidebar').classList.toggle('on', open); $('.scrim').classList.toggle('on', open); shell.classList.toggle('nav-open', open); $('#menu').setAttribute('aria-expanded', String(open)); };
 let lastFocus = null;
 function render(message = '', error = false) {
+  if (!message && pendingMessage) { message = pendingMessage; pendingMessage = ''; }
   const { id, params } = parseHash();
   const portal = portalOf(id);
   if (portal && portal !== prefs.portal) { prefs.portal = portal; savePrefs(); }
@@ -2240,14 +2748,20 @@ function go(route, params = {}, replace = false) {
   const h = '#' + route + qs(params);
   if (replace) { history.replaceState(null, '', h); render(); } else location.hash = h;
 }
-function apply(action, input) {
+function apply(action, input, after) {
   try {
+    let result;
     if (action === 'reset') { if (!confirm('Kembalikan semua data demo ke kondisi awal?')) return; state = HAWK.fresh(); }
+    else if (action.startsWith('cx:')) result = CX.update(state, action.slice(3), { by: CX.PEOPLE.find(p => p.id === prefs.member)?.id || 'MBR-C01', ...input });
     else HAWK.update(state, action, input);
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { render('Perubahan berlaku selama halaman ini terbuka. Penyimpanan browser tidak tersedia.'); return; }
-    render(action === 'reset' ? 'Data demo dikembalikan ke kondisi awal.' : 'Perubahan demo tersimpan.');
+    let saved = true;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { saved = false; }
+    const msg = action === 'reset' ? 'Data demo dikembalikan ke kondisi awal.' : (saved ? 'Perubahan demo tersimpan' : 'Perubahan berlaku selama halaman ini terbuka (penyimpanan browser tidak tersedia)') + (typeof result === 'string' ? ` · ${result}` : '') + '.';
+    if (after) { const target = after.replace('{id}', encodeURIComponent(result ?? '')); if ('#' + target !== location.hash) { pendingMessage = msg; location.hash = target; return; } }
+    render(msg);
   } catch (error) { render(error.message, true); }
 }
+let pendingMessage = '';
 
 /* ---------- F1-01 portal picker ---------- */
 function openPicker(trigger) {
@@ -2284,20 +2798,282 @@ view.addEventListener('submit', (e) => {
   if (form.dataset.search) { e.preventDefault(); const { id, params } = parseHash(); go(id, { ...params, q: new FormData(form).get('q'), page: '' }); return; }
   if (!form.dataset.submit) return;
   e.preventDefault();
-  apply(form.dataset.submit, Object.fromEntries(new FormData(form)));
+  apply(form.dataset.submit, Object.fromEntries(new FormData(form)), form.dataset.after);
 });
 view.addEventListener('click', (e) => {
   const control = e.target.closest('[data-action]');
   if (!control) return;
   const { id, params } = parseHash();
-  if (control.dataset.action === 'filter-reset') { go(id, id === 'commercial-drill' ? { metric: params.metric } : {}); return; }
+  if (control.dataset.action === 'filter-reset') { go(id, id === 'commercial-drill' ? { metric: params.metric } : params.view ? { view: params.view, ...(params.id ? { id: params.id } : {}) } : params.id ? { id: params.id } : {}); return; }
   if (control.dataset.action === 'retry') { go('commercial', { period: params.period, outlet: params.outlet }); return; }
-  apply(control.dataset.action, { id: control.dataset.id });
+  if (control.dataset.action.startsWith('nav:')) return;
+  const input = { ...control.dataset }; delete input.action; delete input.after;
+  if (control.dataset.text) input.action = control.dataset.text;
+  apply(control.dataset.action, input, control.dataset.after);
 });
 window.addEventListener('hashchange', () => { render(); view.querySelector('h1').focus(); });
 window.addEventListener('storage', (e) => { if (e.key === KEY) { try { state = JSON.parse(e.newValue) || HAWK.fresh(); } catch (er) { state = HAWK.fresh(); } render(); } });
 if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
-render();
+window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt, pct, dec, link, button, table, card, hero, metrics, bar, qs, go, parseHash, apply, filtersOf, filterBar, activeFilters, donut, delta, outletName, campaignName, drillHref, REGISTRY, render, condSelect };
+document.addEventListener('DOMContentLoaded', () => render());
+})();
+
+;
+/* HAWK ERP · Commercial workspace screens, Fase 2A (DATA DEMO / SIMULASI)
+   F2-09 Commercial Budget · F2-02 Campaign Planner · F2-03 Campaign Detail · F2-04 Content Studio ·
+   F2-01 Brand & Communications. Reads SER (POS/lead/budget fixture), HAWK sandbox (MRF) and CX
+   (commercial records). Every number comes from those sources; nothing is typed in as a result. */
+(() => {
+const H = window.HL;
+const { esc, num, rp, jt, pct, link, table, card, metrics, qs } = H;
+const st = () => H.state;
+const cx = () => CX.ensure(H.state);
+const who = (id) => esc(CX.personName(id));
+const chip = (text, tone = '') => `<span class="status-chip ${tone}">${esc(text)}</span>`;
+const sel = (name, label, options, value, extra = '') => `<label>${label} <select name="${name}" ${extra}>${options.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${String(v) === String(value ?? '') ? 'selected' : ''}>${esc(l)}</option>`; }).join('')}</select></label>`;
+const hidden = (obj) => Object.entries(obj).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `<input type="hidden" name="${k}" value="${esc(v)}">`).join('');
+const toolbar = (fields, keep = {}, label = 'Filter') => `<form id="filters" class="filters" aria-label="${label}">${hidden(keep)}${fields.join('')}<button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
+const viewTabs = (route, views, current, keep) => `<nav class="tabs" aria-label="Tampilan">${views.map(([k, l, n]) => `<a class="tab${k === current ? ' on' : ''}" href="#${route}${qs({ ...keep, view: k })}" ${k === current ? 'aria-current="page"' : ''}>${l}${n !== undefined ? ` <span class="c">${n}</span>` : ''}</a>`).join('')}</nav>`;
+const outlets = () => SER.OUTLETS.map(o => [o.id, o.name]);
+const shortOutlet = (id) => esc((SER.OUTLETS.find(o => o.id === id)?.name || id).replace('Jaens Spa ', ''));
+const dayDiff = (a, b) => Math.round((new Date(a) - new Date(b)) / 864e5);
+const TODAY = CX.TODAY;
+const register = (id, fn, title) => { H.REGISTRY[id] = fn; if (title) fn.title = title; };
+
+/* ================= F2-09 Commercial Budget ================= */
+register('commercial-budget', (params) => {
+  const f = H.filtersOf(params), view = params.view || 'overview';
+  const S = SER.summary(st(), f.period, f.outlet), c = S.cur;
+  const keep = { period: f.period, outlet: f.outlet };
+  const reqs = st().requests;
+  const pending = reqs.filter(r => r.status === 'submitted').reduce((s, r) => s + r.amount, 0);
+  const lines = c.lines.map(b => ({ ...b, sisa: b.pagu - b.committed - b.actual, cmp: cx().campaigns.find(x => x.id === b.campaign) }));
+  const head = `<div class="heading-row">${H.filterBar(f, params, hidden({ view }))}</div>${H.activeFilters(f)}`;
+  const tabs = viewTabs('commercial-budget', [['overview', 'Overview'], ['campaign', 'Campaign Budget'], ['requests', 'Pengajuan', reqs.filter(r => r.status === 'submitted').length], ['timeline', 'Approval Timeline'], ['recon', 'Rekonsiliasi']], view, keep);
+  const kpis = metrics([['Pagu', jt(c.pagu), `${num(lines.length)} baris budget · Budget 7P Promotion`], ['Komitmen terbuka', jt(c.committed), 'MRF disetujui, belum diposting'], ['Aktual', jt(c.actual), `${pct(c.realization)} dari pagu`], ['Sisa tersedia', jt(c.remaining), `pagu − komitmen − aktual · ${rp(pending)} menunggu approval`]]);
+  if (!c.lines.length) return head + tabs + kpis + `<div class="card empty-state" role="status"><h2>Belum ada baris budget</h2><p>${esc(S.periodInfo?.note || 'Finance belum menerbitkan pagu untuk filter ini.')}</p></div>`;
+  let body = '';
+  if (view === 'overview') {
+    const types = [['ads', 'Promotion · Iklan digital'], ['kol', 'Promotion · KOL & media partner'], ['brand', 'Promotion · Brand & materi cetak']];
+    body = `<div class="grid g2">${card('Per pos 7P', table(['Pos 7P', 'Pagu', 'Komitmen', 'Aktual', 'Sisa', 'Realisasi'], types.map(([t, l]) => { const r = lines.filter(b => b.type === t); const pg = r.reduce((s, b) => s + b.pagu, 0), cm = r.reduce((s, b) => s + b.committed, 0), ac = r.reduce((s, b) => s + b.actual, 0); return [l, jt(pg), jt(cm), jt(ac), jt(pg - cm - ac), pct(SER.div(ac, pg))]; })))}
+    ${card('Sisa per outlet', table(['Outlet', 'Pagu', 'Aktual', 'Sisa tersedia', 'Sisa historis SER'], c.ids.map(id => { const s = SER.slice(S.ds, f.period, id); return [esc(H.outletName(id)), jt(s.pagu), jt(s.actual), jt(s.remaining), jt(s.pagu - s.actual)]; })) + '<p class="muted small">Sisa historis SER = pagu − aktual. HAWK memakai sisa tersedia yang juga mengurangi komitmen terbuka.</p>')}</div>` +
+      card('Per campaign', table(['Campaign', 'Baris budget', 'Pagu', 'Komitmen', 'Aktual', 'Sisa', 'Status campaign'], lines.map(b => [b.campaign ? `<a href="#campaign-detail${qs({ id: b.campaign })}">${esc(H.campaignName(b.campaign))}</a>` : '<span class="muted">Tanpa campaign</span>', `${b.id}<br><small>${esc(b.name)}</small>`, rp(b.pagu), rp(b.committed), rp(b.actual), rp(b.sisa), b.cmp ? chip(b.cmp.status) : '—'])));
+  } else if (view === 'campaign') {
+    body = card('Rencana campaign vs baris budget Finance', table(['Campaign', 'Status', 'Rencana biaya', 'Baris budget', 'Pagu baris', 'Aktual', 'Selisih rencana'], cx().campaigns.map(cp => { const ls = S.ds.budgetLines.filter(b => b.campaign === cp.id && b.period === f.period && (f.outlet === 'all' || c.ids.includes(b.outlet))); const pg = ls.reduce((s, b) => s + b.pagu, 0), ac = ls.reduce((s, b) => s + (b.actual || 0), 0); return [`<a href="#campaign-detail${qs({ id: cp.id })}">${cp.id} · ${esc(cp.name)}</a>`, chip(cp.status), rp(cp.budgetPlan), ls.length ? ls.map(b => b.id).join('<br>') : '<span class="muted">Belum ada baris</span>', ls.length ? rp(pg) : '—', ls.length ? rp(ac) : '—', ls.length ? rp(pg - cp.budgetPlan) : '—']; })) + '<p class="muted small">Baris budget, MRF, dan posting berasal dari Finance. Commercial membaca status tanpa menyalin ledger.</p>');
+  } else if (view === 'requests') {
+    const t = HAWK.totals(st());
+    body = `<div class="grid g2">${card('Buat pengajuan dari campaign', `<form class="workflow-form" data-submit="request">
+      ${sel('campaign', 'Campaign', [['CMP-001', 'CMP-001 · Wellness Escape (BGL-UBD-2608-01)']], 'CMP-001')}
+      ${sel('pos', 'Pos 7P', [['Promotion', 'Promotion · iklan digital'], ['Promotion · KOL', 'Promotion · KOL'], ['Promotion · Brand', 'Promotion · materi cetak']], 'Promotion')}
+      <label>Nominal (Rp)<input name="amount" type="number" min="1" step="1" required value="2000000"></label>
+      <label>Bukti / catatan<input name="note" maxlength="120" placeholder="mis. invoice Meta Ads Agustus"></label>
+      <button class="btn">Kirim ke Finance</button></form>
+      <p class="muted small">Sisa tersedia baris CMP-001: <b>${rp(t.remaining)}</b>. Finance memeriksa pagu saat approval; pengajuan melebihi sisa akan ditolak sistem. Baris campaign lain dikelola Finance (baca saja di demo ini).</p>`)}
+      ${card('Status pengajuan', H.table(['MRF', 'Campaign', 'Pos', 'Nominal', 'Status', 'Catatan'], reqs.slice().reverse().map(r => [r.id, r.campaign, esc(r.pos || 'Promotion'), rp(r.amount), chip(({ submitted: 'Menunggu Finance', approved: 'Disetujui · komitmen', posted: 'Diposting', rejected: 'Ditolak' })[r.status], r.status === 'rejected' ? 'bad' : r.status === 'posted' ? 'ready' : 'sandbox'), esc(r.reason || r.note || '—')])) + `<p class="small">${link('mrf', 'Buka antrean approval di Finance ›')}</p>`)}</div>`;
+  } else if (view === 'timeline') {
+    body = card('Approval timeline', reqs.slice().reverse().map(r => `<div class="timeline"><b>${r.id} · ${rp(r.amount)} · ${esc(r.campaign)}</b><ol>${(r.history || [{ status: r.status, at: '—' }]).map(x => `<li><span class="status-chip ${x.status === 'rejected' ? 'bad' : x.status === 'posted' ? 'ready' : 'sandbox'}">${({ submitted: 'Diajukan', approved: 'Disetujui Finance', posted: 'Diposting', rejected: 'Ditolak' })[x.status] || x.status}</span> ${x.at}${x.ref ? ` · posting ${x.ref}` : ''}${x.reason ? ` · ${esc(x.reason)}` : ''}</li>`).join('')}</ol></div>`).join(''));
+  } else {
+    body = card('Rekonsiliasi baris budget ↔ MRF ↔ posting', table(['Baris budget', 'Referensi MRF', 'Komitmen', 'Aktual ledger', 'Spend platform (demo)', 'Selisih', 'Status'], lines.map(b => { const plat = b.type === 'ads' ? Math.round((b.actual || 0) * (b.id.endsWith('02') ? 1.012 : 1)) : null; const diff = plat === null ? null : plat - b.actual; return [`${b.id}<br><small>${esc(b.name)}</small>`, esc(b.mrf), rp(b.committed), rp(b.actual), plat === null ? '—' : rp(plat), diff === null ? '—' : rp(diff), diff ? chip('Perlu cek invoice', 'sandbox') : chip('Cocok', 'ready')]; })) + '<p class="muted small">Posting memindahkan komitmen ke aktual dalam satu operasi; MRF yang sama tidak bisa diposting dua kali. Selisih spend platform vs ledger (kurs, pajak, invoice) menjadi tugas Finance.</p>');
+  }
+  return head + tabs + kpis + body;
+}, () => 'Commercial Budget');
+
+/* ================= campaign helpers ================= */
+function campaignActuals(id, period = '2026-08') {
+  const ds = SER.dataset(st());
+  const paid = ds.tx.filter(x => x.campaign === id && x.period === period && x.status === 'paid');
+  const leads = ds.leads.filter(l => l.campaign === id && l.period === period);
+  const booked = leads.filter(l => l.status === 'booked');
+  return { leads: leads.length, booked: booked.length, paid: paid.length, revenue: paid.reduce((s, x) => s + x.amount, 0), refunds: ds.tx.filter(x => x.campaign === id && x.period === period && x.status === 'refunded').length };
+}
+const CMP_ACTIONS = { Draft: [['cmp-approve', 'Setujui']], Approved: [['cmp-schedule', 'Jadwalkan']], Scheduled: [['cmp-run', 'Jalankan']], Running: [['cmp-pause', 'Pause'], ['cmp-close', 'Tutup']], Paused: [['cmp-resume', 'Lanjutkan'], ['cmp-close', 'Tutup']], Closed: [] };
+const cmpTone = (s) => ({ Running: 'ready', Draft: 'sandbox', Paused: 'bad', Closed: 'planned' })[s] || '';
+function cmpActions(cp) {
+  return CMP_ACTIONS[cp.status].map(([a, l]) => ['cmp-pause', 'cmp-close'].includes(a)
+    ? `<form class="inline-form" data-submit="cx:${a}">${hidden({ id: cp.id })}<label class="sr" for="${a}-${cp.id}">${a === 'cmp-pause' ? 'Alasan pause' : 'Retrospektif'}</label><input id="${a}-${cp.id}" name="note" required minlength="5" placeholder="${a === 'cmp-pause' ? 'Alasan pause' : 'Retrospektif singkat'}"><button class="btn ghost sm">${l}</button></form>`
+    : `<button type="button" class="btn sm" data-action="cx:${a}" data-id="${cp.id}">${l}</button>`).join(' ');
+}
+function campaignFilter(params) {
+  return cx().campaigns.filter(c => (!params.outlet || c.outlets.includes(params.outlet)) && (!params.channel || c.channels.includes(params.channel)) && (!params.pic || c.pic === params.pic) && (!params.status || c.status === params.status));
+}
+const contentOf = (id) => cx().content.filter(c => c.campaign === id);
+
+/* ================= F2-02 Campaign Planner ================= */
+register('campaign', (params) => {
+  const view = params.view || 'overview';
+  const list = campaignFilter(params);
+  const keep = { outlet: params.outlet, channel: params.channel, pic: params.pic, status: params.status };
+  const channels = [...new Set(cx().campaigns.flatMap(c => c.channels))];
+  const bar = toolbar([sel('outlet', 'Outlet', [['', 'Semua outlet'], ...outlets()], params.outlet), sel('channel', 'Channel', [['', 'Semua channel'], ...channels], params.channel), sel('pic', 'PIC', [['', 'Semua PIC'], ...CX.PEOPLE.filter(p => p.id.startsWith('MBR-C')).map(p => [p.id, p.name])], params.pic), sel('status', 'Status', [['', 'Semua status'], ...CX.CAMPAIGN_FLOW], params.status)], { view });
+  const tabs = viewTabs('campaign', [['overview', 'Overview'], ['board', 'Board'], ['calendar', 'Calendar'], ['list', 'List', list.length], ['templates', 'Templates']], view, keep);
+  const k = metrics([['Running', num(list.filter(c => c.status === 'Running').length), 'campaign aktif'], ['Menunggu approval', num(list.filter(c => c.status === 'Draft').length), 'status Draft'], ['Paused', num(list.filter(c => c.status === 'Paused').length), 'dengan alasan tercatat'], ['Rencana biaya', jt(list.reduce((s, c) => s + c.budgetPlan, 0)), 'Σ rencana campaign terfilter']]);
+  const cardOf = (cp) => { const a = campaignActuals(cp.id); const cn = contentOf(cp.id); const pub = cn.filter(x => ['Published', 'Analysed'].includes(x.stage)).length; return `<article class="card cmp-card"><div class="card-head"><h3><a href="#campaign-detail${qs({ id: cp.id })}">${cp.id} · ${esc(cp.name)}</a></h3>${chip(cp.status, cmpTone(cp.status))}</div><p class="small">${esc(cp.objective)}</p><dl class="def compact"><dt>Periode</dt><dd>${cp.start} – ${cp.end}</dd><dt>Outlet</dt><dd>${cp.outlets.map(shortOutlet).join(', ')}</dd><dt>Budget</dt><dd>${rp(cp.budgetPlan)}</dd><dt>Booking Agu</dt><dd>${num(a.paid)} / target ${num(cp.target.bookings)}</dd><dt>Konten</dt><dd>${pub}/${cn.length} terbit</dd><dt>PIC</dt><dd>${who(cp.pic)}</dd></dl><div class="meter" aria-hidden="true"><span style="width:${Math.min(100, cp.target.bookings ? a.paid / cp.target.bookings * 100 : 0)}%"></span></div><div class="actions">${cmpActions(cp)}</div></article>`; };
+  let body = '';
+  if (!list.length) body = `<div class="card empty-state" role="status"><h2>Tidak ada campaign untuk filter ini</h2><p>Ubah filter atau buat campaign dari Templates.</p></div>`;
+  else if (view === 'overview') body = `<div class="grid g3 cmp-grid">${list.map(cardOf).join('')}</div>`;
+  else if (view === 'board') body = `<div class="board" role="list">${CX.CAMPAIGN_FLOW.map(s => { const col = list.filter(c => c.status === s); return `<section class="board-col" role="listitem" aria-label="${s}, ${col.length} campaign"><h3>${s} <span class="c">${col.length}</span></h3>${col.map(cp => `<article class="board-card"><a href="#campaign-detail${qs({ id: cp.id })}"><b>${cp.id}</b> ${esc(cp.name)}</a><small>${cp.start} – ${cp.end} · ${who(cp.pic)}</small><small>${esc(cp.channels.join(', '))}</small><div class="actions">${cmpActions(cp)}</div></article>`).join('') || '<p class="muted small">Kosong</p>'}</section>`; }).join('')}</div>`;
+  else if (view === 'calendar') {
+    const start = new Date('2026-07-01'), end = new Date('2026-09-30'), span = (end - start) / 864e5;
+    const pos = (d) => Math.max(0, Math.min(100, (new Date(d) - start) / 864e5 / span * 100));
+    body = card('Kalender campaign · Jul–Sep 2026', `<div class="gantt"><div class="gantt-head"><span></span><div class="gantt-scale"><span>Juli</span><span>Agustus</span><span>September</span></div></div>${list.map(cp => `<div class="gantt-row"><a href="#campaign-detail${qs({ id: cp.id })}">${cp.id} · ${esc(cp.name)}</a><div class="gantt-track"><span class="gantt-bar ${cmpTone(cp.status)}" style="left:${pos(cp.start)}%;width:${Math.max(1.5, pos(cp.end) - pos(cp.start))}%" title="${cp.start} – ${cp.end}">${esc(cp.status)}</span><i class="gantt-today" style="left:${pos(TODAY)}%" title="Hari ini (demo) ${TODAY}"></i></div></div>`).join('')}</div><p class="muted small">Garis tipis = hari ini (demo ${TODAY}). Campaign always-on dipotong ke rentang kalender.</p>`);
+  } else if (view === 'list') body = card('Daftar campaign', table(['ID', 'Campaign', 'Outlet', 'Channel', 'PIC', 'Status', 'Periode', 'Rencana biaya', 'Booking Agu / target', 'UTM'], list.map(cp => { const a = campaignActuals(cp.id); return [`<a href="#campaign-detail${qs({ id: cp.id })}">${cp.id}</a>`, esc(cp.name), cp.outlets.map(shortOutlet).join(', '), esc(cp.channels.join(', ')), who(cp.pic), chip(cp.status, cmpTone(cp.status)), `${cp.start} – ${cp.end}`, rp(cp.budgetPlan), `${num(a.paid)} / ${num(cp.target.bookings)}`, `<code>${esc(cp.utm)}</code>`]; })));
+  else body = `<div class="grid g2">${card('Template campaign', table(['Template', 'Tujuan', 'Channel', 'Durasi', 'Window atribusi'], CX.TEMPLATES.map(t => [`<b>${t.id}</b> ${esc(t.name)}`, esc(t.objective), esc(t.channels.join(', ')), `${t.days} hari`, `${t.window} hari`])))}
+    ${card('Buat campaign dari brief', `<form class="workflow-form stack-form" data-submit="cx:cmp-create" data-after="campaign-detail?id={id}">
+      ${sel('template', 'Template', CX.TEMPLATES.map(t => [t.id, t.name]), 'TPL-01')}
+      <label>Nama campaign<input name="name" required minlength="4" placeholder="mis. Shanti Morning Ritual"></label>
+      <label>Tujuan<input name="objective" placeholder="Kosongkan untuk memakai tujuan template"></label>
+      ${sel('outlet', 'Outlet', outlets(), 'OUT-SHT')}
+      <label>Mulai<input name="start" type="date" value="2026-09-01"></label><label>Selesai<input name="end" type="date" value="2026-09-30"></label>
+      <label>Kode UTM<input name="utm" required placeholder="cmp_shanti_morning"></label>
+      <label>Rencana biaya (Rp)<input name="budget" type="number" min="0" value="10000000"></label>
+      <label>Target booking<input name="bookings" type="number" min="0" value="30"></label>
+      ${sel('pic', 'PIC', CX.PEOPLE.filter(p => p.id.startsWith('MBR-C')).map(p => [p.id, p.name]), 'MBR-C02')}
+      <button class="btn">Buat draft campaign</button></form><p class="muted small">Satu kode UTM tidak boleh dipakai dua campaign aktif di outlet yang sama.</p>`)}</div>`;
+  return `<div class="heading-row">${bar}</div>` + tabs + k + body;
+}, () => 'Campaign Planner');
+
+/* ================= F2-03 Campaign Detail ================= */
+register('campaign-detail', (params) => {
+  const cp = cx().campaigns.find(c => c.id === params.id) || cx().campaigns[0];
+  const a = campaignActuals(cp.id), cn = contentOf(cp.id);
+  const reqs = st().requests.filter(r => r.campaign === cp.id);
+  const lines = SER.dataset(st()).budgetLines.filter(b => b.campaign === cp.id && b.period === '2026-08');
+  const tasks = cx().tasks.filter(t => t.object === cp.id || cn.some(c => c.id === t.object));
+  const conv = (n, d) => d ? pct(n / d) : '—';
+  return `<a class="back" href="#campaign">‹ Kembali ke Campaign Planner</a>
+  <section class="card cmp-head"><div class="card-head"><h2>${cp.id} · ${esc(cp.name)}</h2>${chip(cp.status, cmpTone(cp.status))}<div class="r">${cmpActions(cp)}</div></div>
+    <div class="grid g2"><dl class="def"><dt>Tujuan</dt><dd>${esc(cp.objective)}</dd><dt>Audiens</dt><dd>${esc(cp.audience)}</dd><dt>Penawaran</dt><dd>${esc(cp.offer)}</dd><dt>Outlet</dt><dd>${cp.outlets.map(id => esc(H.outletName(id))).join(', ')}</dd></dl>
+    <dl class="def"><dt>Periode</dt><dd>${cp.start} – ${cp.end}</dd><dt>Channel</dt><dd>${esc(cp.channels.join(', '))}</dd><dt>PIC</dt><dd>${who(cp.pic)}</dd><dt>Tracking</dt><dd><code>utm_campaign=${esc(cp.utm)}</code> · window ${cp.window} hari<br><small class="muted">Link demo: https://jaensspa.example/book?utm_source=instagram&amp;utm_medium=social&amp;utm_campaign=${esc(cp.utm)}</small></dd><dt>Baseline</dt><dd>${esc(cp.baseline)}</dd></dl></div></section>
+  ${metrics([['Lead (Agu)', num(a.leads), `target ${num(cp.target.leads)}`], ['Booking dibayar', num(a.paid), `target ${num(cp.target.bookings)} · ${num(a.refunds)} refund`], ['Revenue POS', jt(a.revenue), `target ${jt(cp.target.revenue)}`], ['Biaya (rencana)', rp(cp.budgetPlan), lines.length ? `aktual ${rp(lines.reduce((s, b) => s + (b.actual || 0), 0))}` : 'belum ada baris budget']])}
+  <div class="grid g2">
+    ${card('Funnel campaign (Agustus 2026)', H.bar('Lead masuk', num(a.leads), 1) + H.bar('Lead → booking', `${num(a.booked)} · ${conv(a.booked, a.leads)}`, a.leads ? a.booked / a.leads : 0) + H.bar('Booking → dibayar (POS)', `${num(a.paid)}`, a.leads ? a.paid / a.leads : 0) + `<p class="muted small">Revenue dihitung sekali per transaksi POS. ${link('attribution', 'Buka jejak atribusi ›')}</p>`)}
+    ${card('Creative & konten', table(['Konten', 'Format', 'Tahap', 'PIC tahap', 'Tenggat'], cn.map(c => [`<a href="#studio${qs({ view: 'board', content: c.id })}">${c.id} · ${esc(c.title)}</a>`, c.format, chip(c.stage), who(CX.stagePic(c)), c.due])) + `<form class="workflow-form" data-submit="cx:cnt-create" data-after="studio?view=board&content={id}">${hidden({ campaign: cp.id })}<label>Konten baru dari brief<input name="title" required minlength="4" placeholder="mis. Reels testimoni tamu"></label>${sel('format', 'Format', ['Reels', 'Carousel', 'Static', 'Story'], 'Reels')}<button class="btn sm">Buat konten</button></form>`)}
+  </div>
+  <div class="grid g2">
+    ${card('Budget & pengajuan', (lines.length ? table(['Baris budget', 'Pagu', 'Komitmen', 'Aktual', 'Sisa'], lines.map(b => [`${b.id}<br><small>${esc(b.name)}</small>`, rp(b.pagu), rp(b.committed), rp(b.actual), rp(b.pagu - b.committed - b.actual)])) : '<p class="muted">Belum ada baris budget Finance untuk campaign ini.</p>') + (reqs.length ? table(['MRF', 'Nominal', 'Status'], reqs.map(r => [r.id, rp(r.amount), chip(r.status)])) : '') + `<p>${cp.id === 'CMP-001' ? link('commercial-budget?view=requests', 'Ajukan biaya ›') : '<span class="muted small">Pengajuan demo tersedia untuk CMP-001 (baris sandbox).</span>'}</p>`)}
+    ${card('Tugas terkait (Daily Race)', tasks.length ? table(['Tugas', 'PIC', 'Tenggat', 'Status'], tasks.map(t => [`${t.id} · ${esc(t.action)}`, who(t.pic), t.due, chip(t.status === 'done' ? 'Selesai' : 'Direncanakan', t.status === 'done' ? 'ready' : '')])) : '<p class="muted">Belum ada tugas.</p>')}
+  </div>
+  <div class="grid g2">
+    ${card('Histori status', `<ol class="history">${cp.history.map(x => `<li><b>${x.status}</b> · ${x.at} · ${esc(CX.person(x.by)?.name || x.by)}${x.note ? ` — ${esc(x.note)}` : ''}</li>`).join('')}</ol>`)}
+    ${card('Retrospektif', cp.retro ? `<p>${esc(cp.retro)}</p>` : `<p class="muted">Diisi saat campaign ditutup (wajib). Campaign yang dipause tetap menyimpan histori.</p>`)}
+  </div>`;
+}, (params) => { const cp = CX.ensure(H.state).campaigns.find(c => c.id === params.id); return cp ? `Campaign Detail · ${cp.id}` : 'Campaign Detail'; });
+
+/* ================= F2-04 Content Studio ================= */
+const PRIORITY = ['Tinggi', 'Sedang', 'Rendah'];
+function dueBucket(c) {
+  if (['Published', 'Analysed'].includes(c.stage)) return 'done';
+  const d = dayDiff(c.due, TODAY);
+  return d < 0 ? 'overdue' : d === 0 ? 'today' : 'upcoming';
+}
+function studioFilter(params, includeArchived = false) {
+  const q = (params.q || '').toLowerCase();
+  return cx().content.filter(c => (includeArchived || params.archived === '1' || !c.archived) && (!q || (c.id + ' ' + c.title).toLowerCase().includes(q)) && (!params.pillar || c.pillar === params.pillar) && (!params.pic || Object.values(c.pics).includes(params.pic)) && (!params.priority || c.priority === params.priority) && (!params.campaign || c.campaign === params.campaign) && (!params.platform || c.channels.includes(params.platform)) && (!params.due || dueBucket(c) === params.due) && (!params.stage || c.stage === params.stage));
+}
+const contentCard = (c, keep) => { const b = dueBucket(c); return `<article class="board-card${keep.content === c.id ? ' sel' : ''}"><a href="#studio${qs({ ...keep, content: c.id })}"><b>${c.id}</b> ${esc(c.title)}</a><small>${c.campaign ? esc(c.campaign) + ' · ' : ''}${esc(c.pillar)} · ${c.format}</small><small>${esc(c.channels.join(', '))}</small><small>PIC tahap: <b>${CX.stagePic(c) ? who(CX.stagePic(c)) : '<span class="bad-t">belum ada</span>'}</b></small><small>${c.priority} · <span class="${b === 'overdue' ? 'bad-t' : b === 'today' ? 'warn-t' : ''}">tenggat ${c.due}${b === 'overdue' ? ' · overdue' : b === 'today' ? ' · hari ini' : ''}</span></small>${c.reviews.length && c.reviews[c.reviews.length - 1].decision === 'revise' && c.stage === 'Editing' ? '<small class="warn-t">Perlu revisi</small>' : ''}</article>`; };
+function stageMover(c) {
+  const opts = CX.STAGES.filter(s => s !== c.stage && !['Approved', 'Published'].includes(s));
+  return `<form class="inline-form" data-submit="cx:cnt-stage">${hidden({ id: c.id })}<label>Ubah tahap <select name="to">${opts.map(s => `<option>${s}</option>`).join('')}</select></label><button class="btn ghost sm">Pindah</button></form>`;
+}
+function contentPanel(c, keep) {
+  const tab = keep.ctab || 'brief';
+  const pubs = cx().publications.filter(p => p.content === c.id);
+  const assets = c.assets.map(id => cx().assets.find(a => a.id === id)).filter(Boolean);
+  const k = { ...keep, content: c.id };
+  const tabs = [['brief', 'Brief'], ['checklist', 'Checklist'], ['assets', 'Aset & Versi'], ['review', 'Review'], ['publish', 'Publikasi'], ['analytics', 'Analytics'], ['log', 'Activity Log']];
+  let body = '';
+  if (tab === 'brief') body = `<dl class="def"><dt>Campaign</dt><dd>${c.campaign ? `<a href="#campaign-detail${qs({ id: c.campaign })}">${esc(H.campaignName(c.campaign))}</a>` : '—'}</dd><dt>Pilar · format</dt><dd>${esc(c.pillar)} · ${c.format}</dd><dt>Channel</dt><dd>${esc(c.channels.join(', '))}</dd><dt>Prioritas · tenggat</dt><dd>${c.priority} · ${c.due}</dd><dt>PIC per tahap</dt><dd>${['planner', 'creator', 'editor', 'reviewer', 'publisher', 'analyst'].map(r => `${r}: <b>${c.pics[r] ? who(c.pics[r]) : '—'}</b>`).join(' · ')}</dd></dl>
+    <form class="inline-form" data-submit="cx:cnt-assign">${hidden({ id: c.id })}${sel('role', 'Peran', ['planner', 'creator', 'editor', 'reviewer', 'publisher', 'analyst'], CX.STAGE_ROLE[c.stage])}${sel('pic', 'PIC', CX.PEOPLE.map(p => [p.id, p.name]), CX.stagePic(c) || 'MBR-C02')}<button class="btn ghost sm">Tetapkan PIC</button></form>`;
+  else if (tab === 'checklist') body = c.checklist.length ? `<ul class="checklist">${c.checklist.map(([t, d], i) => `<li><button type="button" class="check${d ? ' on' : ''}" data-action="cx:cnt-check" data-id="${c.id}" data-index="${i}" aria-pressed="${d}">${d ? '✓' : ''}</button>${esc(t)}</li>`).join('')}</ul>` : '<p class="muted">Belum ada checklist tahap.</p>';
+  else if (tab === 'assets') body = (assets.length ? table(['Aset', 'Format', 'Versi', 'Status'], assets.map(a => [`${a.id} · ${esc(a.title)}`, a.format, 'v' + a.version, chip(a.status, a.status === 'approved' ? 'ready' : 'sandbox')])) : '<p class="muted">Belum ada aset.</p>') + `<div class="actions"><button type="button" class="btn ghost sm" data-action="cx:cnt-asset" data-id="${c.id}">${assets.length ? 'Unggah versi baru (demo)' : 'Tambah aset v1 (demo)'}</button></div><p class="muted small">Perubahan aset setelah persetujuan mengembalikan konten ke Review dan membatalkan jadwal yang belum terbit.</p>`;
+  else if (tab === 'review') body = (c.reviews.length ? `<ol class="history">${c.reviews.map(r => `<li><b>${r.decision === 'approve' ? 'Approve' : 'Minta revisi'}</b> v${r.version} · ${r.at} · ${who(r.by)} — ${esc(r.note)}</li>`).join('')}</ol>` : '<p class="muted">Belum ada review.</p>') +
+    (c.stage === 'Review' ? `<form class="workflow-form" data-submit="cx:cnt-approve">${hidden({ id: c.id })}<label>Catatan approve<input name="note" placeholder="opsional"></label><button class="btn sm">Approve</button></form><form class="workflow-form" data-submit="cx:cnt-revise">${hidden({ id: c.id })}<label>Catatan revisi<input name="note" required minlength="5" placeholder="Wajib diisi"></label><button class="btn ghost sm">Minta revisi</button></form>`
+      : ['Production', 'Editing'].includes(c.stage) ? `<button type="button" class="btn sm" data-action="cx:cnt-submit" data-id="${c.id}">Ajukan review</button>` : '');
+  else if (tab === 'publish') body = (pubs.length ? table(['Publikasi', 'Platform', 'Akun', 'Jadwal', 'Status', 'Post ID / URL', 'Aksi'], pubs.map(p => [p.id, p.platform, esc(p.account), p.scheduledAt, chip(p.status, p.status === 'published' ? 'ready' : p.status === 'draft' ? 'bad' : 'sandbox'), p.postId ? `${p.postId}<br><small>${esc(p.url)}</small>` : '—', p.status === 'scheduled' ? `<button type="button" class="btn sm" data-action="cx:pub-publish" data-id="${p.id}">Tandai terbit (simulasi)</button>` : '—'])) : '<p class="muted">Belum ada publikasi.</p>') +
+    (c.approvedAt ? `<form class="workflow-form" data-submit="cx:cnt-schedule">${hidden({ id: c.id })}${sel('platform', 'Platform', c.channels, c.channels.find(ch => !pubs.some(p => p.platform === ch && p.status !== 'draft')) || c.channels[0])}<label>Waktu (WITA)<input name="at" type="datetime-local" required value="2026-08-26T18:00"></label><button class="btn sm">Jadwalkan / ubah jadwal</button></form><p class="muted small">Ubah jadwal publikasi tidak menggeser tenggat produksi. Akun dan jam yang sama ditolak sebagai bentrok.</p>` : `<p class="warn-t small">Konten belum disetujui, belum bisa dijadwalkan.</p>`);
+  else if (tab === 'analytics') { const r = c.results; body = r ? metrics([['Views', num(r.views)], ['Klik', num(r.clicks)], ['Lead tertaut', num(r.leads)], ['Booking dibayar', `${num(r.bookings)} · ${jt(r.revenue)}`]]) + `<p class="muted small">Lead dan booking dihitung dari ID yang tertaut ke publikasi (UTM/kode). ${c.id === 'CNT-005' ? `Lead sandbox LEAD-001 (Instagram → WhatsApp) berasal dari publikasi ini: ${link('attribution', 'buka jejak')}.` : ''} ${c.stage === 'Published' ? `<button type="button" class="btn ghost sm" data-action="cx:cnt-analyse" data-id="${c.id}">Tandai Analysed</button>` : ''}</p>` : '<p class="muted">Belum terbit. Data tidak tersedia (bukan nol).</p>'; }
+  else body = `<ol class="history">${c.log.slice().reverse().map(l => `<li>${l.at} · ${who(l.by)} — ${esc(l.text)}</li>`).join('')}</ol>`;
+  return `<aside class="card panel" aria-label="Detail ${c.id}"><div class="card-head"><h2>${c.id} · ${esc(c.title)}</h2>${chip(c.stage)}<a class="r" href="#studio${qs({ ...keep, content: '', ctab: '' })}" aria-label="Tutup detail">✕</a></div>
+    <nav class="tabs" aria-label="Detail konten">${tabs.map(([t, l]) => `<a class="tab${t === tab ? ' on' : ''}" href="#studio${qs({ ...k, ctab: t })}">${l}</a>`).join('')}</nav>${body}<div class="panel-foot">${stageMover(c)}</div></aside>`;
+}
+register('studio', (params) => {
+  const view = params.view || 'board';
+  const keep = { view, q: params.q, pillar: params.pillar, pic: params.pic, priority: params.priority, campaign: params.campaign, platform: params.platform, due: params.due, stage: params.stage, archived: params.archived, member: params.member, cal: params.cal, ctab: params.ctab, content: params.content };
+  const filterKeep = { view, content: params.content, member: params.member, cal: params.cal };
+  const list = studioFilter(params);
+  const all = cx().content.filter(c => !c.archived);
+  const counts = { overdue: all.filter(c => dueBucket(c) === 'overdue').length, today: all.filter(c => dueBucket(c) === 'today').length, upcoming: all.filter(c => dueBucket(c) === 'upcoming').length };
+  const bar = toolbar([`<label>Cari<input name="q" value="${esc(params.q || '')}" placeholder="ID atau judul"></label>`, sel('pillar', 'Pilar', [['', 'Semua'], ...CX.PILLARS], params.pillar), sel('pic', 'PIC', [['', 'Semua'], ...CX.PEOPLE.map(p => [p.id, p.name])], params.pic), sel('priority', 'Prioritas', [['', 'Semua'], ...PRIORITY], params.priority), sel('campaign', 'Campaign', [['', 'Semua'], ...cx().campaigns.map(c => [c.id, c.id + ' · ' + c.name])], params.campaign), sel('platform', 'Platform', [['', 'Semua'], ...CX.PLATFORMS], params.platform), sel('stage', 'Tahap', [['', 'Semua tahap'], ...CX.STAGES], params.stage)], filterKeep);
+  const chips = `<div class="chips" role="group" aria-label="Tenggat">${[['overdue', 'Overdue', 'bad'], ['today', 'Due today', 'sandbox'], ['upcoming', 'Upcoming', '']].map(([k, l, t]) => `<a class="status-chip ${t}${params.due === k ? ' on' : ''}" href="#studio${qs({ ...keep, due: params.due === k ? '' : k })}">${l} · ${counts[k]}</a>`).join('')}${params.archived === '1' ? `<a class="status-chip on" href="#studio${qs({ ...keep, archived: '' })}">Termasuk arsip ✕</a>` : `<a class="status-chip" href="#studio${qs({ ...keep, archived: '1' })}">Tampilkan arsip</a>`}</div>`;
+  const actions = `<div class="studio-actions"><details class="new-content"><summary class="btn sm">+ New Content</summary><form class="workflow-form" data-submit="cx:cnt-create" data-after="studio?view=${view}&content={id}"><label>Judul<input name="title" required minlength="4"></label>${sel('from', 'Sumber', [['blank', 'Dari nol'], ['reference', 'Dari reference'], ['campaign', 'Dari campaign']], 'campaign')}${sel('campaign', 'Campaign', [['', '—'], ...cx().campaigns.map(c => [c.id, c.id + ' · ' + c.name])], 'CMP-001')}${sel('format', 'Format', ['Reels', 'Carousel', 'Static', 'Story'], 'Reels')}${sel('pillar', 'Pilar', CX.PILLARS, CX.PILLARS[0])}${sel('channel', 'Channel', CX.PLATFORMS, 'Instagram')}${sel('pic', 'PIC planner', [['', 'Belum ditentukan'], ...CX.PEOPLE.map(p => [p.id, p.name])], 'MBR-C02')}<label>Tenggat<input type="date" name="due" value="2026-08-31"></label><button class="btn sm">Simpan</button></form></details><button type="button" class="btn ghost sm" data-action="cx:cnt-archive-done">Archive Done</button></div>`;
+  /* analytics strip (NB: produktivitas, ketepatan waktu, revisi) */
+  const pubs = cx().publications, published = pubs.filter(p => p.status === 'published');
+  const onTime = published.filter(p => p.publishedAt && p.publishedAt.slice(0, 16) <= p.scheduledAt.slice(0, 16).replace(/(\d\d):(\d\d)$/, (m, h, mm) => `${h}:${String(Math.min(59, Number(mm) + 15)).padStart(2, '0')}`));
+  const k = metrics([['Aset approved unik', num(cx().assets.filter(a => a.status === 'approved').length), 'satu aset bisa dipakai di banyak publikasi'], ['Publikasi terbit', num(published.length), CX.PLATFORMS.map(p => `${p} ${published.filter(x => x.platform === p).length}`).filter(x => !x.endsWith(' 0')).join(' · ') || 'belum ada'], ['On-time rate', pct(SER.div(onTime.length, published.length)), 'terbit ≤15 menit dari jadwal ÷ terbit berjadwal'], ['Revisi', num(cx().content.reduce((s, c) => s + c.reviews.filter(r => r.decision === 'revise').length, 0)), `${num(counts.overdue)} konten overdue`]]);
+  const tabs = viewTabs('studio', [['board', 'Board'], ['calendar', 'Calendar'], ['list', 'List', list.length], ['library', 'Library'], ['tasks', 'My Tasks']], view, { ...keep, content: params.content, ctab: params.ctab });
+  const open = params.content ? cx().content.find(c => c.id === params.content) : null;
+  let body = '';
+  if (view === 'board') body = `<div class="board studio-board" role="list">${CX.STAGES.filter(s => !params.stage || s === params.stage).map(s => { const col = list.filter(c => c.stage === s); return `<section class="board-col" role="listitem" aria-label="${s}, ${col.length} konten"><h3>${s} <span class="c">${col.length}</span></h3>${col.map(c => contentCard(c, keep)).join('') || '<p class="muted small">Kosong</p>'}</section>`; }).join('')}</div><p class="muted small">Pindah tahap lewat menu “Ubah tahap” di panel detail (bisa dengan keyboard). Desktop: board digulir horizontal; mobile: pilih tahap di filter.</p>`;
+  else if (view === 'calendar') {
+    const mode = params.cal === 'publish' ? 'publish' : 'deadline';
+    const days = 31, first = new Date('2026-08-01').getDay();
+    const items = (d) => { const date = `2026-08-${String(d).padStart(2, '0')}`; return mode === 'deadline' ? list.filter(c => c.due === date).map(c => `<a href="#studio${qs({ ...keep, content: c.id })}" class="cal-item ${dueBucket(c)}">${c.id} · ${esc(c.title)}<small>${who(CX.stagePic(c))} · ${c.stage}</small></a>`) : pubs.filter(p => p.scheduledAt.startsWith(date) && list.some(c => c.id === p.content)).map(p => `<a href="#studio${qs({ ...keep, content: p.content, ctab: 'publish' })}" class="cal-item ${p.status}">${p.platform} ${p.scheduledAt.slice(11)} · ${p.content}<small>${esc(p.account)} · ${p.status}</small></a>`); };
+    body = card(`Kalender Agustus 2026 · ${mode === 'deadline' ? 'tenggat tahap' : 'jadwal publikasi'}`, `<div class="row"><a class="tab${mode === 'deadline' ? ' on' : ''}" href="#studio${qs({ ...keep, cal: 'deadline' })}">Tenggat tahap</a><a class="tab${mode === 'publish' ? ' on' : ''}" href="#studio${qs({ ...keep, cal: 'publish' })}">Jadwal publikasi</a></div>
+      <div class="cal" role="grid" aria-label="Kalender Agustus 2026">${['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(d => `<div class="cal-h" role="columnheader">${d}</div>`).join('')}${'<div class="cal-d empty"></div>'.repeat(first)}${Array.from({ length: days }, (_, i) => { const it = items(i + 1); return `<div class="cal-d${`2026-08-${String(i + 1).padStart(2, '0')}` === TODAY ? ' today' : ''}" role="gridcell"><span class="cal-n">${i + 1}</span>${it.join('')}</div>`; }).join('')}</div><p class="muted small">Zona waktu WITA. Ubah jadwal di tab Publikasi pada detail konten.</p>`);
+  } else if (view === 'list') {
+    const sort = params.sort || 'due';
+    const sorted = list.slice().sort((a, b) => sort === 'stage' ? CX.STAGES.indexOf(a.stage) - CX.STAGES.indexOf(b.stage) : sort === 'priority' ? PRIORITY.indexOf(a.priority) - PRIORITY.indexOf(b.priority) : a.due.localeCompare(b.due));
+    body = card('Daftar konten', `<p class="small">Urutkan: ${[['due', 'Tenggat'], ['stage', 'Tahap'], ['priority', 'Prioritas']].map(([s, l]) => s === sort ? `<b>${l}</b>` : `<a href="#studio${qs({ ...keep, sort: s })}">${l}</a>`).join(' · ')}</p>` + table(['ID', 'Judul', 'Campaign', 'Pilar', 'Format', 'Tahap', 'PIC tahap', 'Tenggat', 'Prioritas', 'Channel'], sorted.map(c => [`<a href="#studio${qs({ ...keep, content: c.id })}">${c.id}</a>`, esc(c.title) + (c.archived ? ' <span class="badge">arsip</span>' : ''), c.campaign || '—', esc(c.pillar), c.format, c.stage, CX.stagePic(c) ? who(CX.stagePic(c)) : '<span class="bad-t">—</span>', `<span class="${dueBucket(c) === 'overdue' ? 'bad-t' : ''}">${c.due}</span>`, c.priority, esc(c.channels.join(', '))])));
+  } else if (view === 'library') {
+    const assets = cx().assets;
+    const targets = cx().content.filter(c => !c.archived && !['Published', 'Analysed'].includes(c.stage));
+    body = `<div class="library">${assets.map(a => { const used = cx().content.filter(c => c.assets.includes(a.id)); return `<article class="card asset"><div class="thumb ${a.format.toLowerCase()}" aria-hidden="true"><span>${a.format}</span><small>DEMO</small></div><h3>${a.id}</h3><p class="small">${esc(a.title)}</p><p class="small">${esc(cx().brands.find(b => b.id === a.brand)?.name || a.brand)} · v${a.version} · ${chip(a.status, a.status === 'approved' ? 'ready' : 'sandbox')}</p><p class="muted small">Dipakai di: ${used.map(c => `<a href="#studio${qs({ ...keep, view: 'board', content: c.id })}">${c.id}</a>`).join(', ') || '—'}</p>${a.status === 'approved' ? `<form class="inline-form" data-submit="cx:cnt-reuse">${hidden({ asset: a.id })}<label class="sr" for="reuse-${a.id}">Pakai ${a.id} di konten</label><select id="reuse-${a.id}" name="id">${targets.filter(c => !c.assets.includes(a.id)).map(c => `<option value="${c.id}">${c.id}</option>`).join('')}</select><button class="btn ghost sm">Pakai</button></form>` : ''}</article>`; }).join('')}</div><p class="muted small">Thumbnail adalah placeholder berlabel DEMO. Pakai ulang aset approved lewat referensi ID; jumlah aset unik tidak bertambah.</p>`;
+  } else {
+    const me = params.member || H.prefs.member || 'MBR-C04';
+    const mine = cx().content.filter(c => !c.archived && CX.stagePic(c) === me && !['Published', 'Analysed'].includes(c.stage));
+    const unassigned = cx().content.filter(c => !c.archived && !CX.stagePic(c) && !['Published', 'Analysed'].includes(c.stage));
+    const tasks = cx().tasks.filter(t => t.pic === me);
+    const group = (title, rows) => card(`${title} (${rows.length})`, rows.length ? table(['Konten', 'Tahap', 'Tenggat', 'Campaign'], rows.map(c => [`<a href="#studio${qs({ ...keep, view: 'tasks', member: me, content: c.id })}">${c.id} · ${esc(c.title)}</a>`, c.stage, c.due, c.campaign || '—'])) : '<p class="muted">Tidak ada.</p>');
+    body = `<form id="filters" class="filters">${hidden({ view: 'tasks' })}${sel('member', 'Anggota', CX.PEOPLE.map(p => [p.id, `${p.name} · ${p.role}`]), me)}</form>
+      <div class="grid g2">${group('Overdue', mine.filter(c => dueBucket(c) === 'overdue'))}${group('Due today', mine.filter(c => dueBucket(c) === 'today'))}${group('Upcoming', mine.filter(c => dueBucket(c) === 'upcoming'))}${group('Review ditugaskan', mine.filter(c => c.stage === 'Review'))}</div>
+      ${card('Terblokir: tahap tanpa PIC', unassigned.length ? table(['Konten', 'Tahap', 'Tenggat'], unassigned.map(c => [`<a href="#studio${qs({ ...keep, view: 'tasks', content: c.id })}">${c.id} · ${esc(c.title)}</a>`, c.stage, c.due])) : '<p class="muted">Tidak ada.</p>')}
+      ${card('Tugas Daily Race saya', tasks.length ? table(['Tugas', 'Sumber', 'Tenggat', 'Status'], tasks.map(t => [`${t.id} · ${esc(t.action)}`, esc(t.source), t.due, chip(t.status === 'done' ? 'Selesai' : 'Direncanakan', t.status === 'done' ? 'ready' : '')])) + `<p class="small">${link('commercial-team', 'Buka Daily Race ›')}</p>` : '<p class="muted">Tidak ada tugas Daily Race.</p>')}
+      <p class="muted small">My Tasks dibaca dari PIC tahap pada record konten yang sama, jadi tidak ada tugas ganda. Perpindahan PIC langsung terlihat di sini.</p>`;
+  }
+  return `<div class="heading-row">${bar}</div>${chips}${actions}${tabs}${k}<div class="studio-wrap${open ? ' has-panel' : ''}"><div class="studio-main">${list.length || view === 'library' || view === 'tasks' ? body : `<div class="card empty-state" role="status"><h2>Tidak ada konten untuk filter ini</h2><p>Ubah filter atau buat konten baru.</p></div>`}</div>${open ? contentPanel(open, keep) : ''}</div>`;
+}, () => 'Content Studio');
+
+/* ================= F2-01 Brand & Communications ================= */
+register('brand', (params) => {
+  const view = params.view || 'foundation';
+  const brands = cx().brands.filter(b => !params.brand || b.id === params.brand);
+  const keep = { brand: params.brand };
+  const bar = toolbar([sel('brand', 'Brand', [['', 'Semua brand'], ...cx().brands.map(b => [b.id, b.name])], params.brand)], { view });
+  const tabs = viewTabs('brand', [['foundation', 'Brand Foundation'], ['visibility', 'Brand Visibility'], ['assets', 'Aset'], ['calendar', 'Kalender komunikasi'], ['messages', 'Message Library']], view, keep);
+  let body = '';
+  if (view === 'foundation') {
+    const prog = brands.map(b => ({ b, p: CX.brandProgress(b) }));
+    const avg = prog.length ? prog.reduce((s, x) => s + x.p.ratio, 0) / prog.length : null;
+    const sel1 = params.open ? cx().brands.find(b => b.id === params.open) : null;
+    body = `<div class="grid g4 keep2">${prog.map(({ b, p }) => `<a class="kpi-btn" href="#brand${qs({ ...keep, view, open: b.id })}"><div class="kpi${sel1 && sel1.id === b.id ? ' g-gold' : ''}"><div class="lbl">${esc(b.name)}</div><div class="val">${pct(p.ratio, 0)}</div><div class="sub">${p.done}/${p.total} bobot approved${p.pending.length ? ' · belum: ' + esc(p.pending.join(', ')) : ''}</div></div></a>`).join('')}</div>
+      ${card('Narasi progres', `<p>Rata-rata progres ${prog.length} brand <b>${pct(avg, 0)}</b>, dihitung dari bobot milestone yang sudah approved (${CX.BRAND_ELEMENTS.map(e => `${e[1]} ${e[2]}`).join(', ')}). Kartu dan narasi memakai perhitungan yang sama.</p>`)}
+      ${sel1 ? card(`Checklist ${esc(sel1.name)}`, table(['Elemen', 'Bobot', 'Status', 'Versi', 'Aksi'], CX.BRAND_ELEMENTS.map(([k, l, w]) => { const [s, v] = sel1.els[k]; const act = s === 'draft' ? ['brand-submit', 'Ajukan review'] : s === 'review' ? ['brand-approve', 'Approve'] : s === 'approved' ? ['brand-revise', 'Revisi (versi baru)'] : null; return [l, w, s === 'none' ? '<span class="muted">tidak berlaku</span>' : chip(s, s === 'approved' ? 'ready' : 'sandbox'), s === 'none' ? '—' : 'v' + v, act ? `<button type="button" class="btn ${act[0] === 'brand-approve' ? '' : 'ghost '}sm" data-action="cx:${act[0]}" data-id="${sel1.id}" data-el="${k}">${act[1]}</button>` : '—']; })) + '<p class="muted small">Revisi membuat versi baru dan mengembalikan elemen ke draft sehingga progres turun sampai di-approve lagi.</p>') : '<p class="muted small">Pilih kartu brand untuk membuka checklist aset.</p>'}`;
+  } else if (view === 'visibility') {
+    const reqs = cx().offline;
+    const approved = reqs.filter(r => r.status !== 'Produksi'), dist = reqs.filter(r => r.status === 'Terdistribusi'), onTime = approved.filter(r => r.done && r.done <= r.due);
+    body = metrics([['Desain offline', `${num(approved.length)} / 30`, 'disetujui ÷ target'], ['Terdistribusi', num(dist.length), `${num(dist.reduce((s, r) => s + r.placements, 0))} penempatan (desain unik tidak digandakan)`], ['Tepat waktu', pct(SER.div(onTime.length, approved.length)), 'selesai ≤ tenggat ÷ selesai'], ['Rework', num(reqs.reduce((s, r) => s + r.rework, 0)), 'revisi setelah review']]) +
+      card('Permintaan desain offline', table(['Request', 'Peminta', 'Tipe', 'PIC', 'Tenggat', 'Selesai', 'Status', 'Penempatan'], reqs.map(r => [r.id, r.dept, r.type, who(r.pic), r.due, r.done || '—', chip(r.status, r.status === 'Terdistribusi' ? 'ready' : 'sandbox'), num(r.placements)])));
+  } else if (view === 'assets') {
+    const as = cx().assets.filter(a => !params.brand || a.brand === params.brand);
+    body = card('Aset brand berversi', table(['Aset', 'Brand', 'Format', 'Versi', 'Status', 'Dipakai di'], as.map(a => [`${a.id} · ${esc(a.title)}`, esc(cx().brands.find(b => b.id === a.brand)?.name || a.brand), a.format, 'v' + a.version, chip(a.status, a.status === 'approved' ? 'ready' : 'sandbox'), cx().content.filter(c => c.assets.includes(a.id)).map(c => `<a href="#studio${qs({ view: 'library', content: c.id })}">${c.id}</a>`).join(', ') || '—'])) + `<p class="small">${link('studio?view=library', 'Buka Library di Content Studio ›')}</p>`);
+  } else if (view === 'calendar') {
+    body = card('Kalender komunikasi', table(['Tanggal', 'Komunikasi', 'Audiens', 'Channel', 'Tipe', 'Campaign', 'Lokasi distribusi', 'Status', 'Aksi'], cx().comms.map(m => [m.date, esc(m.title), esc(m.audience), m.channel, m.type, m.campaign ? `<a href="#campaign-detail${qs({ id: m.campaign })}">${m.campaign}</a>` : '—', esc(m.locations.join(', ') || '—'), chip(m.status, m.status === 'Terdistribusi' ? 'ready' : 'sandbox'), m.status !== 'Terdistribusi' ? `<button type="button" class="btn ghost sm" data-action="cx:com-advance" data-id="${m.id}">${({ Draft: 'Ajukan', 'Menunggu approval': 'Setujui', Disetujui: 'Catat distribusi' })[m.status]}</button>` : '—'])));
+  } else {
+    const ms = cx().messages.filter(m => !params.brand || m.brand === params.brand);
+    body = card('Message Library', table(['Pesan', 'Brand', 'Isi', 'Versi', 'Status', 'Aksi'], ms.map(m => [`${m.id} · ${esc(m.title)}`, esc(cx().brands.find(b => b.id === m.brand)?.name), esc(m.text), 'v' + m.version, chip(m.status, m.status === 'approved' ? 'ready' : 'sandbox'), m.status === 'review' ? `<button type="button" class="btn sm" data-action="cx:msg-version" data-id="${m.id}">Approve</button>` : `<form class="inline-form" data-submit="cx:msg-version">${hidden({ id: m.id })}<label class="sr" for="mv-${m.id}">Versi baru ${m.id}</label><input id="mv-${m.id}" name="text" minlength="10" required placeholder="Teks versi baru"><button class="btn ghost sm">Versi baru</button></form>`])));
+  }
+  return `<div class="heading-row">${bar}</div>` + tabs + body;
+}, () => 'Brand & Communications');
 })();
 
 </script>

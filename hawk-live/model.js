@@ -1,7 +1,7 @@
 const HAWK = (() => {
   const SEED = {
     budget: 25000000,
-    requests: [{id:'MRF-001',campaign:'CMP-001',amount:3500000,status:'posted'}],
+    requests: [{id:'MRF-001',campaign:'CMP-001',line:'BGL-UBD-2608-01',pos:'Promotion',amount:3500000,status:'posted',note:'Boost Reels teaser',history:[{status:'submitted',at:'2026-08-03'},{status:'approved',at:'2026-08-04'},{status:'posted',at:'2026-08-05',ref:'PST-2608-0001'}]}],
     leads: [{id:'LEAD-001',name:'Tamu Demo',source:'Instagram',channel:'WhatsApp',campaign:'CMP-001',status:'new'}],
     bookings: [{id:'BK-001',lead:'LEAD-HISTORY',source:'Organic',channel:'Website',campaign:'',partner:'',slot:'10.00',amount:750000,status:'paid',commissionRate:0,payout:false}],
     tasks: [{id:'TASK-01',team:'Commercial',person:'Rani',group:'Content',label:'Review materi Wellness Escape',status:'planned'},{id:'TASK-02',team:'Sales',person:'Dewa',group:'Reservasi',label:'Tindak lanjut lead WhatsApp',status:'planned'}],
@@ -29,7 +29,8 @@ const HAWK = (() => {
       case 'request': {
         const amount=Number(input.amount);
         requireState(Number.isSafeInteger(amount)&&amount>0,'Masukkan nominal rupiah yang valid.');
-        state.requests.push({id:nextId('MRF',state.requests),campaign:'CMP-001',amount,status:'submitted'});
+        const id=nextId('MRF',state.requests);
+        state.requests.push({id,campaign:input.campaign||'CMP-001',line:'BGL-UBD-2608-01',pos:input.pos||'Promotion',amount,status:'submitted',note:String(input.note||'').slice(0,120),history:[{status:'submitted',at:'2026-08-22'}]});
         break;
       }
       case 'approve': {
@@ -37,12 +38,23 @@ const HAWK = (() => {
         requireState(request?.status==='submitted','Pengajuan sudah diproses.');
         requireState(request.amount<=totals(state).remaining,'Sisa pagu tidak mencukupi.');
         request.status='approved';
+        (request.history=request.history||[]).push({status:'approved',at:'2026-08-22'});
         break;
       }
       case 'post': {
         const request=row(state.requests);
         requireState(request?.status==='approved','Setujui pengajuan sebelum realisasi.');
         request.status='posted';
+        (request.history=request.history||[]).push({status:'posted',at:'2026-08-22',ref:'PST-2608-'+request.id.slice(4).padStart(4,'0')});
+        break;
+      }
+      case 'reject': {
+        const request=row(state.requests);
+        requireState(request?.status==='submitted','Pengajuan sudah diproses.');
+        const reason=String(input.reason||'').trim();
+        requireState(reason.length>=5,'Tulis alasan penolakan (min. 5 karakter).');
+        request.status='rejected'; request.reason=reason.slice(0,160);
+        (request.history=request.history||[]).push({status:'rejected',at:'2026-08-22',reason:request.reason});
         break;
       }
       case 'lead': {

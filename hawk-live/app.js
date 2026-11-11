@@ -8,20 +8,20 @@ const ERP = 'https://preview.hawk.jaens.id/';
 const PORTALS = {
   Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
-  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['campaign', 'Campaign Planner', 'F2-02', 'sandbox'], ['studio', 'Content Studio', 'F2-04', 'sandbox'], ['brand', 'Brand & Communications', 'F2-01', 'sandbox'], ['digital', 'Digital Marketing', 'F2-05', 'sandbox'], ['social', 'Social Media', 'F2-06', 'sandbox'], ['kol', 'Media Partner & KOL', 'F2-07', 'sandbox'], ['attribution', 'Audience & Attribution', 'F2-08', 'sandbox'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'sandbox'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'sandbox'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
+  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'sandbox'], ['social', 'Social Media', 'F2-06', 'sandbox'], ['kol', 'Media Partner & KOL', 'F2-07', 'sandbox'], ['attribution', 'Audience & Attribution', 'F2-08', 'sandbox'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'sandbox'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
 const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
 const SCREENS = [
   ['F1-01', 'Pemilih Portal', 1, 'picker', 'ready', 'Semua role'], ['F1-02', 'Commercial Executive Summary', 1, 'commercial', 'ready', 'Commercial Manager, Owner'], ['F1-03', 'Drill-down Executive Summary', 1, 'commercial-drill?metric=revenue', 'ready', 'Commercial Manager, Owner'], ['F1-04', 'Beranda Sales', 1, 'sales-home', 'ready', 'Sales Manager, Owner, staf'],
-  ['F2-01', 'Brand & Communications', 2, 'brand', 'sandbox'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'sandbox'], ['F2-03', 'Campaign Detail', 2, 'campaign', 'sandbox'], ['F2-04', 'Content Studio', 2, 'studio', 'sandbox'], ['F2-05', 'Digital Marketing', 2, 'digital', 'sandbox'], ['F2-06', 'Social Media', 2, 'social', 'sandbox'], ['F2-07', 'Media & KOL', 2, 'kol', 'sandbox'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'sandbox'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'sandbox'], ['F2-10', 'AI Mentor', 2, 'mentor', 'sandbox'],
+  ['F2-01', 'Brand & Communications', 2, 'brand', 'ready', 'Commercial Manager, Brand Designer'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'ready', 'Commercial Manager, Digital'], ['F2-03', 'Campaign Detail', 2, 'campaign-detail?id=CMP-001', 'ready', 'Commercial Manager, PIC campaign'], ['F2-04', 'Content Studio', 2, 'studio', 'ready', 'Content Lead, Creator, Editor, Reviewer'], ['F2-05', 'Digital Marketing', 2, 'digital', 'sandbox'], ['F2-06', 'Social Media', 2, 'social', 'sandbox'], ['F2-07', 'Media & KOL', 2, 'kol', 'sandbox'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'sandbox'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'ready', 'Commercial Manager, Finance'], ['F2-10', 'AI Mentor', 2, 'mentor', 'sandbox'],
   ['F3-01', 'Owner Eagle Eye', 3, 'owner', 'sandbox'], ['F3-02', 'Sales Manager Command Center', 3, 'sales', 'sandbox'], ['F3-03', 'Channel & Method Effectiveness', 3, '', 'planned'], ['F3-04', 'My Workspace', 3, '', 'planned'], ['F3-05', 'B2B Pipeline & Accounts', 3, 'b2b', 'sandbox'], ['F3-06', 'Partner & Opportunity Detail', 3, 'b2b', 'sandbox'],
   ['F4-01', 'Reservation Supervisor', 4, '', 'planned'], ['F4-02', 'Omnichannel Inbox', 4, 'reservation', 'sandbox'], ['F4-03', 'Booking Desk', 4, 'reservation', 'sandbox'], ['F4-04', 'Client Booking (mobile)', 4, 'client', 'sandbox'], ['F4-05', 'My Bookings & My Visits (mobile)', 4, 'client', 'sandbox'], ['F4-06', 'My Membership & Profile (mobile)', 4, '', 'planned'], ['F4-07', 'Operational & POS Mock', 4, 'pos', 'sandbox'],
   ['F5-01', 'Driver & Referral Manager', 5, 'driver', 'sandbox'], ['F5-02', 'Commission Review', 5, 'commission', 'sandbox'], ['F5-03', 'Onboarding Driver (mobile)', 5, 'driver', 'sandbox'], ['F5-04', 'Katalog & Reservasi Driver (mobile)', 5, 'driver', 'sandbox'], ['F5-05', 'Komisi & Pesan Driver (mobile)', 5, '', 'planned'],
   ['F6-01', 'Daily Race', 6, 'sales-team', 'sandbox'], ['F6-02', 'Weekly Race', 6, '', 'planned'], ['F6-03', 'Monthly Reflection & STRACON', 6, '', 'planned'], ['F6-04', 'Kinerja & KPI Overview', 6, 'sales-kpi', 'planned'], ['F6-05', 'XScore & People Performance', 6, '', 'planned'], ['F6-06', 'KPI Library & Kontrak', 6, '', 'planned'], ['F6-07', 'Status Tim', 6, 'sales-status', 'planned'],
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution', 'sandbox']
 ];
-const STATUS_LABEL = { ready: 'Tersedia · Fase 1', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
+const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
 const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
@@ -74,7 +74,8 @@ const itemOf = (id) => Object.values(PORTALS).flatMap(p => p.items).find(([r]) =
 const filtersOf = (params) => ({ period: SER.PERIODS.some(p => p.id === params.period) ? params.period : '2026-08', outlet: ['all', ...SER.OUTLETS.map(o => o.key)].includes(params.outlet) ? params.outlet : 'all' });
 
 /* ---------- original sandbox screens (kept routes and interactions) ---------- */
-const requests = () => table(['ID', 'Campaign', 'Nominal', 'Status', 'Aksi'], state.requests.map(r => [r.id, r.campaign, rp(r.amount), r.status, r.status === 'submitted' ? button('approve', 'Setujui', r.id) : r.status === 'approved' ? button('post', 'Catat realisasi', r.id) : '—']));
+const REQ_LABEL = { submitted: 'Menunggu approval', approved: 'Disetujui · komitmen', posted: 'Diposting · realisasi', rejected: 'Ditolak' };
+const requests = () => table(['ID', 'Campaign', 'Pos 7P', 'Nominal', 'Status', 'Aksi Finance'], state.requests.map(r => [r.id, r.campaign, r.pos || 'Promotion', rp(r.amount), `<span class="status-chip ${r.status === 'rejected' ? 'bad' : r.status === 'posted' ? 'ready' : 'sandbox'}">${REQ_LABEL[r.status] || r.status}</span>${r.reason ? `<br><small class="muted">${esc(r.reason)}</small>` : ''}`, r.status === 'submitted' ? button('approve', 'Setujui', r.id) + ` <form class="inline-form" data-submit="reject"><input type="hidden" name="id" value="${r.id}"><label class="sr" for="rj-${r.id}">Alasan tolak ${r.id}</label><input id="rj-${r.id}" name="reason" placeholder="Alasan tolak" required minlength="5"><button class="btn ghost sm">Tolak</button></form>` : r.status === 'approved' ? button('post', 'Catat realisasi', r.id) : '—']));
 const bookingRows = (rows, actions = false) => table(['Booking', 'Lead', 'Slot', 'Nilai', 'Status', ...(actions ? ['Aksi'] : [])], rows.map(b => [b.id, b.lead || '—', b.slot, rp(b.amount), b.status, ...(actions ? [
   ({ confirmed: () => button('checkin', 'Check-in', b.id) + ' ' + button('cancel', 'Batalkan', b.id), 'checked-in': () => button('complete', 'Selesaikan', b.id), completed: () => button('pay', 'Bayar', b.id), paid: () => b.payout ? 'Perlu penyesuaian Finance' : button('refund', 'Refund', b.id) })[b.status]?.() || '—'
 ] : [])]));
@@ -146,8 +147,8 @@ function delta(cur, prev, label = 'vs bulan lalu', ratioPoints = false) {
 }
 function filterBar(f, params, extra = '') {
   return `<form id="filters" class="filters" aria-label="Filter laporan">
-    <label>Periode <select name="period">${SER.PERIODS.map(p => `<option value="${p.id}" ${p.id === f.period ? 'selected' : ''}>${p.label}</option>`).join('')}</select></label>
-    <label>Outlet <select name="outlet"><option value="all">Semua outlet</option>${SER.OUTLETS.map(o => `<option value="${o.key}" ${o.key === f.outlet ? 'selected' : ''}>${o.name}${o.note ? ' (belum ada data)' : ''}</option>`).join('')}</select></label>
+    <label>Periode <select name="period">${SER.PERIODS.map(p => `<option value="${p.id}" ${p.id === f.period ? 'selected' : ''}>${p.label}${p.open ? ' (belum ditutup)' : ''}</option>`).join('')}</select></label>
+    <label>Outlet <select name="outlet"><option value="all">Semua outlet</option>${SER.OUTLETS.map(o => `<option value="${o.key}" ${o.key === f.outlet ? 'selected' : ''}>${o.name}</option>`).join('')}</select></label>
     ${extra}
     <button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
 }
@@ -156,71 +157,104 @@ function gauge(v) {
   const p = v === null ? 0 : Math.min(v * 100, 100);
   return `<svg class="gauge" viewBox="0 0 104 58" aria-hidden="true"><path d="M5 52 A47 47 0 0 1 99 52" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><path d="M5 52 A47 47 0 0 1 99 52" pathLength="100" stroke-dasharray="${p} 100" fill="none" stroke="${v !== null && v < 0.9 ? '#e5c66a' : '#9ff0c4'}" stroke-width="9"/><text x="5" y="57" font-size="7">0%</text><text x="99" y="57" font-size="7" text-anchor="end">100%</text></svg>`;
 }
+const YEAR_STYLE = { y2026: ['2026', '#c99a2e', 3, ''], y2025: ['2025', '#8a8478', 2, '5 4'], y2024: ['2024', '#0f9d8a', 1.6, ''], y2023: ['2023', '#8b5cf6', 1.4, '2 3'] };
 function trendChart(rows, f) {
-  const vals = rows.flatMap(r => [r.y2026, r.y2025]).filter(v => v !== null);
+  const vals = rows.flatMap(r => SER.YEARS.map(y => r[y])).filter(v => v !== null);
   const max = Math.max(1, ...vals);
   const x = i => 44 + i * 29, y = v => 124 - v / max * 100;
-  const pts = (key) => rows.filter(r => r[key] !== null).map((r, i) => `${x(i)},${y(r[key])}`).join(' ');
-  return `<a class="chart-link" href="${drillHref('annual', f)}" aria-label="Buka rincian revenue bulanan"><svg class="chart" viewBox="0 0 390 156" role="img" aria-label="Revenue bulanan 2026 dibanding 2025, Rp juta. Nilai lengkap ada di tabel di bawah grafik.">
-  ${[0, max / 2, max].map(v => `<path d="M44 ${y(v)}H370" stroke="#e3e0d7"/><text x="0" y="${y(v) + 3}">${num(v / 1e6)}</text>`).join('')}
-  <polyline points="${pts('y2025')}" fill="none" stroke="#625d52" stroke-width="2" stroke-dasharray="5 4"/>
-  <polyline points="${pts('y2026')}" fill="none" stroke="#AD7D36" stroke-width="3"/>
-  ${rows.filter(r => r.y2026 !== null).map((r, i) => `<circle cx="${x(i)}" cy="${y(r.y2026)}" r="3" fill="#AD7D36"/>`).join('')}
+  const line = (key) => { const segs = []; let cur = []; rows.forEach((r, i) => { if (r[key] === null) { if (cur.length) segs.push(cur); cur = []; } else cur.push(`${x(i)},${y(r[key])}`); }); if (cur.length) segs.push(cur); return segs.map(s => `<polyline points="${s.join(' ')}" fill="none" stroke="${YEAR_STYLE[key][1]}" stroke-width="${YEAR_STYLE[key][2]}" ${YEAR_STYLE[key][3] ? `stroke-dasharray="${YEAR_STYLE[key][3]}"` : ''}/>`).join(''); };
+  return `<a class="chart-link" href="${drillHref('annual', f)}" aria-label="Buka rincian revenue bulanan"><svg class="chart" viewBox="0 0 390 156" role="img" aria-label="Revenue bulanan 2023 sampai 2026, Rp juta. Nilai lengkap ada di tabel di bawah grafik.">
+  ${[0, max / 2, max].map(v => `<path d="M44 ${y(v)}H370" stroke="#e7e4dc"/><text x="0" y="${y(v) + 3}">${num(v / 1e6)}</text>`).join('')}
+  ${['y2023', 'y2024', 'y2025', 'y2026'].map(line).join('')}
+  ${rows.map((r, i) => r.y2026 === null ? '' : `<circle cx="${x(i)}" cy="${y(r.y2026)}" r="3" fill="#c99a2e"/>`).join('')}
   ${rows.map((r, i) => `<text x="${x(i)}" y="146" text-anchor="middle">${r.label}</text>`).join('')}</svg></a>
-  <div class="legend"><span><i class="swatch solid"></i>2026 s.d. periode terpilih</span><span><i class="swatch dashed"></i>2025</span><span>Rp juta</span></div>
-  <details><summary>Lihat tabel revenue bulanan</summary>${table(['Bulan', '2026', '2025', 'Sumber 2026'], rows.map(r => [r.label, r.y2026 === null ? '—' : jt(r.y2026, 0), jt(r.y2025, 0), r.source2026]))}</details>`;
+  <div class="legend">${['y2026', 'y2025', 'y2024', 'y2023'].map(k => `<span><i class="swatch" style="border-top:${YEAR_STYLE[k][2]}px ${YEAR_STYLE[k][3] ? 'dashed' : 'solid'} ${YEAR_STYLE[k][1]}"></i>${YEAR_STYLE[k][0]}</span>`).join('')}<span>Rp juta</span></div>
+  <details><summary>Lihat tabel revenue bulanan</summary>${table(['Bulan', '2026', '2025', '2024', '2023', 'Sumber 2026'], rows.map(r => [r.label, ...['y2026', 'y2025', 'y2024', 'y2023'].map(k => r[k] === null ? '—' : jt(r[k], 0)), r.source2026]))}</details>`;
+}
+const DONUT_COLORS = ['#c99a2e', '#0f9d8a', '#7c4dff', '#2f6fde', '#f08a24', '#64748b', '#c53030', '#8b6914', '#b8b2a5'];
+/* Donut with labelled legend (value + share) and a table alternative. items: [{key,label,value,href}] */
+function donut(items, total, fmt, label) {
+  let acc = 0;
+  const C = 2 * Math.PI * 38;
+  const arcs = items.filter(i => i.value > 0).map((it, i) => { const share = total ? it.value / total : 0; const a = `<circle cx="50" cy="50" r="38" fill="none" stroke="${DONUT_COLORS[i % DONUT_COLORS.length]}" stroke-width="16" stroke-dasharray="${share * C} ${C}" stroke-dashoffset="${-acc * C}" transform="rotate(-90 50 50)"/>`; acc += share; return a; }).join('');
+  return `<div class="donut"><svg viewBox="0 0 100 100" role="img" aria-label="${label}. Rincian di legenda."><circle cx="50" cy="50" r="38" fill="none" stroke="#f0ede6" stroke-width="16"/>${arcs}<text x="50" y="48" text-anchor="middle" font-size="9" fill="#8a8478">Total</text><text x="50" y="60" text-anchor="middle" font-size="10" font-weight="800" fill="#17140f">${fmt(total, true)}</text></svg>
+  <ul class="donut-legend">${items.map((it, i) => `<li><a href="${it.href}"><i style="background:${it.value > 0 ? DONUT_COLORS[items.filter(x => x.value > 0).indexOf(it) % DONUT_COLORS.length] : '#e7e4dc'}"></i><span>${esc(it.label)}</span><b>${fmt(it.value)}</b><small>${pct(SER.div(it.value, total))}</small></a></li>`).join('')}</ul></div>`;
+}
+const REASON_COLORS = { 'No Response': '#c53030', 'Fully Booked': '#c99a2e', Price: '#2f6fde', Distance: '#0f9d8a', 'Specific Therapist': '#7c4dff' };
+function lostBars(cancel, f) {
+  const top = Object.keys(REASON_COLORS);
+  const max = Math.max(1, ...cancel.map(x => x.total));
+  return `<div class="stack-bars">${cancel.map(x => { const other = x.total - top.reduce((s, r) => s + x.reasons[r], 0); return `<a class="stack-row" href="${drillHref('cancel', f, { branch: x.outlet })}"><span class="metric-row"><span>${esc(x.name)}</span><b>${num(x.total)}</b></span><span class="stack" style="width:${Math.max(4, x.total / max * 100)}%">${top.map(r => x.reasons[r] ? `<i style="flex:${x.reasons[r]};background:${REASON_COLORS[r]}" title="${r}: ${x.reasons[r]}"></i>` : '').join('')}${other ? `<i style="flex:${other};background:#b8b2a5" title="Lainnya: ${other}"></i>` : ''}</span><small class="muted">${num(x.lost)} inquiry lost · ${num(x.cancelled)} booking batal</small></a>`; }).join('')}</div>
+  <div class="legend">${top.map(r => `<span><i class="dot" style="background:${REASON_COLORS[r]}"></i>${r}</span>`).join('')}<span><i class="dot" style="background:#b8b2a5"></i>Lainnya</span></div>
+  <details><summary>Tabel alasan per outlet</summary>${table(['Alasan', ...cancel.map(x => esc(x.name)), 'Total'], SER.LOST_REASONS.map(r => [r, ...cancel.map(x => num(x.reasons[r])), `<b>${num(cancel.reduce((s, x) => s + x.reasons[r], 0))}</b>`]))}</details>`;
 }
 const barLink = (href, label, value, ratio, color = '') => `<a class="bar-link" href="${href}"><span class="metric-row"><span>${label}</span><b>${value}</b></span><span class="meter" aria-hidden="true"><span class="${color}" style="width:${Math.max(0, Math.min(100, (ratio || 0) * 100))}%"></span></span></a>`;
+/* Executive Insight: finding → hypothesis → action → PIC → review date; "Buat tindakan" creates one task per key. */
+function insightItems(S, f) {
+  const c = S.cur, p = S.prev, items = [];
+  if (c.etr !== null && c.etr < 1 && c.target) { const gap = c.target - c.revenue; items.push({ key: `ins:${f.period}:${f.outlet}:target`, finding: `Revenue ${pct(c.etr)} dari target; selisih ${jt(gap)}.`, hypo: 'Volume order belum cukup pada AOV saat ini.', action: `Kejar ±${num(Math.ceil(gap / c.aov))} order: dorong slot kosong lewat campaign aktif.`, pic: 'MBR-C02', metric: 'Revenue Target Attainment', review: '2026-08-29' }); }
+  const worst = S.cancel.slice().sort((a, b) => b.reasons['No Response'] - a.reasons['No Response'])[0];
+  if (worst && worst.reasons['No Response']) items.push({ key: `ins:${f.period}:${f.outlet}:noresponse`, finding: `${num(worst.reasons['No Response'])} lost “No Response” di ${worst.name}.`, hypo: 'Antrean chat menumpuk pada jam tertentu (hipotesis).', action: 'Periksa umur antrean dan sebaran jam masuk; uji pembagian antrean di jam sibuk.', pic: 'MBR-S01', metric: 'SLA median/p90 dan jumlah No Response', review: '2026-08-29' });
+  const unknown = S.groups.find(g => g.key === 'Tidak diketahui');
+  if (unknown && unknown.revenue) items.push({ key: `ins:${f.period}:${f.outlet}:coverage`, finding: `${jt(unknown.revenue)} revenue tanpa sumber akuisisi (coverage ${pct(c.coverage)}).`, hypo: 'Isian sumber kosong saat booking walk-in/telepon.', action: 'Wajibkan pilihan sumber saat booking; buat antrean perbaikan mapping.', pic: 'MBR-C02', metric: 'Coverage atribusi', review: '2026-09-05' });
+  if (c.forecastAccuracy !== null && c.forecastAccuracy < 0.8) items.push({ key: `ins:${f.period}:${f.outlet}:forecast`, finding: `Country Forecast Accuracy ${pct(c.forecastAccuracy)} (bias ${c.forecastBias >= 0 ? '+' : ''}${pct(c.forecastBias)}).`, hypo: 'Forecast negara belum memakai tren booking terbaru.', action: 'Perbarui forecast negara bulan depan dari pipeline booking.', pic: 'MBR-C02', metric: 'Country Forecast Accuracy', review: '2026-09-05' });
+  return items.slice(0, 4);
+}
 function insight(S, f) {
   const c = S.cur, p = S.prev;
   if (!c.hasData || !p.hasData) return `<p>Data tidak cukup untuk membuat insight pada filter ini. Pilih periode atau outlet yang sudah punya transaksi POS.</p>`;
+  const cx = CX.ensure(state);
   const revCh = c.revenue / p.revenue - 1, ordCh = c.orders / p.orders - 1, aovCh = c.aov / p.aov - 1;
   const driver = Math.abs(ordCh) >= Math.abs(aovCh) ? `volume order (${ordCh >= 0 ? '+' : ''}${num(ordCh * 100, 1)}%)` : `nilai per order (${aovCh >= 0 ? '+' : ''}${num(aovCh * 100, 1)}%)`;
-  const worst = S.cancel.filter(x => x.Jadwal + x.Tamu).sort((a, b) => (b.Jadwal + b.Tamu) - (a.Jadwal + a.Tamu))[0];
-  const unknown = S.groups.find(g => g.key === 'Tidak diketahui');
-  const gap = c.target - c.revenue;
-  const acts = [];
-  if (c.etr !== null && c.etr < 1) acts.push(`Kejar selisih target ${jt(gap)}: setara ±${num(Math.ceil(gap / c.aov))} order pada AOV saat ini.`);
-  if (worst) acts.push(`Tinjau ${worst.Jadwal + worst.Tamu} pembatalan di ${worst.name} (${worst.Jadwal} karena jadwal). Uji pengingat H-1 dan opsi reschedule di Booking Desk.`);
-  if (unknown && unknown.revenue) acts.push(`${jt(unknown.revenue)} revenue belum punya sumber akuisisi. Wajibkan isian sumber saat booking agar atribusi lengkap.`);
-  return `<p>Revenue ${revCh >= 0 ? 'naik' : 'turun'} <b>${num(Math.abs(revCh) * 100, 1)}%</b> dibanding bulan lalu, terutama dari ${driver}. Pencapaian target <b>${pct(c.etr)}</b>; ROMI <b>${dec(c.romi)}×</b>.</p>
-  <h3>Tindakan yang disarankan</h3><ol>${acts.map(a => `<li>${a}</li>`).join('')}</ol>
-  <p class="muted">Aturan deterministik (simulasi), bukan model AI. Angka pendukung dapat dibuka dari setiap kartu.</p>`;
+  const rows = insightItems(S, f).map(it => { const t = cx.tasks.find(x => x.key === it.key); return [esc(it.finding), `<i>${esc(it.hypo)}</i>`, esc(it.action), CX.personName(it.pic), it.review, t ? `<a href="#commercial-team">${t.id}</a> · ${t.status === 'done' ? 'selesai' : 'direncanakan'}` : `<button type="button" class="btn sm" data-action="cx:task-create" data-key="${it.key}" data-object="${f.outlet}:${f.period}" data-pic="${it.pic}" data-due="${it.review}" data-metric="${esc(it.metric)}" data-text="${esc(it.action)}">Buat tindakan</button>`]; });
+  return `<p>Revenue ${revCh >= 0 ? 'naik' : 'turun'} <b>${num(Math.abs(revCh) * 100, 1)}%</b> dibanding bulan lalu, terutama dari ${driver}. Pencapaian target <b>${c.etr === null ? 'belum ditetapkan' : pct(c.etr)}</b>; ROMI kontribusi <b>${dec(c.romi)}×</b>.</p>
+  ${table(['Temuan', 'Hipotesis', 'Tindakan', 'PIC', 'Review', 'Status'], rows, 'wrap')}
+  <p class="muted small">Aturan deterministik (simulasi), bukan model AI. “Buat tindakan” membuat satu tugas Daily Race per temuan; menekan ulang tidak membuat tugas ganda.</p>`;
 }
+const condSelect = (cond) => `<label>Kondisi data <select name="state"><option value="normal">Normal</option><option value="loading" ${cond === 'loading' ? 'selected' : ''}>Loading (simulasi)</option><option value="error" ${cond === 'error' ? 'selected' : ''}>Error (simulasi)</option></select></label>`;
 function summaryScreen(params) {
   const f = filtersOf(params);
   const cond = params.state || 'normal';
-  const condSel = `<label>Kondisi data <select name="state"><option value="normal">Normal</option><option value="loading" ${cond === 'loading' ? 'selected' : ''}>Loading (simulasi)</option><option value="error" ${cond === 'error' ? 'selected' : ''}>Error (simulasi)</option></select></label>`;
   const role = prefs.role;
-  const head = hero(`Ringkasan ${ROLES.find(r => r[0] === role)[1]}`, ROLE_SUMMARY[role], [[`${drillHref('revenue', f)}`, 'Rincian revenue'], [`${drillHref('budget', f)}`, 'Budget vs realisasi'], ['#screens', 'Peta layar']]);
-  const top = `<div class="heading-row">${filterBar(f, params, condSel)}</div>${activeFilters(f)}`;
+  const head = hero(`Ringkasan ${ROLES.find(r => r[0] === role)[1]}`, ROLE_SUMMARY[role], [[`${drillHref('revenue', f)}`, 'Rincian revenue'], ['#commercial-budget' + qs({ period: f.period, outlet: f.outlet }), 'Commercial Budget'], ['#screens', 'Peta layar']]);
+  const top = `<div class="heading-row">${filterBar(f, params, condSelect(cond))}</div>${activeFilters(f)}`;
   if (cond === 'loading') { setTimeout(() => { if (parseHash().params.state === 'loading') go('commercial', { ...f, state: '' }, true); }, 1200); return top + head + `<div class="loading" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Memuat data POS dan budget (simulasi)…</div><div class="skeleton-grid" aria-hidden="true">${'<div class="card skeleton"></div>'.repeat(10)}</div>`; }
   if (cond === 'error') return top + head + `<div class="card error-state" role="alert"><h2>Data belum dapat dimuat (simulasi)</h2><p>Sumber POS demo tidak merespons. Tidak ada angka yang ditampilkan agar tidak menyesatkan.</p><button type="button" class="btn" data-action="retry">Coba lagi</button></div>`;
   const S = SER.summary(state, f.period, f.outlet), c = S.cur, p = S.prev;
-  if (!c.hasData) return top + head + `<div class="card empty-state" role="status"><h2>Belum ada transaksi POS</h2><p>${esc(SER.OUTLETS.find(o => o.key === f.outlet)?.note || 'Tidak ada data untuk filter ini.')}</p><p>Semua KPI ditampilkan “—”. Pilih outlet lain atau ${'<button type="button" class="btn ghost" data-action="filter-reset">reset filter</button>'}.</p></div>` + kpiRow(c, p, f, S);
-  const maxG = Math.max(1, ...S.groups.map(g => g.revenue));
-  const maxC = Math.max(1, ...S.countries.map(x => x.customers));
+  if (!c.hasData) return top + head + `<div class="card empty-state" role="status"><h2>Belum ada transaksi POS</h2><p>${esc(S.periodInfo?.note || 'Tidak ada data untuk filter ini.')}</p><p>Semua KPI ditampilkan “—”, bukan nol. Pilih periode lain atau <button type="button" class="btn ghost sm" data-action="filter-reset">reset filter</button>.</p></div>` + kpiRow(c, p, f, S);
   const sb = HAWK.totals(state);
+  const groups = S.groups.map(g => ({ key: g.key, label: g.key, value: g.revenue, href: drillHref('channel', f, { group: g.key }) }));
+  const topC = S.countries.slice(0, 6), restC = S.countries.slice(6).reduce((s, x) => s + x.customers, 0);
+  const countries = topC.map(x => ({ key: x.key, label: x.key, value: x.customers, href: drillHref('country', f, { country: x.key }) })).concat(restC ? [{ key: 'other', label: `${S.countries.length - 6} negara lain`, value: restC, href: drillHref('country', f) }] : []);
+  const comm = Math.min(100, SER.div(c.committed, c.pagu) * 100 || 0), real = Math.min(100, (c.realization || 0) * 100);
   return top + head + kpiRow(c, p, f, S) + `
+  <div class="grid g4 keep2 support-row">
+    <a class="kpi-btn" href="${drillHref('forecast', f)}"><div class="kpi"><div class="lbl">Country Forecast Accuracy</div><div class="val">${pct(c.forecastAccuracy)}</div><div class="sub">bias ${c.forecastBias === null ? '—' : (c.forecastBias >= 0 ? '+' : '') + pct(c.forecastBias)} · ${num(c.forecastTotal)} forecast vs ${num(c.forecastActual)} aktual</div></div></a>
+    <a class="kpi-btn" href="${drillHref('customers', f)}"><div class="kpi"><div class="lbl">Pelanggan unik</div><div class="val">${num(c.customers)}</div><div class="sub">${num(c.newCustomers)} baru · ${delta(c.customers, p.customers)}</div></div></a>
+    <a class="kpi-btn" href="${drillHref('rpg', f)}"><div class="kpi"><div class="lbl">Revenue per guest</div><div class="val">${rp(c.rpg)}</div><div class="sub">Pembanding AOV SER lama (penyebut tamu)</div></div></a>
+    <a class="kpi-btn" href="${drillHref('channel', f)}"><div class="kpi"><div class="lbl">Coverage atribusi</div><div class="val">${pct(c.coverage)}</div><div class="sub">revenue bersumber ÷ total revenue</div></div></a>
+  </div>
   <div class="grid g-mid">
     <section class="card"><div class="card-head"><h2>Annual Revenue Comparison</h2><a href="${drillHref('annual', f)}">Rincian ›</a></div>${trendChart(S.annual, f)}</section>
-    <section class="card"><div class="card-head"><h2>Budget Realization</h2><a href="${drillHref('budget', f)}">Rincian ›</a></div><div class="budget"><div class="ring" style="--value:${Math.min(100, (c.realization || 0) * 100)}%" role="img" aria-label="Realisasi ${pct(c.realization)} dari pagu"><b>${pct(c.realization)}</b></div><dl><dt>Pagu</dt><dd>${jt(c.pagu)}</dd><dt>Komitmen</dt><dd>${jt(c.committed)}</dd><dt>Realisasi</dt><dd>${jt(c.actual)}</dd><dt>Sisa</dt><dd>${jt(c.remaining)}</dd></dl></div><p class="muted small">Sisa = pagu − komitmen − realisasi. ${c.ids.includes('OUT-UBD') && f.period === '2026-08' ? `Termasuk CMP-001 dari sandbox: komitmen ${rp(sb.committed)}, realisasi ${rp(sb.actual)}.` : ''}</p></section>
-    <section class="card"><div class="card-head"><h2>Return on Marketing Investment</h2><a href="${drillHref('romi', f)}">Rincian ›</a></div><strong class="number">${dec(c.romi)}×</strong><div>${delta(c.romi, p.romi)}</div><p class="muted small">(Kontribusi teratribusi sebelum biaya marketing − biaya marketing) ÷ biaya marketing. Kontribusi ${jt(c.contribution)} · biaya ${jt(c.actual)}.</p><p class="muted small">ROAS iklan ${dec(c.roas)}× · CAC ${rp(c.cac)} per pelanggan baru (${num(c.newCustomers)})</p></section>
+    <section class="card"><div class="card-head"><h2>Budget Realization</h2><a href="${drillHref('budget', f)}">Rincian ›</a></div><div class="budget"><div class="ring" style="background:conic-gradient(var(--gold) 0 ${real}%, var(--champagne) ${real}% ${real + comm}%, var(--line-2) 0)" role="img" aria-label="Realisasi ${pct(c.realization)} dari pagu"><b>${pct(c.realization)}</b></div><dl><dt>Pagu</dt><dd>${jt(c.pagu)}</dd><dt><i class="dot" style="background:var(--champagne)"></i> Komitmen terbuka</dt><dd>${jt(c.committed)}</dd><dt><i class="dot" style="background:var(--gold)"></i> Realisasi</dt><dd>${jt(c.actual)}</dd><dt>Sisa tersedia</dt><dd>${jt(c.remaining)}</dd></dl></div><p class="muted small">Sisa tersedia = pagu − komitmen − realisasi. ${c.ids.includes('OUT-UBD') && f.period === '2026-08' ? `Termasuk CMP-001 dari sandbox: komitmen ${rp(sb.committed)}, realisasi ${rp(sb.actual)}.` : ''} <a href="#commercial-budget${qs({ period: f.period, outlet: f.outlet })}">Buka Commercial Budget ›</a></p></section>
+    <section class="card"><div class="card-head"><h2>Return on Marketing Investment</h2><a href="${drillHref('romi', f)}">Rincian ›</a></div><strong class="number">${dec(c.romi)}×</strong><div>${delta(c.romi, p.romi)}</div><p class="muted small">ROMI kontribusi = (kontribusi teratribusi − biaya marketing) ÷ biaya marketing. Kontribusi ${jt(c.contribution)} · biaya ${jt(c.actual)}.</p><dl class="def compact"><dt>ROMI warisan SER</dt><dd>${dec(c.romiLegacy)}× <small class="muted">(revenue ÷ biaya marketing)</small></dd><dt>ROAS iklan</dt><dd>${dec(c.roas)}×</dd><dt>CAC</dt><dd>${rp(c.cac)} · ${num(c.newCustomers)} pelanggan baru</dd></dl></section>
   </div>
   <div class="grid g3 g-bottom">
-    <section class="card"><div class="card-head"><h2>Tracking by Channel Group</h2><a href="${drillHref('channel', f)}">Rincian ›</a></div><p class="muted small">Revenue POS dibayar per grup sumber akuisisi</p>${S.groups.map((g, i) => barLink(drillHref('channel', f, { group: g.key }), `${g.key} · ${pct(SER.div(g.revenue, c.revenue))}`, jt(g.revenue), g.revenue / maxG, 'c' + i)).join('')}</section>
-    <section class="card"><div class="card-head"><h2>Tracking by Country</h2><a href="${drillHref('country', f)}">Rincian ›</a></div><p class="muted small">Pelanggan unik per negara</p>${S.countries.slice(0, 6).map(x => barLink(drillHref('country', f, { country: x.key }), x.key, num(x.customers), x.customers / maxC)).join('')}${S.countries.length > 6 ? `<p class="muted small">+${S.countries.length - 6} negara lain di rincian</p>` : ''}</section>
-    <section class="card"><div class="card-head"><h2>Cancellation Reason by Branch</h2><a href="${drillHref('cancel', f)}">Rincian ›</a></div>${table(['Outlet', 'Jadwal', 'Tamu', 'Total'], S.cancel.map(x => [`<a href="${drillHref('cancel', f, { branch: x.outlet })}">${esc(x.name)}</a>`, x.Jadwal, x.Tamu, `<b>${x.Jadwal + x.Tamu}</b>`]))}</section>
+    <section class="card"><div class="card-head"><h2>Tracking by Channel Group</h2><a href="${drillHref('channel', f)}">Rincian ›</a></div><p class="muted small">Revenue POS dibayar per grup sumber akuisisi · penyebut ${jt(c.revenue)}</p>${donut(groups, c.revenue, (v, t) => t ? num(v / 1e6, 0) + ' jt' : jt(v), 'Revenue per grup channel')}</section>
+    <section class="card"><div class="card-head"><h2>Tracking by Country</h2><a href="${drillHref('country', f)}">Rincian ›</a></div><p class="muted small">Pelanggan unik per negara · penyebut ${num(c.customers)}</p>${donut(countries, c.customers, v => num(v), 'Pelanggan per negara')}</section>
+    <section class="card"><div class="card-head"><h2>Cancellation Reason by Branch</h2><a href="${drillHref('cancel', f)}">Rincian ›</a></div><p class="muted small">Inquiry lost + booking batal per outlet dan reason code</p>${lostBars(S.cancel, f)}</section>
   </div>
-  <section class="card insight"><div class="card-head"><h2>Executive Insight <span class="badge">SIMULASI</span></h2></div>${insight(S, f)}</section>`;
+  <section class="card insight"><div class="card-head"><h2>Executive Insight <span class="badge demo">SIMULASI</span></h2></div>${insight(S, f)}</section>`;
 }
 function kpiRow(c, p, f, S) {
   const k = (metric, title, value, sub, cls) => `<a class="kpi-btn" href="${drillHref(metric, f)}"><div class="kpi ${cls}"><div class="lbl">${title}</div><div class="val">${value}</div><div class="sub">${sub}</div><span class="more">Rincian ›</span></div></a>`;
+  const missing = c.missingTarget && c.missingTarget.length;
+  const etrSub = c.hasData && c.target === null ? '<span class="muted">Target belum ditetapkan</span>' : `${gauge(c.etr)}<span class="muted">Target ${jt(c.hasData ? c.target : null)}${missing ? ` · ${missing} outlet tanpa target` : ''} · ${delta(c.etr, p.etr, 'vs bulan lalu', true)}</span>`;
   return `<div class="grid g4 keep2 kpis kpi-row">
-    ${k('revenue', 'Total Revenue', jt(c.hasData ? c.revenue : null), `${delta(c.hasData ? c.revenue : null, p.revenue)}<br><span class="muted">${S && S.sameMonthLastYear ? delta(c.revenue, S.sameMonthLastYear, 'vs Agu/Jul 2025').replace('Agu/Jul', SER.MONTHS[Number(f.period.slice(5)) - 1]) : ''}</span>`, 'g-teal')}
-    ${k('customers', 'Total Customers', c.hasData ? num(c.customers) : '—', delta(c.hasData ? c.customers : null, p.customers) + `<br><span class="muted">${c.hasData ? num(c.newCustomers) + ' pelanggan baru' : ''}</span>`, 'g-violet')}
-    ${k('etr', 'Effective Target Rate', pct(c.etr), `${gauge(c.etr)}<span class="muted">Target ${jt(c.hasData ? c.target : null)} · ${delta(c.etr, p.etr, 'vs bulan lalu', true)}</span>`, 'g-blue')}
-    ${k('aov', 'Average Order Value', rp(c.aov), delta(c.aov, p.aov) + `<br><span class="muted">${c.hasData ? num(c.orders) + ' order dibayar' : ''}</span>`, 'g-gold')}
+    ${k('revenue', 'Total Revenue', jt(c.hasData ? c.revenue : null), `${delta(c.hasData ? c.revenue : null, p.revenue)}<br><span class="muted">${S && S.sameMonthLastYear ? delta(c.revenue, S.sameMonthLastYear, 'vs ' + SER.MONTHS[Number(f.period.slice(5)) - 1] + ' 2025') : ''}</span>`, 'g-teal')}
+    ${k('guests', 'Total Guests', c.hasData ? num(c.guests) : '—', delta(c.hasData ? c.guests : null, p.guests) + `<br><span class="muted">${c.hasData ? num(c.customers) + ' pelanggan unik · ' + num(c.orders) + ' order' : ''}</span>`, 'g-violet')}
+    ${k('etr', 'Revenue Target Attainment', c.hasData && c.target === null ? 'Belum ditetapkan' : pct(c.etr), etrSub, 'g-blue')}
+    ${k('aov', 'Average Order Value', rp(c.aov), delta(c.aov, p.aov) + `<br><span class="muted">${c.hasData ? 'revenue per guest ' + rp(c.rpg) : ''}</span>`, 'g-gold')}
   </div>`;
 }
 
@@ -251,13 +285,14 @@ function drillScreen(params) {
 }
 function comparison(metric, S, f) {
   const c = S.cur, p = S.prev;
-  const fmt = { revenue: v => jt(v), customers: v => num(v), etr: v => pct(v), aov: v => rp(v), annual: v => jt(v), budget: v => pct(v), romi: v => dec(v) + '×', channel: v => jt(v), country: v => num(v), cancel: v => num(v) }[metric];
-  const pick = { revenue: s => s.hasData ? s.revenue : null, customers: s => s.hasData ? s.customers : null, etr: s => s.etr, aov: s => s.aov, annual: s => s.hasData ? s.revenue : null, budget: s => s.realization, romi: s => s.romi, channel: s => s.hasData ? s.revenue : null, country: s => s.hasData ? s.customers : null, cancel: () => null }[metric];
+  const fmt = { revenue: v => jt(v), guests: v => num(v), customers: v => num(v), etr: v => pct(v), forecast: v => pct(v), aov: v => rp(v), rpg: v => rp(v), annual: v => jt(v), budget: v => pct(v), romi: v => dec(v) + '×', channel: v => jt(v), country: v => num(v), cancel: v => num(v) }[metric];
+  const pick = { revenue: s => s.hasData ? s.revenue : null, guests: s => s.hasData ? s.guests : null, customers: s => s.hasData ? s.customers : null, etr: s => s.etr, forecast: s => s.forecastAccuracy, aov: s => s.aov, rpg: s => s.rpg, annual: s => s.hasData ? s.revenue : null, budget: s => s.realization, romi: s => s.romi, channel: s => s.hasData ? s.revenue : null, country: s => s.hasData ? s.customers : null, cancel: () => null }[metric];
   const prevLabel = SER.MONTH_NAMES[Number(SER.prevPeriod(f.period).slice(5)) - 1] + ' 2026';
   const curLabel = SER.PERIODS.find(x => x.id === f.period).label;
-  if (metric === 'cancel') { const tot = S.cancel.reduce((s, x) => s + x.Jadwal + x.Tamu, 0); return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd>${num(tot)} booking batal</dd><dt>Basis</dt><dd>Booking batal tidak punya transaksi POS dan tidak mengurangi revenue.</dd></dl>`); }
+  if (metric === 'cancel') { const lost = S.cancel.reduce((s, x) => s + x.lost, 0), bc = S.cancel.reduce((s, x) => s + x.cancelled, 0); return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd>${num(lost)} inquiry lost · ${num(bc)} booking batal</dd><dt>Basis</dt><dd>Inquiry lost dan booking batal tidak punya transaksi POS dan tidak mengurangi revenue. Refund tercatat di transaksi POS.</dd></dl>`); }
+  if (!c.hasData) return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd>${esc(S.periodInfo?.note || 'Belum ada data')} · nilai “—”</dd></dl>`);
   const ly = metric === 'revenue' || metric === 'annual' ? `<dt>${SER.MONTHS[Number(f.period.slice(5)) - 1]} 2025</dt><dd>${jt(S.sameMonthLastYear)} ${delta(c.revenue, S.sameMonthLastYear, 'YoY')}</dd>` : '';
-  const parts = metric === 'etr' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${jt(c.target)}</dd>` : metric === 'aov' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${num(c.orders)} order</dd>` : metric === 'romi' ? `<dt>Rincian</dt><dd>(${jt(c.contribution)} − ${jt(c.actual)}) ÷ ${jt(c.actual)}</dd>` : metric === 'budget' ? `<dt>Rincian</dt><dd>${jt(c.actual)} ÷ ${jt(c.pagu)} · sisa ${jt(c.remaining)}</dd>` : '';
+  const parts = metric === 'etr' ? `<dt>Rincian</dt><dd>${c.target === null ? 'Target belum ditetapkan' : `${jt(c.revenue)} ÷ ${jt(c.target)}`}${c.missingTarget.length ? ` · tanpa target: ${c.missingTarget.map(outletName).join(', ')} (dikeluarkan dari pembilang dan penyebut)` : ''}</dd>` : metric === 'forecast' ? `<dt>Rincian</dt><dd>1 − ${num(Math.round((1 - (c.forecastAccuracy || 0)) * c.forecastActual))} ÷ ${num(c.forecastActual)} · bias ${pct(c.forecastBias)}</dd>` : metric === 'rpg' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${num(c.guests)} tamu</dd>` : metric === 'guests' ? `<dt>Grain lain</dt><dd>${num(c.customers)} pelanggan unik · ${num(c.orders)} order</dd>` : metric === 'aov' ? `<dt>Rincian</dt><dd>${jt(c.revenue)} ÷ ${num(c.orders)} order</dd>` : metric === 'romi' ? `<dt>Rincian</dt><dd>(${jt(c.contribution)} − ${jt(c.actual)}) ÷ ${jt(c.actual)}</dd>` : metric === 'budget' ? `<dt>Rincian</dt><dd>${jt(c.actual)} ÷ ${jt(c.pagu)} · sisa ${jt(c.remaining)}</dd>` : '';
   return card('Periode pembanding', `<dl class="def"><dt>${curLabel}</dt><dd><b>${fmt(pick(c))}</b></dd><dt>${prevLabel}</dt><dd>${fmt(pick(p))} ${delta(pick(c), pick(p), 'vs bulan lalu', metric === 'etr' || metric === 'budget')}</dd>${ly}${parts}<dt>Refund dikecualikan</dt><dd>${num(c.refunded.length)} transaksi · ${jt(c.refundAmount)}</dd></dl>`);
 }
 const outletName = (id) => SER.OUTLETS.find(o => o.id === id)?.name || id;
@@ -281,14 +316,17 @@ function drillRows(metric, S, params) {
       return { title: `Pelanggan unik (${num(list.length)})`, searchable: true, searchLabel: 'pelanggan', headers: ['Pelanggan (anonim)', 'Outlet', 'Negara', 'Baru / repeat', 'Order', 'Revenue'], data: list.sort((a, b) => b.revenue - a.revenue).map(x => ({ key: x.id, cells: [x.id, esc(outletName(x.outlet)), x.country, x.firstPeriod === c.period ? 'Baru' : 'Repeat', num(x.orders), rp(x.revenue)] })),
         breakdown: metric === 'country' ? card('Distribusi negara', table(['Negara', 'Pelanggan', 'Pangsa'], S.countries.map(x => [`<a href="${drillHref('country', filtersOf(params), { country: x.key })}">${x.key}</a>`, num(x.customers), pct(SER.div(x.customers, c.customers))]))) : byOutlet('Per outlet', ['Outlet', 'Pelanggan unik', 'Pelanggan baru', 'Order'], (id, s) => [esc(outletName(id)), num(s.customers), num(s.newCustomers), num(s.orders)]) };
     }
-    case 'etr': return { title: 'Transaksi POS pembentuk revenue', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Target vs aktual per outlet', ['Outlet', 'Target', 'Revenue aktual', 'Effective Target Rate', 'Selisih'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.target : null), jt(s.hasData ? s.revenue : null), pct(s.etr), jt(s.hasData ? s.revenue - s.target : null)]) };
+    case 'etr': return { title: 'Transaksi POS pembentuk revenue', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Target vs aktual per outlet', ['Outlet', 'Target', 'Revenue aktual', 'Attainment', 'Selisih'], (id, s) => [esc(outletName(id)), s.hasData && s.target === null ? 'Belum ditetapkan' : jt(s.hasData ? s.target : null), jt(s.hasData ? s.revenue : null), s.hasData && s.target === null ? '—' : pct(s.etr), s.hasData && s.target !== null ? jt(s.revenue - s.target) : '—']) };
+    case 'forecast': { const keys = Object.keys(c.forecast); return { title: 'Forecast vs aktual per negara', searchable: false, headers: ['Negara', 'Forecast (versi sebelum periode)', 'Aktual pelanggan', 'Selisih', 'Error absolut'], data: keys.map(k => { const a = c.actualByCountry[k] || 0, fc = c.forecast[k]; return { key: k, cells: [k, num(fc), num(a), (fc - a >= 0 ? '+' : '') + num(fc - a), num(Math.abs(fc - a))] }; }), foot: `<p class="muted small">Σ forecast ${num(c.forecastTotal)} · Σ aktual ${num(c.forecastActual)} · ${num(c.actualByCountry['Tidak diketahui'] || 0)} pelanggan “Tidak diketahui” tidak dibandingkan.</p>`, breakdown: byOutlet('Akurasi per outlet', ['Outlet', 'Accuracy', 'Bias'], (id, s) => [esc(outletName(id)), pct(s.forecastAccuracy), s.forecastBias === null ? '—' : pct(s.forecastBias)]) }; }
+    case 'guests': return { title: 'Transaksi POS dibayar (kolom tamu di detail)', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Tamu, pelanggan unik, dan order per outlet', ['Outlet', 'Tamu', 'Pelanggan unik', 'Order'], (id, s) => [esc(outletName(id)), num(s.guests), num(s.customers), num(s.orders)]) };
+    case 'rpg': return { title: 'Transaksi POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Revenue per guest vs AOV per outlet', ['Outlet', 'Revenue', 'Tamu', 'Revenue per guest', 'Order', 'AOV'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.guests), rp(s.rpg), num(s.orders), rp(s.aov)]) };
     case 'aov': return { title: 'Order POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('AOV per outlet', ['Outlet', 'Revenue', 'Order', 'AOV'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.orders), rp(s.aov)]) };
-    case 'annual': return { title: 'Revenue bulanan', searchable: false, headers: ['Bulan', '2026', '2025', 'Perubahan', 'Sumber 2026'], data: S.annual.map(r => ({ key: r.label, cells: [r.label, r.y2026 === null ? '—' : jt(r.y2026, 0), jt(r.y2025, 0), r.y2026 === null || !r.y2025 ? '—' : delta(r.y2026, r.y2025, 'YoY'), r.source2026] })) };
+    case 'annual': return { title: 'Revenue bulanan 2023–2026', searchable: false, headers: ['Bulan', '2026', '2025', '2024', '2023', '2026 vs 2025', 'Sumber 2026'], data: S.annual.map(r => ({ key: r.label, cells: [r.label, ...['y2026', 'y2025', 'y2024', 'y2023'].map(k => r[k] === null ? '—' : jt(r[k], 0)), r.y2026 === null || !r.y2025 ? '—' : delta(r.y2026, r.y2025, 'YoY'), r.source2026] })), foot: '<p class="muted small">Kosong = bulan belum tersedia atau outlet belum buka (bukan nol).</p>' };
     case 'budget': return { title: 'Baris budget marketing (Budget 7P · Promotion)', searchable: false, headers: ['Baris budget', 'Outlet', 'Tipe', 'Campaign', 'Pagu', 'Komitmen', 'Realisasi', 'Sisa', 'Referensi MRF'], data: c.lines.map(b => ({ key: b.id, cells: [`${b.id}<br><small>${esc(b.name)}</small>`, esc(outletName(b.outlet)), b.type, campaignName(b.campaign), rp(b.pagu), rp(b.committed), rp(b.actual), rp(b.pagu - b.committed - b.actual), b.campaign === 'CMP-001' && b.outlet === 'OUT-UBD' && c.period === '2026-08' ? `${b.mrf} · ${link('commercial-budget', 'sandbox')}` : b.mrf] })), foot: `<p class="muted small">Total pagu ${rp(c.pagu)} · komitmen ${rp(c.committed)} · realisasi ${rp(c.actual)} · sisa ${rp(c.remaining)}. Approval dan posting dilakukan di ${link('mrf', 'Finance › Purchasing & MRF')}.</p>` };
     case 'romi': return { title: 'Transaksi teratribusi campaign', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid.filter(x => x.campaign)), breakdown: card('Kontribusi per campaign', table(['Campaign', 'Transaksi', 'Revenue', 'Biaya langsung', 'Komisi', 'Kontribusi'], SER.CAMPAIGNS.map(cp => { const r = c.paid.filter(x => x.campaign === cp.id); return [campaignName(cp.id), num(r.length), rp(r.reduce((s, x) => s + x.amount, 0)), rp(r.reduce((s, x) => s + x.directCost, 0)), rp(r.reduce((s, x) => s + x.commission, 0)), rp(r.reduce((s, x) => s + x.amount - x.directCost - x.commission, 0))]; }).filter(r => r[1] !== '0'))) };
     case 'channel': return { title: `Transaksi POS${params.group ? ' · ' + esc(params.group) : ''}`, searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid.filter(x => !params.group || x.group === params.group)), breakdown: card('Per grup dan sumber', table(['Grup', 'Sumber akuisisi', 'Order', 'Revenue', 'Pangsa'], SER.GROUPS.flatMap(g => [...new Set(c.paid.filter(x => x.group === g).map(x => x.source))].map(src => { const r = c.paid.filter(x => x.group === g && x.source === src); return [`<a href="${drillHref('channel', filtersOf(params), { group: g })}">${g}</a>`, src || 'Tidak diketahui', num(r.length), rp(r.reduce((s, x) => s + x.amount, 0)), pct(SER.div(r.reduce((s, x) => s + x.amount, 0), c.revenue))]; })))) };
-    case 'cancel': { const rows = S.cancel.flatMap(x => x.rows).filter(x => !params.branch || x.outlet === params.branch); return { title: `Booking batal (${rows.length})`, searchable: true, searchLabel: 'booking', headers: ['Booking', 'Tanggal', 'Outlet', 'Alasan', 'Treatment'], data: rows.sort((a, b) => b.date.localeCompare(a.date)).map(x => ({ key: x.id, cells: [x.id, x.date, esc(outletName(x.outlet)), x.reasonLabel, x.treatment] })) }; }
-    default: return { title: 'Transaksi POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: byOutlet('Per outlet', ['Outlet', 'Revenue', 'Order', 'Refund dikecualikan'], (id, s) => [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.orders), `${num(s.refunded.length)} · ${rp(s.refundAmount)}`]), foot: c.refunded.length ? `<details><summary>Lihat ${c.refunded.length} transaksi refund yang dikecualikan</summary>${table(TX_HEAD, c.refunded.map(txCells))}</details>` : '' };
+    case 'cancel': { const rows = S.cancel.flatMap(x => x.rows).filter(x => !params.branch || x.outlet === params.branch); return { title: `Inquiry lost dan booking batal (${rows.length})`, searchable: true, searchLabel: 'kejadian', headers: ['ID kejadian', 'Jenis', 'Tanggal', 'Outlet', 'Reason code', 'Treatment diminati', 'Estimasi nilai peluang'], data: rows.sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id)).map(x => ({ key: x.id, cells: [x.id, x.event, x.date, esc(outletName(x.outlet)), x.reason, x.treatment, rp(x.estValue)] })), breakdown: card('Reason code per outlet', table(['Outlet', 'Inquiry lost', 'Booking batal', ...SER.LOST_REASONS.slice(0, 5), 'Lainnya', 'Total'], S.cancel.map(x => { const top = SER.LOST_REASONS.slice(0, 5); return [`<a href="${drillHref('cancel', filtersOf(params), { branch: x.outlet })}">${esc(x.name)}</a>`, num(x.lost), num(x.cancelled), ...top.map(r => num(x.reasons[r])), num(x.total - top.reduce((s, r) => s + x.reasons[r], 0)), `<b>${num(x.total)}</b>`]; }))), foot: '<p class="muted small">Estimasi nilai peluang adalah harga daftar treatment yang diminati (demo), bukan kerugian revenue.</p>' }; }
+    default: return { title: 'Transaksi POS dibayar', searchable: true, searchLabel: 'transaksi', headers: TX_HEAD, data: txRows(c.paid), breakdown: card('Rekonsiliasi per outlet', table(['Outlet', 'Revenue', 'Tamu', 'Order', 'Refund dikecualikan'], c.ids.map(id => { const s = SER.slice(ds, c.period, id); return [esc(outletName(id)), jt(s.hasData ? s.revenue : null), num(s.guests), num(s.orders), `${num(s.refunded.length)} · ${rp(s.refundAmount)}`]; }).concat(c.ids.length > 1 ? [[`<b>Total ${c.ids.length} outlet</b>`, `<b>${jt(c.revenue)}</b>`, `<b>${num(c.guests)}</b>`, `<b>${num(c.orders)}</b>`, `<b>${num(c.refunded.length)} · ${rp(c.refundAmount)}</b>`]] : []))), foot: c.refunded.length ? `<details><summary>Lihat ${c.refunded.length} transaksi refund yang dikecualikan</summary>${table(TX_HEAD, c.refunded.map(txCells))}</details>` : '' };
   }
 }
 
@@ -316,7 +354,9 @@ function screensMap() {
 }
 
 /* ---------- render ---------- */
+const REGISTRY = {};
 function screen(id, params) {
+  if (REGISTRY[id]) return REGISTRY[id](params);
   switch (id) {
     case 'bridge': case 'picker': return bridge();
     case 'screens': return screensMap();
@@ -334,6 +374,7 @@ function titleOf(id) {
   if (id === 'commercial') return 'Executive Performance Summary';
   if (id === 'commercial-drill') return 'Rincian Executive Summary';
   if (id === 'screens') return 'Peta Preview';
+  if (REGISTRY[id] && REGISTRY[id].title) return REGISTRY[id].title(parseHash().params);
   if (id === 'bridge' || id === 'picker') return 'Alur lintas portal';
   return itemOf(id)?.[1] || 'Alur lintas portal';
 }
@@ -363,6 +404,7 @@ function renderRole() {
 const setNav = (open) => { $('#sidebar').classList.toggle('on', open); $('.scrim').classList.toggle('on', open); shell.classList.toggle('nav-open', open); $('#menu').setAttribute('aria-expanded', String(open)); };
 let lastFocus = null;
 function render(message = '', error = false) {
+  if (!message && pendingMessage) { message = pendingMessage; pendingMessage = ''; }
   const { id, params } = parseHash();
   const portal = portalOf(id);
   if (portal && portal !== prefs.portal) { prefs.portal = portal; savePrefs(); }
@@ -380,14 +422,20 @@ function go(route, params = {}, replace = false) {
   const h = '#' + route + qs(params);
   if (replace) { history.replaceState(null, '', h); render(); } else location.hash = h;
 }
-function apply(action, input) {
+function apply(action, input, after) {
   try {
+    let result;
     if (action === 'reset') { if (!confirm('Kembalikan semua data demo ke kondisi awal?')) return; state = HAWK.fresh(); }
+    else if (action.startsWith('cx:')) result = CX.update(state, action.slice(3), { by: CX.PEOPLE.find(p => p.id === prefs.member)?.id || 'MBR-C01', ...input });
     else HAWK.update(state, action, input);
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { render('Perubahan berlaku selama halaman ini terbuka. Penyimpanan browser tidak tersedia.'); return; }
-    render(action === 'reset' ? 'Data demo dikembalikan ke kondisi awal.' : 'Perubahan demo tersimpan.');
+    let saved = true;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { saved = false; }
+    const msg = action === 'reset' ? 'Data demo dikembalikan ke kondisi awal.' : (saved ? 'Perubahan demo tersimpan' : 'Perubahan berlaku selama halaman ini terbuka (penyimpanan browser tidak tersedia)') + (typeof result === 'string' ? ` · ${result}` : '') + '.';
+    if (after) { const target = after.replace('{id}', encodeURIComponent(result ?? '')); if ('#' + target !== location.hash) { pendingMessage = msg; location.hash = target; return; } }
+    render(msg);
   } catch (error) { render(error.message, true); }
 }
+let pendingMessage = '';
 
 /* ---------- F1-01 portal picker ---------- */
 function openPicker(trigger) {
@@ -424,18 +472,22 @@ view.addEventListener('submit', (e) => {
   if (form.dataset.search) { e.preventDefault(); const { id, params } = parseHash(); go(id, { ...params, q: new FormData(form).get('q'), page: '' }); return; }
   if (!form.dataset.submit) return;
   e.preventDefault();
-  apply(form.dataset.submit, Object.fromEntries(new FormData(form)));
+  apply(form.dataset.submit, Object.fromEntries(new FormData(form)), form.dataset.after);
 });
 view.addEventListener('click', (e) => {
   const control = e.target.closest('[data-action]');
   if (!control) return;
   const { id, params } = parseHash();
-  if (control.dataset.action === 'filter-reset') { go(id, id === 'commercial-drill' ? { metric: params.metric } : {}); return; }
+  if (control.dataset.action === 'filter-reset') { go(id, id === 'commercial-drill' ? { metric: params.metric } : params.view ? { view: params.view, ...(params.id ? { id: params.id } : {}) } : params.id ? { id: params.id } : {}); return; }
   if (control.dataset.action === 'retry') { go('commercial', { period: params.period, outlet: params.outlet }); return; }
-  apply(control.dataset.action, { id: control.dataset.id });
+  if (control.dataset.action.startsWith('nav:')) return;
+  const input = { ...control.dataset }; delete input.action; delete input.after;
+  if (control.dataset.text) input.action = control.dataset.text;
+  apply(control.dataset.action, input, control.dataset.after);
 });
 window.addEventListener('hashchange', () => { render(); view.querySelector('h1').focus(); });
 window.addEventListener('storage', (e) => { if (e.key === KEY) { try { state = JSON.parse(e.newValue) || HAWK.fresh(); } catch (er) { state = HAWK.fresh(); } render(); } });
 if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
-render();
+window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt, pct, dec, link, button, table, card, hero, metrics, bar, qs, go, parseHash, apply, filtersOf, filterBar, activeFilters, donut, delta, outletName, campaignName, drillHref, REGISTRY, render, condSelect };
+document.addEventListener('DOMContentLoaded', () => render());
 })();
