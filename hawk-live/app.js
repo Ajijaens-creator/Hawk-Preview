@@ -8,7 +8,7 @@ const ERP = 'https://preview.hawk.jaens.id/';
 const PORTALS = {
   Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
-  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
+  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['budget-2027', 'Master Budget 2027', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
 const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
@@ -22,7 +22,7 @@ const SCREENS = [
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution?view=journey&q=LEAD-001', 'ready', 'Semua role']
 ];
 const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
-const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B']];
+const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B'], ['finance-manager', 'Finance Manager'], ['hrd', 'HRD (People Cost)']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
   'commercial-drill': 'Definisi metrik, pembanding, rincian outlet, dan transaksi POS pendukung.',
@@ -35,7 +35,9 @@ const ROLE_SUMMARY = {
   'commercial-manager': 'Commercial Manager menilai revenue, target, budget marketing, dan ROMI untuk menentukan campaign berikutnya.',
   'sales-manager': 'Sales Manager membaca hasil booking dan revenue per metode jual untuk mengatur tim B2C, B2B, dan referral.',
   'reservation-staff': 'Staf reservasi melihat ringkasan baca-saja. Tindakan harian ada di Inbox reservasi dan Booking Desk.',
-  'b2b-staff': 'Sales B2B melihat kontribusi partner hotel/villa dan status akun. Tindakan ada di Sales B2B.'
+  'b2b-staff': 'Sales B2B melihat kontribusi partner hotel/villa dan status akun. Tindakan ada di Sales B2B.',
+  'finance-manager': 'Finance Manager memeriksa pagu, menyetujui MRF, memposting aktual, dan merekonsiliasi batch People dari HRD.',
+  hrd: 'HRD mengelola People Cost: rincian biaya tim, alokasi cost center, dan batch yang dikirim ke Finance.'
 };
 const KEY = 'hawk-integrated-demo-v1', PREF = 'hawk-live-prefs-v1';
 let state = HAWK.fresh();

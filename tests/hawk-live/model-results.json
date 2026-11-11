@@ -1,6 +1,6 @@
 {
- "ranAt": "2026-11-11T12:48:04.098Z",
- "pass": 81,
+ "ranAt": "2026-11-11T12:56:34.798Z",
+ "pass": 104,
  "fail": 0,
  "results": [
   {
@@ -405,6 +405,121 @@
   },
   {
    "name": "KOL: approval butuh fee & term; deliverable approve hanya dari Menunggu approval",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 1: Rp40 miliar × 6% = Rp2,4 miliar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 1: alokasi kategori tersimpan menutup envelope (100%)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 1: Q1 = Jan + Feb + Mar",
+   "ok": true,
+   "info": "87980000"
+  },
+  {
+   "name": "Persentase harus 100%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Marketing Manager tidak bisa mengubah porsi People",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ubah persentase kategori lain (jumlah tetap 100%) tersimpan dengan histori",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 2: tambah draft; draft belum mengurangi sisa tersedia (budget naik, sisa naik sebesar rencana)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 2: edit draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 2: rencana yang melewati alokasi kategori ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MRF melebihi rencana baris ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Commercial Manager tidak bisa approve MRF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Approve → komitmen Rp18 jt, sisa turun Rp18 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Approval kedua (simultan) ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 2: posting penuh memindah komitmen ke aktual; sisa tetap sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Acceptance 3: posting yang sama tidak dijumlahkan dua kali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance mengembalikan MRF dengan alasan; bisa diedit dan diajukan ulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "FX: baris USD dihitung qty × biaya × kurs",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Perubahan target yang membuat rencana melewati alokasi ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Perubahan target tersimpan sebagai versi baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Scope Marketing Manager: People tidak ada di kategori yang terlihat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Batch People hanya dari HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penyegaran ulang batch People tidak menggandakan biaya",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance memposting batch People; batch diposting tidak bisa ditimpa",
    "ok": true,
    "info": ""
   }

@@ -1,0 +1,108 @@
+{
+ "ranAt": "2026-11-11T12:57:11.677Z",
+ "base": "http://localhost:8811/hawk-live/",
+ "pass": 20,
+ "fail": 0,
+ "results": [
+  {
+   "name": "Sidebar: Executive Summary → Commercial Budget → Master Budget 2027",
+   "ok": true,
+   "info": "Executive Summary|Commercial Budget|Master Budget 2027"
+  },
+  {
+   "name": "Envelope Commercial: 6% × Rp40 miliar, porsi non-People 85% = Rp 2.040.000.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Q1 = Jan + Feb + Mar (tabel tiga bulanan)",
+   "ok": true,
+   "info": "Rp 87.980.000"
+  },
+  {
+   "name": "Filter Q1 = jumlah filter Jan, Feb, Mar",
+   "ok": true,
+   "info": "Rp 87.980.000"
+  },
+  {
+   "name": "Marketing Manager: People tidak muncul di tree",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Deep link People Cost sebagai Marketing Manager hanya menampilkan persentase",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Marketing Manager tidak punya input persentase People",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Simpan persentase yang tidak 100% ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tambah draft budget line",
+   "ok": true,
+   "info": "BL27-011"
+  },
+  {
+   "name": "Edit draft",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rencana yang melewati alokasi kategori ditolak dengan pesan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan MRF: Commercial Manager tidak melihat tombol Setujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Approve mengurangi sisa sebesar MRF; posting penuh tidak mengubah sisa",
+   "ok": true,
+   "info": "Rp 68.480.000 → Rp 50.480.000 → Rp 50.480.000"
+  },
+  {
+   "name": "Jejak baris: MRF, posting, dan histori status",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Efektivitas: branding dinilai dari milestone; campaign pending evidence POS 2027",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "HRD kirim batch People dua kali → satu batch (tidak dobel)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance merekonsiliasi dan memposting batch ke 7P People",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Dashboard Commercial tetap tanpa People setelah posting batch",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: tanpa scroll horizontal di 6 tampilan Budget 2027",
+   "ok": true,
+   "info": "budget-2027 390"
+  },
+  {
+   "name": "Tidak ada console error",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

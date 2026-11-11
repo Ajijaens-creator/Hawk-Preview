@@ -64,3 +64,43 @@ Untuk browser test, jalankan dulu `python3 -m http.server 8811` dari root repo, 
 
 - Fase 3 sampai 6: Finance/Operational lanjutan, Sales B2C/B2B/Referral penuh, dan Kinerja Tim (F6). Kinerja Tim masih placeholder bertanda Fase 6.
 - Integrasi sungguhan (Meta, Google Ads, GSC, GA4, TikTok, WhatsApp) masih berstatus NEW INTEGRATION REQUIRED dan hanya disimulasikan di sini.
+
+## Tambahan: NB 03 · Master Marketing Budget 2027 (F2-09)
+
+Rute: `#budget-2027`. Di sidebar, layar ini ada tepat di bawah Commercial Budget. Statusnya simulasi: target dan pagu 2027 resmi belum ada, sehingga Rp40 miliar × 6% hanya skenario.
+
+### Yang sudah tersedia
+
+- **Dashboard.** Menampilkan Envelope Commercial (porsi non-People), Budget, Open commitment, Actual (ledger), Amount Left tersedia (budget − komitmen − actual) dan versi historis workbook (budget − actual), serta Forecast.
+- **Tabel tiga bulanan.** Setiap kuartal ditampilkan sebagai Bulan 1 + 2 + 3. Ada juga tabel skenario rasio 5/6/8% dan form asumsi; setiap perubahan disimpan sebagai versi baru.
+- **Tree budget.** Susunannya 7P › kategori › sub › detail, lengkap dengan category_id, cost center, dan GL demo. Bisa difilter per periode (tahun, kuartal, bulan), kategori, unit/outlet, dan tim.
+- **Alokasi kategori.** Total wajib 100%. Preset workbook 2025 tersedia dalam dua versi: Master B7:B11 dan catatan baris 34–56, diterapkan pada porsi non-People. Referensi persentase Digital per channel juga disimpan dalam dua versi. Alokasi yang lebih kecil dari rencana baris ditolak, dan setiap perubahan tercatat di histori.
+- **Budget lines dan MRF.**
+  - Draft bisa ditambah dan diedit: qty × biaya satuan, IDR atau USD dengan kurs, recurring, referensi pekerjaan, dan target hasil.
+  - Alurnya: Ajukan MRF → Finance menyetujui (cek pagu baris dan alokasi kategori), mengembalikan, atau menolak → posting penuh.
+  - Draft belum mengurangi sisa. Approve mengurangi sisa. Posting penuh memindahkan komitmen ke actual tanpa mengubah sisa.
+  - Approval kedua dan posting ulang ditolak. Jejak tiap baris menampilkan MRF, posting, dan historinya.
+- **Efektivitas.** Hasil dibaca dari modul asal:
+  - Campaign: *pending evidence* sampai ada transaksi POS 2027.
+  - Konten: tahap dan biaya per aset.
+  - Brand: milestone.
+  - KOL: deliverable yang sudah diterima.
+- **People Cost.**
+  - Commercial Manager hanya melihat persentase, termasuk saat membuka lewat deep link.
+  - HRD mengirim batch agregat ke Finance; mengirim ulang tidak menggandakan biaya.
+  - Finance merekonsiliasi dan memposting batch ke 7P People. Batch yang sudah diposting tidak bisa ditimpa.
+  - Role demo baru di switcher: Finance Manager dan HRD.
+- **Screening workbook.** Berisi sepuluh tab dan turunannya di HAWK, ditambah daftar temuan yang masih perlu keputusan mapping. Workbook tidak diimpor.
+
+### Tes
+
+- `model.test.js`: 104/104, termasuk acceptance 1–2, FX, versi target, dan akses People.
+- `budget2027.e2e.js`: 20/20.
+
+### Belum dikerjakan (fase integrasi)
+
+- Posting parsial dan reversal.
+- Dua approval bersamaan di server.
+- Scope manager/approver dan penyaringan People di server, API, dan ekspor. Di preview ini penyaringan masih di klien.
+- CRUD taxonomy oleh Finance.
+- Impor workbook.

@@ -6,7 +6,7 @@
 const fs = require('fs'), path = require('path');
 const dir = path.join(__dirname, '..', 'hawk-live');
 const read = (f) => fs.readFileSync(path.join(dir, f), 'utf8');
-const hawkCss = fs.readFileSync(path.join(dir, '..', 'assets', 'css', 'hawk.css'), 'utf8'), css = read('style.css'), js = ['model.js', 'ser-data.js', 'commercial-model.js', 'marketing-model.js', 'app.js', 'commercial.js', 'marketing.js'].map(read).join('\n;\n').replace(/<\/script/gi, '<\\/script');
+const hawkCss = fs.readFileSync(path.join(dir, '..', 'assets', 'css', 'hawk.css'), 'utf8'), css = read('style.css'), js = ['model.js', 'ser-data.js', 'commercial-model.js', 'marketing-model.js', 'budget2027-model.js', 'app.js', 'commercial.js', 'marketing.js', 'budget2027.js'].map(read).join('\n;\n').replace(/<\/script/gi, '<\\/script');
 const pages = [['index.html', 'preview.html'], ['finance.html', 'preview-finance.html'], ['operational.html', 'preview-operational.html'], ['commercial.html', 'preview-commercial.html'], ['sales.html', 'preview-sales.html']];
 for (const [src, dst] of pages) {
   let html = read(src)

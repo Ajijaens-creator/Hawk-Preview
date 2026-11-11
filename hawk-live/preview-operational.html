@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-11T12:48:51.022Z">
+<meta name="hawk-standalone" content="2026-11-11T12:57:19.049Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Operational</title>
 <style>
@@ -2542,6 +2542,169 @@ const MK = (() => {
 if (typeof module !== 'undefined') module.exports = MK;
 
 ;
+/* HAWK four-portal · NB 03 Master Marketing Budget 2027 (DATA DEMO / SIMULASI).
+   Target revenue dan pagu 2027 resmi belum diberikan: Rp40 miliar × 6% adalah skenario simulasi.
+   Angka workbook 2025 hanya preset/referensi berversi, tidak pernah dijadikan aktual 2027.
+   Hierarki: tahun → unit/outlet → pos 7P → kategori → subkategori → child → detail budget line.
+   Extends CX (commercial-model.js) via CX.extend: state lives in state.cx.b27. */
+const B27 = (() => {
+  const C = (typeof CX !== 'undefined') ? CX : require('./commercial-model.js');
+  const need = C.need, TODAY = C.TODAY;
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  /* canonical category_id, parent (pos 7P), tim pemilik, cost center & GL demo */
+  const CATS = [
+    { id: 'CAT-PPL', name: 'People', pillar: 'People', team: 'HRD', gl: '6101', cc: 'CC-COM-PPL', restricted: true },
+    { id: 'CAT-PRC', name: 'Process', pillar: 'Process', team: 'Commercial Operations', gl: '6201', cc: 'CC-COM-PRC' },
+    { id: 'CAT-DGT', name: 'Digital Marketing', pillar: 'Promotion', team: 'Digital Marketing', gl: '6301', cc: 'CC-COM-DGT' },
+    { id: 'CAT-TLS', name: 'Online Tools', pillar: 'Promotion', team: 'Content Studio', gl: '6302', cc: 'CC-COM-TLS' },
+    { id: 'CAT-OUT', name: 'Outsourcing', pillar: 'Promotion', team: 'Media & KOL', gl: '6303', cc: 'CC-COM-OUT' },
+    { id: 'CAT-OFF', name: 'Offline Marketing', pillar: 'Promotion', team: 'Brand & Communications', gl: '6304', cc: 'CC-COM-OFF' },
+    { id: 'CAT-OTH', name: 'Others', pillar: 'Promotion', team: 'Commercial Operations', gl: '6305', cc: 'CC-COM-OTH' },
+    { id: 'CAT-BRD', name: 'Branding', pillar: 'Promotion', team: 'Brand & Communications', gl: '6306', cc: 'CC-COM-BRD' },
+    { id: 'CAT-WEB', name: 'Website Redesign', pillar: 'Promotion', team: 'Digital Marketing', gl: '6307', cc: 'CC-COM-WEB' }
+  ];
+  /* Workbook 2025 presets (versioned references). Apply to the non-People share. */
+  const PRESETS = {
+    'master-2025': { label: 'Master 2025 (B7:B11)', w: { 'CAT-DGT': 60, 'CAT-TLS': 5, 'CAT-OUT': 25, 'CAT-OFF': 8, 'CAT-OTH': 2 } },
+    'notes-2025': { label: 'Catatan 2025 (baris 34–56)', w: { 'CAT-DGT': 50, 'CAT-TLS': 10, 'CAT-OUT': 10, 'CAT-OFF': 25, 'CAT-OTH': 5 } }
+  };
+  const DIGITAL_PRESETS = [['Master 2025 (B7/B11/B16/B19/B21)', [55, 25, 5, 0, 15]], ['Catatan 2025', [55, 25, 15, 0, 5]]];
+  const DIGITAL_CH = ['Google', 'Meta', 'TikTok', 'YouTube', 'Instagram Paid Promote'];
+  const UNITS = [['OUT-UBD', 'Center (Ubud)'], ['OUT-SHT', 'Shanti'], ['OUT-TRL', 'Triloka'], ['OUT-BSM', 'Bisma'], ['HQ', 'Pusat / lintas outlet']];
+  const STATUS = { draft: 'Draft', submitted: 'Menunggu Finance', returned: 'Dikembalikan', rejected: 'Ditolak', approved: 'Disetujui · komitmen', posted: 'Diposting · aktual' };
+
+  const L = (id, unit, cat, sub, child, detail, work, month, qty, unit_cost, request, status, extra = {}) => ({ id, year: 2027, unit, cat, sub, child, detail, work, month, qty, unitCost: unit_cost, currency: 'IDR', fx: 1, recurring: false, owner: 'MBR-C02', outcome: '', evidence: '', request, status, mrf: status === 'draft' ? '' : 'MRF27-' + id.slice(-3), postId: status === 'posted' ? 'PST27-' + id.slice(-3) : '', actual: status === 'posted' ? request : 0, history: [{ status: 'draft', at: '2026-11-02', by: 'MBR-C02' }].concat(status === 'draft' ? [] : [{ status: 'submitted', at: '2026-11-04', by: 'MBR-C02' }]).concat(['approved', 'posted'].includes(status) ? [{ status: 'approved', at: '2026-11-05', by: 'Finance Manager' }] : []).concat(status === 'posted' ? [{ status: 'posted', at: '2026-11-06', by: 'Finance Manager' }] : []), ...extra });
+  const SEED = () => ({
+    version: 1,
+    plan: { revenue: 40e9, ratio: 6, status: 'Draft simulasi', history: [{ v: 1, revenue: 40e9, ratio: 6, at: '2026-11-02', by: 'Commercial Manager', note: 'Skenario awal (target resmi belum ada)' }] },
+    weights: { 'CAT-PPL': 15, 'CAT-PRC': 5, 'CAT-DGT': 40, 'CAT-TLS': 6, 'CAT-OUT': 10, 'CAT-OFF': 9, 'CAT-OTH': 3, 'CAT-BRD': 8, 'CAT-WEB': 4 },
+    weightHistory: [],
+    lines: [
+      L('BL27-001', 'OUT-UBD', 'CAT-DGT', 'Paid Ads', 'Google Ads', 'Search treatment Januari · Center', 'CMP-001', 1, 1, 40000000, 35000000, 'posted', { outcome: 'Booking dibayar & revenue POS tertaut', recurring: true }),
+      L('BL27-002', 'HQ', 'CAT-TLS', 'Design', 'Canva', 'Lisensi tim konten (5 kursi)', 'CNT-002', 1, 5, 500000, 2500000, 'approved', { outcome: 'Biaya per aset disetujui', recurring: true }),
+      L('BL27-003', 'OUT-SHT', 'CAT-OUT', 'Production', 'Video', 'Produksi video vendor Sunset Ritual', 'CMP-002', 2, 1, 15000000, 12000000, 'submitted', { outcome: 'Biaya per deliverable accepted' }),
+      L('BL27-004', 'OUT-TRL', 'CAT-OFF', 'Print', 'QR collateral', 'Flyer outlet dan kode QR', 'CMP-007', 3, 2000, 5000, 7000000, 'draft', { outcome: 'Tracked QR / lead' }),
+      L('BL27-005', 'HQ', 'CAT-OTH', 'Courses', 'Workshop', 'Pelatihan evaluasi campaign', 'TASK-C01', 4, 1, 2500000, 2000000, 'draft', { outcome: 'Output terverifikasi' }),
+      L('BL27-006', 'HQ', 'CAT-BRD', 'Brand identity', 'Tone of voice', 'Review dan implementasi panduan merek Jaens Academy', 'BR-ACD', 2, 1, 10000000, 6000000, 'posted', { outcome: 'Milestone brand & distribusi' }),
+      L('BL27-007', 'HQ', 'CAT-WEB', 'Content & Design', 'Landing page', 'Perbaikan halaman booking', 'WEB-001', 4, 1, 8000000, 5000000, 'draft', { outcome: 'Milestone accepted + konversi organik' }),
+      L('BL27-008', 'HQ', 'CAT-PRC', 'Operations', 'Workflow review', 'Review proses handoff DM → Sales', 'TASK-C03', 3, 1, 3500000, 2500000, 'draft', { outcome: 'SLA handoff' }),
+      L('BL27-009', 'HQ', 'CAT-TLS', 'Design', 'Figma', 'Lisensi Figma (USD, bulanan)', 'CNT-003', 2, 2, 15, 480000, 'draft', { currency: 'USD', fx: 16000, outcome: 'Biaya per aset disetujui', recurring: true }),
+      L('BL27-010', 'HQ', 'CAT-OUT', 'Agency', 'KOL', 'Fee KOL Anya · 2 Reels + 3 Story', 'KOL-001', 1, 1, 6500000, 6500000, 'approved', { outcome: 'Deliverable accepted & booking kode KOL' })
+    ],
+    /* People Cost: HRD-owned aggregate batches per cost center (no personal payroll detail in this preview). */
+    peopleBatches: [
+      { id: 'PB27-01', period: '2027-01', cc: 'CC-COM-PPL', unit: 'Commercial', allocation: 'ALLOC-2027-v1', amount: 0, status: 'Rencana', note: 'Belum ada payroll 2027 (simulasi)' }
+    ],
+    seq: { BL: 10, PB: 1 }
+  });
+
+  /* ---------- calculations ---------- */
+  const lineAmt = (l) => Math.round(l.qty * l.unitCost * (l.fx || 1));
+  const envelope = (b) => Math.round(b.plan.revenue * b.plan.ratio / 100);
+  const allocation = (b, cat) => Math.round(envelope(b) * (b.weights[cat] || 0) / 100);
+  const commit = (l) => l.status === 'approved' ? l.request : 0;
+  const inPeriod = (l, period) => !period || period === 'year' || (period[0] === 'Q' ? Math.ceil(l.month / 3) === Number(period[1]) : l.month === Number(period));
+  function totals(b, rows) {
+    const budget = rows.reduce((s, l) => s + lineAmt(l), 0), committed = rows.reduce((s, l) => s + commit(l), 0), actual = rows.reduce((s, l) => s + l.actual, 0);
+    const pending = rows.filter(l => l.status === 'submitted').reduce((s, l) => s + l.request, 0);
+    const unrequested = rows.filter(l => ['draft', 'returned'].includes(l.status)).reduce((s, l) => s + lineAmt(l), 0) + rows.filter(l => ['submitted', 'approved', 'posted'].includes(l.status)).reduce((s, l) => s + Math.max(0, lineAmt(l) - l.request), 0);
+    return { budget, committed, actual, pending, left: budget - committed - actual, leftHistoric: budget - actual, forecast: actual + committed + pending + unrequested };
+  }
+  /* Scope filter for Commercial (Marketing Manager): People category is never in rows or totals. */
+  const visibleCats = (role) => CATS.filter(c => !c.restricted || ['hrd', 'owner'].includes(role));
+  const planned = (b, cat, exceptId) => b.lines.filter(l => l.cat === cat && l.id !== exceptId && l.status !== 'rejected').reduce((s, l) => s + lineAmt(l), 0);
+
+  const ROLE_FIN = ['finance-manager', 'owner'];
+  const actions = {
+    'b27-assume': (cx, input, by) => {
+      const b = cx.b27; const revenue = Number(input.revenue), ratio = Number(input.ratio);
+      need(Number.isSafeInteger(revenue) && revenue > 0, 'Target revenue tidak valid.');
+      need(ratio > 0 && ratio <= 100, 'Rasio harus di antara 0 dan 100%.');
+      const env = Math.round(revenue * ratio / 100);
+      const over = CATS.find(c => planned(b, c.id) > Math.round(env * (b.weights[c.id] || 0) / 100));
+      need(!over, `Asumsi baru membuat rencana ${over && over.name} melewati alokasi.`);
+      b.plan.revenue = revenue; b.plan.ratio = ratio;
+      b.plan.history.push({ v: b.plan.history.length + 1, revenue, ratio, at: TODAY, by, note: String(input.note || '') });
+      return 'v' + b.plan.history.length;
+    },
+    'b27-weights': (cx, input, by) => {
+      const b = cx.b27; const role = input.role || 'commercial-manager';
+      const w = { ...b.weights };
+      CATS.forEach(c => { if (input['w_' + c.id] !== undefined && input['w_' + c.id] !== '') w[c.id] = Number(input['w_' + c.id]); });
+      need(CATS.every(c => Number.isFinite(w[c.id]) && w[c.id] >= 0), 'Persentase tidak valid.');
+      need(w['CAT-PPL'] === b.weights['CAT-PPL'] || ['hrd', 'finance-manager', 'owner'].includes(role), 'Porsi People ditetapkan HRD dan Finance.');
+      const sum = CATS.reduce((s, c) => s + w[c.id], 0);
+      need(Math.abs(sum - 100) < 1e-6, `Jumlah persentase harus 100% (sekarang ${Math.round(sum * 100) / 100}%).`);
+      const over = CATS.find(c => planned(b, c.id) > Math.round(envelope(b) * w[c.id] / 100));
+      need(!over, `Alokasi ${over && over.name} di bawah rencana barisnya.`);
+      b.weightHistory.push({ at: TODAY, by, from: { ...b.weights }, to: w, preset: input.preset || '' });
+      b.weights = w; return 'ok';
+    },
+    'b27-line-save': (cx, input, by) => {
+      const b = cx.b27; const cat = CATS.find(c => c.id === input.cat);
+      need(cat && !cat.restricted, 'Pilih kategori yang dikelola Commercial.');
+      const ex = input.id ? b.lines.find(l => l.id === input.id) : null;
+      if (input.id) need(ex, 'Baris tidak ditemukan.');
+      if (ex) need(['draft', 'returned'].includes(ex.status), 'Baris yang sudah diajukan/disetujui berubah lewat revisi atau transfer.');
+      const month = Number(input.month), qty = Number(input.qty), unitCost = Number(input.unitCost), fx = input.currency === 'USD' ? Number(input.fx || 16000) : 1;
+      need(month >= 1 && month <= 12, 'Pilih bulan.');
+      need(qty > 0 && unitCost > 0, 'Isi qty dan biaya satuan.');
+      need(String(input.detail || '').trim().length >= 4, 'Isi detail pengeluaran.');
+      const amount = Math.round(qty * unitCost * fx), request = Number(input.request || amount);
+      need(Number.isSafeInteger(request) && request > 0 && request <= amount, 'Pengajuan MRF tidak boleh melebihi rencana baris.');
+      const room = allocation(b, cat.id) - planned(b, cat.id, ex && ex.id);
+      need(amount <= room, `Rencana melewati alokasi ${cat.name} (sisa alokasi Rp ${Math.max(0, room).toLocaleString('id-ID')}).`);
+      const data = { unit: input.unit || 'HQ', cat: cat.id, sub: String(input.sub || '').trim() || '—', child: String(input.child || '').trim(), detail: String(input.detail).trim(), work: String(input.work || '').trim(), month, qty, unitCost, currency: input.currency === 'USD' ? 'USD' : 'IDR', fx, recurring: input.recurring === 'yes', owner: input.owner || by, outcome: String(input.outcome || ''), request };
+      if (ex) { Object.assign(ex, data); ex.history.push({ status: ex.status === 'returned' ? 'returned · diedit' : 'draft · diedit', at: TODAY, by }); return ex.id; }
+      const id = 'BL27-' + String(b.seq.BL = b.seq.BL + 1).padStart(3, '0');
+      b.lines.push({ id, year: 2027, ...data, evidence: '', status: 'draft', mrf: '', postId: '', actual: 0, history: [{ status: 'draft', at: TODAY, by }] });
+      return id;
+    },
+    'b27-submit': (cx, input, by) => {
+      const l = cx.b27.lines.find(x => x.id === input.id); need(l && ['draft', 'returned'].includes(l.status), 'Hanya draft/dikembalikan yang bisa diajukan.');
+      l.status = 'submitted'; l.mrf = l.mrf || 'MRF27-' + l.id.slice(-3); l.history.push({ status: 'submitted', at: TODAY, by }); return l.mrf;
+    },
+    /* Finance decision. Approval checks the line pagu inside the same transaction; a second approval is rejected. */
+    'b27-approve': (cx, input, by) => {
+      const b = cx.b27, l = b.lines.find(x => x.id === input.id);
+      need(l && l.status === 'submitted', 'MRF tidak menunggu approval (mungkin sudah diproses).');
+      need(ROLE_FIN.includes(input.role || 'finance-manager'), 'Hanya Finance yang menyetujui MRF.');
+      const roomLine = lineAmt(l) - l.actual; need(l.request <= roomLine, 'Pagu baris tidak mencukupi.');
+      const cat = b.lines.filter(x => x.cat === l.cat && x.id !== l.id).reduce((s, x) => s + commit(x) + x.actual, 0);
+      need(cat + l.request <= allocation(b, l.cat), 'Alokasi kategori tidak mencukupi.');
+      l.status = 'approved'; l.history.push({ status: 'approved', at: TODAY, by: input.byName || 'Finance Manager' }); return l.mrf;
+    },
+    'b27-return': (cx, input, by) => {
+      const l = cx.b27.lines.find(x => x.id === input.id); need(l && l.status === 'submitted', 'MRF tidak menunggu approval.');
+      need(String(input.reason || '').trim().length >= 5, 'Tulis alasan (min. 5 karakter).');
+      l.status = input.decision === 'reject' ? 'rejected' : 'returned'; l.reason = String(input.reason).trim();
+      l.history.push({ status: l.status, at: TODAY, by: 'Finance Manager', note: l.reason }); return l.mrf;
+    },
+    'b27-post': (cx, input, by) => {
+      const l = cx.b27.lines.find(x => x.id === input.id); need(l && l.status === 'approved', 'Hanya MRF disetujui yang bisa diposting (posting sama tidak dihitung dua kali).');
+      l.actual = l.request; l.status = 'posted'; l.postId = 'PST27-' + l.id.slice(-3); l.history.push({ status: 'posted', at: TODAY, by: 'Finance Manager', note: l.postId }); return l.postId;
+    },
+    /* HRD → Finance batch. Same batch_id refresh never duplicates cost. */
+    'b27-people-batch': (cx, input, by) => {
+      const b = cx.b27; need(['hrd', 'owner'].includes(input.role), 'Batch People hanya dikirim oleh HRD.');
+      const period = input.period || '2027-01'; const id = 'PB27-' + period.slice(5);
+      const amount = Number(input.amount); need(Number.isSafeInteger(amount) && amount >= 0, 'Isi nilai agregat batch.');
+      const ex = b.peopleBatches.find(x => x.id === id);
+      if (ex) { need(ex.status !== 'Diposting', 'Batch sudah diposting; koreksi memakai reversal/adjustment.'); Object.assign(ex, { amount, status: 'Dikirim ke Finance', refreshed: (ex.refreshed || 0) + (ex.status === 'Dikirim ke Finance' ? 1 : 0) }); return id; }
+      b.peopleBatches.push({ id, period, cc: 'CC-COM-PPL', unit: 'Commercial', allocation: 'ALLOC-2027-v1', amount, status: 'Dikirim ke Finance', note: '' }); return id;
+    },
+    'b27-people-post': (cx, input) => {
+      const pb = cx.b27.peopleBatches.find(x => x.id === input.id); need(pb && pb.status === 'Dikirim ke Finance', 'Batch belum dikirim atau sudah diposting.');
+      need(ROLE_FIN.includes(input.role), 'Hanya Finance yang merekonsiliasi dan memposting batch.');
+      pb.status = 'Diposting'; pb.postId = 'PST27-' + pb.id; return pb.postId;
+    }
+  };
+  C.extend({ seed: { key: 'b27', make: SEED }, actions });
+  return { MONTHS, CATS, PRESETS, DIGITAL_PRESETS, DIGITAL_CH, UNITS, STATUS, lineAmt, envelope, allocation, commit, inPeriod, totals, visibleCats, planned };
+})();
+if (typeof module !== 'undefined') module.exports = B27;
+
+;
 /* HAWK ERP · four-portal preview shell (Finance → Operational → Commercial → Sales)
    Phase 1: F1-01 portal picker, F1-02 Commercial Executive Summary (SER), F1-03 drill-down,
    F1-04 Sales home, F7-01 screen map. Other routes are the original sandbox screens, labelled with
@@ -2552,7 +2715,7 @@ const ERP = 'https://preview.hawk.jaens.id/';
 const PORTALS = {
   Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
-  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
+  Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['budget-2027', 'Master Budget 2027', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
 const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
@@ -2566,7 +2729,7 @@ const SCREENS = [
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution?view=journey&q=LEAD-001', 'ready', 'Semua role']
 ];
 const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
-const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B']];
+const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B'], ['finance-manager', 'Finance Manager'], ['hrd', 'HRD (People Cost)']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
   'commercial-drill': 'Definisi metrik, pembanding, rincian outlet, dan transaksi POS pendukung.',
@@ -2579,7 +2742,9 @@ const ROLE_SUMMARY = {
   'commercial-manager': 'Commercial Manager menilai revenue, target, budget marketing, dan ROMI untuk menentukan campaign berikutnya.',
   'sales-manager': 'Sales Manager membaca hasil booking dan revenue per metode jual untuk mengatur tim B2C, B2B, dan referral.',
   'reservation-staff': 'Staf reservasi melihat ringkasan baca-saja. Tindakan harian ada di Inbox reservasi dan Booking Desk.',
-  'b2b-staff': 'Sales B2B melihat kontribusi partner hotel/villa dan status akun. Tindakan ada di Sales B2B.'
+  'b2b-staff': 'Sales B2B melihat kontribusi partner hotel/villa dan status akun. Tindakan ada di Sales B2B.',
+  'finance-manager': 'Finance Manager memeriksa pagu, menyetujui MRF, memposting aktual, dan merekonsiliasi batch People dari HRD.',
+  hrd: 'HRD mengelola People Cost: rincian biaya tim, alokasi cost center, dan batch yang dikirim ke Finance.'
 };
 const KEY = 'hawk-integrated-demo-v1', PREF = 'hawk-live-prefs-v1';
 let state = HAWK.fresh();
@@ -3583,6 +3748,126 @@ register('mentor', (params) => {
   }
   return banner + tabs + body;
 }, () => 'AI Marketing Mentor');
+})();
+
+;
+/* HAWK ERP · F2-09 Master Marketing Budget 2027 (NB 03) — DATA DEMO / SIMULASI.
+   Dashboard Envelope · Budget · Open Commitment · Actual · Amount Left · Forecast; tree kategori → detail;
+   editor draft; MRF → Finance → posting; efektivitas per pekerjaan; akses People Cost per role; screening workbook. */
+(() => {
+const H = window.HL;
+const { esc, num, rp, pct, table, card, metrics, qs } = H;
+const st = () => H.state;
+const b27 = () => CX.ensure(H.state).b27;
+const role = () => H.prefs.role;
+const ROLE_LABEL = { owner: 'Owner', 'commercial-manager': 'Commercial Manager (Marketing Manager)', 'sales-manager': 'Sales Manager', 'reservation-staff': 'Staf Reservasi', 'b2b-staff': 'Sales B2B', 'finance-manager': 'Finance Manager', hrd: 'HRD' };
+const isFin = () => ['finance-manager', 'owner'].includes(role());
+const seesPeople = () => ['hrd', 'owner'].includes(role());
+const chip = (text, tone = '') => `<span class="status-chip ${tone}">${esc(text)}</span>`;
+const sel = (name, label, options, value, extra = '') => `<label>${label} <select name="${name}" ${extra}>${options.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${String(v) === String(value ?? '') ? 'selected' : ''}>${esc(l)}</option>`; }).join('')}</select></label>`;
+const hidden = (obj) => Object.entries(obj).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `<input type="hidden" name="${k}" value="${esc(v)}">`).join('');
+const catName = (id) => B27.CATS.find(c => c.id === id)?.name || id;
+const unitName = (id) => B27.UNITS.find(u => u[0] === id)?.[1] || id;
+const tone = (s) => ({ posted: 'ready', approved: 'ready', submitted: 'sandbox', returned: 'sandbox', rejected: 'bad' })[s] || '';
+const periodLabel = (p) => p === 'year' ? '2027 · Tahunan' : p[0] === 'Q' ? `${p} 2027 · ${B27.MONTHS.slice((p[1] - 1) * 3, p[1] * 3).join('+')}` : `${B27.MONTHS[p - 1]} 2027`;
+
+/* outcome from the module of origin; pending evidence when it cannot be measured yet */
+function outcome(l) {
+  const w = l.work || '', cx = CX.ensure(st());
+  if (/^CMP-/.test(w)) { const c = cx.campaigns.find(x => x.id === w); return c ? [`<a href="#campaign-detail${qs({ id: w })}">${w} · ${esc(c.name)}</a>`, 'Pending evidence: belum ada transaksi POS 2027. Revenue akan dibaca dari POS yang tertaut (sekali per transaksi).', 'sandbox'] : [w, 'Referensi tidak ditemukan', 'bad']; }
+  if (/^CNT-/.test(w)) { const c = cx.content.find(x => x.id === w); return c ? [`<a href="#studio${qs({ content: w })}">${w} · ${esc(c.title)}</a>`, `Tahap ${c.stage} · ${c.assets.length} aset · biaya per aset disetujui ${c.approvedAt ? rp(l.actual / Math.max(1, c.assets.length)) : 'belum ada aset disetujui'}`, c.approvedAt ? 'ready' : 'sandbox'] : [w, 'Referensi tidak ditemukan', 'bad']; }
+  if (/^BR-/.test(w)) { const b = cx.brands.find(x => x.id === w); const p = b && CX.brandProgress(b); return b ? [`<a href="#brand${qs({ open: w })}">${esc(b.name)}</a>`, `Milestone brand ${pct(p.ratio, 0)} (bukti approval elemen) · revenue tidak diatribusikan`, 'ready'] : [w, '—', 'bad']; }
+  if (/^KOL-|^MED-/.test(w)) { const p = cx.mk?.partners.find(x => x.id === w); const ds = cx.mk?.deliverables.filter(d => d.partner === w) || []; return p ? [`<a href="#kol${qs({ id: w })}">${esc(p.name)}</a>`, `${ds.filter(d => ['Terbit', 'Disetujui'].includes(d.status)).length}/${ds.length} deliverable accepted · biaya per deliverable ${rp(ds.length ? l.actual / Math.max(1, ds.filter(d => ['Terbit', 'Disetujui'].includes(d.status)).length) : null)}`, 'ready'] : [w, '—', 'bad']; }
+  if (/^TASK-/.test(w)) { const t = cx.tasks.find(x => x.id === w); return [t ? `${w} · ${esc(t.action)}` : w, t ? `Tugas ${t.status === 'done' ? 'selesai' : 'direncanakan'} · output terverifikasi menunggu bukti` : 'Pending evidence', 'sandbox']; }
+  return [esc(w || '—'), 'Pending evidence: hubungkan pekerjaan (project/milestone) agar efektivitas bisa dinilai.', 'sandbox'];
+}
+
+H.REGISTRY['budget-2027'] = Object.assign((params) => {
+  const b = b27(), view = params.view || 'dashboard';
+  const period = params.period && (params.period === 'year' || /^Q[1-4]$/.test(params.period) || (+params.period >= 1 && +params.period <= 12)) ? params.period : 'year';
+  const cats = B27.visibleCats(role()).filter(c => !c.restricted);
+  const rows = b.lines.filter(l => cats.some(c => c.id === l.cat) && B27.inPeriod(l, period) && (!params.cat || l.cat === params.cat) && (!params.unit || l.unit === params.unit) && (!params.team || B27.CATS.find(c => c.id === l.cat).team === params.team));
+  const t = B27.totals(b, rows);
+  const env = B27.envelope(b), ppl = b.weights['CAT-PPL'];
+  const manageable = Math.round(env * (100 - ppl) / 100);
+  const keep = { period, cat: params.cat, unit: params.unit, team: params.team };
+  const bar = `<form id="filters" class="filters" aria-label="Filter budget 2027">${hidden({ view })}
+    ${sel('period', 'Periode', [['year', '2027 · Tahunan'], ...[1, 2, 3, 4].map(q => ['Q' + q, `Q${q} · tiga bulanan`]), ...B27.MONTHS.map((m, i) => [String(i + 1), `${m} 2027`])], period)}
+    ${sel('cat', 'Kategori', [['', 'Semua kategori'], ...cats.map(c => [c.id, c.name])], params.cat)}
+    ${sel('unit', 'Unit/outlet', [['', 'Semua unit'], ...B27.UNITS], params.unit)}
+    ${sel('team', 'Tim', [['', 'Semua tim'], ...[...new Set(cats.map(c => c.team))]], params.team)}
+    <button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
+  const notice = `<p class="phase-banner"><span class="badge demo">SIMULASI 2027</span> Target revenue dan pagu 2027 resmi belum diberikan. Rp40 miliar × 6% adalah skenario. Angka workbook 2025 hanya preset berversi, tidak dijadikan aktual 2027. Role demo: <b>${esc(ROLE_LABEL[role()] || role())}</b>.</p>`;
+  const head = metrics([
+    [period === 'year' ? 'Envelope Commercial' : 'Envelope (tahunan)', rp(manageable), `${pct(b.plan.ratio / 100, 2)} × target ${rp(b.plan.revenue)} · People ${num(ppl, 2)}% / kategori lain ${num(100 - ppl, 2)}%`],
+    ['Budget ' + periodLabel(period).split(' · ')[0], rp(t.budget), `${rows.length} baris · draft belum mengurangi sisa`],
+    ['Open commitment', rp(t.committed), `${rp(t.pending)} menunggu Finance`],
+    ['Actual (ledger)', rp(t.actual), 'dari posting Finance'],
+    ['Amount Left tersedia', rp(t.left), `budget − komitmen − actual · historis workbook (budget − actual) ${rp(t.leftHistoric)}`],
+    ['Forecast', rp(t.forecast), 'actual + komitmen + menunggu + rencana belum diajukan']
+  ]);
+  const tabs = `<nav class="tabs" aria-label="Tampilan">${[['dashboard', 'Dashboard & tree'], ['allocation', 'Alokasi kategori'], ['lines', 'Budget lines & MRF'], ['effect', 'Efektivitas'], ['people', 'People Cost'], ['workbook', 'Screening workbook']].map(([k, l]) => `<a class="tab${k === view ? ' on' : ''}" href="#budget-2027${qs({ ...keep, view: k })}">${l}</a>`).join('')}</nav>`;
+  let body = '';
+  if (view === 'dashboard') {
+    const quarters = [1, 2, 3, 4].map(q => { const r = b.lines.filter(l => cats.some(c => c.id === l.cat) && Math.ceil(l.month / 3) === q); const tq = B27.totals(b, r); const months = [0, 1, 2].map(i => B27.totals(b, r.filter(l => l.month === (q - 1) * 3 + i + 1)).budget); return [`<a href="#budget-2027${qs({ ...keep, period: 'Q' + q })}">Q${q}</a>`, months.map(m => rp(m)).join(' + '), rp(tq.budget), rp(tq.committed), rp(tq.actual), rp(tq.left)]; });
+    const tree = [];
+    cats.filter(c => !params.cat || c.id === params.cat).forEach(c => {
+      const r = rows.filter(l => l.cat === c.id), tc = B27.totals(b, r), alloc = B27.allocation(b, c.id);
+      tree.push([`<b>${c.pillar} › ${esc(c.name)}</b><br><small class="muted">${c.id} · ${c.cc} · GL ${c.gl} · ${esc(c.team)}</small>`, period === 'year' ? rp(alloc) : '—', rp(tc.budget), rp(tc.committed), rp(tc.actual), rp(tc.left), period === 'year' ? `<div class="meter" aria-label="Terpakai ${pct((tc.committed + tc.actual) / (alloc || 1), 0)}"><span style="width:${Math.min(100, (tc.committed + tc.actual) / (alloc || 1) * 100)}%"></span></div>` : '']);
+      const subs = [...new Set(r.map(l => l.sub))];
+      subs.forEach(s => { const rs = r.filter(l => l.sub === s), ts = B27.totals(b, rs); tree.push([`<span style="padding-left:14px">${esc(s)}</span>`, '', rp(ts.budget), rp(ts.committed), rp(ts.actual), rp(ts.left), '']);
+        rs.forEach(l => tree.push([`<span style="padding-left:28px"><a href="#budget-2027${qs({ ...keep, view: 'lines', open: l.id })}">${l.id}</a> · ${esc(l.child || '—')} · ${esc(l.detail)}</span><br><small class="muted" style="padding-left:28px">${unitName(l.unit)} · ${B27.MONTHS[l.month - 1]} · ${chip(B27.STATUS[l.status], tone(l.status))}</small>`, '', rp(B27.lineAmt(l)), rp(B27.commit(l)), rp(l.actual), rp(B27.lineAmt(l) - B27.commit(l) - l.actual), ''])); });
+    });
+    body = `<div class="grid g2">${card('Tiga bulanan = jumlah tiga bulan', table(['Kuartal', 'Bulan 1 + 2 + 3', 'Budget', 'Komitmen', 'Actual', 'Amount Left'], quarters) + '<p class="muted small">Nilai kuartal adalah jumlah baris bulanannya, tidak ditambahkan lagi ke total bulan. Pagu tahunan tidak otomatis dibagi 12.</p>')}
+      ${card('Skenario envelope', table(['Rasio', 'Envelope total', 'Porsi Commercial (non-People)', 'Status'], [5, 6, 8].map(r => [num(r) + '%', rp(b.plan.revenue * r / 100), rp(b.plan.revenue * r / 100 * (100 - ppl) / 100), r === b.plan.ratio ? chip('Dipakai', 'ready') : '—'])) + `<form class="inline-form" data-submit="cx:b27-assume"><label>Target revenue 2027 (Rp)<input name="revenue" type="number" min="1" step="1" required value="${b.plan.revenue}"></label><label>Rasio (%)<input name="ratio" type="number" min="0.01" max="100" step="0.01" required value="${b.plan.ratio}"></label><label>Catatan versi<input name="note" placeholder="mis. target Finance v2"></label><button class="btn sm">Simpan asumsi (versi baru)</button></form><p class="muted small">Versi ${b.plan.history.length} · ${esc(b.plan.status)}. Asumsi yang membuat rencana kategori melewati alokasi ditolak.</p>`)}</div>
+      ${card(`Tree budget · ${periodLabel(period)}`, table(['Kategori › sub › detail', 'Alokasi', 'Budget', 'Komitmen', 'Actual', 'Amount Left', 'Terpakai'], tree) + `<p class="muted small">People Cost tidak masuk tabel, kartu, ekspor, atau AI Commercial. Total di atas hanya kategori yang dapat dikelola Commercial.</p>`)}`;
+  } else if (view === 'allocation') {
+    const w = b.weights;
+    const pre = params.preset && B27.PRESETS[params.preset];
+    const shown = (c) => pre ? (c.id === 'CAT-PPL' ? w[c.id] : Math.round((pre.w[c.id] || 0) * (100 - w['CAT-PPL'])) / 100) : w[c.id];
+    const rowsA = B27.CATS.map(c => { const plannedC = B27.planned(b, c.id); const ref = B27.PRESETS['master-2025'].w[c.id]; if (c.restricted) return [`<b>${esc(c.name)}</b> · ${c.pillar}`, '—', seesPeople() || isFin() ? `<label class="sr" for="w-${c.id}">Persentase People</label><input id="w-${c.id}" name="w_${c.id}" type="number" min="0" max="100" step="0.01" value="${w[c.id]}" style="width:90px">` : `${num(w[c.id], 2)}% <small class="muted">(HRD & Finance)</small>`, seesPeople() ? rp(B27.allocation(b, c.id)) : 'Akses HRD', '—', '—']; return [`${esc(c.name)} · ${c.pillar}`, ref !== undefined ? num(ref) + '%' : '—', `<label class="sr" for="w-${c.id}">Persentase ${esc(c.name)}</label><input id="w-${c.id}" name="w_${c.id}" type="number" min="0" max="100" step="0.01" value="${shown(c)}" style="width:90px">`, rp(B27.allocation(b, c.id)), rp(plannedC), rp(B27.allocation(b, c.id) - plannedC)]; });
+    body = card('Alokasi kategori tahunan', `<p class="small">Preset referensi: ${Object.entries(B27.PRESETS).map(([k, p]) => `<a href="#budget-2027${qs({ view: 'allocation', preset: k })}">${esc(p.label)}</a>`).join(' · ')} ${pre ? `· <b>${esc(pre.label)} dimuat ke porsi non-People. Periksa lalu simpan.</b> <a href="#budget-2027${qs({ view: 'allocation' })}">Batal</a>` : ''}</p>
+      <form class="workflow-form" data-submit="cx:b27-weights">${hidden({ role: role(), preset: params.preset })}${table(['Kategori', 'Master 2025', '% 2027', 'Alokasi tahunan', 'Rencana baris', 'Sisa belum dialokasikan'], rowsA)}<button class="btn">Simpan persentase</button></form>
+      <p class="muted small">Jumlah harus 100%. Porsi People (${num(w['CAT-PPL'], 2)}%, fixture) ditetapkan HRD dan Finance; Marketing Manager mengatur kategori lain dalam porsi ${num(100 - w['CAT-PPL'], 2)}%. Alokasi di bawah rencana baris ditolak. Riwayat perubahan: ${b.weightHistory.length} versi.</p>`) +
+      card('Referensi Digital per channel (workbook 2025)', table(['Versi', ...B27.DIGITAL_CH], B27.DIGITAL_PRESETS.map(([l, v]) => [esc(l), ...v.map(x => num(x) + '%')])) + '<p class="muted small">Dua versi berbeda pada TikTok dan Instagram Paid Promote. Disimpan sebagai preset berversi; pilih saat menyusun paid media plan.</p>');
+  } else if (view === 'lines') {
+    const open = params.open && b.lines.find(l => l.id === params.open && cats.some(c => c.id === l.cat));
+    const ed = params.edit ? b.lines.find(l => l.id === params.edit) : null;
+    const actionsFor = (l) => {
+      const a = [];
+      if (['draft', 'returned'].includes(l.status)) a.push(`<a class="btn ghost sm" href="#budget-2027${qs({ ...keep, view: 'lines', edit: l.id })}">Edit</a>`, `<button type="button" class="btn sm" data-action="cx:b27-submit" data-id="${l.id}">Ajukan MRF</button>`);
+      if (l.status === 'submitted') a.push(isFin() ? `<button type="button" class="btn sm" data-action="cx:b27-approve" data-id="${l.id}" data-role="${role()}">Setujui (Finance)</button><form class="inline-form" data-submit="cx:b27-return">${hidden({ id: l.id })}<label class="sr" for="rr-${l.id}">Alasan</label><input id="rr-${l.id}" name="reason" required minlength="5" placeholder="Alasan">${sel('decision', '<span class="sr">Keputusan</span>', [['return', 'Kembalikan'], ['reject', 'Tolak']], 'return')}<button class="btn ghost sm">Kirim</button></form>` : '<small class="muted">Menunggu Finance · ganti role demo ke Finance Manager</small>');
+      if (l.status === 'approved') a.push(isFin() ? `<button type="button" class="btn sm" data-action="cx:b27-post" data-id="${l.id}">Posting penuh (Finance)</button>` : '<small class="muted">Menunggu posting Finance</small>');
+      return a.join(' ') || '—';
+    };
+    const form = (l) => `<form class="workflow-form stack-form" data-submit="cx:b27-line-save">${hidden({ id: l?.id })}
+      ${sel('cat', 'Kategori', cats.map(c => [c.id, `${c.pillar} › ${c.name}`]), l?.cat || params.cat || 'CAT-DGT')}${sel('unit', 'Unit/outlet', B27.UNITS, l?.unit || 'HQ')}
+      <label>Subkategori<input name="sub" required maxlength="60" value="${esc(l?.sub || '')}"></label><label>Child<input name="child" maxlength="60" value="${esc(l?.child || '')}"></label>
+      <label>Detail pengeluaran<input name="detail" required minlength="4" maxlength="100" value="${esc(l?.detail || '')}"></label><label>Referensi pekerjaan<input name="work" maxlength="40" placeholder="CMP-001 / CNT-002 / BR-ACD / KOL-001" value="${esc(l?.work || '')}"></label>
+      ${sel('month', 'Bulan', B27.MONTHS.map((m, i) => [String(i + 1), m + ' 2027']), String(l?.month || 1))}<label>Qty<input name="qty" type="number" min="0.01" step="0.01" required value="${l?.qty || 1}"></label>
+      <label>Biaya satuan<input name="unitCost" type="number" min="1" step="1" required value="${l?.unitCost || ''}"></label>${sel('currency', 'Mata uang', ['IDR', 'USD'], l?.currency || 'IDR')}<label>Kurs (USD)<input name="fx" type="number" min="1" step="1" value="${l?.fx && l.fx > 1 ? l.fx : 16000}"></label>
+      ${sel('recurring', 'Jenis', [['no', 'One-off'], ['yes', 'Recurring']], l?.recurring ? 'yes' : 'no')}<label>Pengajuan MRF (Rp, opsional)<input name="request" type="number" min="1" step="1" value="${l?.request || ''}"></label><label>Target hasil<input name="outcome" maxlength="80" value="${esc(l?.outcome || '')}"></label>
+      <button class="btn">${l ? 'Simpan perubahan draft' : 'Simpan draft'}</button></form>`;
+    body = (ed ? card(`Edit ${ed.id}`, ['draft', 'returned'].includes(ed.status) ? form(ed) : '<p class="warn-t">Baris yang sudah diajukan berubah lewat revisi atau transfer dengan histori.</p>') : `<details class="new-content"><summary class="btn sm">+ Tambah budget line (draft)</summary>${form(null)}</details>`) +
+      card(`Budget lines · ${periodLabel(period)}`, table(['Baris', 'Unit · bulan', '7P › kategori › sub › child', 'Rencana (qty × biaya)', 'MRF', 'Komitmen', 'Actual', 'Amount Left', 'Status', 'Aksi'], rows.map(l => [`<a href="#budget-2027${qs({ ...keep, view: 'lines', open: l.id })}">${l.id}</a><br><small>${esc(l.detail)}</small>`, `${unitName(l.unit)}<br>${B27.MONTHS[l.month - 1]}${l.recurring ? ' · recurring' : ''}`, `${B27.CATS.find(c => c.id === l.cat).pillar} › ${esc(catName(l.cat))} › ${esc(l.sub)} › ${esc(l.child || '—')}`, `${rp(B27.lineAmt(l))}<br><small class="muted">${num(l.qty)} × ${l.currency === 'USD' ? 'USD ' + num(l.unitCost, 2) + ' × ' + num(l.fx) : rp(l.unitCost)}</small>`, l.mrf ? `${l.mrf}<br><small>${rp(l.request)}</small>` : '—', rp(B27.commit(l)), rp(l.actual), rp(B27.lineAmt(l) - B27.commit(l) - l.actual), chip(B27.STATUS[l.status], tone(l.status)) + (l.reason ? `<br><small class="muted">${esc(l.reason)}</small>` : ''), actionsFor(l)]))) +
+      (open ? card(`Jejak ${open.id}`, `<dl class="def compact"><dt>Pekerjaan</dt><dd>${outcome(open)[0]}</dd><dt>MRF</dt><dd>${open.mrf || '—'}</dd><dt>Posting</dt><dd>${open.postId || '—'}</dd><dt>Cost center / GL</dt><dd>${B27.CATS.find(c => c.id === open.cat).cc} · ${B27.CATS.find(c => c.id === open.cat).gl}</dd></dl><ol class="history">${open.history.map(h => `<li><b>${esc(h.status)}</b> · ${h.at} · ${esc(CX.person(h.by)?.name || h.by)}${h.note ? ' — ' + esc(h.note) : ''}</li>`).join('')}</ol>`) : '') +
+      '<p class="muted small">Alur: draft → Ajukan MRF → Finance setujui (cek pagu baris dan alokasi kategori) / kembalikan / tolak → komitmen → posting penuh → actual. Posting penuh memindahkan komitmen ke actual sehingga Amount Left tidak berubah. Posting parsial, reversal, FX aktual, dan dua approval bersamaan diuji pada fase integrasi.</p>';
+  } else if (view === 'effect') {
+    const done = rows.filter(l => ['approved', 'posted'].includes(l.status));
+    body = card('Setiap biaya punya pekerjaan dan hasil', table(['Baris', 'Kategori', 'Actual / komitmen', 'Pekerjaan', 'Hasil dari modul asal'], done.map(l => { const [w, r, tn] = outcome(l); return [l.id, esc(catName(l.cat)), `${rp(l.actual)} / ${rp(B27.commit(l))}`, w, `<span class="${tn === 'bad' ? 'bad-t' : ''}">${r}</span>`]; }))) + '<p class="muted small">Alur: pekerjaan → Ajukan biaya → budget line + MRF → posting Finance → hasil dari modul asal → dashboard. Branding dinilai dari milestone dan distribusi sebelum atribusi revenue tersedia. Posting yang sama tidak dijumlahkan dua kali.</p>';
+  } else if (view === 'people') {
+    const pb = b.peopleBatches;
+    if (!seesPeople() && !isFin()) body = card('People Cost · akses Commercial', `<p>People ${num(b.weights['CAT-PPL'], 2)}% dari envelope · kategori lain ${num(100 - b.weights['CAT-PPL'], 2)}%.</p><p class="muted small">Ruang ini milik HRD. Marketing Manager hanya menerima persentase alokasi; nominal rencana, actual, batch, dan rincian payroll tidak dikirim ke tampilan, ekspor, atau AI Commercial. (Preview: penyaringan dilakukan di klien; pada integrasi wajib di server.)</p>`);
+    else body = card(`People Cost · ${seesPeople() ? 'HRD' : 'Finance'}`, `<p>People ${num(b.weights['CAT-PPL'], 2)}% · rencana ${rp(B27.allocation(b, 'CAT-PPL'))} (fixture, bukan ketetapan 2027).</p>` + table(['Batch', 'Periode', 'Cost center', 'Alokasi', 'Nilai agregat', 'Status', 'Aksi'], pb.map(x => [x.id, x.period, x.cc, x.allocation, rp(x.amount), chip(x.status, x.status === 'Diposting' ? 'ready' : 'sandbox') + (x.refreshed ? `<br><small class="muted">disegarkan ×${x.refreshed}, tidak dobel</small>` : ''), isFin() && x.status === 'Dikirim ke Finance' ? `<button type="button" class="btn sm" data-action="cx:b27-people-post" data-id="${x.id}" data-role="${role()}">Rekonsiliasi & posting 7P People</button>` : '—'])) +
+      (seesPeople() ? `<form class="inline-form" data-submit="cx:b27-people-batch">${hidden({ role: role() })}${sel('period', 'Periode', B27.MONTHS.map((m, i) => [`2027-${String(i + 1).padStart(2, '0')}`, m + ' 2027']), '2027-01')}<label>Nilai agregat (Rp)<input name="amount" type="number" min="0" step="1" required value="30000000"></label><button class="btn sm">Kirim batch ke Finance</button></form>` : '') +
+      '<p class="muted small">HRD → Finance: batch_id, period_id, cost_center_id, allocation_version, nilai agregat. Kirim ulang batch yang sama memperbarui batch itu, tidak menambah biaya. Koreksi setelah posting memakai reversal/adjustment. Rincian personal payroll tidak ada di preview ini.</p>');
+  } else {
+    const tabsW = [['Menu', 'Navigasi budget marketing', 'Dashboard Commercial Budget + direktori kategori'], ['Master Marketing Budget', 'Persentase kategori, pagu referensi, Budget/Actual bulanan, Q1–Q4, Amount Left', 'Envelope tahunan; roll-up dari budget lines/ledger'], ['Master Marketing Budget (Irene)', 'Varian master; posisi Others dan SEO berbeda', 'Versi historis terpisah, tidak digabung'], ['Online Tools Budget', 'Design, video/photo, copywriting, storage, digital marketing', 'Content Studio & Digital; register lisensi (akun, unit, kurs, interval, renewal, pengguna)'], ['Digital Marketing Budget', 'Google, Meta, TikTok, YouTube, IG Paid Promote, SEO; channel → outlet; saldo', 'Paid media plan; top-up saldo platform dipisah dari biaya terkonsumsi'], ['Offline Marketing Budget', 'Print, Banner/Signage, Misc, Tools', 'Brand & Communications; artwork, outlet, SKU/MRF, QR/voucher'], ['Outsourcing', 'Agency, Media, Freelancers, Others', 'Media & KOL; vendor, kontrak, deliverable, milestone, invoice'], ['Others Budget', 'Sponsorship, Rewards, Events, Courses', 'Commercial Operations; wajib alasan, PIC, tujuan'], ['Website Redesign Budget', 'Basics, Software, Content & Design, Testing, Migration', 'R&D/STRACON & Digital; project, milestone, acceptance evidence'], ['Branding Budgeting', 'Props, influencer/PR, desain, print, identity, pricelist/signage', 'Brand & Communications + KOL; cek duplikasi dengan Offline/Outsourcing']];
+    const issues = [['Persentase master berbeda', 'B7:B11 60/5/25/8/2 vs catatan 50/10/10/25/5', 'Preset berversi; pilih saat draft 2027'], ['Digital channel berbeda', '55/25/5/0/15 vs 55/25/15/0/5', 'Preset berversi'], ['Pagu bulanan', 'C13 Rp94.500.000 vs catatan Rp84.375.000', 'Keputusan Finance'], ['SEO Rp5 jt di luar rentang total', 'Baris master di luar B7:B11', 'Mapping ke Digital › SEO atau Website'], ['Branding & Website tidak dijumlahkan di master', 'Rentang B7:B11/E7:E11', 'Kategori sendiri di 2027 (sudah)'], ['Selisih master vs detail (Feb)', 'Online Tools 8.437.500 vs 3.075.000; Offline 21.093.750 vs 19.626.000', 'Catat sebagai selisih referensi; tidak disalin ke fakta yang sama'], ['Label tahun 2024/2025, YTD nol', 'Beberapa YTD nol padahal bulanan terisi', 'Normalisasi tanggal & jenis transaksi sebelum impor'], ['Formula Januari merujuk pool Maret', 'Tab Digital', 'Exception migrasi'], ['Blank/nol/strip/formula', 'Semua tab', 'Bedakan; subtotal bukan input transaksi']];
+    body = card('Sepuluh tab workbook → turunan HAWK', table(['Tab', 'Struktur dipertahankan', 'Turunan HAWK'], tabsW.map(r => r.map(esc)))) + card('Temuan dan keputusan mapping', table(['Temuan', 'Detail', 'Usulan', 'Status'], issues.map(r => [...r.map(esc), chip('Perlu keputusan', 'sandbox')]))) + '<p class="muted small">Workbook tidak diimpor di preview. Tidak ada angka 2025 yang dijadikan aktual 2027.</p>';
+  }
+  return `${notice}<div class="heading-row">${bar}</div>${head}${tabs}${body}`;
+}, { title: () => 'Master Marketing Budget 2027' });
 })();
 
 </script>
