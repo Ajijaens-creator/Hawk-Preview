@@ -23,6 +23,13 @@ const SCREENS = [
 ];
 const STATUS_LABEL = { ready: 'Tersedia · Fase 1', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
 const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B']];
+const PURPOSE = {
+  commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
+  'commercial-drill': 'Definisi metrik, pembanding, rincian outlet, dan transaksi POS pendukung.',
+  'sales-home': 'Revenue B2C, B2B, dan referral dari dataset yang sama, plus pintu masuk tiap ruang kerja Sales.',
+  screens: 'Semua 41 kode layar, status, fase, role, dan link langsung.',
+  bridge: 'Satu alur demo dari MRF sampai booking dan POS, lintas empat portal.'
+};
 const ROLE_SUMMARY = {
   owner: 'Owner membaca hasil lintas outlet: revenue terhadap target, efektivitas marketing, dan pembatalan. Skor personal tidak ditampilkan.',
   'commercial-manager': 'Commercial Manager menilai revenue, target, budget marketing, dan ROMI untuk menentukan campaign berikutnya.',
@@ -47,9 +54,12 @@ const pct = (v, d = 1) => v === null ? '—' : num(v * 100, d) + '%';
 const dec = (n) => n === null ? '—' : n.toLocaleString('id-ID', { maximumFractionDigits: 2 });
 const link = (id, title) => `<a href="#${id}">${title}</a>`;
 const button = (action, title, id = '') => `<button type="button" class="btn" data-action="${action}" data-id="${id}">${title}</button>`;
-const table = (headers, rows, cls = '') => `<div class="table-wrap" tabindex="0" role="region" aria-label="Tabel data, dapat digulir"><table class="${cls}"><thead><tr>${headers.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.length ? rows.map(row => `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${headers.length}" class="empty-cell">Tidak ada data untuk filter ini.</td></tr>`}</tbody></table></div>`;
+const table = (headers, rows, cls = '') => `<div class="tbl-wrap" tabindex="0" role="region" aria-label="Tabel data, dapat digulir"><table class="tbl ${cls}"><thead><tr>${headers.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.length ? rows.map(row => `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${headers.length}" class="empty-cell">Tidak ada data untuk filter ini.</td></tr>`}</tbody></table></div>`;
 const card = (title, body, cls = '') => `<section class="card ${cls}"><h2>${title}</h2>${body}</section>`;
-const metrics = (entries) => `<section class="kpis">${entries.map(([label, value]) => `<div class="card kpi"><span>${label}</span><strong>${value}</strong></div>`).join('')}</section>`;
+const SCENE = '<svg class="scene" viewBox="0 0 300 160" preserveAspectRatio="xMaxYMax meet" aria-hidden="true"><g fill="none" stroke="#e5c66a" stroke-width="1.4" opacity=".9"><path d="M210 150V80l20-14 20 14v70M200 80h60M205 66h50M215 55h30M225 44h10M230 30v14"/><path d="M40 150c30-40 70-60 110-55s60 20 90 55"/><circle cx="70" cy="40" r="14"/></g></svg>';
+const hero = (title, text, actions = []) => `<section class="hero"><h2>${title}</h2><p>${text}</p>${actions.length ? `<div class="row hero-actions">${actions.map(([h, l]) => `<a class="btn sm" href="${h}">${l}</a>`).join('')}</div>` : ''}${SCENE}</section>`;
+const KPI_COLORS = ['g-teal', 'g-violet', 'g-blue', 'g-gold'];
+const metrics = (entries) => `<section class="grid g4 keep2 kpis">${entries.map(([label, value, sub], i) => `<div class="kpi ${KPI_COLORS[i % 4]}"><div class="lbl">${label}</div><div class="val">${value}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</div>`).join('')}</section>`;
 const bar = (label, value, ratio) => `<div class="metric-row"><span>${label}</span><b>${value}</b></div><div class="meter" aria-hidden="true"><span style="width:${Math.max(0, Math.min(100, (ratio || 0) * 100))}%"></span></div>`;
 
 /* ---------- routing ---------- */
@@ -144,7 +154,7 @@ function filterBar(f, params, extra = '') {
 const activeFilters = (f) => `<p class="active-filters" role="status"><b>Filter aktif:</b> ${SER.PERIODS.find(p => p.id === f.period).label} · ${f.outlet === 'all' ? 'Semua outlet' : SER.OUTLETS.find(o => o.key === f.outlet).name} · dibandingkan ${SER.MONTH_NAMES[Number(SER.prevPeriod(f.period).slice(5)) - 1]} 2026</p>`;
 function gauge(v) {
   const p = v === null ? 0 : Math.min(v * 100, 100);
-  return `<svg class="gauge" viewBox="0 0 104 58" aria-hidden="true"><path d="M5 52 A47 47 0 0 1 99 52" fill="none" stroke="#eee8db" stroke-width="9"/><path d="M5 52 A47 47 0 0 1 99 52" pathLength="100" stroke-dasharray="${p} 100" fill="none" stroke="${v !== null && v < 0.9 ? '#AD7D36' : '#2f7a5f'}" stroke-width="9"/><text x="5" y="57" font-size="7">0%</text><text x="99" y="57" font-size="7" text-anchor="end">100%</text></svg>`;
+  return `<svg class="gauge" viewBox="0 0 104 58" aria-hidden="true"><path d="M5 52 A47 47 0 0 1 99 52" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><path d="M5 52 A47 47 0 0 1 99 52" pathLength="100" stroke-dasharray="${p} 100" fill="none" stroke="${v !== null && v < 0.9 ? '#e5c66a' : '#9ff0c4'}" stroke-width="9"/><text x="5" y="57" font-size="7">0%</text><text x="99" y="57" font-size="7" text-anchor="end">100%</text></svg>`;
 }
 function trendChart(rows, f) {
   const vals = rows.flatMap(r => [r.y2026, r.y2025]).filter(v => v !== null);
@@ -182,8 +192,8 @@ function summaryScreen(params) {
   const cond = params.state || 'normal';
   const condSel = `<label>Kondisi data <select name="state"><option value="normal">Normal</option><option value="loading" ${cond === 'loading' ? 'selected' : ''}>Loading (simulasi)</option><option value="error" ${cond === 'error' ? 'selected' : ''}>Error (simulasi)</option></select></label>`;
   const role = prefs.role;
-  const head = `<section class="hero"><div><span class="eyebrow">RINGKASAN PERAN · ${esc(ROLES.find(r => r[0] === role)[1].toUpperCase())}</span><p>${ROLE_SUMMARY[role]}</p></div></section>`;
-  const top = `<div class="heading-row"><p class="subtitle">Commercial Performance Overview · acuan susunan SER Monthly Report Komersial</p>${filterBar(f, params, condSel)}</div>${activeFilters(f)}`;
+  const head = hero(`Ringkasan ${ROLES.find(r => r[0] === role)[1]}`, ROLE_SUMMARY[role], [[`${drillHref('revenue', f)}`, 'Rincian revenue'], [`${drillHref('budget', f)}`, 'Budget vs realisasi'], ['#screens', 'Peta layar']]);
+  const top = `<div class="heading-row">${filterBar(f, params, condSel)}</div>${activeFilters(f)}`;
   if (cond === 'loading') { setTimeout(() => { if (parseHash().params.state === 'loading') go('commercial', { ...f, state: '' }, true); }, 1200); return top + head + `<div class="loading" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span> Memuat data POS dan budget (simulasi)…</div><div class="skeleton-grid" aria-hidden="true">${'<div class="card skeleton"></div>'.repeat(10)}</div>`; }
   if (cond === 'error') return top + head + `<div class="card error-state" role="alert"><h2>Data belum dapat dimuat (simulasi)</h2><p>Sumber POS demo tidak merespons. Tidak ada angka yang ditampilkan agar tidak menyesatkan.</p><button type="button" class="btn" data-action="retry">Coba lagi</button></div>`;
   const S = SER.summary(state, f.period, f.outlet), c = S.cur, p = S.prev;
@@ -192,12 +202,12 @@ function summaryScreen(params) {
   const maxC = Math.max(1, ...S.countries.map(x => x.customers));
   const sb = HAWK.totals(state);
   return top + head + kpiRow(c, p, f, S) + `
-  <div class="row mid">
+  <div class="grid g-mid">
     <section class="card"><div class="card-head"><h2>Annual Revenue Comparison</h2><a href="${drillHref('annual', f)}">Rincian ›</a></div>${trendChart(S.annual, f)}</section>
     <section class="card"><div class="card-head"><h2>Budget Realization</h2><a href="${drillHref('budget', f)}">Rincian ›</a></div><div class="budget"><div class="ring" style="--value:${Math.min(100, (c.realization || 0) * 100)}%" role="img" aria-label="Realisasi ${pct(c.realization)} dari pagu"><b>${pct(c.realization)}</b></div><dl><dt>Pagu</dt><dd>${jt(c.pagu)}</dd><dt>Komitmen</dt><dd>${jt(c.committed)}</dd><dt>Realisasi</dt><dd>${jt(c.actual)}</dd><dt>Sisa</dt><dd>${jt(c.remaining)}</dd></dl></div><p class="muted small">Sisa = pagu − komitmen − realisasi. ${c.ids.includes('OUT-UBD') && f.period === '2026-08' ? `Termasuk CMP-001 dari sandbox: komitmen ${rp(sb.committed)}, realisasi ${rp(sb.actual)}.` : ''}</p></section>
     <section class="card"><div class="card-head"><h2>Return on Marketing Investment</h2><a href="${drillHref('romi', f)}">Rincian ›</a></div><strong class="number">${dec(c.romi)}×</strong><div>${delta(c.romi, p.romi)}</div><p class="muted small">(Kontribusi teratribusi sebelum biaya marketing − biaya marketing) ÷ biaya marketing. Kontribusi ${jt(c.contribution)} · biaya ${jt(c.actual)}.</p><p class="muted small">ROAS iklan ${dec(c.roas)}× · CAC ${rp(c.cac)} per pelanggan baru (${num(c.newCustomers)})</p></section>
   </div>
-  <div class="row bottom">
+  <div class="grid g3 g-bottom">
     <section class="card"><div class="card-head"><h2>Tracking by Channel Group</h2><a href="${drillHref('channel', f)}">Rincian ›</a></div><p class="muted small">Revenue POS dibayar per grup sumber akuisisi</p>${S.groups.map((g, i) => barLink(drillHref('channel', f, { group: g.key }), `${g.key} · ${pct(SER.div(g.revenue, c.revenue))}`, jt(g.revenue), g.revenue / maxG, 'c' + i)).join('')}</section>
     <section class="card"><div class="card-head"><h2>Tracking by Country</h2><a href="${drillHref('country', f)}">Rincian ›</a></div><p class="muted small">Pelanggan unik per negara</p>${S.countries.slice(0, 6).map(x => barLink(drillHref('country', f, { country: x.key }), x.key, num(x.customers), x.customers / maxC)).join('')}${S.countries.length > 6 ? `<p class="muted small">+${S.countries.length - 6} negara lain di rincian</p>` : ''}</section>
     <section class="card"><div class="card-head"><h2>Cancellation Reason by Branch</h2><a href="${drillHref('cancel', f)}">Rincian ›</a></div>${table(['Outlet', 'Jadwal', 'Tamu', 'Total'], S.cancel.map(x => [`<a href="${drillHref('cancel', f, { branch: x.outlet })}">${esc(x.name)}</a>`, x.Jadwal, x.Tamu, `<b>${x.Jadwal + x.Tamu}</b>`]))}</section>
@@ -205,12 +215,12 @@ function summaryScreen(params) {
   <section class="card insight"><div class="card-head"><h2>Executive Insight <span class="badge">SIMULASI</span></h2></div>${insight(S, f)}</section>`;
 }
 function kpiRow(c, p, f, S) {
-  const k = (metric, title, value, sub, cls) => `<a class="card kpi-card ${cls}" href="${drillHref(metric, f)}"><h2>${title}</h2><strong>${value}</strong><div class="sub">${sub}</div><span class="more">Rincian ›</span></a>`;
-  return `<div class="row kpis">
-    ${k('revenue', 'Total Revenue', jt(c.hasData ? c.revenue : null), `${delta(c.hasData ? c.revenue : null, p.revenue)}<br><span class="muted">${S && S.sameMonthLastYear ? delta(c.revenue, S.sameMonthLastYear, 'vs Agu/Jul 2025').replace('Agu/Jul', SER.MONTHS[Number(f.period.slice(5)) - 1]) : ''}</span>`, 'gold')}
-    ${k('customers', 'Total Customers', c.hasData ? num(c.customers) : '—', delta(c.hasData ? c.customers : null, p.customers) + `<br><span class="muted">${c.hasData ? num(c.newCustomers) + ' pelanggan baru' : ''}</span>`, 'green')}
-    ${k('etr', 'Effective Target Rate', pct(c.etr), `${gauge(c.etr)}<span class="muted">Target ${jt(c.hasData ? c.target : null)} · ${delta(c.etr, p.etr, 'vs bulan lalu', true)}</span>`, 'violet')}
-    ${k('aov', 'Average Order Value', rp(c.aov), delta(c.aov, p.aov) + `<br><span class="muted">${c.hasData ? num(c.orders) + ' order dibayar' : ''}</span>`, 'blue')}
+  const k = (metric, title, value, sub, cls) => `<a class="kpi-btn" href="${drillHref(metric, f)}"><div class="kpi ${cls}"><div class="lbl">${title}</div><div class="val">${value}</div><div class="sub">${sub}</div><span class="more">Rincian ›</span></div></a>`;
+  return `<div class="grid g4 keep2 kpis kpi-row">
+    ${k('revenue', 'Total Revenue', jt(c.hasData ? c.revenue : null), `${delta(c.hasData ? c.revenue : null, p.revenue)}<br><span class="muted">${S && S.sameMonthLastYear ? delta(c.revenue, S.sameMonthLastYear, 'vs Agu/Jul 2025').replace('Agu/Jul', SER.MONTHS[Number(f.period.slice(5)) - 1]) : ''}</span>`, 'g-teal')}
+    ${k('customers', 'Total Customers', c.hasData ? num(c.customers) : '—', delta(c.hasData ? c.customers : null, p.customers) + `<br><span class="muted">${c.hasData ? num(c.newCustomers) + ' pelanggan baru' : ''}</span>`, 'g-violet')}
+    ${k('etr', 'Effective Target Rate', pct(c.etr), `${gauge(c.etr)}<span class="muted">Target ${jt(c.hasData ? c.target : null)} · ${delta(c.etr, p.etr, 'vs bulan lalu', true)}</span>`, 'g-blue')}
+    ${k('aov', 'Average Order Value', rp(c.aov), delta(c.aov, p.aov) + `<br><span class="muted">${c.hasData ? num(c.orders) + ' order dibayar' : ''}</span>`, 'g-gold')}
   </div>`;
 }
 
@@ -222,7 +232,7 @@ function drillScreen(params) {
   const S = SER.summary(state, f.period, f.outlet), c = S.cur, p = S.prev;
   const extra = `<input type="hidden" name="metric" value="${metric}">${params.group ? `<input type="hidden" name="group" value="${esc(params.group)}">` : ''}${params.country ? `<input type="hidden" name="country" value="${esc(params.country)}">` : ''}${params.branch ? `<input type="hidden" name="branch" value="${esc(params.branch)}">` : ''}`;
   const back = `<a class="back" href="#commercial${qs({ period: f.period, outlet: f.outlet })}">‹ Kembali ke Executive Summary</a>`;
-  const tabs = `<nav class="tabs" aria-label="Metrik">${Object.entries(SER.DEFINITIONS).map(([k, d]) => `<a href="${drillHref(k, f)}" ${k === metric ? 'aria-current="page"' : ''}>${d.title}</a>`).join('')}</nav>`;
+  const tabs = `<nav class="tabs" aria-label="Metrik">${Object.entries(SER.DEFINITIONS).map(([k, d]) => `<a class="tab${k === metric ? ' on' : ''}" href="${drillHref(k, f)}" ${k === metric ? 'aria-current="page"' : ''}>${d.title}</a>`).join('')}</nav>`;
   const sub = params.group ? ` · grup <b>${esc(params.group)}</b>` : params.country ? ` · negara <b>${esc(params.country)}</b>` : params.branch ? ` · outlet <b>${esc(SER.OUTLETS.find(o => o.id === params.branch)?.name || params.branch)}</b>` : '';
   const cmp = comparison(metric, S, f);
   const def = card('Definisi dan denominator', `<dl class="def"><dt>Rumus</dt><dd>${D.formula}</dd><dt>Pembilang</dt><dd>${D.numerator}</dd><dt>Penyebut</dt><dd>${D.denominator}</dd><dt>Catatan</dt><dd>${D.note} Denominator nol ditampilkan “—”.</dd></dl>`);
@@ -291,9 +301,9 @@ function salesHome() {
   const role = prefs.role;
   const tiles = [['Revenue B2C', jt(sumA(m('B2C'))), num(m('B2C').length) + ' order'], ['Revenue B2B (partner)', jt(sumA(m('B2B'))), num(m('B2B').length) + ' order'], ['Revenue Referral', jt(sumA(m('Referral'))), num(m('Referral').length) + ' order'], ['Lead sandbox terbuka', num(state.leads.filter(l => l.status !== 'booked').length), 'dari Inbox reservasi']];
   const items = PORTALS.Sales.items.filter(i => i[0] !== '-' && i[0] !== 'sales-home');
-  return `<section class="hero"><div><span class="eyebrow">RINGKASAN PERAN · ${esc(ROLES.find(r => r[0] === role)[1].toUpperCase())}</span><p>${role === 'owner' ? 'Owner membuka Eagle Eye untuk target, kontribusi, dan bauran B2C/B2B/referral.' : role === 'reservation-staff' ? 'Mulai dari Inbox reservasi dan Booking Desk. My Workspace dibuat pada Fase 3.' : role === 'b2b-staff' ? 'Mulai dari Sales B2B untuk pipeline hotel/villa dan aktivasi partner.' : 'Sales Manager memantau pipeline, booking, dan performa tim.'}</p></div><div class="actions">${role === 'owner' ? link('owner', 'Buka Owner Eagle Eye') : role === 'reservation-staff' ? link('reservation', 'Buka Inbox reservasi') : role === 'b2b-staff' ? link('b2b', 'Buka Sales B2B') : link('sales', 'Buka Sales Manager')}</div></section>
+  return hero(`Beranda Sales · ${ROLES.find(r => r[0] === role)[1]}`, `${role === 'owner' ? 'Owner membuka Eagle Eye untuk target, kontribusi, dan bauran B2C/B2B/referral.' : role === 'reservation-staff' ? 'Mulai dari Inbox reservasi dan Booking Desk. My Workspace dibuat pada Fase 3.' : role === 'b2b-staff' ? 'Mulai dari Sales B2B untuk pipeline hotel/villa dan aktivasi partner.' : 'Sales Manager memantau pipeline, booking, dan performa tim.'}`, [role === 'owner' ? ['#owner', 'Buka Owner Eagle Eye'] : role === 'reservation-staff' ? ['#reservation', 'Buka Inbox reservasi'] : role === 'b2b-staff' ? ['#b2b', 'Buka Sales B2B'] : ['#sales', 'Buka Sales Manager'], ['#screens', 'Peta layar']]) + `
   <p class="active-filters"><b>Periode:</b> Agustus 2026 · Semua outlet · revenue dari transaksi POS dibayar (dataset yang sama dengan Commercial Executive Summary)</p>
-  <section class="kpis four">${tiles.map(([l, v, s], i) => `<div class="card kpi c${i}"><span>${l}</span><strong>${v}</strong><small>${s}</small></div>`).join('')}</section>
+  ${metrics(tiles)}
   ${card('Ruang Sales dan status pengerjaan', table(['Kode', 'Layar', 'Status', 'Buka'], items.map(([r, title, code, st]) => [code, title, `<span class="status-chip ${st}">${STATUS_LABEL[st]}${st !== 'ready' ? ' · lengkap Fase ' + (SCREENS.find(s => s[0] === code)?.[2] || '') : ''}</span>`, link(r, 'Buka ›')])) + `<p class="muted small">Revenue sandbox saat ini ${rp(t.revenue)} · komisi valid ${rp(t.commission)}. Nilai pipeline B2B tidak dihitung sebagai revenue.</p>`)}`;
 }
 
@@ -327,12 +337,30 @@ function titleOf(id) {
   if (id === 'bridge' || id === 'picker') return 'Alur lintas portal';
   return itemOf(id)?.[1] || 'Alur lintas portal';
 }
+const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S' };
+const navOpen = new Set();
 function renderNav(id, portal) {
-  const items = portal ? PORTALS[portal].items : null;
-  nav.innerHTML = (items ? `<p class="nav-label">${portal.toUpperCase()}</p>` + items.filter(i => i[3] !== 'hidden').map(([route, name, code, st]) => route === '-' ? `<p class="nav-label">${name.toUpperCase()}</p>` : `<a href="#${route}" ${route === id || (id === 'commercial-drill' && route === 'commercial') ? 'aria-current="page"' : ''}><span>${name}</span>${st === 'planned' ? '<small class="soon">Fase ' + (SCREENS.find(s => s[0] === code)?.[2] || '') + '</small>' : ''}</a>`).join('')
-    : '<p class="nav-label">PORTAL</p>' + Object.keys(PORTALS).map(name => `<a href="#${HOME[name]}">${name}</a>`).join('')) +
-    `<p class="nav-label">PREVIEW</p><a href="#bridge" ${id === 'bridge' ? 'aria-current="page"' : ''}>Peta alur HAWK</a><a href="#screens" ${id === 'screens' ? 'aria-current="page"' : ''}>Peta layar (F7-01)</a>`;
+  if (portal) navOpen.add(portal);
+  const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
+  const navLink = ([route, name, code, st]) => route === '-' ? `<p class="nav-sub">${name}</p>` : `<a href="#${route}" ${cur(route) ? 'class="cur" aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' ? ` <small class="soon">Fase ${SCREENS.find(x => x[0] === code)?.[2] || ''}</small>` : ''}</span></a>`;
+  nav.innerHTML = Object.entries(PORTALS).map(([name, p]) => {
+    const open = navOpen.has(name);
+    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => i[3] !== 'hidden').map(navLink).join('')}</div></div>`;
+  }).join('') + `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
 }
+nav.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-mod]');
+  if (!b) return;
+  const mod = b.parentElement, open = !mod.classList.contains('open');
+  mod.classList.toggle('open', open); b.setAttribute('aria-expanded', String(open));
+  if (open) navOpen.add(b.dataset.mod); else navOpen.delete(b.dataset.mod);
+});
+const initials = (label) => label.split(/\s+/).filter(w => /^[A-Z]/.test(w)).slice(0, 2).map(w => w[0]).join('') || label.slice(0, 2).toUpperCase();
+function renderRole() {
+  const label = ROLES.find(r => r[0] === prefs.role)[1];
+  $('#role-name').textContent = label; $('#role-av').textContent = initials(label);
+}
+const setNav = (open) => { $('#sidebar').classList.toggle('on', open); $('.scrim').classList.toggle('on', open); shell.classList.toggle('nav-open', open); $('#menu').setAttribute('aria-expanded', String(open)); };
 let lastFocus = null;
 function render(message = '', error = false) {
   const { id, params } = parseHash();
@@ -342,10 +370,10 @@ function render(message = '', error = false) {
   document.querySelectorAll('[data-portal-label]').forEach(el => { el.textContent = portal || 'Demo integrasi'; });
   const it = itemOf(id);
   document.title = `HAWK ERP · ${titleOf(id)}`;
-  view.innerHTML = `<header class="page-heading"><div class="breadcrumb">HAWK ERP › ${portal || 'Demo integrasi'}${it && it[2] ? ' › ' + it[2] : ''}</div><h1 tabindex="-1">${titleOf(id)}</h1></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
+  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${PURPOSE[id] ? `<p>${PURPOSE[id]}</p>` : ''}</div></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
   view.querySelector('.status').textContent = message;
   if (error) view.querySelector('.status').classList.add('error');
-  shell.classList.remove('nav-open'); $('#menu').setAttribute('aria-expanded', 'false');
+  setNav(false); renderRole();
   if (id === 'picker' && !picker.open) openPicker();
 }
 function go(route, params = {}, replace = false) {
@@ -375,9 +403,10 @@ picker.addEventListener('click', (e) => {
   if (opt) { prefs.portal = opt.dataset.portal; savePrefs(); picker.close(); location.hash = HOME[opt.dataset.portal]; }
 });
 document.querySelectorAll('[data-open-picker]').forEach(b => b.addEventListener('click', () => openPicker(b)));
-$('#menu').addEventListener('click', () => { const open = !shell.classList.contains('nav-open'); shell.classList.toggle('nav-open', open); $('#menu').setAttribute('aria-expanded', String(open)); if (open) nav.querySelector('a')?.focus(); });
-document.querySelector('[data-close-nav]').addEventListener('click', () => { shell.classList.remove('nav-open'); $('#menu').setAttribute('aria-expanded', 'false'); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shell.classList.contains('nav-open')) { shell.classList.remove('nav-open'); $('#menu').setAttribute('aria-expanded', 'false'); $('#menu').focus(); } });
+$('#menu').addEventListener('click', () => { const open = !shell.classList.contains('nav-open'); setNav(open); if (open) (nav.querySelector('a.cur') || nav.querySelector('button'))?.focus(); });
+document.querySelector('[data-close-nav]').addEventListener('click', () => setNav(false));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shell.classList.contains('nav-open')) { setNav(false); $('#menu').focus(); } });
+document.querySelector('[data-global-reset]').addEventListener('click', () => apply('reset'));
 const roleSel = $('#role');
 roleSel.innerHTML = ROLES.map(([k, l]) => `<option value="${k}" ${k === prefs.role ? 'selected' : ''}>${l}</option>`).join('');
 roleSel.addEventListener('change', () => { prefs.role = roleSel.value; savePrefs(); render(`Role demo: ${ROLES.find(r => r[0] === prefs.role)[1]}`); });

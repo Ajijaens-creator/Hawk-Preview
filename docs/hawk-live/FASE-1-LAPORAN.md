@@ -7,6 +7,10 @@ Tanggal: 11 November 2026 · Branch: `claude/project-thread-gcon14` · Status: *
 Branch preview: https://hawk-jaens-preview-git-claude-proj-45c2b2-jaens-enterprises-pro.vercel.app/hawk-live/  
 Dibuka publik atas keputusan Owner 11 Nov 2026 (env `PREVIEW_PUBLIC` khusus branch ini + Vercel Authentication dimatikan). Untuk mengunci lagi: hapus env tersebut lalu redeploy.
 
+## Desain dikunci ke HAWK Brand & UI (11 Nov 2026)
+
+Atas permintaan Owner, tampilan diulang agar sama dengan HAWK ERP live (https://preview.hawk.jaens.id/, NV-01): preview kini memakai `assets/css/hawk.css` yang sama (sidebar hitam bermodul F/O/C/S, topbar charcoal, role chip, banner DEMO, kode layar emas, hero gelap-emas, KPI gradien, tabel header hitam). `style.css` hanya komponen tambahan tanpa token sendiri. Aturan lengkap: `hawk-live/DESIGN-LOCK.md`; penjaga: `tests/hawk-live/design-lock.test.js` (15/15).
+
 ## Layar Fase 1
 
 | Kode | Layar | Rute | Status |
