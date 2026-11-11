@@ -1,0 +1,192 @@
+{
+ "ranAt": "2026-11-11T09:29:29.764Z",
+ "pass": 37,
+ "fail": 0,
+ "results": [
+  {
+   "name": "Budget awal: pagu 25.000.000, aktual 3.500.000, komitmen 0, sisa 21.500.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setelah setuju: komitmen 2.000.000, sisa 19.500.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setelah posting: komitmen 0, aktual 5.500.000, sisa 19.500.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pagu tidak cukup: approval Rp25.000.000 ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pagu tidak cukup: komitmen, aktual, sisa tidak berubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Revenue awal Rp750.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Campaign → revenue: total 1.500.000, campaign 750.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ROAS ≈ 0,14× setelah Rp2.000.000 direalisasi",
+   "ok": true,
+   "info": "0.136"
+  },
+  {
+   "name": "Slot sama ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bayar ulang ditolak tanpa revenue tambahan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Driver belum aktif tidak bisa booking referral",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Aktivasi tanpa perjanjian ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Komisi Rp75.000 untuk booking Rp750.000 × 10%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pembayaran komisi kedua ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Refund booking yang komisinya sudah dibayar perlu penyesuaian Finance",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Refund (komisi belum dibayar): booking keluar dari revenue dan komisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Verifikasi tugas Sales menambah jumlah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "SER Agu semua outlet: revenue Rp2.820 jt",
+   "ok": true,
+   "info": "2820000000"
+  },
+  {
+   "name": "SER Agu semua outlet: target Rp3.190 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "SER Agu semua outlet: 3.195 pelanggan unik, 3.260 order",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "SER Agu Ubud: revenue Rp1.680 jt, 1.880 pelanggan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "SER Agu Ubud: pagu Rp120 jt, realisasi Rp63 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Effective Target Rate = revenue ÷ target",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AOV = revenue ÷ order (bukan pelanggan)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Refund dikecualikan dari revenue dan order",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter Juli: angka berbeda dan merekonsiliasi ke histori (Rp2.590 jt)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Fallback outlet tanpa data: hasData=false, rasio = null (\"—\")",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Channel group: jumlah grup = total revenue",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Country: jumlah negara = total pelanggan unik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Annual chart Agu 2026 = KPI revenue",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Semua outlet = Ubud + Shanti (+ Bisma 0)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ID transaksi POS unik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sandbox → SER: komitmen CMP-001 Rp2 jt muncul di Budget Ubud, sisa turun",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sandbox → SER: posting memindah ke realisasi Rp65 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sandbox → SER: booking LEAD-001 dibayar menambah Rp750.000 sekali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sandbox → SER: refund mengeluarkan transaksi dari revenue",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sandbox → SER: refund BK-001 (bagian fixture Agustus) ikut keluar dari revenue",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

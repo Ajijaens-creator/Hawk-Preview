@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>HAWK ERP · Sales</title>
+<link rel="stylesheet" href="style.css">
+<script src="model.js" defer></script>
+<script src="ser-data.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body data-portal="Sales">
+<a class="skip" href="#view">Lewati ke konten</a>
+<aside class="sidebar" id="sidebar" aria-label="Navigasi portal">
+  <button class="brand" id="portal" data-open-picker aria-haspopup="dialog" aria-controls="picker" aria-label="HAWK ERP, pilih portal"><span class="mark" aria-hidden="true">H</span><span><strong>HAWK ERP</strong><small>JAENS ENTERPRISES</small></span><span class="switch" aria-hidden="true">⌄</span></button>
+  <nav id="nav" aria-label="Workspace"></nav>
+</aside>
+<div class="scrim" aria-hidden="true" data-close-nav></div>
+<main>
+  <header class="top">
+    <button class="menu" id="menu" aria-controls="sidebar" aria-expanded="false">☰ Menu</button>
+    <button class="brand brand-top" data-open-picker aria-haspopup="dialog" aria-controls="picker" aria-label="HAWK ERP, pilih portal"><span class="mark" aria-hidden="true">H</span><span><strong>HAWK ERP</strong><small data-portal-label>Portal</small></span><span class="switch" aria-hidden="true">⌄</span></button>
+    <div class="top-tools">
+      <a href="#bridge">Peta alur HAWK</a>
+      <label class="role">Role demo <select id="role"></select></label>
+      <span class="badge">DATA DEMO / SIMULASI</span>
+    </div>
+  </header>
+  <div class="demo-notice"><b>PROTOTIPE · SIMULASI</b> Angka sintetis, tanpa akun, API, pesan, pembayaran, atau deployment sungguhan. Perubahan tersimpan di browser ini; Reset Demo ada di Peta alur HAWK.</div>
+  <div id="view" tabindex="-1"></div>
+</main>
+<dialog id="picker" aria-labelledby="picker-title" aria-describedby="picker-description">
+  <div class="dialog-head"><div><h2 id="picker-title">Pilih portal HAWK</h2><p id="picker-description">Setiap portal punya ruang kerja dan akses sesuai peran. Client Portal dan portal mobile Driver &amp; Referral berada di dalam Sales.</p></div><form method="dialog"><button class="close" aria-label="Tutup" autofocus>×</button></form></div>
+  <div id="options" class="portals"></div>
+</dialog>
+</body>
+</html>

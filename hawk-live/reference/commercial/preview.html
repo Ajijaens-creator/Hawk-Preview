@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HAWK Commercial OS</title><style>:root{--ink:#22241f;--paper:#f5f1e8;--card:#fffdf7;--gold:#d7b36a;--line:#e6dfd0;--muted:#64645a;--green:#23674f}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px system-ui,sans-serif}button,select{font:inherit;cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #a87324;outline-offset:3px}.sidebar{background:#20221e;color:#eee9dc;position:fixed;inset:0 auto 0 0;width:233px;display:flex;flex-direction:column;padding:22px 16px;overflow:auto}.brand{border:0;background:none;color:inherit;display:flex;align-items:center;text-align:left;gap:11px;width:100%;padding:0 6px 24px}.brand strong{font-family:Georgia,serif;font-size:29px;letter-spacing:.12em}.mark,.profile>span{display:grid;place-items:center;background:linear-gradient(140deg,#f3db9d,#ad7d36);color:#211c13;border-radius:11px;width:42px;height:42px;font-size:24px}.switch{margin-left:auto;color:var(--gold)}small{display:block;font-size:11px;color:inherit;opacity:.78}.brand small{letter-spacing:.16em;color:var(--gold)}nav a{display:flex;gap:10px;color:#d4d2c7;text-decoration:none;padding:10px 11px;border-radius:8px;margin:2px 0;white-space:nowrap}nav a span{width:18px;text-align:center;color:var(--gold)}nav a[aria-current],nav a:hover{background:#393426;color:#ffdf9b}.nav-label{color:#b9b4a6;font-size:10px;letter-spacing:.15em;margin:14px 10px 7px}.profile{margin-top:auto;display:flex;gap:9px;align-items:center;padding:18px 0 0;font-size:12px}.profile>span{width:34px;height:34px;font-size:12px}main{margin-left:233px}.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:15px 30px;background:var(--card);color:var(--muted)}.top i{padding:0 9px}#view{padding:25px 30px 36px;max-width:1600px;margin:auto}.hero{background:radial-gradient(ellipse at 90% 10%,#5d4b29,transparent 60%),#242621;border-radius:17px;color:#fff8e9;padding:25px 28px;display:flex;align-items:end;justify-content:space-between;gap:15px}.eyebrow{color:#ebc885;font-size:11px;letter-spacing:.16em;font-weight:700}.hero h2{font:clamp(30px,4vw,49px)/1.03 Georgia,serif;margin:9px 0}.hero p{margin:0;color:#e0d9c9}.badge{display:inline-block;background:#f4e6c3;color:#684a17;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.08em;padding:6px 10px;white-space:nowrap}select,.btn,dialog button{background:#fffaf0;color:var(--ink);border:1px solid #d5c7a9;border-radius:8px;padding:8px 11px}.hero label{display:grid;gap:5px;white-space:nowrap}.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px;margin:17px 0}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}.kpi strong{display:block;font:clamp(21px,2.1vw,32px) Georgia,serif;margin:7px 0}.muted,.card p{color:var(--muted)}.positive{color:var(--green);font-size:12px}.grid{display:grid;grid-template-columns:1.65fr 1fr;gap:15px;margin:15px 0}.stack{display:grid;gap:15px}.card h2{font:24px Georgia,serif;margin:0 0 5px}.card p{margin:4px 0 13px}.chart{width:100%;height:auto;display:block}.chart text{font:12px system-ui;fill:#5b5a51}.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}.legend b{color:var(--ink)}.meter{height:10px;border-radius:20px;background:#eee8da;overflow:hidden;margin:5px 0 10px}.meter span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#a67836,#e7c675)}.metric-row{display:flex;justify-content:space-between;gap:10px;font-size:13px}.mentor{background:#252721;color:#fff8e9;border-color:#252721}.mentor p{color:#e2dac7}.mentor .btn[aria-pressed=true]{background:#e7c675}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.advice{border-left:3px solid var(--gold);padding:8px 12px;background:#36372d;border-radius:5px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;text-align:left;white-space:nowrap}th,td{padding:10px;border-bottom:1px solid var(--line)}th{font-size:11px;color:var(--muted)}details{margin-top:10px}summary{cursor:pointer;color:var(--muted);font-size:12px}.board{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:16px}.board .card{min-height:130px}dialog{width:min(440px,calc(100% - 24px));border:1px solid var(--line);border-radius:17px;background:var(--card);padding:25px}dialog::backdrop{background:#151611a8}.close{float:right}.portal-options{display:grid;gap:9px}.portal-options button{display:flex;justify-content:space-between;text-align:left}.portal-options button:last-child{background:#f1d58f}button:hover{filter:brightness(.95)}@media(max-width:1050px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:720px){.sidebar{position:static;width:auto;padding:12px}.brand{width:210px;padding:0}.sidebar nav{display:flex;overflow:auto;margin-top:8px}.nav-label,.profile{display:none}main{margin:0}.top,#view{padding:12px}.hero{align-items:start;flex-direction:column;padding:20px}.kpis,.board{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:12px}}
+
+/* HAWK ERP shell and demo dashboard styling. */
+:root{--ink:#1b1b18;--paper:#f5f4f0;--card:#fffefb;--line:#e3e0d7}
+.sidebar,.top{background:#191919;color:#f5f2e9}
+.brand strong{font:800 16px system-ui,sans-serif;letter-spacing:.025em}
+.brand small{font-size:9px;letter-spacing:.12em}
+.mark{width:38px;height:38px;font-size:19px;font-weight:800}
+.top{border-color:#2f2f2d}
+.demo-notice{margin:16px 30px 0;padding:10px 13px;border:1px dashed #af9050;border-radius:9px;background:#fff9ec;color:#61491e;font-size:12px}
+.demo-notice b{display:block;margin-bottom:3px}
+.hero{background:radial-gradient(ellipse at 88% 10%,#6a562a,transparent 68%),#151513}
+.hero h2,.card h2,.kpi strong{font-family:system-ui,sans-serif;font-weight:750}
+.hero h2{font-size:clamp(26px,3.25vw,42px)}
+.card h2{font-size:18px}
+.kpi{color:#fff;background:linear-gradient(135deg,#247b6b,#164a42);border:0}
+.kpi:nth-child(2){background:linear-gradient(135deg,#6c4bb6,#3b247d)}
+.kpi:nth-child(3){background:linear-gradient(135deg,#3467b7,#20417b)}
+.kpi:nth-child(4){background:linear-gradient(135deg,#8c6723,#614817)}
+.kpi:nth-child(5){background:linear-gradient(135deg,#48443a,#292923)}
+.kpi .muted,.kpi .positive{color:inherit}
+.portal-options a,.portal-options button{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:10px 12px;border:1px solid #d5c7a9;border-radius:8px;background:#fffaf0;color:var(--ink);text-decoration:none}
+.portal-options small{grid-column:1;grid-row:2}
+.portal-options span{grid-column:2;grid-row:1 / span 2}
+.portal-options button:last-child{background:linear-gradient(135deg,#f3db9d,#d6ad59)}
+@media(max-width:720px){.demo-notice{margin:12px 12px 0}}
+
+.page-heading{margin:0 0 17px}
+.breadcrumb{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+.page-heading h1{font-size:clamp(24px,3vw,34px);line-height:1.15;letter-spacing:-.025em;margin:8px 0 5px}
+.page-heading p{color:var(--muted);margin:0}
+.hero h2{font-size:clamp(21px,2.5vw,30px)}
+.card a,.breadcrumb a{color:#704b17;text-underline-offset:3px}
+nav a[aria-current]{box-shadow:inset 3px 0 #d7b36a}
+.mentor{background:var(--card);color:var(--ink);border-color:var(--line)}
+.mentor p{color:var(--muted)}
+.advice{background:#f7f0e0}
+#campaign-filter{max-width:100%}
+@media(max-width:720px){.sidebar nav{padding:4px 3px 6px}.grid{gap:10px}.hero label{white-space:normal}.page-heading{margin-bottom:13px}}
+</style></head>
+<body>
+<aside class="sidebar"><button class="brand" id="portal" aria-label="HAWK ERP · pilih portal" aria-haspopup="dialog"><span class="mark" aria-hidden="true">H</span><span><strong>HAWK ERP</strong><small>JAENS ENTERPRISES</small></span><span class="switch">⌄</span></button><nav id="nav" aria-label="Modul Commercial"></nav><div class="profile"><span>MM</span><div><b>Marketing Manager</b><small>JAENS Spa & Wellness</small></div></div></aside>
+<main><header class="top"><span>HAWK ERP <i>›</i> Commercial</span><span class="badge">● DATA DEMO</span></header><div class="demo-notice"><b>PROTOTIPE — DEMO / SIMULASI.</b> Data Commercial dan rekomendasi AI menggunakan simulasi frontend.</div><div id="view"></div></main>
+<dialog id="picker" aria-labelledby="picker-title"><button class="close" id="close" aria-label="Tutup">×</button><h2 id="picker-title">Pilih portal HAWK</h2><div class="portal-options"><a href="https://preview.hawk.jaens.id/#/nv/1">Finance &amp; ERP <span aria-hidden="true">→</span></a><a href="https://preview.hawk.jaens.id/#/m">Operational Therapist <small>Smart Staff Mobile</small><span aria-hidden="true">→</span></a><button data-portal="Commercial">Commercial OS <small>Portal aktif</small><span aria-hidden="true">✓</span></button></div></dialog>
+<script>const modules = [
+  ['dashboard','◫','Command Center'],
+  ['studio','✦','Content Studio','Brief|Produksi|Review|Terjadwal','Ritual pagi Ubud|Reels therapist|Foto treatment|Carousel wellness'],
+  ['digital','↗','Digital Marketing','Google Search|Meta Ads|Retargeting','Search intent Ubud|Bali Reset|Abandoned booking'],
+  ['social','◎','Social Media Admin','Kalender|Inbox|Komentar','Reels Jumat|4 DM demo|2 balasan demo'],
+  ['partners','◇','Media Partner / KOL','Shortlist|Deliverables|Review','Wellness Bali|2 reels + 1 story|Validasi kode KOL'],
+  ['sales','▤','Sales Manager','Prospek|Penawaran|Negosiasi|Menang','24 peluang|12 proposal|8 akun|6 kontrak'],
+  ['b2b','▦','Sales B2B','Hotel|Villa|Travel agent|Corporate','Ubud Hotel|Villa Wellness|Bali Travel|Corporate Retreat'],
+  ['referral','↪','Driver & Referral','Partner|Kode|Booking|Komisi','Driver Ubud|HAWK-DEMO|42 booking|Menunggu validasi'],
+  ['customers','◉','Customer Intelligence','Pelanggan baru|Repeat 90 hari|Segmen utama','600 pelanggan|34%|Wellness travelers'],
+  ['budget','◧','Commercial Budget','Shared 7P Budgeting|Purchasing / MRF|Inventory|Approval','Baca pagu dan realisasi|Ajukan kebutuhan dari campaign|Cek stok dan alokasi|Pantau keputusan Finance']
+];
+const nav = document.querySelector('#nav');
+const view = document.querySelector('#view');
+const picker = document.querySelector('#picker');
+const periods = {
+  'Oktober 2026': { factor: 1, revenue:[62,80,96,102,128,132], target:[66,78,90,105,117,132] },
+  'September 2026': { factor: .85, revenue:[57,62,78,88,107,118], target:[60,69,80,92,104,115] }
+};
+const channels = [
+  ['Google Search',236,18,210,'#a37430'],
+  ['Meta Ads',194,24,230,'#387968'],
+  ['Organic & direct',110,10,100,'#79718f'],
+  ['Partners & referral',60,6,60,'#ba735c']
+];
+const campaigns = [
+  ['Ubud Wellness Escape','Google Search',165,12,163],
+  ['Bali Reset','Meta Ads',132,18,148],
+  ['Concierge Network','Partners & referral',48,5,48]
+];
+let period = 'Oktober 2026';
+let topic = 'Marketing';
+let campaignFilter = 'Semua channel';
+const num = (n, digits=0) => n.toLocaleString('id-ID',{maximumFractionDigits:digits,minimumFractionDigits:digits});
+const money = (n, digits=0) => 'Rp '+num(n,digits)+' jt';
+const sum = values => values.reduce((a,b)=>a+b,0);
+const route = () => modules.find(m=>m[0]===location.hash.slice(1)) || modules[0];
+const hero = (title, description, action='') => `<section class="hero"><div><span class="eyebrow">JAENS SPA & WELLNESS GROUP</span><h2>${title}</h2><p>${description}</p></div>${action}</section>`;
+const pageHeader = (title, description) => `<header class="page-heading"><div class="breadcrumb"><a href="#dashboard">Commercial</a><span aria-hidden="true">›</span><span>${title}</span></div><h1 tabindex="-1">${title}</h1><p>${description}</p></header>`;
+const table = (headers, rows) => `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const meter = (label,value,percent,color='') => `<div class="metric-row"><span>${label}</span><b>${value}</b></div><div class="meter" aria-hidden="true"><span style="width:${percent}%;${color?'background:'+color:''}"></span></div>`;
+function trend(data){
+  const x=i=>60+i*86;
+  const y=value=>169-value;
+  const points=values=>values.map((v,i)=>x(i)+','+y(v)).join(' ');
+  return `<svg class="chart" viewBox="0 0 530 208" role="img" aria-label="Grafik pendapatan dan target dalam juta rupiah. Nilai tersedia di tabel di bawah."><defs><linearGradient id="area" x2="0%" y2="100%"><stop stop-color="#d8ae60" stop-opacity=".53"/><stop offset="100%" stop-color="#d8ae60" stop-opacity=".05"/></linearGradient></defs>
+  ${[0,40,80,120].map(v=>`<path d="M60 ${y(v)}H490" stroke="#e8dfce"/><text x="17" y="${y(v)+4}">${v}</text>`).join('')}
+  <polygon points="60,169 ${points(data.revenue)} 490,169" fill="url(#area)"/><polyline points="${points(data.target)}" fill="none" stroke="#477361" stroke-width="2" stroke-dasharray="5 5"/><polyline points="${points(data.revenue)}" fill="none" stroke="#a37430" stroke-width="3"/>
+  ${data.revenue.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="#a37430"><title>Periode ${i+1}, ${money(v)}</title></circle><text x="${x(i)-15}" y="192">${1+i*5}–${i===5?(period.startsWith('Oktober')?31:30):5+i*5}</text>`).join('')}</svg>`;
+}
+function mentor(data){
+  const [name,channel,revenue,spend] = campaigns[0];
+  const advice = {
+    Komunikasi: ['Uji pesan yang berorientasi pada niat booking','Google Search mencatat '+num(Math.round(210*data.factor))+' pelanggan baru. Uji CTA “Cek jadwal treatment” pada landing page dan ukur rasio booking.'],
+    Branding: ['Uji konsistensi pesan wellness di konten organik','Organic & direct menghasilkan '+money(110*data.factor,1)+'. Bandingkan dua narasi merek pada konten dan ukur booking berbantuan.'],
+    Marketing: ['Prioritaskan evaluasi '+name,'Campaign '+channel+' ini mencatat ROAS '+num(revenue/spend,1)+'×. Uji tambahan anggaran bertahap setelah pagu 7P disetujui, lalu ukur ROAS marginal.'],
+    Sales: ['Tindak lanjuti konversi dari jaringan concierge','Concierge Network mencatat '+money(48*data.factor,1)+' dengan ROAS 9,6×. Uji tindak lanjut prospek dan cocokkan kode referral dengan booking selesai.']
+  };
+  return `<section class="card mentor"><span class="badge">SIMULASI · ATURAN DEMO</span><h2 style="margin-top:10px">AI Marketing Mentor</h2><p>Commercial Advisor · rekomendasi berbasis angka demo</p><div class="tabs">${Object.keys(advice).map(key=>`<button class="btn" data-topic="${key}" aria-pressed="${key===topic}">${key}</button>`).join('')}</div><div class="advice" aria-live="polite"><b>${advice[topic][0]}</b><p>${advice[topic][1]}</p></div><small>Simulasi frontend. Layanan AI belum terhubung.</small></section>`;
+}
+function dashboard(){
+  const data=periods[period];
+  const f=data.factor;
+  const revenue=sum(data.revenue);
+  const target=sum(data.target);
+  const customers=sum(channels.map(c=>Math.round(c[3]*f)));
+  const spend=58*f;
+  const planned=75*f;
+  const paidRevenue=(236+194)*f;
+  const paidSpend=42*f;
+  const kpis=[
+    ['Revenue',money(revenue),num(revenue/target*100,1)+'% dari target'],
+    ['Pelanggan baru',num(customers),'Booking pertama selesai'],
+    ['CAC','Rp '+num(spend*1000000/customers),'Spend ÷ pelanggan baru'],
+    ['ROAS iklan',num(paidRevenue/paidSpend,1)+'×','Google Search + Meta Ads'],
+    ['Budget terpakai',num(spend/planned*100,1)+'%',money(spend,1)+' dari '+money(planned,1)]
+  ];
+  return pageHeader('Commercial Command Center','Kinerja pemasaran, penjualan, dan pelanggan dalam satu tampilan.') + hero('Ringkasan Marketing Manager','Pantau performa campaign, akuisisi pelanggan, dan pemakaian anggaran.',`<label>Periode laporan<select id="period">${Object.keys(periods).map(p=>`<option ${p===period?'selected':''}>${p}</option>`).join('')}</select></label>`)
+  + `<section class="kpis" aria-label="KPI pemasaran">${kpis.map(([label,value,note])=>`<div class="card kpi"><span class="muted">${label}</span><strong>${value}</strong><span class="positive">${note}</span></div>`).join('')}</section>
+  <div class="grid"><section class="card"><h2>Revenue vs target</h2><p>Pendapatan per blok tanggal · Rp juta</p>${trend(data)}<div class="legend"><b>● Realisasi</b><span>┄ Target</span></div><details><summary>Lihat data grafik</summary>${table(['Tanggal mulai','Revenue','Target'],data.revenue.map((r,i)=>[1+i*5,money(r),money(data.target[i])]))}</details></section>
+  <section class="card"><h2>Channel attribution</h2><p>Pangsa revenue · atribusi last touch demo</p>${channels.map(([name,r,,,color])=>meter(name,money(r*f,1)+' · '+num(r/6,1)+'%',r/6,color)).join('')}</section></div>
+  <div class="grid"><section class="card"><h2>Campaign effectiveness</h2><p>Campaign terpilih · ROAS tertinggi di atas</p><label>Channel <select id="campaign-filter">${['Semua channel',...channels.map(c=>c[0])].map(c=>`<option ${c===campaignFilter?'selected':''}>${c}</option>`).join('')}</select></label>
+  ${table(['Campaign','Revenue','Spend','ROAS','Booking'],campaigns.filter(c=>campaignFilter==='Semua channel'||campaignFilter===c[1]).sort((a,b)=>b[2]/b[3]-a[2]/a[3]).map(([name,,r,s,b])=>[name,money(r*f,1),money(s*f,1),num(r/s,1)+'×',num(Math.round(b*f))]))}
+  ${campaigns.some(c=>campaignFilter==='Semua channel'||campaignFilter===c[1])?'':'<p>Belum ada campaign dalam sampel channel ini.</p>'}</section><div id="mentor">${mentor(data)}</div></div>
+  <div class="grid"><section class="card"><h2>Funnel akuisisi</h2><p>Sesi → inquiry → pelanggan baru</p>${[['Sesi',12000],['Inquiry',1800],['Pelanggan baru',customers/f]].map(([label,n])=>meter(label,num(Math.round(n*f)),n/120)).join('')}<b>${num(customers/Math.round(12000*f)*100,1)}% sesi menjadi pelanggan baru</b></section>
+  <div class="stack"><section class="card"><h2>Customer insights</h2><p>Repeat dalam 90 hari · cohort demo matang</p>${meter('Kunjungan ulang',period.startsWith('Oktober')?'34%':'31%',period.startsWith('Oktober')?34:31,'#387968')}<a href="#customers">Buka Customer Intelligence →</a></section>
+  <section class="card"><h2>Budget vs actual</h2><p>Realisasi ${money(spend,1)} · pagu ${money(planned,1)}</p>${meter('Pagu terpakai',num(spend/planned*100,1)+'%',spend/planned*100)}<a href="#budget">Lihat alur Finance →</a></section></div></div>`;
+}
+function render(focus=''){
+  const [id, , title, stages, items] = route();
+  nav.innerHTML=modules.map(([key,icon,label],i)=>`${i===1?'<div class="nav-label">WORKSPACES</div>':''}<a href="#${key}" ${key===id?'aria-current="page"':''}><span aria-hidden="true">${icon}</span>${label}</a>`).join('');
+  view.innerHTML=id==='dashboard'?dashboard():pageHeader(title,id==='budget'?'Alur integrasi konseptual dengan Finance sebagai sumber data bersama.':'Workspace demo · contoh pekerjaan dan status tim.')
+    + `<div class="board">${stages.split('|').map((stage,i)=>`<article class="card"><h2>${stage}</h2><p>${items.split('|')[i]}</p></article>`).join('')}</div>`
+    + (id==='budget'?'<section class="card" style="margin-top:15px"><h2>Alur transaksi bersama</h2><p>Campaign + cost center + kode 7P → validasi pagu Finance → MRF / permintaan stok → approval → realisasi tercatat di Finance → ringkasan budget Commercial.</p><small>Integrasi konseptual · semua status menggunakan data demo.</small></section>':'');
+  if(focus) document.querySelector(focus)?.focus();
+}
+document.querySelector('#portal').onclick=()=>{
+  picker.showModal();
+};
+document.querySelector('#close').onclick=()=>picker.close();
+picker.addEventListener('click',event=>{
+  const portal=event.target.closest('[data-portal]')?.dataset.portal;
+  if(portal==='Commercial'){
+    picker.close();
+    location.hash='dashboard';
+  }
+});
+view.addEventListener('change',event=>{
+  if(event.target.id==='period') period=event.target.value;
+  else if(event.target.id==='campaign-filter') campaignFilter=event.target.value;
+  else return;
+  render('#'+event.target.id);
+});
+view.addEventListener('click',event=>{
+  if(!event.target.dataset.topic) return;
+  topic=event.target.dataset.topic;
+  document.querySelector('#mentor').innerHTML=mentor(periods[period]);
+  document.querySelector('[data-topic="'+topic+'"]').focus();
+});
+window.addEventListener('hashchange',()=>render('h1'));
+render();
+</script></body></html>
