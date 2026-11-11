@@ -9,7 +9,7 @@ Paket brief asal dari Aji (11 Nov 2026) disimpan apa adanya di `reference/`.
 |---|---|
 | Offline, satu file | Buka `preview.html` (semua portal) atau `preview-commercial.html`, `preview-sales.html`, `preview-finance.html`, `preview-operational.html` langsung dari disk. |
 | Source | `index.html` (semua portal) atau entry per portal `commercial.html`, `sales.html`, `finance.html`, `operational.html`. Butuh server statis: `python3 -m http.server 8811`, lalu buka `http://localhost:8811/hawk-live/`. |
-| Hosted | `https://<domain preview>/hawk-live/` (disalin ke `dist/hawk-live/` oleh `node tools/build.js`). |
+| Hosted | `https://<domain preview>/hawk-live/portal` (alias dari `/hawk-live`; `portal.html` = salinan `index.html` agar path relatif benar di bawah cleanUrls) (disalin ke `dist/hawk-live/` oleh `node tools/build.js`). |
 
 Bangun ulang file mandiri: `node tools/build-hawk-live.js`.
 

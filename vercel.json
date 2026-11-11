@@ -44,7 +44,12 @@
   "redirects": [
     {
       "source": "/hawk-live",
-      "destination": "/hawk-live/index",
+      "destination": "/hawk-live/portal",
+      "permanent": false
+    },
+    {
+      "source": "/hawk-live/index",
+      "destination": "/hawk-live/portal",
       "permanent": false
     }
   ]
