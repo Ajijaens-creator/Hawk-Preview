@@ -1,7 +1,7 @@
 {
- "ranAt": "2026-11-11T12:38:49.615Z",
+ "ranAt": "2026-11-11T12:48:44.270Z",
  "base": "http://localhost:8811/hawk-live/",
- "pass": 19,
+ "pass": 30,
  "fail": 0,
  "results": [
   {
@@ -90,9 +90,64 @@
    "info": ""
   },
   {
-   "name": "390 px: tanpa scroll horizontal di 13 rute Commercial",
+   "name": "Social inbox: CONV-001 berasal dari CMP-001 / PUB-001 (konten terbit)",
    "ok": true,
-   "info": "commercial 390"
+   "info": ""
+  },
+  {
+   "name": "Alih DM → lead Sales (retry memakai lead sama)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jejak booking: campaign → percakapan → lead → booking → POS → Finance (satu revenue)",
+   "ok": true,
+   "info": "7 langkah"
+  },
+  {
+   "name": "Campaign Detail CMP-001 ikut menghitung booking baru dari jalur DM",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "AI Mentor Sales Handoff: tidak ada DM reservasi tertahan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mentor: terima usulan → tugas Daily Race",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Booking dengan kode KOL kedaluwarsa ditolak dengan pesan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kode KOL-ANYA10 → POS dibayar → booking KOL-001 bertambah 1",
+   "ok": true,
+   "info": "180 → 181 (1 dari sandbox)"
+  },
+  {
+   "name": "Impor ulang snapshot TikTok tidak menambah baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "UTM tanpa campaign dipetakan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "18 rute Fase 2B tampil tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: tanpa scroll horizontal di 21 rute Commercial (2A + 2B)",
+   "ok": true,
+   "info": "digital 390"
   },
   {
    "name": "Tidak ada console error",

@@ -1,6 +1,6 @@
 {
- "ranAt": "2026-11-11T12:39:02.421Z",
- "pass": 59,
+ "ranAt": "2026-11-11T12:48:04.098Z",
+ "pass": 81,
  "fail": 0,
  "results": [
   {
@@ -295,6 +295,116 @@
   },
   {
    "name": "Brand progress = bobot elemen approved (naik setelah approve)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "MK seed tersedia di state.cx.mk",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Impor ulang snapshot tidak menggandakan baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Denominator nol: creative 0 impressions → CTR/CPM null",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Spend tanpa UTM: CPL null (0 lead), ROAS 0 (spend ada, revenue tidak teratribusi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ROAS campaign = revenue POS dibayar ÷ spend",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mapping UTM tersimpan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Eksperimen idempoten per kunci",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Hasil eksperimen wajib keputusan Lanjut/Ubah/Henti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Eksperimen selesai dengan hasil vs baseline",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alih DM ke Sales butuh kategori Reservasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Alih DM membuat lead dengan ringkasan + asal campaign; retry memakai lead yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jalur DM → lead → booking → POS menambah revenue satu kali (Rp750.000)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kode KOL kedaluwarsa ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kode KOL tidak dikenal ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Booking kode KOL-ANYA10 dibayar → hanya KOL-001 bertambah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi atribusi harus lewat antrean",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi wajib bukti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi tercatat dengan histori; total revenue tidak berubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mentor: terima → satu tugas; retry tidak dobel; budget tidak berubah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mentor: tolak wajib alasan; usulan yang sudah diterima tidak bisa ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mentor: ubah usulan menaikkan versi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "KOL: approval butuh fee & term; deliverable approve hanya dari Menunggu approval",
    "ok": true,
    "info": ""
   }

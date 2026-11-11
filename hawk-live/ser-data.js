@@ -243,11 +243,11 @@ const SER = (() => {
       if (!['paid', 'refunded'].includes(b.status)) return;
       const partner = b.partner ? PARTNERS.find(p => p.id === b.partner) : null;
       const isLead = !!b.lead;
-      const source = partner ? 'Driver Referral' : b.source === 'Instagram' ? 'Organic Social' : b.source === 'Direct' ? 'Repeat / Direct' : (b.source || '');
-      const group = (SOURCES.find(s => s.source === source) || { group: 'Tidak diketahui' }).group;
+      const source = b.kol ? 'KOL' : partner ? 'Driver Referral' : b.source === 'Instagram' ? 'Organic Social' : b.source === 'Direct' ? 'Repeat / Direct' : (b.source || '');
+      const group = b.kol ? 'Paid' : (SOURCES.find(s => s.source === source) || { group: 'Tidak diketahui' }).group;
       const cust = `CUS-SBX-${pad(i + 1, 3)}`;
       sbxCustomers.push({ id: cust, outlet: 'OUT-UBD', country: 'Tidak diketahui', firstPeriod: '2026-08' });
-      sbxTx.push({ id: `POS-${b.id}`, booking: b.id, lead: b.lead || '', outlet: 'OUT-UBD', period: '2026-08', date: SANDBOX_DATE, customer: cust, treatment: 'TRT-WEL60', treatmentName: state.catalog.name, guests: 1, listPrice: b.amount, amount: b.amount, adjustment: 0, directCost: Math.round(b.amount * 0.34 / 1000) * 1000, commission: Math.round(b.amount * (b.commissionRate || 0)), source, group, contact: b.channel || 'Tidak diketahui', confirm: partner ? 'Konfirmasi partner' : isLead ? 'Staf reservasi' : 'Booking online', method: partner ? 'Referral' : 'B2C', campaign: b.campaign || '', partner: b.partner || '', referralCode: partner ? 'REF-DRV001' : '', therapist: 'MBR-TUBD01', status: b.status, sandbox: true, slot: b.slot });
+      sbxTx.push({ id: `POS-${b.id}`, booking: b.id, lead: b.lead || '', outlet: 'OUT-UBD', period: '2026-08', date: SANDBOX_DATE, customer: cust, treatment: 'TRT-WEL60', treatmentName: state.catalog.name, guests: 1, listPrice: b.amount, amount: b.amount, adjustment: 0, directCost: Math.round(b.amount * 0.34 / 1000) * 1000, commission: Math.round(b.amount * (b.commissionRate || 0)), source, group, contact: b.channel || 'Tidak diketahui', confirm: partner ? 'Konfirmasi partner' : isLead ? 'Staf reservasi' : 'Booking online', method: partner ? 'Referral' : 'B2C', campaign: b.campaign || '', partner: b.partner || b.kol || '', referralCode: partner ? 'REF-DRV001' : (b.kolCode || ''), therapist: 'MBR-TUBD01', status: b.status, sandbox: true, slot: b.slot });
     });
     return { t, sbxTx, sbxCustomers, bk1Status: bk1 ? bk1.status : 'paid' };
   }

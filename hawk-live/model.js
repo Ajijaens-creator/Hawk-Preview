@@ -11,6 +11,9 @@ const HAWK = (() => {
     slots:['11.00','13.00','15.00'],
     stock:12
   };
+  const DEMO_TODAY = '2026-08-22';
+  /* KOL tracking codes (demo). KOL-RAKA10 is expired to show the status. */
+  const KOL_CODES = { 'KOL-ANYA10': { partner: 'KOL-001', validUntil: '2026-09-15' }, 'KOL-RAKA10': { partner: 'KOL-002', validUntil: '2026-08-15' } };
   const fresh = () => JSON.parse(JSON.stringify(SEED));
   const nextId = (prefix, rows) => prefix + '-' + String(rows.length + 1).padStart(3,'0');
   function totals(state){
@@ -71,10 +74,15 @@ const HAWK = (() => {
       case 'book': {
         const lead=row(state.leads);
         const partner=input.referral==='yes';
+        /* KOL tracking code (F2-07): valid → booking carries KOL partner + CMP-004; expired/unknown are rejected with a status. */
+        const code=String(input.code||'').trim().toUpperCase();
+        const kol=code?KOL_CODES[code]:null;
+        requireState(!code||kol,'Kode KOL tidak valid.');
+        requireState(!kol||kol.validUntil>=DEMO_TODAY,'Kode KOL kedaluwarsa ('+(kol&&kol.validUntil)+').');
         requireState(!partner||state.partner.active,'Partner referral belum aktif.');
         requireState(state.slots.includes(input.slot)&&!state.bookings.some(b=>b.slot===input.slot&&b.status!=='cancelled'),'Slot sudah tidak tersedia.');
         requireState(!lead||lead.status!=='booked','Lead sudah memiliki booking.');
-        state.bookings.push({id:nextId('BK',state.bookings),lead:lead?.id||'',source:lead?.source||(partner?'Referral':'Direct'),channel:lead?.channel||'Website',campaign:lead?.campaign||'',partner:partner?state.partner.id:'',slot:input.slot,amount:state.catalog.price,status:'confirmed',commissionRate:partner?state.partner.rate:0,payout:false});
+        state.bookings.push({id:nextId('BK',state.bookings),lead:lead?.id||'',source:lead?.source||(partner?'Referral':'Direct'),channel:lead?.channel||'Website',campaign:kol?'CMP-004':(lead?.campaign||''),kol:kol?kol.partner:'',kolCode:kol?code:'',partner:partner?state.partner.id:'',slot:input.slot,amount:state.catalog.price,status:'confirmed',commissionRate:partner?state.partner.rate:0,payout:false});
         if(lead)lead.status='booked';
         break;
       }
@@ -118,6 +126,6 @@ const HAWK = (() => {
       default: throw Error('Aksi tidak tersedia.');
     }
   }
-  return {fresh,totals,update};
+  return {fresh,totals,update,KOL_CODES,DEMO_TODAY};
 })();
 if (typeof module !== 'undefined') module.exports = HAWK;

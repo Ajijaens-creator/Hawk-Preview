@@ -102,7 +102,10 @@ const CX = (() => {
   };
 
   const fresh = () => JSON.parse(JSON.stringify(SEED));
-  const ensure = (state) => { if (!state.cx) state.cx = fresh(); return state.cx; };
+  /* Extensions (Fase 2B marketing module) add their own seed key and actions without touching this core. */
+  const EXT = { actions: {}, seeds: [] };
+  const extend = (e) => { Object.assign(EXT.actions, e.actions || {}); if (e.seed) EXT.seeds.push(e.seed); };
+  const ensure = (state) => { if (!state.cx) state.cx = fresh(); EXT.seeds.forEach(sd => { if (!state.cx[sd.key]) state.cx[sd.key] = sd.make(); }); return state.cx; };
   const need = (cond, msg) => { if (!cond) throw Error(msg); };
   const next = (cx, prefix) => { cx.seq[prefix] = (cx.seq[prefix] || 0) + 1; return `${prefix}-${String(cx.seq[prefix]).padStart(3, '0')}`; };
   const person = (id) => PEOPLE.find(p => p.id === id);
@@ -309,10 +312,10 @@ const CX = (() => {
         const t = cx.tasks.find(x => x.id === input.id); need(t && t.status === 'planned', 'Tugas sudah diproses.');
         t.status = 'done'; t.doneAt = TODAY; return t.id;
       }
-      default: throw Error('Aksi Commercial tidak tersedia.');
+      default: if (EXT.actions[action]) return EXT.actions[action](cx, input, by, state); throw Error('Aksi Commercial tidak tersedia.');
     }
   }
 
-  return { TODAY, STAGES, STAGE_ROLE, PEOPLE, PILLARS, PLATFORMS, CAMPAIGN_FLOW, BRAND_ELEMENTS, TEMPLATES, fresh, ensure, update, person, personName, stagePic, brandProgress };
+  return { TODAY, extend, need, STAGES, STAGE_ROLE, PEOPLE, PILLARS, PLATFORMS, CAMPAIGN_FLOW, BRAND_ELEMENTS, TEMPLATES, fresh, ensure, update, person, personName, stagePic, brandProgress };
 })();
 if (typeof module !== 'undefined') module.exports = CX;

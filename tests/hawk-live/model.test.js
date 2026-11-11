@@ -129,6 +129,57 @@ const el = CX.BRAND_ELEMENTS.find(([k]) => br.els[k][0] === 'review');
 if (el) CX.update(s, 'brand-approve', { id: br.id, el: el[0] });
 ok('Brand progress = bobot elemen approved (naik setelah approve)', !el || CX.brandProgress(br).done === before2 + el[2]);
 
+/* Fase 2B · Digital, Social, KOL, Attribution, AI Mentor (MK) */
+global.MK = require(path.join(__dirname, '../../hawk-live/marketing-model.js'));
+s = HAWK.fresh(); let c2 = CX.ensure(s);
+ok('MK seed tersedia di state.cx.mk', !!c2.mk && c2.mk.partners.length === 4);
+const n0 = c2.mk.imports.length; CX.update(s, 'snap-import', { platform: 'TikTok Ads' }); CX.update(s, 'snap-import', { platform: 'TikTok Ads' });
+ok('Impor ulang snapshot tidak menggandakan baris', c2.mk.imports.length === n0 + 1 && c2.mk.imports.find(x => x.platform === 'TikTok Ads').reimported === 1);
+let ads = MK.adsView(SER.dataset(s), '2026-08');
+const crv9 = ads.find(r => r.campaign === 'CMP-006').creatives.find(c => c.id === 'CRV-09');
+ok('Denominator nol: creative 0 impressions → CTR/CPM null', crv9.impressions === 0 && MK.div(crv9.clicks, crv9.impressions) === null);
+const noCamp = ads.find(r => !r.campaign);
+ok('Spend tanpa UTM: CPL null (0 lead), ROAS 0 (spend ada, revenue tidak teratribusi)', noCamp.spend > 0 && noCamp.cpl === null && noCamp.roas === 0);
+ok('ROAS campaign = revenue POS dibayar ÷ spend', ads.filter(r => r.campaign && r.spend).every(r => Math.abs(r.roas - r.revenue / r.spend) < 1e-9));
+CX.update(s, 'utm-map', { utm: 'ig_story_aug', campaign: 'CMP-001' });
+ok('Mapping UTM tersimpan', c2.mk.utm.find(u => u.utm === 'ig_story_aug').status === 'mapped');
+const e1 = CX.update(s, 'exp-create', { key: 'k1', title: 'Uji CTA story', baseline: '0.4', variant: 'Chat & Book' }), e2 = CX.update(s, 'exp-create', { key: 'k1', title: 'Uji CTA story', baseline: '0.4', variant: 'Chat & Book' });
+ok('Eksperimen idempoten per kunci', e1 === e2 && c2.mk.experiments.filter(e => e.key === 'k1').length === 1);
+ok('Hasil eksperimen wajib keputusan Lanjut/Ubah/Henti', !!throws(() => CX.update(s, 'exp-result', { id: e1, result: '0.5', decision: 'Mungkin' })));
+CX.update(s, 'exp-result', { id: e1, result: '0.5', decision: 'Lanjut' });
+ok('Eksperimen selesai dengan hasil vs baseline', c2.mk.experiments.find(e => e.id === e1).status === 'Selesai');
+ok('Alih DM ke Sales butuh kategori Reservasi', /Reservasi/.test(throws(() => CX.update(s, 'conv-handoff', { id: 'CONV-002' })) || ''));
+const L1 = CX.update(s, 'conv-handoff', { id: 'CONV-001' }), L2 = CX.update(s, 'conv-handoff', { id: 'CONV-001' });
+const lead = s.leads.find(l => l.id === L1);
+ok('Alih DM membuat lead dengan ringkasan + asal campaign; retry memakai lead yang sama', L1 === L2 && s.leads.filter(l => l.conversation === 'CONV-001').length === 1 && lead.campaign === 'CMP-001' && !!lead.summary);
+/* Instagram → WhatsApp → booking → POS: satu revenue */
+let before3 = SER.summary(s, '2026-08', 'all').cur.revenue;
+HAWK.update(s, 'book', { id: L1, slot: '11.00' }); const bk = s.bookings.find(b => b.lead === L1).id; ['checkin', 'complete', 'pay'].forEach(a => HAWK.update(s, a, { id: bk }));
+let after3 = SER.summary(s, '2026-08', 'all');
+ok('Jalur DM → lead → booking → POS menambah revenue satu kali (Rp750.000)', after3.cur.revenue === before3 + 750000 && after3.ds.tx.filter(t => t.booking === bk).length === 1);
+/* KOL code */
+ok('Kode KOL kedaluwarsa ditolak', /kedaluwarsa/.test(throws(() => HAWK.update(s, 'book', { slot: '13.00', code: 'KOL-RAKA10' })) || ''));
+ok('Kode KOL tidak dikenal ditolak', /tidak valid/.test(throws(() => HAWK.update(s, 'book', { slot: '13.00', code: 'KOL-XXX' })) || ''));
+const kp = (id) => SER.dataset(s).tx.filter(t => t.period === '2026-08' && t.status === 'paid' && MK.kolOf(t) === id).length;
+const k1 = kp('KOL-001'), k2 = kp('KOL-002');
+HAWK.update(s, 'book', { slot: '13.00', code: 'kol-anya10' }); const bk2 = s.bookings.slice(-1)[0].id; ['checkin', 'complete', 'pay'].forEach(a => HAWK.update(s, a, { id: bk2 }));
+ok('Booking kode KOL-ANYA10 dibayar → hanya KOL-001 bertambah', kp('KOL-001') === k1 + 1 && kp('KOL-002') === k2);
+/* Exceptions */
+const unk = SER.dataset(s).tx.find(t => t.period === '2026-08' && t.status === 'paid' && t.group === 'Tidak diketahui');
+ok('Koreksi atribusi harus lewat antrean', !!throws(() => CX.update(s, 'exc-correct', { id: unk.id, source: 'Walk-in', evidence: 'catatan front desk' })));
+CX.update(s, 'exc-queue', { id: unk.id });
+ok('Koreksi wajib bukti', !!throws(() => CX.update(s, 'exc-correct', { id: unk.id, source: 'Walk-in', evidence: '' })));
+const rv = SER.summary(s, '2026-08', 'all').cur.revenue; CX.update(s, 'exc-correct', { id: unk.id, source: 'Walk-in', evidence: 'catatan front desk' });
+ok('Koreksi tercatat dengan histori; total revenue tidak berubah', c2.mk.fixes[unk.id].status === 'corrected' && c2.mk.fixes[unk.id].history.length === 2 && SER.summary(s, '2026-08', 'all').cur.revenue === rv);
+/* Mentor */
+const pagu0 = s.budget;
+const tA = CX.update(s, 'mentor-accept', { id: 'INS-X', action: 'Verifikasi mapping UTM', pic: 'MBR-C02' }), tB = CX.update(s, 'mentor-accept', { id: 'INS-X', action: 'Verifikasi mapping UTM' });
+ok('Mentor: terima → satu tugas; retry tidak dobel; budget tidak berubah', tA === tB && c2.tasks.filter(t => t.key === 'mentor-INS-X').length === 1 && s.budget === pagu0);
+ok('Mentor: tolak wajib alasan; usulan yang sudah diterima tidak bisa ditolak', !!throws(() => CX.update(s, 'mentor-reject', { id: 'INS-Y', reason: 'x' })) && !!throws(() => CX.update(s, 'mentor-reject', { id: 'INS-X', reason: 'tidak relevan' })));
+CX.update(s, 'mentor-edit', { id: 'INS-Y', action: 'Uji CTA lain di TikTok' });
+ok('Mentor: ubah usulan menaikkan versi', c2.mk.mentor['INS-Y'].version === 2);
+ok('KOL: approval butuh fee & term; deliverable approve hanya dari Menunggu approval', !!throws(() => { const p = c2.mk.partners.find(x => x.id === 'KOL-003'); p.stage = 'Proposal'; CX.update(s, 'kol-advance', { id: 'KOL-003' }); }) && CX.update(s, 'dlv-approve', { id: 'DLV-002' }) === 'DLV-002' && !!throws(() => CX.update(s, 'dlv-approve', { id: 'DLV-002' })));
+
 console.log(`\n${pass} lulus, ${fail} gagal`);
 require('fs').writeFileSync(path.join(__dirname, 'model-results.json'), JSON.stringify({ ranAt: new Date().toISOString(), pass, fail, results }, null, 1));
 process.exit(fail ? 1 : 0);
