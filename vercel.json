@@ -40,5 +40,12 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/hawk-live",
+      "destination": "/hawk-live/index",
+      "permanent": false
+    }
   ]
 }
