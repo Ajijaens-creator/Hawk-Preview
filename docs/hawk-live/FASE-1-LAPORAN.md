@@ -2,6 +2,11 @@
 
 Tanggal: 11 November 2026 · Branch: `claude/project-thread-gcon14` · Status: **siap ditinjau, belum di-merge ke main**.
 
+## Link preview (publik, tanpa login, noindex)
+
+Branch preview: https://hawk-jaens-preview-git-claude-proj-45c2b2-jaens-enterprises-pro.vercel.app/hawk-live/  
+Dibuka publik atas keputusan Owner 11 Nov 2026 (env `PREVIEW_PUBLIC` khusus branch ini + Vercel Authentication dimatikan). Untuk mengunci lagi: hapus env tersebut lalu redeploy.
+
 ## Layar Fase 1
 
 | Kode | Layar | Rute | Status |
