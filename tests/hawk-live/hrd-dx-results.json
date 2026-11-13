@@ -1,5 +1,5 @@
 {
- "pass": 19,
+ "pass": 20,
  "fail": 0,
  "out": [
   {
@@ -8,12 +8,17 @@
    "info": ""
   },
   {
-   "name": "5 skenario lintas divisi",
+   "name": "5 skenario portal HRD",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Kinerja tim: Operational 4 outlet, Finance, Marketing, Commercial, HRD, Production Essence",
+   "name": "Kinerja tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Fokus portal HRD: tanpa panel divisi lain (Commercial, Production Essence)",
    "ok": true,
    "info": ""
   },

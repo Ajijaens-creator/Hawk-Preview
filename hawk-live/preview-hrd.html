@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T23:10:40.988Z">
+<meta name="hawk-standalone" content="2026-11-13T23:35:36.555Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Portal HRD &amp; Human Growth</title>
 <style>
@@ -7680,38 +7680,23 @@ function runStep(scId, i) {
   } catch (e) { save(); H.render(`Langkah ${i + 1} gagal: ${e.message}`, true); }
 }
 
-/* ---------- kinerja tim per divisi ---------- */
-function divisions() {
-  const h = hr(), rows = [];
-  const pct = (v) => v === null || v === undefined ? '—' : `${(v * 100).toFixed(1)}%`;
-  const hc = (pred) => h.placements.filter(pl => !pl.to && pl.from <= HR.TODAY && pred(pl)).length;
-  if (typeof HR5 !== 'undefined') for (const o of HR.OUTLETS) {
-    const u = HR5.outletUtil(h, o.id, 'W46'), xs = typeof HR6 !== 'undefined' ? HR6.avgX(h, HR6.therapists(h, o.id), '2610') : null;
-    rows.push([`Operational · ${esc(o.name)}`, hc(pl => pl.location === o.id), 'Utility therapist (jam treatment ÷ kapasitas)', `${pct(u.u)} · ${Math.round(u.done)}/${Math.round(u.cap)} jam`, xs && xs.avg !== null ? `XScore rata-rata Okt ${xs.avg.toFixed(1)}` : '—', 'POS F5 + XScore F6 (simulasi)', u.u > 1 ? chip('Di atas kapasitas', 'bad') : u.u < 0.7 ? chip('Di bawah 70%', 'bad') : chip('Sehat', 'ready'), link(`hrd-mp-utility?outlet=${o.id}`, 'Buka')]);
-  }
-  const D = (id) => typeof HR5 !== 'undefined' ? HR5.DIVISIONS.find(d => d.id === id) : null;
-  const divRow = (label, id, extra, route) => { const d = D(id); if (!d) return; rows.push([label, hc(pl => pl.division === id && pl.location === HR.HQ.id), esc(d.metric), d.load === null ? 'live' : `${d.output}/${d.load} ${esc(d.unit)} · backlog ${d.backlog}`, (d.slaMet === null ? '' : `SLA ${esc(d.sla)} tercapai ${pct(d.slaMet)}`) + (extra || ''), esc(d.source), d.complete ? chip('Data lengkap', 'ready') : chip('Data belum lengkap', 'sandbox'), link(route || `hrd-mp-division?id=${id}`, 'Buka')]); };
-  divRow('Operational · Office (OM/AOM/Supervisor)', 'DIV-OPS');
-  const b = typeof HR7 !== 'undefined' ? HR7.batchOf(h, '2610') : null;
-  divRow('Finance & Accounting', 'DIV-FA', b ? ` · jurnal payroll ${esc(b.id)}: ${esc(b.handoff?.status || 'belum dikirim')}` : '');
-  divRow('Marketing', 'DIV-MKT');
-  if (typeof CX !== 'undefined') {
-    if (!H.state.cx) CX.ensure(H.state);
-    const c = H.state.cx.content || [], done = c.filter(x => ['Published', 'Analysed'].includes(x.stage)).length, team = CX.PEOPLE.length;
-    rows.push(['Commercial · tim konten & kampanye', `${team} (portal Commercial)`, 'Konten berjalan → terbit/dianalisis', `${done}/${c.length} konten`, `${(H.state.cx.campaigns || []).length} kampanye aktif`, 'Portal Commercial (data demo)', chip('Headcount HRD belum ditetapkan', 'sandbox'), '<a href="commercial.html">Buka</a>']);
-  }
-  const f4 = h.f4 || { reqs: [], apps: [] }, open = typeof HR5 !== 'undefined' ? f4.reqs.filter(r => r.status !== 'Ditolak').map(r => HR5.reqProgress(h, r.id)).reduce((s, x) => s + (x?.open || 0), 0) : 0;
-  const hrdTasks = (h.f3?.tasks || []).filter(t => t.ws === 'HRD' || t.ws === 'HG');
-  rows.push(['HRD & Human Growth', hc(pl => pl.division === 'DIV-HRD'), 'Kartu Planner selesai · formasi terbuka', `${hrdTasks.filter(t => t.stage === 'Selesai').length}/${hrdTasks.length} kartu · ${open} posisi terbuka`, `${f4.apps.filter(a => !['Ditolak', 'Mengundurkan diri', 'Penempatan Aktif'].includes(a.stage)).length} lamaran diproses`, 'Planner F3 + Rekrutmen F4 (live demo)', chip('Live', 'ready'), link('hrd-tasks', 'Buka')]);
-  divRow('Production · JAENS Essence', 'DIV-PRD');
-  return rows;
+/* ---------- kinerja tim HRD (fokus portal HRD) ---------- */
+function teamRows() {
+  const h = hr(), ts = (h.f3?.tasks || []).filter(t => t.ws === 'HRD' || t.ws === 'HG');
+  const team = PERSONAS.filter(p => ['made', 'harja', 'ayu', 'hg'].includes(p.id));
+  return team.map(p => {
+    const mine = ts.filter(t => t.pic === p.emp), done = mine.filter(t => t.stage === 'Selesai').length;
+    const late = mine.filter(t => t.due && t.due < HR.TODAY && t.stage !== 'Selesai').length, blocked = mine.filter(t => t.blocker && t.stage !== 'Selesai').length;
+    const acts = h.audit.filter(a => a.by === actorOf(p)).length;
+    return [esc(pName(p)), esc(p.title), `${done}/${mine.length}`, late ? chip(`${late} terlambat`, 'bad') : chip('Tepat waktu', 'ready'), blocked ? chip(`${blocked} blocker`, 'bad') : '—', acts, link(`hrd-race-daily?emp=${p.emp}`, 'Daily Race')];
+  });
 }
 
 /* ---------- layar ---------- */
 function center(params) {
   const sc = S(params.sc) || null, cur = curPersona();
   const personaCards = `<section class="grid g4 keep2">${PERSONAS.map(p => `<article class="card dx-persona${cur && cur.id === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}</div><h3>${esc(pName(p))}</h3><p class="muted small">${esc(p.does)}</p>${p.role === 'public' ? '<a class="btn ghost sm" href="karier.html">Buka karier publik</a>' : `<button type="button" class="btn sm" data-dx-persona="${p.id}">Masuk sebagai ${esc(pName(p))}</button>`}</article>`).join('')}</section>`;
-  const scList = card('Skenario lintas divisi', table(['Skenario', 'Persona terlibat', 'Langkah', 'Progres', ''], SC.map(s => { const r = dx().runs[s.id]; const n = r ? r.done.length : 0; return [link('hrd-dx' + qs({ sc: s.id }), esc(s.name)), [...new Set(s.steps.map(x => pName(P(x.who)).split(' ')[0]))].join(', '), s.steps.length, n === s.steps.length ? chip('Selesai', 'ready') : n ? chip(`${n}/${s.steps.length}`, 'planned') : chip('Belum', 'sandbox'), link('hrd-dx' + qs({ sc: s.id }), n ? 'Lanjutkan' : 'Mulai')]; })));
+  const scList = card('Skenario portal HRD', table(['Skenario', 'Persona terlibat', 'Langkah', 'Progres', ''], SC.map(s => { const r = dx().runs[s.id]; const n = r ? r.done.length : 0; return [link('hrd-dx' + qs({ sc: s.id }), esc(s.name)), [...new Set(s.steps.map(x => pName(P(x.who)).split(' ')[0]))].join(', '), s.steps.length, n === s.steps.length ? chip('Selesai', 'ready') : n ? chip(`${n}/${s.steps.length}`, 'planned') : chip('Belum', 'sandbox'), link('hrd-dx' + qs({ sc: s.id }), n ? 'Lanjutkan' : 'Mulai')]; })));
   let detail = '';
   if (sc) {
     const r = dx().runs[sc.id] || { ctx: {}, done: [], log: [] };
@@ -7721,7 +7706,7 @@ function center(params) {
   }
   return `<p class="active-filters">${chip('DATA DEMO · R&D', 'sandbox')} Persona menjalankan langkah dengan izin role-nya sendiri. Setiap langkah tercatat di ${link('hrd-audit', 'audit')} atas nama persona. Reset Demo Data mengembalikan semuanya.${cur ? ` · Persona aktif: <b>${esc(actorOf(cur))}</b>` : ''}</p>` + detail +
     card('Persona demo', personaCards + '<p class="muted small">Supervisor Tina (Santi), Dewik (Triloka) dan Wahyudi (Bhisma) tercatat di struktur; role demo Supervisor saat ini berlingkup Spa Ubud, outlet lain dipantau lewat Operational Manager.</p>') + scList +
-    card('Kinerja tim per divisi', table(['Divisi / tim', 'Orang', 'Metrik produktivitas', 'Output', 'Kinerja', 'Sumber', 'Status', ''], divisions()) + '<p class="muted small">Produktivitas dibaca dari sumber tiap divisi (POS, Planner, Rekrutmen, Finance, Commercial, Produksi Essence). Nilai individu tetap mengikuti izin: Owner dan Finance hanya agregat.</p>');
+    card('Kinerja tim HRD', table(['Anggota', 'Peran', 'Kartu selesai', 'Tenggat', 'Hambatan', 'Aksi tercatat (audit)', ''], teamRows()) + '<p class="muted small">Dibaca dari Planner F3 dan audit portal HRD. Divisi lain hanya muncul pada langkah yang memang bagian alur HRD (persetujuan OM/Supervisor, jurnal payroll ke Finance); kinerja divisi lain ada di Demo Center portalnya masing-masing.</p>');
 }
 
 document.addEventListener('click', (e) => {
@@ -7738,7 +7723,7 @@ document.addEventListener('click', (e) => {
 const items = H.PORTALS.HRD.items;
 const ih = items.findIndex(i => i[0] === 'hrd-home');
 items.splice(ih + 1, 0, ['hrd-dx', 'Demo Experience Center', 'DX-HRD', 'ready', '', 'sub']);
-H.PURPOSE['hrd-dx'] = 'Persona tim HRD & divisi menjalankan skenario lintas divisi di prototype yang sama, plus kinerja tim tiap divisi.';
+H.PURPOSE['hrd-dx'] = 'Persona tim HRD menjalankan skenario portal HRD; divisi lain hanya pada langkah yang bersinggungan langsung dengan alur HRD.';
 H.SCREENS.push(['DX-HRD', 'HRD · Demo Experience Center', 'HRD DX', 'hrd-dx', 'ready', 'Semua persona demo']);
 register('hrd-dx', center, (p) => S(p.sc)?.name || 'Demo Experience Center HRD');
 })();

@@ -22,8 +22,9 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-dx'); await shot('DX-01-center');
   let t = await text();
   ok('Persona tampil: Made Gunarsa, Harja, Ayu, Asri, Eni Restini, Mila', ['Made Gunarsa', 'Harja', 'Ayu', 'Asri', 'Eni Restini', 'Mila'].every(n => t.includes(n)));
-  ok('5 skenario lintas divisi', (await p.locator('#view a:has-text("Mulai")').count()) === 5);
-  ok('Kinerja tim: Operational 4 outlet, Finance, Marketing, Commercial, HRD, Production Essence', /Spa Ubud/.test(t) && /Finance & Accounting/.test(t) && /Marketing/.test(t) && /Commercial/.test(t) && /HRD & Human Growth/.test(t) && /Production · JAENS Essence/.test(t));
+  ok('5 skenario portal HRD', (await p.locator('#view a:has-text("Mulai")').count()) === 5);
+  ok('Kinerja tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D', /Kinerja tim HRD/.test(t) && ['Made Gunarsa', 'Harja', 'Ayu', 'Putu Dewi D'].every(n => t.includes(n)));
+  ok('Fokus portal HRD: tanpa panel divisi lain (Commercial, Production Essence)', !/Production · JAENS Essence/.test(t) && !/Kinerja tim per divisi/.test(t));
 
   const runAll = async (sc, n) => {
     await go('hrd-dx?sc=' + sc);
