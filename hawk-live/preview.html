@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T16:22:08.029Z">
+<meta name="hawk-standalone" content="2026-11-13T16:40:13.016Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Preview lima portal</title>
 <style>
@@ -1574,6 +1574,10 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-chart svg { width: 100%; height: auto; max-height: 260px; color: var(--ink); }
 .hr-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); margin-top: 4px; }
 .hr-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+/* HRD F8 */
+.hr-acts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:170px}
+.trail{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.workflow-form select{max-width:100%}
 
 </style>
 </head>
@@ -4881,6 +4885,251 @@ const HR7 = (() => {
 if (typeof module !== 'undefined') module.exports = HR7;
 
 ;
+/* HAWK ERP · Portal HRD · model F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
+   Race Vegen (6 indikator, kontrak berversi), Race Beacon (5 kelompok, kontrak sendiri) & Success Factors, Daily/Weekly Race dari Planner F3,
+   Monthly Reflection (rekonsiliasi F5–F7, temuan → F3), STRACON (keputusan → Workplan → evaluasi), e-Deck 8 halaman dengan snapshot berversi,
+   Pusat Laporan & Jejak Bukti. Memperluas HR.EXT. Tanpa jaringan. */
+const HR8 = (() => {
+  const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
+  /* const di skrip klasik tidak menjadi properti globalThis, jadi rujuk langsung dengan typeof */
+  const X = (n) => { try { switch (n) { case 'HR4': return typeof HR4 !== 'undefined' ? HR4 : null; case 'HR5': return typeof HR5 !== 'undefined' ? HR5 : null; case 'HR6': return typeof HR6 !== 'undefined' ? HR6 : null; case 'HR7': return typeof HR7 !== 'undefined' ? HR7 : null; default: return null; } } catch (e) { return null; } };
+  const TODAY = H.TODAY;
+  const now = () => `${TODAY} ${new Date().toTimeString().slice(0, 5)}`;
+  const WEEK = ['2026-11-07', '2026-11-13'];
+  const PERIODS = { 2610: 'Oktober 2026 (ditutup)', 2611: 'November 2026 (provisional)' };
+
+  /* ---------- metrik Race: sumber hidup F4–F7 bila ada, selain itu fixture workbook ---------- */
+  const FIX = {
+    'Revenue per Employee': ['Rp', 23000000, 21000000, 'Finance + HG (simulasi)'], 'Development HAWK': ['%', 100, 75, 'Milestone HAWK'], 'Strategic Partnership HWC × Jaens Wellness': ['%', 100, 90, 'Milestone kemitraan'],
+    'Turnover': ['%', 2, 1.2, 'Direktori F2 (pergerakan karyawan)', 'max'], 'Absenteeism': ['%', 85, null, 'Definisi denominator perlu dikonfirmasi'], 'Exit Interview': ['%', 100, 90, 'Log exit interview'], 'BPJS Compliance': ['Dok', 1, 1, 'Laporan BPJS F7'],
+    'Uniform Request & Fulfillment': ['Hari', 7, 6, 'Permintaan seragam', 'max'], 'Recruitment Care Estate': ['%', 100, 70, 'Permintaan SDM Care Estate'], 'Recruitment HWC': ['%', 100, 60, 'Permintaan SDM HWC'], 'Share Loker': ['Dok', 6, 5, 'Kanal lowongan F4'],
+    'Staff Database Update': ['Dok', 1, 1, 'Audit direktori F2'], 'Employee Loyalty': ['Dok', 1, 1, 'Survei'], 'Training & Learning Program': ['Dok', 1, 1, 'Program pelatihan F6'], 'Pelatihan therapist reguler': ['Jam', 138, 145, 'Log pelatihan F6'], 'Pelatihan therapist baru': ['Jam', 240, 190, 'Onboarding F4/F6'],
+    'Onboarding': ['Dok', 1, 1, 'Checklist onboarding F3/F4'], 'Bisnis Proses': ['Dok', 3, 2, 'SOP Library F3'], 'Looker Studio': ['Dok', 1, 1, 'e-Deck F8'], 'XRace': ['Dok', 1, 1, 'Review XRace F8'], 'HR Activity Calendar': ['Dok', 1, 1, 'Kalender F3']
+  };
+  function metric(hr, key) {
+    const h5 = X('HR5'), h6 = X('HR6'), h7 = X('HR7');
+    if (key === 'Rasio biaya tenaga kerja' && h7) { const b = h7.budgetYear(hr); const o = b[9]; const t = h7.totals(h7.batchLines(hr, '2610')); return { unit: '%', target: 25, actual: Math.round(t.cost / o.rev * 1000) / 10, source: 'Payroll F7 PAY-2610-01 ÷ revenue Okt', dir: 'max', restricted: true, ev: 'PAY-2610-01', metric: 'MET-SALR v1' }; }
+    if (key === 'Therapist Utility' && h5) { const os = H.OUTLETS.map(o => h5.outletUtil(hr, o.id, '2610')); const u = os.reduce((s, x) => s + x.done, 0) / os.reduce((s, x) => s + x.cap, 0); return { unit: '%', target: 85, actual: Math.round(u * 1000) / 10, source: 'F5 total jam treatment ÷ total kapasitas (4 outlet)', ev: 'UTIL-2610', metric: 'MET-UTIL v1', route: 'hrd-mp-utility?p=2610' }; }
+    if (key === 'Recruitment Jaens Spa' && h5 && hr.f4) { const rs = hr.f4.reqs.filter(r => r.status === 'Disetujui').map(r => h5.reqProgress(hr, r.id)).filter(Boolean); const need = rs.reduce((s, x) => s + x.req.count, 0), placed = rs.reduce((s, x) => s + x.placed, 0); return { unit: '%', target: 100, actual: need ? Math.round(placed / need * 100) : null, source: `F4: ${placed} ditempatkan ÷ ${need} formasi disetujui`, ev: 'REQ-HR-*', metric: 'MET-FILL v1', route: 'hrd-mp-handoff' }; }
+    if (key === 'Talent Readiness' && h6) { const r = h6.readiness(hr); return { unit: '%', target: 85, actual: Math.round(r.rate * 100), source: `F6: ${r.ready}/${r.roles} peran kunci punya suksesor siap`, ev: 'PIPE-2611', metric: 'MET-READY v1', route: 'hrd-training?tab=pipe' }; }
+    if (key === 'Progress Training' && h6) { const e = h6.trainingEff(hr); return { unit: '%', target: 100, actual: e.rate === null ? null : Math.round(e.rate * 100), source: `F6: ${e.passed} lulus ÷ ${e.verified} terverifikasi`, ev: 'PRG-*', metric: 'MET-TRAIN v1', route: 'hrd-training?tab=eff' }; }
+    const f = FIX[key]; if (!f) return { unit: '—', target: null, actual: null, source: 'Belum dipetakan' };
+    return { unit: f[0], target: f[1], actual: f[2], source: f[3], dir: f[4] || 'min', ev: `EVD-WB-${key.replace(/\W+/g, '').slice(0, 8).toUpperCase()}`, metric: 'Workbook SER/Race (fixture)' };
+  }
+  const achOf = (m) => m.actual === null || m.actual === undefined || !m.target ? null : Math.min(1, m.dir === 'max' ? (m.actual === 0 ? 1 : m.target / m.actual) : m.actual / m.target);
+  function pillarScore(hr, p, role) {
+    const ms = p.keys.map(k => ({ key: k, ...metric(hr, k) })), vis = ms.filter(m => !m.restricted || role === 'hrd');
+    const measured = vis.map(achOf).filter(a => a !== null);
+    return { metrics: ms, visible: vis, restricted: ms.some(m => m.restricted) && role !== 'hrd', ach: measured.length ? measured.reduce((a, b) => a + b, 0) / measured.length : null, gaps: vis.filter(m => achOf(m) === null).length };
+  }
+  function raceScore(hr, race, role) {
+    const ps = race.indicators.map(p => ({ ...p, s: pillarScore(hr, p, role) }));
+    const m = ps.filter(p => p.s.ach !== null), w = m.reduce((s, p) => s + p.weight, 0);
+    return { pillars: ps, score: w ? m.reduce((s, p) => s + p.weight * p.s.ach, 0) / w * 100 : null, coverage: w, total: ps.reduce((s, p) => s + Number(p.weight), 0) };
+  }
+  const PILLARS = [
+    ['IND-1', 'Financial Efficiency & Value Creation', 20, 'Executive Financial Performance', ['Rasio biaya tenaga kerja', 'Revenue per Employee', 'Therapist Utility']],
+    ['IND-2', 'Collaboration Group', 10, 'Collaboration Group', ['Development HAWK', 'Strategic Partnership HWC × Jaens Wellness']],
+    ['IND-3', 'Stability & Risk Governance', 20, 'Risk Control & Compliance Assurance', ['Turnover', 'Absenteeism', 'Exit Interview', 'BPJS Compliance', 'Uniform Request & Fulfillment']],
+    ['IND-4', 'Talent Flow, Talent Engine, Pipeline', 20, 'Talent Management & Workforce Readiness', ['Recruitment Jaens Spa', 'Recruitment Care Estate', 'Recruitment HWC', 'Share Loker', 'Talent Readiness', 'Staff Database Update', 'Employee Loyalty']],
+    ['IND-5', 'Growth, Learning and Capability', 20, 'Learning & Capability Development', ['Training & Learning Program', 'Pelatihan therapist reguler', 'Pelatihan therapist baru', 'Progress Training', 'Onboarding']],
+    ['IND-6', 'Implementasi Ambidex', 10, 'Implementasi Ambidex', ['Bisnis Proses', 'Looker Studio', 'XRace', 'HR Activity Calendar']]
+  ].map(([id, name, weight, goal, keys]) => ({ id, name, weight, goal, objective: goal, keys }));
+  const BEACON = [
+    ['BCN-01', 'Sasaran & keselarasan unit', 15, 'IND-6', 'Kalender aktivitas HR & ritme Daily/Weekly', 'Berjalan', 'EMP-0142', '2026-11-30', 'TSK-0001'],
+    ['BCN-02', 'Akuisisi talenta', 25, 'IND-4', 'Isi 2 formasi therapist Ubud sebelum Desember', 'Berjalan', 'EMP-0145', '2026-12-01', 'TSK-0004'],
+    ['BCN-03', 'Kapabilitas & pembelajaran', 25, 'IND-5', 'Hot stone level Mahir untuk 10 therapist', 'Berjalan', 'EMP-0144', '2026-11-30', 'TSK-0101'],
+    ['BCN-04', 'Retensi & keterlibatan', 20, 'IND-3', 'Exit interview 100% & buddy system', 'Rencana', 'EMP-0144', '2026-12-15', 'TSK-0103'],
+    ['BCN-05', 'Tata kelola & kepatuhan', 15, 'IND-3', 'Laporan BPJS & dokumen SOP tepat waktu', 'Review', 'EMP-0143', '2026-11-15', 'TSK-0006']
+  ].map(([id, name, weight, parent, initiative, stage, pic, due, task]) => ({ id, name, weight, parent, initiative, stage, pic, due, task, evidence: [], reviews: [] }));
+  const RUBRIC = ['Kualitas objective', 'Keselarasan bisnis', 'Efektivitas tim & individu', 'Proses', 'Output', 'Stakeholder'];
+
+  /* ---------- Daily / Weekly dari Planner F3 ---------- */
+  const tasks = (hr) => hr.f3?.tasks || [];
+  const evOf = (hr, id) => (hr.f3?.events || []).filter(e => e.task === id);
+  function daily(hr, emp, date = TODAY) {
+    const ts = tasks(hr).filter(t => t.pic === emp || (hr.f3?.focus || []).some(f => f.emp === emp && f.task === t.id));
+    const focus = (hr.f3?.focus || []).filter(f => f.emp === emp && f.date === date).map(f => f.task);
+    const doneToday = ts.filter(t => evOf(hr, t.id).some(e => e.after === 'Selesai' && e.at.startsWith(date)));
+    return { focus: ts.filter(t => focus.includes(t.id)), done: doneToday, verified: doneToday.filter(t => !t.requireReview || evOf(hr, t.id).some(e => /Review diterima|review-accept|Diterima/.test(e.kind + ' ' + (e.after || '')))), late: ts.filter(t => t.due && t.due < date && t.stage !== 'Selesai'), blocked: ts.filter(t => t.blocker && t.stage !== 'Selesai'), extra: ts.filter(t => !focus.includes(t.id) && evOf(hr, t.id).some(e => e.kind === 'Dibuat' && e.at.startsWith(date))) };
+  }
+  function weekly(hr, ws) {
+    const ts = tasks(hr).filter(t => !ws || t.ws === ws);
+    return { commit: ts.filter(t => t.due && t.due >= WEEK[0] && t.due <= WEEK[1]), carried: ts.filter(t => t.due && t.due < WEEK[0] && t.stage !== 'Selesai').map(t => ({ t, originalDue: evOf(hr, t.id).find(e => e.kind === 'Ubah Tenggat')?.before || t.due })), done: ts.filter(t => t.stage === 'Selesai' && evOf(hr, t.id).some(e => e.after === 'Selesai' && e.at.slice(0, 10) >= WEEK[0])), blocked: ts.filter(t => t.blocker && t.stage !== 'Selesai'), cap: [...new Set(ts.filter(t => t.pic && t.stage !== 'Selesai').map(t => t.pic))].map(e => ({ emp: e, open: ts.filter(t => t.pic === e && t.stage !== 'Selesai').length })) };
+  }
+
+  /* ---------- Monthly Reflection ---------- */
+  function reflection(hr, period, role) {
+    const h5 = X('HR5'), h6 = X('HR6'), h7 = X('HR7');
+    const rows = [];
+    const add = (sec, key, label, target, actual, unit, source, route, restricted) => rows.push({ sec, key, label, target, actual, unit, source, route, restricted: !!restricted, hidden: !!restricted && role !== 'hrd' });
+    if (h5) for (const o of H.OUTLETS) { const u = h5.outletUtil(hr, o.id, period === '2610' ? '2610' : 'W46'); add('Kapasitas', `UTIL-${o.id}`, `Utility ${o.name}`, 85, Math.round(u.u * 1000) / 10, '%', period === '2610' ? 'F5 Oktober (= Beranda F1)' : 'F5 Minggu 46', `hrd-mp-utility?outlet=${o.id}${period === '2610' ? '&p=2610' : ''}`); }
+    if (h6) { const a = h6.avgX(hr, h6.therapists(hr), period); add('KPI', 'XSCORE', 'Rata-rata XScore therapist', 85, a.avg === null ? null : Math.round(a.avg * 10) / 10, 'poin', `F6 · ${a.full}/${a.of} bukti lengkap`, `hrd-xscore?p=${period}`); const e = h6.trainingEff(hr); add('Talenta', 'TRAIN', 'Efektivitas pelatihan', 85, e.rate === null ? null : Math.round(e.rate * 100), '%', 'F6 pelatihan', 'hrd-training?tab=eff'); const r = h6.readiness(hr); add('Talenta', 'READY', 'Talent readiness', 85, Math.round(r.rate * 100), '%', 'F6 pipeline', 'hrd-training?tab=pipe'); for (const s of h6.SER.filter(x => ['EXP-03', 'EXP-07', 'EXP-12'].includes(x.id))) add('SER', s.id, s.name, s.target, s.actual, s.unit, `SER F6 · ${s.source}`, `hrd-ser?id=${s.id}`); }
+    if (h5 && hr.f4) { const open = hr.f4.reqs.filter(x => x.status !== 'Ditolak').map(x => h5.reqProgress(hr, x.id)).reduce((s, x) => s + (x?.open || 0), 0); add('Talenta', 'OPEN', 'Posisi terbuka', 0, open, 'orang', 'F4/F5 permintaan tenaga', 'hrd-mp-handoff'); }
+    if (h7) { const b = h7.batchOf(hr, period); const t = h7.totals(h7.batchLines(hr, period)); const rev = h7.budgetYear(hr)[period === '2610' ? 9 : 10]; add('Biaya', 'SALR', 'Total People Cost Ratio', 25, Math.round(t.cost / (rev.rev || rev.revPlan) * 1000) / 10, '%', `F7 ${b ? b.id + ' · ' + b.status : 'draf'} ÷ revenue`, 'hrd-budget', true); add('Biaya', 'THP', 'Total take-home pay', null, t.thp, 'Rp', `F7 ${b?.id || 'draf'}`, `hrd-payroll?period=${period}`, true); }
+    return rows;
+  }
+  const gapOf = (r) => r.actual === null || r.actual === undefined ? 'Belum tersedia' : r.target === null ? '—' : r.key.startsWith('UTIL') ? (r.actual > 100 ? 'Di atas kapasitas' : r.actual < 70 ? 'Di bawah 70%' : 'Dalam rentang') : r.key === 'SALR' ? (r.actual > 30 ? 'Di atas batas' : r.actual < 25 ? 'Di bawah rencana' : 'Dalam koridor') : r.key === 'OPEN' ? (r.actual > 0 ? `${r.actual} terbuka` : 'Terpenuhi') : r.actual >= r.target ? 'Tercapai' : 'Di bawah target';
+
+  /* ---------- e-Deck ---------- */
+  const PAGES = ['Dashboard HR Performance', 'Therapist Utility', 'Therapist Productivity', 'Manpower', 'Recruitment', 'Absen', 'Therapist Training', 'Tata Kelola'];
+  function deckPage(hr, k, period, scope, role) {
+    const h4 = X('HR4'), h5 = X('HR5'), h6 = X('HR6'), h7 = X('HR7');
+    const outs = scope && scope !== 'all' ? [scope] : H.OUTLETS.map(o => o.id), P5 = period === '2610' ? '2610' : 'W46';
+    const v = [];
+    const put = (label, value, unit, src, route, ev, restricted) => v.push({ label, value, unit, src, route, ev, restricted: !!restricted, hidden: !!restricted && role !== 'hrd' });
+    if (k === 0) { const n = outs.reduce((s, o) => s + H.people(hr, 'hrd', { outlet: o }).length, 0) + (scope && scope !== 'all' ? 0 : H.people(hr, 'hrd', { outlet: H.HQ.id }).length); put('Headcount aktif', n, 'orang', 'Roster F2', 'hrd-roster', 'ROSTER'); if (h6) { const s = h6.SER.filter(x => x.actual !== null && !x.restricted); put('Ekspektasi SER tercapai', `${s.filter(x => h6.ach(x.actual, x.target, x.dir === 'max' ? 'max' : 'min') >= 1).length}/${h6.SER.length}`, '', 'SER F6', 'hrd-ser', 'SER-2610'); } if (h7) { const t = h7.totals(h7.batchLines(hr, period).filter(l => !scope || scope === 'all' || l.loc === scope)); put('Biaya tenaga kerja (agregat)', Math.round(t.cost), 'Rp', `F7 ${h7.batchOf(hr, period)?.id || 'draf'}`, 'hrd-budget', h7.batchOf(hr, period)?.id, true); } }
+    if (k === 1 && h5) for (const o of outs) { const u = h5.outletUtil(hr, o, P5); put(`Utility ${H.locName(o)}`, Math.round(u.u * 1000) / 10, '%', `F5 ${Math.round(u.done)} ÷ ${Math.round(u.cap)} jam${u.ot ? ` · lembur ${u.ot} jam` : ''}`, `hrd-mp-utility?outlet=${o}${period === '2610' ? '&p=2610' : ''}`, `UTIL-${o}-${period}`); }
+    if (k === 2 && h6) for (const o of outs) { const ls = h6.therapists(hr, o); const xs = ls.map(p => h6.xscore(hr, p.id, period)).filter(Boolean); const pr = xs.map(x => x.comps[1].actual).filter(a => a !== null); put(`Produktivitas ${H.locName(o)}`, pr.length ? Math.round(pr.reduce((a, b) => a + b, 0) / pr.length * 1000) / 10 : null, '%', 'F6 tamu aktual ÷ target (MET-PROD v1)', `hrd-xscore?outlet=${o}&p=${period}`, `EVD-GST-${period}`); }
+    if (k === 3 && h5) { for (const o of outs) { const u = h5.outletUtil(hr, o, P5); put(`Bantuan antaroutlet ${H.locName(o)}`, u.help ?? 0, 'jam', 'F5 POS', `hrd-mp-capacity?outlet=${o}`, `UTIL-${o}`); } const open = (hr.f4?.reqs || []).filter(r => r.status !== 'Ditolak' && outs.includes(r.outlet)).map(r => h5.reqProgress(hr, r.id)).reduce((s, x) => s + (x?.open || 0), 0); put('Formasi sedang dipenuhi', open, 'posisi', 'F4/F5', 'hrd-mp-handoff', 'REQ-HR-*'); }
+    if (k === 4 && h4) { const apps = hr.f4.apps.filter(a => outs.includes(h4.vacOf(hr, a.vac)?.location)); put('Lamaran', apps.length, '', 'F4 pipeline', 'hrd-rec-candidates', 'APP-*'); put('Shortlist ke atas', apps.filter(a => !['Lamaran Masuk', 'Klarifikasi', ...h4.ENDS].includes(a.stage)).length, '', 'F4', 'hrd-rec-candidates', 'APP-*'); put('Penempatan aktif', apps.filter(a => a.stage === 'Penempatan Aktif').length, '', 'F4', 'hrd-rec-place', 'APP-*'); put('Sumber kanal', [...new Set(apps.map(a => a.channel))].join(', '), '', 'F4', 'hrd-rec-candidates', 'CH'); }
+    if (k === 5) { put('Presensi terverifikasi', period === '2610' ? 97.8 : 96.4, '%', 'F2 approval presensi', 'hrd-att-approval', `ATT-${period}`); put('Absenteeism', null, '%', 'Definisi denominator perlu dikonfirmasi', 'hrd-ser?id=EXP-12', null); }
+    if (k === 6 && h6) { const e = h6.trainingEff(hr); put('Peserta hadir', e.attended, '', 'F6', 'hrd-training', 'PRG-*'); put('Praktik terverifikasi', `${e.verified} (${Math.round((e.coverage || 0) * 100)}%)`, '', 'F6', 'hrd-training', 'PRG-*'); put('Lulus praktik', e.passed, '', 'F6', 'hrd-training?tab=eff', 'PRG-*'); }
+    if (k === 7) { put('Kartu Review menunggu', tasks(hr).filter(t => t.stage === 'Review').length, '', 'Planner F3', 'hrd-list?stage=Review', 'TSK-*'); put('Approval tertunda', (hr.f2?.ledger || []).length ? 'lihat F2' : 0, '', 'Approval F2', 'hrd-approval', 'APR-*'); put('Peristiwa audit periode', hr.audit.length, '', 'Audit F1', 'hrd-audit', 'AUD-*'); put('Dokumen SOP aktif', (hr.f3?.templates || []).filter(t => t.active).length, '', 'Library F3', 'hrd-library', 'TPL-*'); }
+    return v;
+  }
+
+
+  /* ---------- Pusat Laporan & Jejak Bukti ---------- */
+  function catalog(hr, role) {
+    const f8 = ensure(hr), h5 = X('HR5'), h6 = X('HR6'), h7 = X('HR7'), mgr = role === 'hrd';
+    const ar = activeRace(hr), rs = raceScore(hr, ar.ver, role);
+    const rf = (id) => f8.refresh[id] || null;
+    const L = [];
+    const put = (o) => { const r = rf(o.id); L.push({ ...o, refreshed: r?.at || o.updated, refreshCount: r?.count || 0, refreshStatus: r?.status || null, denied: !!o.restricted && !mgr }); };
+    put({ id: 'RPT-RACE-HG', name: 'Skor Race Vegen Human Growth', unit: 'Human Growth', outlet: 'all', div: 'HRD', period: '2611', version: `RACE v${ar.ver.v}`, formula: 'Σ bobot × capaian indikator terukur ÷ bobot terukur', result: rs.score === null ? null : Math.round(rs.score * 10) / 10, evidence: 'EVD-WB-* · UTIL-2610 · PRG-* · PIPE-2611', updated: '2026-11-13 08:00', status: rs.pillars.some(p => p.s.gaps) ? 'Provisional' : 'Lengkap', route: 'hrd-race', follow: f8.decisions.length });
+    if (h5) for (const o of H.OUTLETS) { const u = h5.outletUtil(hr, o.id, 'W46'); put({ id: `RPT-UTIL-${o.id}`, name: `Therapist Utility ${o.name}`, unit: 'Operational', outlet: o.id, div: 'Spa', period: '2611', version: 'MET-UTIL v1', formula: 'jam treatment selesai ÷ kapasitas reguler', result: Math.round(u.u * 1000) / 10, evidence: `UTIL-${o.id}-2611 · POS W46`, updated: '2026-11-13 07:00', status: 'Provisional', route: `hrd-mp-utility?outlet=${o.id}`, follow: tasks(hr).filter(t => t.source?.id === `UTIL-${o.id}-2611`).length }); }
+    if (h6) { const a = h6.avgX(hr, h6.therapists(hr), '2611'); put({ id: 'RPT-XSCORE-2611', name: 'XScore therapist November', unit: 'Human Growth', outlet: 'all', div: 'Spa', period: '2611', version: 'MET-UTIL/PROD/LEARN v1 · bobot 50/30/20', formula: 'Σ bobot × capaian ÷ bobot terukur', result: a.avg === null ? null : Math.round(a.avg * 10) / 10, evidence: 'EVD-POS-2611-* · EVD-GST-2611-* · EVD-LRN-2611-*', updated: '2026-11-13 07:00', status: a.full < a.of ? 'Provisional' : 'Lengkap', route: 'hrd-xscore?p=2611', follow: 0 });
+      const ab = h6.SER.find(x => x.id === 'EXP-12'); put({ id: 'RPT-ABSEN-2611', name: 'Absenteeism', unit: 'HRD Operations', outlet: 'all', div: 'HRD', period: '2611', version: 'Definisi belum dikunci', formula: 'Denominator perlu konfirmasi', result: ab?.actual ?? null, evidence: '', updated: null, status: 'Bukti kosong', route: 'hrd-ser?id=EXP-12', follow: 0 });
+      const ex = h6.SER.find(x => x.id === 'EXP-07'); put({ id: 'RPT-EXIT-2610', name: ex ? ex.name : 'Exit Interview', unit: 'Human Growth', outlet: 'all', div: 'HRD', period: '2610', version: 'Workbook v1', formula: 'exit interview selesai ÷ karyawan keluar', result: ex?.actual ?? null, evidence: 'EVD-WB-EXIT (2026-09-30)', updated: '2026-09-30 17:00', status: 'Kedaluwarsa', route: 'hrd-ser?id=EXP-07', follow: 0 }); }
+    if (h7) { const b = h7.batchOf(hr, '2610'); const t = h7.totals(h7.batchLines(hr, '2610')); put({ id: 'RPT-PAY-2610', name: 'Ringkasan Gaji & biaya Oktober', unit: 'HRD Operations', outlet: 'all', div: 'HRD', period: '2610', version: 'RUL-* v1 · snapshot batch', formula: 'Σ slip batch terkunci', result: t.thp, resultUnit: 'Rp', evidence: b?.id || 'PAY-2610-01', updated: b?.lockedAt || '2026-10-31 18:00', status: 'Lengkap', route: 'hrd-reports?period=2610', restricted: true, follow: 0 }); }
+    for (const sn of f8.snapshots) put({ id: sn.id, name: `Snapshot e-Deck ${PERIODS[sn.period] || sn.period}`, unit: 'HRD', outlet: sn.scope, div: 'HRD', period: sn.period, version: Object.entries(sn.versions).map(([k, v]) => `${k} ${v}`).join(' · '), formula: '8 halaman, nilai beku saat review', result: `v${sn.v}`, evidence: sn.prev ? `koreksi dari ${sn.prev}` : 'snapshot awal', updated: sn.at, status: sn.prev ? 'Dikoreksi' : 'Snapshot', route: `hrd-race-deck?snap=${sn.id}`, restricted: sn.sensitive && false, sensitive: sn.sensitive, follow: 0 });
+    return L;
+  }
+
+  function seed() {
+    return {
+      seeded: true,
+      races: [{ id: 'RACE-HG-2611', name: 'Race Vegen Human Growth', scope: 'Human Growth · Grup Spa', period: '2611', objective: 'Perkuat stabilitas, kepatuhan, efisiensi, dan kesiapan talenta.', versions: [{ v: 1, status: 'Aktif', indicators: PILLARS.map(p => ({ ...p, keys: [...p.keys] })), at: '2026-11-01 09:00', by: 'Manager HRD' }], demo: true }],
+      beacon: { id: 'BCN-CTR-2611', version: 1, items: BEACON.map(b => ({ ...b })), demo: true },
+      sessions: [{ id: 'SES-W45-HRD', kind: 'Weekly', at: '2026-11-06 16:00', scope: 'HRD', commits: ['TSK-0001', 'TSK-0008'], status: { 'TSK-0001': 'Workplan', 'TSK-0008': 'Workplan' }, notes: 'Komitmen W45: validasi POS Ubud, update kontak darurat', demo: true }],
+      notes: [], decisions: [{ id: 'DEC-2610-001', title: 'Uji jadwal shift split di Spa Santi', finding: 'FND-UTIL-SHT-2610', alternatives: ['Kurangi formasi Santi', 'Shift split 2 minggu', 'Promosi paket sore'], chosen: 'Shift split 2 minggu', reason: 'Pembatalan sore tinggi; hindari pengurangan orang sebelum data permintaan lengkap', owner: 'EMP-0142', due: '2026-11-15', criteria: { key: 'UTIL-OUT-SHT', op: '>=', value: 70, period: '2611' }, task: 'TSK-0002', status: 'Dievaluasi', evaluation: null, at: '2026-10-31 15:00', demo: true }],
+      snapshots: [], refresh: {}, seq: { ses: 1, dec: 1, snp: 0, note: 0 }
+    };
+  }
+  function ensure(hr) {
+    if (hr.f2 && hr.f2.f8) { hr.f8 = hr.f2.f8; delete hr.f2.f8; }
+    if (!hr.f8 || !hr.f8.seeded) { const k = hr.f8; hr.f8 = seed(); if (k) { hr.f8.decisions.push(...(k.decisions || [])); hr.f8.snapshots.push(...(k.snapshots || [])); } }
+    return hr.f8;
+  }
+  const activeRace = (hr) => { const r = ensure(hr).races[0]; return { race: r, ver: [...r.versions].reverse().find(v => v.status === 'Aktif'), draft: r.versions.find(v => v.status === 'Draf') }; };
+  const canSee = (role) => ['owner', 'hrd', 'hrd-ops', 'hg-lead', 'ops-manager', 'outlet-spv'].includes(role);
+  const evaluate = (hr, d) => { const c = d.criteria; if (!c) return null; const row = reflection(hr, c.period, 'hrd').find(r => r.key === c.key); if (!row || row.actual === null) return { actual: null, met: null }; const met = c.op === '>=' ? row.actual >= c.value : row.actual <= c.value; return { actual: row.actual, met, label: row.label }; };
+
+  function update(state, hr, action, input, ctx) {
+    const f8 = ensure(hr), { audit, by, role } = ctx;
+    const lead = () => { if (!['hrd', 'hg-lead', 'owner'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} tidak mengelola Race.`); };
+    const team = () => { if (!['hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'owner'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label}.`); };
+    switch (action) {
+      case 'race-draft': {
+        lead(); const { race, ver, draft } = activeRace(hr); if (draft) return `${race.id}-v${draft.v}`;
+        const v = race.versions.length + 1; race.versions.push({ v, status: 'Draf', indicators: JSON.parse(JSON.stringify(ver.indicators)), at: now(), by }); return `${race.id}-v${v}`;
+      }
+      case 'race-edit': {
+        lead(); const { race, draft } = activeRace(hr); if (!draft) throw new Error('Buat draf versi baru sebelum mengedit.');
+        if (input.add === '1') { const name = String(input.name || '').trim(); if (name.length < 3) throw new Error('Nama indikator minimal 3 karakter.'); draft.indicators.push({ id: `IND-${draft.indicators.length + 1}`, name, weight: Number(input.weight || 0), goal: input.goal || name, objective: input.goal || name, keys: String(input.keys || '').split('|').map(s => s.trim()).filter(Boolean) }); return race.id; }
+        const it = draft.indicators.find(i => i.id === input.id); if (!it) throw new Error('Indikator tidak ditemukan.');
+        const w = Number(input.weight); if (!(w >= 0 && w <= 100)) throw new Error('Bobot 0–100.'); it.weight = w; if (input.goal) it.goal = input.goal; return race.id;
+      }
+      case 'race-activate': {
+        if (!['hrd', 'owner'].includes(role)) throw new Error('Aktivasi versi Race oleh Manager HRD.');
+        const { race, ver, draft } = activeRace(hr); if (!draft) throw new Error('Tidak ada draf.');
+        const sum = draft.indicators.reduce((s, i) => s + Number(i.weight), 0); if (Math.abs(sum - 100) > 1e-9) throw new Error(`Total bobot ${sum}%. Versi tetap draf sampai tepat 100%.`);
+        ver.status = 'Arsip'; draft.status = 'Aktif'; draft.activatedAt = now(); draft.by = by;
+        audit(hr, by, 'Aktivasi Race Vegen', `${race.id} v${draft.v} · ${draft.indicators.length} indikator`, { object: 'Race', ref: race.id, before: `v${ver.v}`, after: `v${draft.v}` });
+        return `${race.id}-v${draft.v}`;
+      }
+      case 'beacon-review': {
+        lead(); const b = f8.beacon.items.find(x => x.id === input.id); if (!b) throw new Error('Beacon tidak ditemukan.');
+        const scores = RUBRIC.map((_, i) => Number(input['r' + i])); if (scores.some(s => !(s >= 1 && s <= 4))) throw new Error('Isi semua kriteria Success Factors (1–4).');
+        const reason = String(input.reason || '').trim(); if (reason.length < 10) throw new Error('Alasan review minimal 10 karakter.');
+        const evd = String(input.evidence || b.task || '').trim(); if (!evd) throw new Error('Bukti review wajib.');
+        b.reviews.push({ id: `RVW-${b.id}-${b.reviews.length + 1}`, scores, avg: Math.round(scores.reduce((a, c) => a + c, 0) / scores.length * 10) / 10, reason, evidence: evd, by, at: now(), rubric: 'RF v1' });
+        audit(hr, by, 'Review Success Factors', `${b.id} · rata-rata ${b.reviews[b.reviews.length - 1].avg}`, { object: 'Race', ref: b.id });
+        return b.reviews[b.reviews.length - 1].id;
+      }
+      case 'race-session': {
+        team(); const kind = ['Daily', 'Weekly', 'Monthly'].includes(input.kind) ? input.kind : 'Daily';
+        const commits = String(input.commits || '').split(',').map(s => s.trim()).filter(Boolean);
+        const id = `SES-${kind[0]}${String(++f8.seq.ses).padStart(3, '0')}`;
+        f8.sessions.push({ id, kind, at: now(), scope: input.scope || 'HRD', commits, status: Object.fromEntries(commits.map(c => [c, tasks(hr).find(t => t.id === c)?.stage || '—'])), notes: input.notes || '', by, demo: true });
+        return id;
+      }
+      case 'weekly-action': {
+        team(); const title = String(input.title || '').trim(); if (title.length < 5) throw new Error('Judul tindakan minimal 5 karakter.'); if (!input.pic || !input.due) throw new Error('Tindakan berikutnya wajib PIC dan tenggat.');
+        return H.EXT.update(state, hr, 'task-create', { ws: input.ws || 'HRD', stage: 'Workplan', title, pic: input.pic, due: input.due, sourceId: input.sourceId || `WEEK-W46-${title.slice(0, 12)}`, sourceType: 'Weekly Race', sourceLabel: 'Weekly Race W46', sourceRoute: 'hrd-race-weekly', finding: input.finding || null, scope: input.scope || 'ENT-SPA' }, { ...ctx, role: ['hrd', 'hrd-ops', 'hg-lead'].includes(role) ? role : 'hrd-ops' });
+      }
+      case 'rfl-note': {
+        team(); const sec = input.sec || 'Umum'; const text = String(input.text || '').trim(); if (text.length < 5) throw new Error('Catatan minimal 5 karakter.');
+        const id = `RFN-${input.period || '2611'}-${String(++f8.seq.note).padStart(3, '0')}`; f8.notes.push({ id, period: String(input.period || '2611'), sec, kind: input.kind || 'Penyebab selisih', text, evidence: input.evidence || '', by, at: now(), demo: true }); return id;
+      }
+      case 'rfl-mark': {
+        team(); const period = String(input.period || '2611'); const row = reflection(hr, period, role).find(r => r.key === input.key); if (!row) throw new Error('Metrik tidak ditemukan.');
+        if (row.hidden) throw new Error('Akses ditolak: metrik biaya khusus Manager HRD.');
+        const stage = ['Ide', 'Issue', 'Workplan'].includes(input.stage) ? input.stage : 'Issue';
+        const util = row.key.startsWith('UTIL-'), o = util ? row.key.slice(5) : null;
+        const sid = util ? `UTIL-${o}-2611` : `RFL-${period}-${row.key}`, finding = util ? `FND-UTIL-${o.slice(4)}-2611` : `FND-RFL-${period}-${row.key}`;
+        const t = H.EXT.update(state, hr, 'task-create', { ws: ['TRAIN', 'READY', 'XSCORE'].includes(row.key) ? 'HG' : 'HRD', stage, title: row.restricted ? `Tinjau metrik biaya Reflection ${period}` : `${row.label} ${row.actual}${row.unit === '%' ? '%' : ' ' + row.unit}: ${gapOf(row).toLowerCase()}`, scope: o || 'ENT-SPA', sourceId: sid, sourceType: 'Monthly Reflection', sourceLabel: `Reflection ${period} · ${row.restricted ? 'metrik terbatas' : row.label}`, sourceRoute: row.restricted ? `hrd-race-reflection?period=${period}` : row.route, finding, pic: stage === 'Workplan' ? (input.pic || 'EMP-0142') : undefined, due: stage === 'Workplan' ? (input.due || '2026-11-27') : undefined }, { ...ctx, role: ['hrd', 'hrd-ops', 'hg-lead'].includes(role) ? role : 'hrd-ops' });
+        return t;
+      }
+      case 'dec-create': {
+        lead(); const title = String(input.title || '').trim(); if (title.length < 5) throw new Error('Judul keputusan minimal 5 karakter.');
+        const reason = String(input.reason || '').trim(); if (reason.length < 10) throw new Error('Alasan keputusan minimal 10 karakter.');
+        if (!input.owner || !input.due) throw new Error('Keputusan wajib pemilik dan tenggat.');
+        const id = `DEC-2611-${String(++f8.seq.dec).padStart(3, '0')}`;
+        f8.decisions.push({ id, title, finding: input.finding || null, task: input.task || null, alternatives: String(input.alternatives || '').split('|').map(s => s.trim()).filter(Boolean), chosen: input.chosen || '', reason, owner: input.owner, due: input.due, criteria: input.ckey ? { key: input.ckey, op: input.cop || '<=', value: Number(input.cvalue), period: input.cperiod || '2612' } : null, status: 'Diputuskan', evaluation: null, workplan: null, at: now(), by, demo: true });
+        audit(hr, by, 'Keputusan STRACON', `${id} · ${title}`, { object: 'STRACON', ref: id });
+        return id;
+      }
+      case 'dec-workplan': {
+        lead(); const d = f8.decisions.find(x => x.id === input.id); if (!d) throw new Error('Keputusan tidak ditemukan.'); if (d.workplan) return d.workplan;
+        d.workplan = H.EXT.update(state, hr, 'task-create', { ws: 'HRD', stage: 'Workplan', title: `Jalankan keputusan: ${d.title}`, pic: d.owner, due: d.due, sourceId: d.id, sourceType: 'STRACON', sourceLabel: `${d.id} · ${d.chosen || d.title}`, sourceRoute: `hrd-race-stracon?id=${d.id}`, finding: d.finding, scope: 'ENT-SPA' }, { ...ctx, role: role === 'owner' ? 'hrd' : role });
+        return d.workplan;
+      }
+      case 'dec-evaluate': {
+        lead(); const d = f8.decisions.find(x => x.id === input.id); if (!d) throw new Error('Keputusan tidak ditemukan.');
+        const e = evaluate(hr, d); d.evaluation = { ...e, note: input.note || '', by, at: now() }; d.status = 'Dievaluasi';
+        audit(hr, by, 'Evaluasi keputusan', `${d.id} · ${e?.met === null ? 'data belum tersedia' : e?.met ? 'kriteria tercapai' : 'kriteria belum tercapai'}`, { object: 'STRACON', ref: d.id });
+        return d.id;
+      }
+      case 'deck-snapshot': {
+        team(); const period = String(input.period || '2611'), scope = input.scope || 'all';
+        const pages = PAGES.map((name, k) => ({ name, values: deckPage(hr, k, period, scope, 'hrd') }));
+        const prev = input.prev && f8.snapshots.find(s => s.id === input.prev);
+        const base = prev ? prev.base : `SNP-${period}-${String(++f8.seq.snp).padStart(3, '0')}`;
+        const v = prev ? f8.snapshots.filter(s => s.base === base).length + 1 : 1;
+        if (prev && input.page !== undefined) { const pg = pages[Number(input.page)]; const val = pg?.values.find(x => x.label === input.field); if (!val) throw new Error('Field koreksi tidak ditemukan.'); if (String(input.reason || '').trim().length < 10) throw new Error('Alasan koreksi minimal 10 karakter.'); val.before = val.value; val.value = isNaN(Number(input.value)) ? input.value : Number(input.value); val.corrected = input.reason; }
+        const id = `${base}-v${v}`;
+        f8.snapshots.push({ id, base, v, prev: prev?.id || null, period, scope, pages, versions: { 'MET-UTIL': 'v1', 'MET-PROD': 'v1', 'MET-TRAIN': 'v1', 'RACE': `v${activeRace(hr).ver.v}` }, completeness: 'Absenteeism belum terdefinisi · November provisional', note: input.note || '', sensitive: pages.some(p => p.values.some(x => x.restricted)), by, at: now(), demo: true });
+        audit(hr, by, prev ? 'Koreksi snapshot e-Deck' : 'Snapshot e-Deck', `${id}${prev ? ' ← ' + prev.id : ''}`, { object: 'Laporan', ref: id });
+        return id;
+      }
+      case 'report-refresh': {
+        team(); const k = input.id; const r = f8.refresh[k] || { count: 0, at: null }; r.count++; r.at = now(); r.status = input.fail === '1' ? 'Gagal (sumber tidak merespons, simulasi)' : 'Diperbarui'; f8.refresh[k] = r; return k;
+      }
+      default: return undefined;
+    }
+  }
+  const prevExt = { ...H.EXT };
+  H.EXT.update = (state, hr, action, input, ctx) => { const r = update(state, hr, action, input, ctx); return r !== undefined ? r : prevExt.update(state, hr, action, input, ctx); };
+  H.EXT.purge = (hr) => { prevExt.purge?.(hr); delete hr.f8; };
+  H.EXT.keep = (hr) => { const k = prevExt.keep?.(hr) || {}; if (hr.f8) k.f8 = { seeded: false, decisions: hr.f8.decisions.filter(d => !d.demo), snapshots: hr.f8.snapshots.filter(s => !s.demo) }; return k; };
+  H.EXT.ensure = (hr) => { if (hr.f2 && hr.f2.f8) { hr.f8 = hr.f2.f8; delete hr.f2.f8; } prevExt.ensure?.(hr); ensure(hr); };
+  return { PERIODS, PAGES, RUBRIC, PILLARS, WEEK, ensure, metric, achOf, pillarScore, raceScore, activeRace, daily, weekly, reflection, gapOf, deckPage, evaluate, canSee, catalog };
+})();
+if (typeof module !== 'undefined') module.exports = HR8;
+
+;
 /* HAWK ERP · portal preview shell (Finance → Operational → Commercial → Sales → HRD; HRD is registered by hrd.js)
    Phase 1: F1-01 portal picker, F1-02 Commercial Executive Summary (SER), F1-03 drill-down,
    F1-04 Sales home, F7-01 screen map. Other routes are the original sandbox screens, labelled with
@@ -7105,6 +7354,217 @@ register('hrd-budget', only(budget, 'agg'), () => 'Dashboard People Budgeting');
 register('hrd-bud-plan', only(plan, 'agg'), () => 'Rencana Anggaran & Alokasi Divisi');
 register('hrd-bud-sim', only(sim, 'agg'), (p) => p.id || 'Simulasi Rekrutmen & Outlet Baru');
 register('hrd-bud-trend', only(trend, 'agg'), () => 'Tren Bulanan & Kurva S');
+})();
+
+;
+/* HAWK ERP · Portal HRD · F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
+   NV01 Race Vegen (hrd-race) · NV02 Race Beacon & Success Factors (hrd-race-beacon) · NV03 Daily Race (hrd-race-daily) ·
+   NV04 Weekly Race (hrd-race-weekly) · NV05 Monthly Reflection (hrd-race-reflection) · NV06 STRACON (hrd-race-stracon) ·
+   NV07 e-Deck Reflection HRD (hrd-race-deck) · NV08 Pusat Laporan & Jejak Bukti (hrd-report-center). */
+(() => {
+const H = window.HL;
+const { esc, table, card, qs, link, rp } = H;
+const hr = () => { const h = HR.ensure(H.state); HR.EXT.ensure?.(h); return h; };
+const f8 = () => HR8.ensure(hr());
+const role = () => H.prefs.role;
+const def = () => HR.roleDef(role());
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const empName = (id) => id ? (hr().people.find(p => p.id === id)?.name || id) : '—';
+const tlink = (id) => id ? link('hrd-task' + qs({ id }), id) : '—';
+const tabs = (route, cur, list, params = {}, key = 'tab') => `<nav class="tabs" aria-label="Bagian">${list.map(([k, l]) => `<a class="tab${k === cur ? ' on' : ''}" href="#${route}${qs({ ...params, [key]: k })}" ${k === cur ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+const denied = (why) => `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>${why}</p><div class="actions"><button type="button" class="btn" data-hr-role="hrd">Ganti ke Manager HRD</button></div></section>`;
+const register = (id, fn, title) => { H.REGISTRY[id] = fn; fn.title = title; };
+const KC = ['g-teal', 'g-violet', 'g-blue', 'g-gold'];
+const kpiLinks = (es) => `<section class="grid g4 keep2 kpis">${es.map(([l, v, h, sub], i) => `<a class="kpi ${KC[i % 4]}" href="${h}"><div class="lbl">${l}</div><div class="val">${v}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</a>`).join('')}</section>`;
+const MGR = () => role() === 'hrd';
+const LEAD = () => ['hrd', 'hg-lead', 'owner'].includes(role());
+const guard = (fn) => (p) => HR8.canSee(role()) ? fn(p) : denied(`Role demo <b>${esc(def().label)}</b> tidak membuka AmbideX, Race dan Reflection. Karyawan melihat kartu dan XScore sendiri di ${link('hrd-myday', 'My Day')} dan ${link('hrd-kpi', 'Kinerja')}.`);
+const demo = (extra = '') => `<p class="active-filters">${chip('DATA DEMO · R&D', 'sandbox')} Workbook Race, skor & laporan sintetis · rumus XScore resmi dan Absenteeism belum dikunci${extra}</p>`;
+const SPV = () => role() === 'outlet-spv';
+const fmtV = (v, unit) => v === null || v === undefined ? chip('Belum tersedia', 'sandbox') : unit === 'Rp' ? rp(v) : typeof v === 'number' ? `${unit === '%' ? String(v) : v.toLocaleString('id-ID')}${unit === '%' ? '%' : unit ? ' ' + esc(unit) : ''}` : esc(v);
+const achC = (a) => a === null ? chip('Gap data', 'sandbox') : chip(`${Math.round(a * 100)}%`, a >= 1 ? 'ready' : a >= 0.8 ? 'planned' : 'bad');
+const staff = () => ['EMP-0142', 'EMP-0143', 'EMP-0144', 'EMP-0145', 'EMP-0153'];
+const picSel = (name = 'pic', cur = '') => `<select name="${name}" required><option value="">Pilih PIC</option>${staff().map(e => `<option value="${e}" ${cur === e ? 'selected' : ''}>${esc(empName(e))}</option>`).join('')}</select>`;
+
+/* ---------- NV01 Race Vegen ---------- */
+function race(params) {
+  const h = hr(), { race: R, ver, draft } = HR8.activeRace(h), rs = HR8.raceScore(h, ver, role());
+  const ind = params.ind && rs.pillars.find(p => p.id === params.ind);
+  const bcn = f8().beacon.items;
+  const out = demo() + kpiLinks([
+    ['Skor Race (terukur)', rs.score === null ? '—' : rs.score.toFixed(1), '#hrd-report-center?id=RPT-RACE-HG', `bobot terukur ${rs.coverage}% · ${rs.pillars.some(p => p.s.gaps) ? 'provisional' : 'lengkap'}`],
+    ['Versi aktif', `v${ver.v}`, '#hrd-race?tab=ver', `${R.versions.length} versi · ${draft ? 'draf v' + draft.v + ' terbuka' : 'tanpa draf'}`],
+    ['Indikator', ver.indicators.length, '#hrd-race', `total bobot ${rs.total}%`],
+    ['Race Beacon', bcn.length, '#hrd-race-beacon', `kontrak ${f8().beacon.id} v${f8().beacon.version}`]]) +
+    card(`${esc(R.name)} · ${esc(R.scope)}`, `<p><b>Objective:</b> ${esc(R.objective)}</p><p class="muted small">Race ID ${R.id} · periode November 2026 · versi kontrak v${ver.v} aktif sejak ${esc(ver.activatedAt || ver.at)} oleh ${esc(ver.by)}</p>` +
+      table(['ID', 'Indikator Vegen', 'Race Goal', 'Bobot', 'Capaian', 'Key metrics', 'Beacon'], rs.pillars.map(p => [link('hrd-race' + qs({ ind: p.id }), p.id), esc(p.name), esc(p.goal), `${p.weight}%`, achC(p.s.ach), `${p.s.visible.length}/${p.s.metrics.length}${p.s.gaps ? ` · ${p.s.gaps} gap` : ''}${p.s.restricted ? ' · 1 terbatas' : ''}`, bcn.filter(b => b.parent === p.id).map(b => link('hrd-race-beacon' + qs({ id: b.id }), b.id)).join(', ') || '—'])) +
+      `<p class="muted small">Skor = Σ bobot × capaian indikator terukur ÷ bobot terukur. Capaian dibatasi 100% (cap); arah "max" (mis. Turnover) memakai target ÷ aktual. Data belum tersedia ditandai gap dan tidak dihitung nol.</p>`);
+  const det = ind ? card(`${ind.id} · ${esc(ind.name)}`, table(['Key metric', 'Satuan', 'Target', 'Aktual', 'Arah', 'Capaian', 'Metric version', 'Bukti', 'Sumber'], ind.s.metrics.map(m => m.restricted && !MGR() ? [esc(m.key), '—', '—', chip('Terbatas · Manager HRD', 'sandbox'), '—', '—', esc(m.metric || ''), '—', 'Agregat biaya F7'] : [esc(m.key), esc(m.unit), fmtV(m.target, m.unit === 'Rp' ? 'Rp' : ''), fmtV(m.actual, m.unit === 'Rp' ? 'Rp' : ''), m.dir === 'max' ? 'lebih kecil lebih baik' : 'lebih besar lebih baik', achC(HR8.achOf(m)), esc(m.metric || '—'), m.ev ? link('hrd-report-center' + qs({ ev: m.ev }), esc(m.ev)) : chip('Bukti kosong', 'bad'), m.route ? link(m.route, esc(m.source)) : esc(m.source)])) + `<p>${link('hrd-race', '‹ Semua indikator')}</p>`) : '';
+  let ed = '';
+  if (params.tab === 'ver' || draft) {
+    const d = draft, sum = d ? d.indicators.reduce((s, i) => s + Number(i.weight), 0) : 0;
+    ed = card('Versi kontrak Race', table(['Versi', 'Status', 'Indikator', 'Total bobot', 'Waktu', 'Oleh'], R.versions.map(v => [`v${v.v}`, chip(v.status, v.status === 'Aktif' ? 'ready' : v.status === 'Draf' ? 'planned' : ''), v.indicators.length, `${v.indicators.reduce((s, i) => s + Number(i.weight), 0)}%`, esc(v.activatedAt || v.at), esc(v.by)])) + '<p class="muted small">Laporan historis dan snapshot e-Deck menyimpan versi Race yang dipakai.</p>' +
+      (d && LEAD() ? `<h3>Draf v${d.v}</h3>` + table(['ID', 'Indikator', 'Bobot', 'Ubah'], d.indicators.map(i => [i.id, esc(i.name), `${i.weight}%`, `<form class="inline-form" data-submit="hr:race-edit" data-after="hrd-race?tab=ver"><input type="hidden" name="id" value="${i.id}"><label class="sr" for="w-${i.id}">Bobot ${esc(i.name)}</label><input id="w-${i.id}" name="weight" type="number" min="0" max="100" step="1" value="${i.weight}" style="width:5em"><button class="btn sm">Simpan</button></form>`])) +
+        `<p>Total bobot draf: <b data-test="race-sum">${sum}%</b> ${Math.abs(sum - 100) < 1e-9 ? chip('Tepat 100% · siap diaktifkan', 'ready') : chip(`${sum}% · tetap draf`, 'bad')}</p>` +
+        `<form class="workflow-form" data-submit="hr:race-edit" data-after="hrd-race?tab=ver"><input type="hidden" name="add" value="1"><label>Indikator baru<input name="name" minlength="3" required placeholder="mis. Employer Branding"></label><label>Bobot<input name="weight" type="number" min="0" max="100" value="0"></label><label>Key metrics (pisahkan |)<input name="keys" placeholder="Share Loker|Employee Loyalty"></label><button class="btn ghost">Tambah ke draf</button></form>` +
+        `<div class="actions"><button type="button" class="btn" data-action="hr:race-activate" data-after="hrd-race?tab=ver">Aktifkan v${d.v}</button></div>` : LEAD() ? `<div class="actions"><button type="button" class="btn" data-action="hr:race-draft" data-after="hrd-race?tab=ver">Buat draf versi baru</button></div>` : '<p class="muted">Perubahan versi oleh Manager HRD / Lead HG.</p>'));
+  } else if (LEAD()) ed = `<div class="actions">${link('hrd-race?tab=ver', 'Kelola versi & bobot')}</div>`;
+  return out + det + ed;
+}
+
+/* ---------- NV02 Race Beacon & Success Factors ---------- */
+function beacon(params) {
+  const h = hr(), B = f8().beacon, tab = params.tab === 'sf' ? 'sf' : 'bcn', b = params.id && B.items.find(x => x.id === params.id);
+  const sum = B.items.reduce((s, x) => s + x.weight, 0);
+  const pill = (id) => HR8.PILLARS.find(p => p.id === id);
+  const head = demo() + tabs('hrd-race-beacon', tab, [['bcn', 'Race Beacon'], ['sf', 'Success Factors']]);
+  if (tab === 'sf') {
+    const all = B.items.flatMap(x => x.reviews.map(r => ({ ...r, b: x })));
+    return head + card('Rubric Success Factors · RF v1', table(['#', 'Kriteria', 'Skala'], HR8.RUBRIC.map((r, i) => [i + 1, esc(r), '1 Belum · 2 Berkembang · 3 Baik · 4 Sangat baik']))) +
+      card('Riwayat review', all.length ? table(['Review ID', 'Beacon', 'Rata-rata', 'Alasan', 'Bukti', 'Penilai', 'Waktu'], all.map(r => [r.id, link('hrd-race-beacon' + qs({ id: r.b.id }), r.b.id), r.avg, esc(r.reason), r.evidence.startsWith('TSK') ? tlink(r.evidence) : esc(r.evidence), esc(r.by), esc(r.at)])) : '<p class="empty">Belum ada review. Pilih Beacon lalu isi rubric.</p>');
+  }
+  return head + card(`Kontrak Beacon ${B.id} v${B.version}`, table(['Beacon', 'Sasaran unit', 'Bobot', 'Indikator induk', 'Inisiatif', 'Tahap', 'PIC', 'Tenggat', 'Task ID', 'Review'], B.items.map(x => [link('hrd-race-beacon' + qs({ id: x.id }), x.id), esc(x.name), `${x.weight}%`, link('hrd-race' + qs({ ind: x.parent }), `${x.parent} · ${esc(pill(x.parent)?.name || '')}`), esc(x.initiative), chip(x.stage, x.stage === 'Review' ? 'planned' : ''), esc(empName(x.pic)), x.due, tlink(x.task), x.reviews.length ? `${x.reviews.length} · ${x.reviews[x.reviews.length - 1].avg}` : chip('Belum', 'sandbox')])) +
+    `<p>Total bobot Beacon ${sum}% ${sum === 100 ? chip('Kontrak valid', 'ready') : chip('Tidak 100%', 'bad')} · kontrak terpisah dari bobot Race Vegen (v${HR8.activeRace(h).ver.v}).</p>`) +
+    (b ? card(`${b.id} · ${esc(b.name)}`, `<p>Induk ${link('hrd-race' + qs({ ind: b.parent }), b.parent)} · kartu ${tlink(b.task)} (${esc(h.f3.tasks.find(t => t.id === b.task)?.stage || '—')}) · PIC ${esc(empName(b.pic))} · tenggat ${b.due}</p>` +
+      (LEAD() ? `<form class="workflow-form" data-submit="hr:beacon-review" data-after="hrd-race-beacon?id=${b.id}"><input type="hidden" name="id" value="${b.id}">${HR8.RUBRIC.map((r, i) => `<label>${esc(r)}<select name="r${i}" required><option value="">—</option>${[1, 2, 3, 4].map(n => `<option>${n}</option>`).join('')}</select></label>`).join('')}<label>Alasan<input name="reason" minlength="10" required placeholder="mis. formasi berjalan, satu kandidat praktik"></label><label>Bukti (Task/Evidence ID)<input name="evidence" value="${esc(b.task)}"></label><button class="btn">Simpan review</button></form>` : '<p class="muted">Review oleh Manager HRD / Lead HG.</p>') +
+      (b.reviews.length ? table(['Review', 'Skor per kriteria', 'Rata-rata', 'Alasan', 'Bukti', 'Penilai', 'Waktu'], b.reviews.map(r => [r.id, r.scores.join(' · '), r.avg, esc(r.reason), esc(r.evidence), esc(r.by), esc(r.at)])) : '')) : '');
+}
+
+/* ---------- NV03 Daily Race ---------- */
+function dailyPage(params) {
+  const h = hr(), emp = params.emp || h.roleEmp[role()] || 'EMP-0142', d = HR8.daily(h, emp);
+  const evs = (t) => (h.f3.events || []).filter(e => e.task === t.id);
+  const doneAt = (t) => evs(t).find(e => e.after === 'Selesai')?.at || '—', verAt = (t) => { const e = evs(t).find(x => x.kind === 'Review diterima'); return e ? esc(e.at) : t.requireReview ? chip('Menunggu verifikasi', 'sandbox') : 'tidak perlu review'; };
+  const row = (t) => [tlink(t.id), esc(t.title), chip(t.stage), esc(empName(t.pic)), t.due || '—', t.blocker ? chip('Blocker: ' + t.blocker.reason, 'bad') : '—'];
+  const sec = (title, ls, empty) => card(`${title} · ${ls.length}`, ls.length ? table(['Task ID', 'Kartu', 'Tahap', 'PIC', 'Tenggat', 'Blocker'], ls.map(row)) : `<p class="empty">${empty}</p>`);
+  const pl = h.placements.find(p => p.emp === emp && !p.to);
+  return demo() + `<form id="filters" class="filters" aria-label="Pilih orang"><label>Orang<select name="emp">${staff().map(e => `<option value="${e}" ${e === emp ? 'selected' : ''}>${esc(empName(e))}</option>`).join('')}</select></label></form>` +
+    `<p class="active-filters">Konteks hari ${HR.TODAY} WITA · ${esc(empName(emp))} · ${esc(HR.locName(pl?.location || HR.HQ.id))} · cakupan role ${esc(def().label)} · ${link('hrd-schedule' + qs({ emp }), 'jadwal shift F2')}</p>` +
+    kpiLinks([['Komitmen My Day', d.focus.length, '#hrd-myday', 'kartu sama dengan F3'], ['Selesai hari ini', d.done.length, '#hrd-race-daily' + qs({ emp }), `${d.verified.length} terverifikasi`], ['Terlambat', d.late.length, '#hrd-list?late=1', 'tenggat lewat'], ['Terblokir', d.blocked.length, '#hrd-list?blocked=1', 'butuh eskalasi']]) +
+    sec('Komitmen (My Day)', d.focus, `Belum ada komitmen. Tambahkan kartu dari ${link('hrd-myday', 'My Day')}.`) +
+    card(`Selesai hari ini · ${d.done.length}`, d.done.length ? table(['Task ID', 'Kartu', 'Waktu selesai', 'Waktu verifikasi'], d.done.map(t => [tlink(t.id), esc(t.title), esc(doneAt(t)), verAt(t)])) : '<p class="empty">Belum ada kartu selesai hari ini. Waktu selesai dan waktu verifikasi dicatat terpisah.</p>') +
+    sec('Terlambat', d.late, 'Tidak ada kartu terlambat.') + sec('Terblokir', d.blocked, 'Tidak ada blocker aktif.') + sec('Pekerjaan tambahan (dibuat hari ini)', d.extra, 'Tidak ada pekerjaan tambahan.') +
+    (d.focus.length ? card('Catat blocker / eskalasi', `<form class="workflow-form" data-submit="hr:task-blocker" data-after="hrd-race-daily?emp=${emp}"><label>Kartu<select name="id" style="max-width:100%">${d.focus.map(t => `<option value="${t.id}">${t.id} · ${esc(t.title.length > 28 ? t.title.slice(0, 27) + '…' : t.title)}</option>`).join('')}</select></label><label>Hambatan<input name="reason" minlength="5" required placeholder="mis. data POS Ubud belum lengkap"></label><label>Menunggu<input name="waiting" placeholder="mis. Supervisor Ubud"></label><button class="btn ghost">Catat blocker</button></form>` +
+      `<div class="actions"><button type="button" class="btn" data-action="hr:race-session" data-kind="Daily" data-commits="${d.focus.map(t => t.id).join(',')}" data-scope="${esc(empName(emp))}" data-after="hrd-race-daily?emp=${emp}">Simpan sesi Daily</button></div>`) : '') +
+    sessions('Daily');
+}
+function sessions(kind) {
+  const ss = f8().sessions.filter(s => s.kind === kind), ts = hr().f3.tasks;
+  return card(`Sesi ${kind}`, ss.length ? table(['Session ID', 'Waktu WITA', 'Scope', 'Komitmen', 'Status saat review → sekarang', 'Catatan'], ss.map(s => [s.id, esc(s.at), esc(s.scope), s.commits.map(tlink).join(', '), s.commits.map(c => `${c}: ${esc(s.status[c])} → ${esc(ts.find(t => t.id === c)?.stage || '—')}`).join('<br>'), esc(s.notes)])) : '<p class="empty">Belum ada sesi tersimpan.</p>');
+}
+
+/* ---------- NV04 Weekly Race ---------- */
+function weeklyPage(params) {
+  const h = hr(), ws = params.ws === 'HG' ? 'HG' : 'HRD', w = HR8.weekly(h, ws);
+  const row = (t) => [tlink(t.id), esc(t.title), chip(t.stage), esc(empName(t.pic)), t.due || '—'];
+  return demo() + tabs('hrd-race-weekly', ws, [['HRD', 'HRD Operations'], ['HG', 'Human Growth']], {}, 'ws') +
+    `<p class="active-filters">Minggu 46 · ${HR8.WEEK[0]} s.d. ${HR8.WEEK[1]} WITA</p>` +
+    kpiLinks([['Komitmen minggu ini', w.commit.length, `#hrd-board?ws=${ws}`, 'tenggat dalam minggu'], ['Terbawa', w.carried.length, '#hrd-list?late=1', 'Task ID tetap'], ['Selesai', w.done.length, `#hrd-list?stage=Selesai`, 'sejak awal minggu'], ['Hambatan', w.blocked.length, '#hrd-list?blocked=1', 'lintas divisi']]) +
+    card('Komitmen mingguan', w.commit.length ? table(['Task ID', 'Kartu', 'Tahap', 'PIC', 'Tenggat'], w.commit.map(row)) : '<p class="empty">Tidak ada komitmen bertenggat minggu ini.</p>') +
+    card('Pekerjaan terbawa', w.carried.length ? table(['Task ID', 'Kartu', 'Tenggat asal', 'Tenggat sekarang', 'Tahap'], w.carried.map(({ t, originalDue }) => [tlink(t.id), esc(t.title), originalDue, t.due, chip(t.stage)])) : '<p class="empty">Tidak ada pekerjaan terbawa dari minggu lalu.</p>') +
+    card('Hambatan', w.blocked.length ? table(['Task ID', 'Kartu', 'Hambatan', 'Menunggu'], w.blocked.map(t => [tlink(t.id), esc(t.title), esc(t.blocker.reason), esc(t.blocker.waiting || '—')])) : '<p class="empty">Tidak ada hambatan.</p>') +
+    card('Kapasitas PIC (kartu terbuka)', w.cap.length ? table(['PIC', 'Kartu terbuka', 'Beban'], w.cap.map(c => [esc(empName(c.emp)), c.open, c.open > 4 ? chip('Tinggi', 'bad') : chip('Wajar', 'ready')])) : '<p class="empty">Belum ada PIC.</p>') +
+    card('Tindakan berikutnya', `<form class="workflow-form" data-submit="hr:weekly-action" data-after="hrd-task?id={id}"><input type="hidden" name="ws" value="${ws}"><label>Tindakan<input name="title" minlength="5" required placeholder="mis. Jadwalkan praktik kandidat Ubud"></label><label>PIC${picSel()}</label><label>Tenggat<input type="date" name="due" required></label><label>Sumber (Task/Finding ID)<input name="sourceId" placeholder="opsional, mis. TSK-0004"></label><button class="btn">Buat Workplan</button></form>` +
+      `<div class="actions"><button type="button" class="btn ghost" data-action="hr:race-session" data-kind="Weekly" data-scope="${ws}" data-commits="${w.commit.map(t => t.id).join(',')}" data-after="hrd-race-weekly?ws=${ws}">Simpan review Weekly</button></div>`) + sessions('Weekly');
+}
+
+/* ---------- NV05 Monthly Reflection ---------- */
+const sidOf = (r, period) => r.key.startsWith('UTIL-') ? `UTIL-${r.key.slice(5)}-2611` : `RFL-${period}-${r.key}`;
+function reflectionPage(params) {
+  const h = hr(), P = params.period === '2610' ? '2610' : '2611';
+  let rows = HR8.reflection(h, P, role());
+  if (SPV()) rows = rows.filter(r => !r.key.startsWith('UTIL-') || r.key === 'UTIL-OUT-UBD');
+  if (params.sec) rows = rows.filter(r => r.sec === params.sec);
+  const taskFor = (r) => h.f3.tasks.find(t => t.source?.id === sidOf(r, P));
+  const decFor = (r) => f8().decisions.filter(d => d.criteria?.key === r.key);
+  const notes = f8().notes.filter(n => n.period === P);
+  const secs = ['Kapasitas', 'KPI', 'Talenta', 'SER', 'Biaya'];
+  return demo(P === '2611' ? ' · November provisional' : ' · Oktober ditutup') + `<p class="active-filters">Periode: ${['2610', '2611'].map(k => k === P ? `<b>${HR8.PERIODS[k]}</b>` : link('hrd-race-reflection' + qs({ period: k }), HR8.PERIODS[k])).join(' · ')}</p>` +
+    `<form id="filters" class="filters" aria-label="Filter reflection"><input type="hidden" name="period" value="${P}"><label>Bagian<select name="sec"><option value="">Semua</option>${secs.map(s => `<option ${params.sec === s ? 'selected' : ''}>${s}</option>`).join('')}</select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    card(`Target & hasil · ${HR8.PERIODS[P]}${SPV() ? ' · cakupan Spa Ubud' : ''}`, rows.length ? table(['Bagian', 'Metrik', 'Target', 'Hasil', 'Selisih', 'Sumber', 'Tindak lanjut'], rows.map(r => r.hidden ? [r.sec, esc(r.label), '—', chip('Terbatas · Manager HRD', 'sandbox'), '—', 'F7 (agregat berizin)', '—'] : [r.sec, link(r.route, esc(r.label)), fmtV(r.target, r.unit === 'Rp' ? 'Rp' : r.unit), fmtV(r.actual, r.unit === 'Rp' ? 'Rp' : r.unit), esc(HR8.gapOf(r)), esc(r.source),
+      (() => { const t = taskFor(r), ds = decFor(r); return '<span class="hr-acts">' + (t ? `${tlink(t.id)} ${chip(t.stage)}` : ['Ide', 'Issue', 'Workplan'].map(s => `<button type="button" class="btn ghost sm" data-action="hr:rfl-mark" data-key="${r.key}" data-period="${P}" data-stage="${s}" data-after="hrd-task?id={id}">${s}</button>`).join(' ')) + (ds.length ? ' · ' + ds.map(d => link('hrd-race-stracon' + qs({ id: d.id }), d.id)).join(', ') : LEAD() && t ? ' · ' + link('hrd-race-stracon' + qs({ new: 1, ckey: r.key, task: t.id, finding: t.finding || '', cperiod: '2612' }), 'Catat keputusan') : '') + '</span>'; })()])) : '<p class="empty">Tidak ada metrik untuk filter ini.</p>' +
+      `<p class="muted small">Utility = F5 (Oktober = Beranda F1), XScore & pelatihan = F6, biaya = batch F7 periode yang sama. Penandaan ulang membuka kartu F3 yang sama.</p>`) +
+    card('Catatan reflection', (notes.length ? table(['ID', 'Bagian', 'Jenis', 'Catatan', 'Bukti', 'Oleh', 'Waktu'], notes.map(n => [n.id, esc(n.sec), esc(n.kind), esc(n.text), esc(n.evidence), esc(n.by), esc(n.at)])) : '<p class="empty">Belum ada catatan untuk periode ini.</p>') +
+      `<form class="workflow-form" data-submit="hr:rfl-note" data-after="hrd-race-reflection?period=${P}"><input type="hidden" name="period" value="${P}"><label>Bagian<select name="sec">${secs.map(s => `<option>${s}</option>`).join('')}</select></label><label>Jenis<select name="kind"><option>Penyebab selisih</option><option>Pembelajaran</option><option>Tindakan</option><option>Evaluasi berikutnya</option></select></label><label>Catatan<input name="text" minlength="5" required></label><label>Bukti<input name="evidence" placeholder="mis. UTIL-OUT-UBD-2611"></label><button class="btn ghost">Simpan catatan</button></form>`);
+}
+
+/* ---------- NV06 STRACON ---------- */
+function stracon(params) {
+  const h = hr(), ds = f8().decisions, d = params.id && ds.find(x => x.id === params.id);
+  const keys = HR8.reflection(h, '2611', 'hrd').filter(r => !r.restricted);
+  let body = card('Keputusan strategis', table(['Decision ID', 'Keputusan', 'Temuan', 'Pemilik', 'Tenggat', 'Kriteria', 'Workplan', 'Status'], ds.map(x => [link('hrd-race-stracon' + qs({ id: x.id }), x.id), esc(x.title), esc(x.finding || '—'), esc(empName(x.owner)), x.due, x.criteria ? `${x.criteria.key} ${x.criteria.op} ${x.criteria.value} (${x.criteria.period})` : '—', tlink(x.workplan || x.task), chip(x.status, x.status === 'Dievaluasi' ? 'ready' : 'planned')])));
+  if (d) {
+    const e = d.evaluation, now = HR8.evaluate(h, d);
+    body = card(`${d.id} · ${esc(d.title)}`, table(['Field', 'Nilai'], [['Temuan', esc(d.finding || '—')], ['Kartu sumber', tlink(d.task)], ['Alternatif', d.alternatives.map(esc).join(' · ') || '—'], ['Dipilih', esc(d.chosen || '—')], ['Alasan', esc(d.reason)], ['Pemilik / tenggat', `${esc(empName(d.owner))} · ${d.due}`], ['Kriteria evaluasi (dicatat saat keputusan)', d.criteria ? `${esc(d.criteria.key)} ${d.criteria.op} ${d.criteria.value} pada ${HR8.PERIODS[d.criteria.period] || d.criteria.period}` : '—'], ['Hasil saat ini', now ? (now.actual === null ? chip('Data periode belum tersedia', 'sandbox') : `${esc(now.label)} ${now.actual} → ${now.met ? chip('Kriteria tercapai', 'ready') : chip('Belum tercapai', 'bad')}`) : '—'], ['Evaluasi tersimpan', e ? `${e.actual ?? '—'} · ${e.met === null ? 'data belum tersedia' : e.met ? 'tercapai' : 'belum tercapai'} · ${esc(e.by)} ${esc(e.at)}` : '—'], ['Workplan', d.workplan ? tlink(d.workplan) : '—'], ['Dicatat', `${esc(d.at)} · ${esc(d.by || 'seed')}`]])) +
+      (LEAD() ? `<div class="actions">${d.workplan ? '' : `<button type="button" class="btn" data-action="hr:dec-workplan" data-id="${d.id}" data-after="hrd-task?id={id}">Buat Workplan</button>`}<button type="button" class="btn ghost" data-action="hr:dec-evaluate" data-id="${d.id}" data-after="hrd-race-stracon?id=${d.id}">Evaluasi terhadap kriteria</button></div>` : '') + `<p>${link('hrd-race-stracon', '‹ Semua keputusan')} · ${link('hrd-race-reflection', 'Monthly Reflection')}</p>` + body;
+  }
+  if (params.new && LEAD()) body = card('Keputusan baru', `<form class="workflow-form" data-submit="hr:dec-create" data-after="hrd-race-stracon?id={id}"><label>Keputusan<input name="title" minlength="5" required placeholder="mis. Tambah 2 therapist Spa Ubud"></label><label>Finding ID<input name="finding" value="${esc(params.finding || '')}"></label><label>Kartu sumber<input name="task" value="${esc(params.task || '')}"></label><label>Alternatif (pisahkan |)<input name="alternatives" placeholder="Lembur terjadwal|Bantuan Santi|Rekrut 2 therapist"></label><label>Dipilih<input name="chosen"></label><label>Alasan<input name="reason" minlength="10" required></label><label>Pemilik${picSel('owner', 'EMP-0142')}</label><label>Tenggat<input type="date" name="due" required></label><label>Kriteria metrik<select name="ckey">${keys.map(r => `<option value="${r.key}" ${params.ckey === r.key ? 'selected' : ''}>${esc(r.label)}</option>`).join('')}</select></label><label>Operator<select name="cop"><option value="<=">≤</option><option value=">=">≥</option></select></label><label>Nilai<input name="cvalue" type="number" step="0.1" value="100"></label><label>Periode evaluasi<select name="cperiod"><option value="2612">Desember 2026</option><option value="2611" ${params.cperiod === '2611' ? 'selected' : ''}>November 2026</option></select></label><button class="btn">Simpan keputusan</button></form>`) + body;
+  return demo() + (LEAD() && !params.new ? `<div class="actions"><a class="btn" href="#hrd-race-stracon?new=1">Keputusan baru</a></div>` : '') + body;
+}
+
+/* ---------- NV07 e-Deck ---------- */
+function deck(params) {
+  const h = hr(), P = params.period === '2610' ? '2610' : '2611', scope = SPV() ? 'OUT-UBD' : (params.scope || 'all'), pg = Math.max(0, Math.min(7, Number(params.page || 0)));
+  const snap = params.snap && f8().snapshots.find(s => s.id === params.snap);
+  if (snap && snap.sensitive && !MGR() && params.export) return demo() + denied(`Snapshot ${esc(snap.id)} memuat agregat biaya. Ekspor hanya untuk Manager HRD; hak diperiksa ulang saat dibuka atau diekspor.`);
+  const vals = snap ? snap.pages[pg].values : HR8.deckPage(h, pg, P, scope, role());
+  const hidden = (v) => v.restricted && !MGR();
+  const base = { period: snap ? snap.period : P, scope: snap ? snap.scope : scope, snap: snap?.id };
+  const nav = `<nav class="tabs" aria-label="Halaman e-Deck">${HR8.PAGES.map((n, i) => `<a class="tab${i === pg ? ' on' : ''}" href="#hrd-race-deck${qs({ ...base, page: i })}" ${i === pg ? 'aria-current="page"' : ''}>${i + 1}. ${esc(n)}</a>`).join('')}</nav>`;
+  const others = snap ? f8().snapshots.filter(s => s.base === snap.base) : [];
+  return demo() + (snap ? `<p class="active-filters">${chip(`Snapshot ${snap.id}`, 'ready')} beku ${esc(snap.at)} · ${HR8.PERIODS[snap.period]} · scope ${esc(snap.scope === 'all' ? 'Semua outlet' : HR.locName(snap.scope))} · ${Object.entries(snap.versions).map(([k, v]) => `${k} ${v}`).join(' · ')} · ${esc(snap.completeness)} · ${link('hrd-race-deck' + qs({ period: snap.period }), 'Mode data terkini')}</p>` :
+    `<form id="filters" class="filters" aria-label="Filter e-Deck"><input type="hidden" name="page" value="${pg}"><label>Periode<select name="period">${['2610', '2611'].map(k => `<option value="${k}" ${k === P ? 'selected' : ''}>${HR8.PERIODS[k]}</option>`).join('')}</select></label>${SPV() ? '<p>Scope: Spa Ubud (cakupan Supervisor)</p>' : `<label>Scope<select name="scope"><option value="all">Semua outlet</option>${HR.OUTLETS.map(o => `<option value="${o.id}" ${scope === o.id ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label>`}</form><p class="active-filters">Mode data terkini · sumber diperbarui 2026-11-13 07:00–08:00 WITA</p>`) + nav +
+    card(`${pg + 1}/8 · ${esc(HR8.PAGES[pg])}`, vals.length ? table(['Metrik', 'Nilai', 'Sumber', 'Bukti'], vals.map(v => hidden(v) ? [esc(v.label), chip('Terbatas · Manager HRD', 'sandbox'), 'Agregat biaya F7', '—'] : [v.route ? link(v.route, esc(v.label)) : esc(v.label), fmtV(v.value, v.unit) + (v.corrected ? ` ${chip(`dikoreksi dari ${v.before}`, 'planned')}` : ''), esc(v.src), v.ev ? link('hrd-report-center' + qs({ ev: v.ev }), esc(v.ev)) : chip('Belum ada bukti', 'sandbox')])) : '<p class="empty">Tidak ada data untuk scope ini.</p>') +
+    `<div class="actions">${pg > 0 ? `<a class="btn ghost" href="#hrd-race-deck${qs({ ...base, page: pg - 1 })}">‹ Sebelumnya</a>` : ''}${pg < 7 ? `<a class="btn ghost" href="#hrd-race-deck${qs({ ...base, page: pg + 1 })}">Berikutnya ›</a>` : ''}${snap ? `<a class="btn ghost" href="#hrd-race-deck${qs({ ...base, page: pg, export: 1 })}">Ekspor PDF (simulasi)</a>` : `<button type="button" class="btn" data-action="hr:deck-snapshot" data-period="${P}" data-scope="${scope}" data-after="hrd-race-deck?snap={id}&page=${pg}">Simpan snapshot sesi</button>`}</div>` +
+    (snap && params.export ? card('Ekspor', `<p role="status">Ekspor ${esc(snap.id)} disiapkan (simulasi, tanpa file). Hak akses diperiksa: ${esc(def().label)}.</p>`) : '') +
+    (snap ? card('Versi snapshot', table(['Snapshot', 'Versi', 'Merujuk', 'Waktu', 'Oleh'], others.map(s => [s.id === snap.id ? `<b>${s.id}</b>` : link('hrd-race-deck' + qs({ snap: s.id, page: pg }), s.id), `v${s.v}`, s.prev || '—', esc(s.at), esc(s.by)])) +
+      (HR8.canSee(role()) && !['ops-manager'].includes(role()) ? `<form class="workflow-form" data-submit="hr:deck-snapshot" data-after="hrd-race-deck?snap={id}&page=${pg}"><input type="hidden" name="prev" value="${others[others.length - 1].id}"><input type="hidden" name="period" value="${snap.period}"><input type="hidden" name="scope" value="${snap.scope}"><input type="hidden" name="page" value="${pg}"><label>Field<select name="field">${vals.filter(v => !hidden(v)).map(v => `<option>${esc(v.label)}</option>`).join('')}</select></label><label>Nilai koreksi<input name="value" required></label><label>Alasan<input name="reason" minlength="10" required></label><button class="btn ghost">Simpan koreksi (versi baru)</button></form>` : '')) :
+      card('Snapshot tersimpan', f8().snapshots.length ? table(['Snapshot', 'Periode', 'Scope', 'Waktu'], f8().snapshots.map(s => [link('hrd-race-deck' + qs({ snap: s.id }), s.id), HR8.PERIODS[s.period], esc(s.scope), esc(s.at)])) : '<p class="empty">Belum ada snapshot. Simpan snapshot saat review sesi.</p>'));
+}
+
+/* ---------- NV08 Pusat Laporan & Jejak Bukti ---------- */
+function reportCenter(params) {
+  const h = hr(); let L = HR8.catalog(h, role());
+  if (SPV()) L = L.filter(r => r.outlet === 'OUT-UBD' || r.outlet === 'all' && !r.restricted);
+  const r = params.id && L.find(x => x.id === params.id);
+  if (params.ev) { const hit = L.filter(x => (x.evidence || '').includes(params.ev.replace('*', '')) || x.id.includes(params.ev)); if (hit.length === 1 && !params.id) return reportCenter({ ...params, id: hit[0].id, ev: '' }); }
+  if (params.period) L = L.filter(x => x.period === params.period);
+  if (params.unit) L = L.filter(x => x.unit === params.unit);
+  if (params.outlet) L = L.filter(x => x.outlet === params.outlet);
+  const stTone = { Lengkap: 'ready', Provisional: 'planned', 'Bukti kosong': 'bad', Kedaluwarsa: 'bad', Dikoreksi: 'planned', Snapshot: 'ready' };
+  const st = (x) => x.denied ? chip('Akses ditolak', 'bad') : chip(x.status, stTone[x.status] || '');
+  const res = (x) => x.denied ? '—' : fmtV(x.result, x.resultUnit || (typeof x.result === 'number' && x.id.startsWith('RPT-UTIL') ? '%' : ''));
+  const units = [...new Set(HR8.catalog(h, role()).map(x => x.unit))];
+  const trail = r ? card(`Jejak bukti · ${esc(r.id)}`, r.denied ? denied(`${esc(r.name)} memuat nominal payroll. Hanya Manager HRD yang membuka hasil dan bukti.`) : `<ol class="trail"><li><b>Laporan</b> ${esc(r.name)} · periode ${HR8.PERIODS[r.period] || r.period}</li><li><b>Metrik & versi formula</b> ${esc(r.version)}</li><li><b>Perhitungan</b> ${esc(r.formula)} = ${res(r)}</li><li><b>Bukti</b> ${r.evidence ? esc(r.evidence) : chip('Bukti kosong', 'bad')}</li><li><b>Sumber</b> ${link(r.route, 'Buka layar sumber')}</li><li><b>Diperbarui</b> ${esc(r.refreshed || '—')}${r.status === 'Kedaluwarsa' ? ' ' + chip('Lebih dari 30 hari', 'bad') : ''}${r.refreshCount ? ` · refresh ${r.refreshCount}× (${esc(r.refreshStatus)})` : ''}</li><li><b>Tindak lanjut</b> ${(() => { const ts = h.f3.tasks.filter(t => r.id.startsWith('RPT-UTIL') && t.source?.id === `UTIL-${r.outlet}-2611`); return ts.length ? ts.map(t => tlink(t.id)).join(', ') : r.id === 'RPT-RACE-HG' ? link('hrd-race-stracon', `${f8().decisions.length} keputusan STRACON`) : 'belum ada'; })()}</li></ol>` +
+    `<div class="actions"><button type="button" class="btn ghost" data-action="hr:report-refresh" data-id="${r.id}" data-after="hrd-report-center?id=${r.id}">Perbarui laporan</button><button type="button" class="btn ghost" data-action="hr:report-refresh" data-id="${r.id}" data-fail="1" data-after="hrd-report-center?id=${r.id}">Simulasi sumber gagal</button></div><p class="muted small">Refresh ulang tidak menambah baris laporan maupun kartu tindak lanjut.</p>`) : '';
+  return demo() + trail + `<form id="filters" class="filters" aria-label="Filter laporan"><label>Periode<select name="period"><option value="">Semua</option>${['2610', '2611'].map(k => `<option value="${k}" ${params.period === k ? 'selected' : ''}>${HR8.PERIODS[k]}</option>`).join('')}</select></label><label>Unit<select name="unit"><option value="">Semua</option>${units.map(u => `<option ${params.unit === u ? 'selected' : ''}>${esc(u)}</option>`).join('')}</select></label><label>Outlet<select name="outlet"><option value="">Semua</option><option value="all" ${params.outlet === 'all' ? 'selected' : ''}>Grup (semua outlet)</option>${HR.OUTLETS.map(o => `<option value="${o.id}" ${params.outlet === o.id ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    card(`Laporan & metrik · ${L.length}`, L.length ? table(['Report ID', 'Laporan', 'Periode', 'Versi formula', 'Hasil', 'Bukti', 'Diperbarui', 'Status'], L.map(x => [link('hrd-report-center' + qs({ id: x.id }), x.id), esc(x.name), HR8.PERIODS[x.period] || x.period, esc(x.version), res(x), x.denied ? '—' : esc(x.evidence || '—'), esc(x.refreshed || '—'), st(x)])) : '<div class="empty"><p>Tidak ada laporan untuk filter ini.</p><button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></div>');
+}
+
+/* ---------- sidebar & registrasi ---------- */
+const items = H.PORTALS.HRD.items;
+const it = items.find(i => i[0] === 'hrd-race'); if (it) { it[1] = 'AmbideX & Race'; it[2] = 'F8-NV01'; it[3] = 'ready'; it[4] = ''; }
+const ir = items.findIndex(i => i[0] === 'hrd-race');
+items.splice(ir + 1, 0, ['hrd-race-beacon', 'Race Beacon', 'F8-NV02', 'ready', '', 'sub'], ['hrd-race-daily', 'Daily Race', 'F8-NV03', 'ready', '', 'sub'], ['hrd-race-weekly', 'Weekly Race', 'F8-NV04', 'ready', '', 'sub'], ['hrd-race-reflection', 'Monthly Reflection', 'F8-NV05', 'ready', '', 'sub'], ['hrd-race-stracon', 'STRACON', 'F8-NV06', 'ready', '', 'sub'], ['hrd-race-deck', 'e-Deck Reflection', 'F8-NV07', 'ready', '', 'sub'], ['hrd-report-center', 'Pusat Laporan & Bukti', 'F8-NV08', 'ready', '', 'sub']);
+Object.assign(H.PURPOSE, {
+  'hrd-race': 'Objective, enam indikator Vegen, Race Goal, key metrics, target, aktual, bukti, bobot dan versi kontrak.',
+  'hrd-race-beacon': 'Beacon unit dengan induk Vegen, inisiatif, PIC, tenggat, Task ID dan review Success Factors.',
+  'hrd-race-daily': 'Komitmen My Day, selesai vs terverifikasi, terlambat, terblokir dan pekerjaan tambahan.',
+  'hrd-race-weekly': 'Komitmen mingguan, kapasitas PIC, pekerjaan terbawa, hambatan dan tindakan berikutnya.',
+  'hrd-race-reflection': 'Target/hasil SER, KPI, kapasitas, talenta dan biaya berizin; temuan menjadi kartu F3.',
+  'hrd-race-stracon': 'Keputusan strategis, alternatif, alasan, pemilik, kriteria evaluasi, Workplan dan hasil.',
+  'hrd-race-deck': 'Delapan halaman e-Deck dengan filter periode/scope, drill-down, snapshot berversi dan ekspor berizin.',
+  'hrd-report-center': 'Laporan & metrik sampai versi formula, perhitungan, bukti, pembaruan dan tindak lanjut.'
+});
+H.SCREENS.push(...[['F8-NV01', 'Race Vegen', 'hrd-race'], ['F8-NV02', 'Race Beacon & Success Factors', 'hrd-race-beacon'], ['F8-NV03', 'Daily Race', 'hrd-race-daily'], ['F8-NV04', 'Weekly Race', 'hrd-race-weekly'], ['F8-NV05', 'Monthly Reflection', 'hrd-race-reflection'], ['F8-NV06', 'STRACON', 'hrd-race-stracon'], ['F8-NV07', 'e-Deck Reflection HRD', 'hrd-race-deck'], ['F8-NV08', 'Pusat Laporan & Jejak Bukti', 'hrd-report-center']].map(([c, t, r]) => [c, 'HRD · ' + t, 'HRD 8', r, 'ready', 'Manager HRD, Lead HG, Staf HRD, Owner (agregat), Supervisor (outlet)']));
+register('hrd-race', guard(race), (p) => p.ind || 'Race Vegen');
+register('hrd-race-beacon', guard(beacon), (p) => p.id || 'Race Beacon & Success Factors');
+register('hrd-race-daily', guard(dailyPage), () => 'Daily Race');
+register('hrd-race-weekly', guard(weeklyPage), () => 'Weekly Race');
+register('hrd-race-reflection', guard(reflectionPage), () => 'Monthly Reflection');
+register('hrd-race-stracon', guard(stracon), (p) => p.id || 'STRACON');
+register('hrd-race-deck', guard(deck), (p) => p.snap || 'e-Deck Reflection HRD');
+register('hrd-report-center', guard(reportCenter), (p) => p.id || 'Pusat Laporan & Jejak Bukti');
 })();
 
 ;
