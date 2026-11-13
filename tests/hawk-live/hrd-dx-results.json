@@ -1,6 +1,6 @@
 {
- "pass": 17,
- "fail": 2,
+ "pass": 19,
+ "fail": 0,
  "out": [
   {
    "name": "Persona tampil: Made Gunarsa, Harja, Ayu, Asri, Eni Restini, Mila",
@@ -84,13 +84,13 @@
   },
   {
    "name": "Mobile 390 px: hrd-dx",
-   "ok": false,
-   "info": "397"
+   "ok": true,
+   "info": "390"
   },
   {
    "name": "Mobile 390 px: hrd-dx?sc=rekrut",
-   "ok": false,
-   "info": "397"
+   "ok": true,
+   "info": "390"
   },
   {
    "name": "Tanpa error console",
