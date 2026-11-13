@@ -6,10 +6,13 @@
 const fs = require('fs'), path = require('path');
 const dir = path.join(__dirname, '..', 'hawk-live');
 const read = (f) => fs.readFileSync(path.join(dir, f), 'utf8');
-const hawkCss = fs.readFileSync(path.join(dir, '..', 'assets', 'css', 'hawk.css'), 'utf8'), css = read('style.css'), js = ['model.js', 'ser-data.js', 'commercial-model.js', 'marketing-model.js', 'budget2027-model.js', 'hrd-model.js', 'hrd-f2-model.js', 'hrd-f3-model.js', 'app.js', 'hrd.js', 'hrd-f2.js', 'hrd-f3.js', 'commercial.js', 'marketing.js', 'budget2027.js'].map(read).join('\n;\n').replace(/<\/script/gi, '<\\/script');
-const pages = [['index.html', 'preview.html'], ['finance.html', 'preview-finance.html'], ['operational.html', 'preview-operational.html'], ['commercial.html', 'preview-commercial.html'], ['sales.html', 'preview-sales.html'], ['hrd.html', 'preview-hrd.html']];
+const hawkCss = fs.readFileSync(path.join(dir, '..', 'assets', 'css', 'hawk.css'), 'utf8'), css = read('style.css');
+/* setiap halaman memuat skrip sesuai tag <script src> miliknya sendiri, berurutan */
+const jsFor = (html) => [...html.matchAll(/<script src="([^"]+)" defer><\/script>/g)].map(m => m[1]).map(read).join('\n;\n').replace(/<\/script/gi, '<\\/script');
+const pages = [['index.html', 'preview.html'], ['finance.html', 'preview-finance.html'], ['operational.html', 'preview-operational.html'], ['commercial.html', 'preview-commercial.html'], ['sales.html', 'preview-sales.html'], ['hrd.html', 'preview-hrd.html'], ['karier.html', 'preview-karier.html']];
 for (const [src, dst] of pages) {
-  let html = read(src)
+  const raw = read(src), js = jsFor(raw);
+  let html = raw
     .replace('<link rel="stylesheet" href="../assets/css/hawk.css">', () => `<style>\n${hawkCss}\n</style>`)
     .replace('<link rel="stylesheet" href="style.css">', () => `<style>\n${css}\n</style>`)
     .replace(/<script src="[^"]+" defer><\/script>\n?/g, '')

@@ -214,7 +214,7 @@ const HR3 = (() => {
   H.EXT.update = (state, hr, action, input, ctx) => { const r = update(state, hr, action, input, ctx); return r !== undefined ? r : prev.update ? prev.update(state, hr, action, input, ctx) : (() => { throw new Error('Aksi tidak dikenal: ' + action); })(); };
   H.EXT.purge = (hr) => { prev.purge?.(hr); purge(hr); };
   H.EXT.keep = (hr) => { const k = prev.keep?.(hr); const k3 = keep(hr); if (k && k3) k.f3 = k3; return k || (k3 ? { f3: k3 } : null); };
-  H.EXT.ensure = (hr) => { prev.ensure?.(hr); if (hr.f2 && hr.f2.f3) { hr.f3 = hr.f2.f3; delete hr.f2.f3; } ensure(hr); };
+  H.EXT.ensure = (hr) => { if (hr.f2 && hr.f2.f3) { hr.f3 = hr.f2.f3; delete hr.f2.f3; } prev.ensure?.(hr); ensure(hr); };
   return { STAGES, PRIOS, WS, ROLE_PIC, TEMPLATES, addDays, ensure, scopeOk, visible, wsVisible, overdue, agenda, myTasks, reviewQueue, focusOf };
 })();
 if (typeof module !== 'undefined') module.exports = HR3;
