@@ -1,0 +1,217 @@
+{
+ "at": "2026-11-13T16:41:00.743Z",
+ "pass": 42,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Pemilih portal: Finance, Operational, Commercial, Sales, HRD",
+   "ok": true,
+   "info": "Finance,Operational,Commercial,Sales,HRD"
+  },
+  {
+   "name": "Pilih HRD → Beranda HRD dengan role Manager HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01 total 158 pada cakupan perusahaan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sidebar urutan GajiHub lalu tambahan HAWK",
+   "ok": true,
+   "info": "Beranda|Karyawan|Kehadiran|Pelacakan Lokasi|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Tugas|Pengaturan|FAQ|Kinerja & KPI|AmbideX & Race|Manpower Planning|9-Box Talent|People Budgeting"
+  },
+  {
+   "name": "NV01 filter Spa Ubud = 30 orang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu jumlah orang membuka roster cakupan yang sama (30)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 empat outlet cocok roster 25 + 5",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 Spa Ubud: Therapist 25, Receptionist 5",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 Office terbuka; PC & Commercial \"Headcount belum ditetapkan\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03 Spa Bhisma + Receptionist = 5 orang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik nama membuka penempatan dengan ID yang sama",
+   "ok": true,
+   "info": "EMP-0116"
+  },
+  {
+   "name": "Detail: outlet induk, jabatan, atasan, tanggal efektif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kombinasi tanpa hasil menawarkan reset filter",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reset filter kembali ke 158",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Histori penempatan EMP-0007 (Ubud → Santi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Manager HRD melihat THP di profil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD: detail tanpa data payroll",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD → URL langsung Payroll = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD → URL langsung Laporan = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD: Template Export disembunyikan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD: Beranda tanpa nominal payroll",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud → profil outlet lain = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Manager → Beranda HRD = Akses ditolak + tombol ganti role",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol \"Ganti ke Manager HRD\" memulihkan Beranda",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05 Batal meninggalkan data awal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05 Simpan → nilai baru tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 uji koneksi POS → Gagal (simulasi), tanpa koneksi produksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 status Belum diuji / Belum dikonfigurasi tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 perubahan pengaturan muncul dengan aktor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 detail: sebelum/sesudah + WITA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 field sensitif payroll disembunyikan untuk Staf HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 Manager HRD melihat nilai payroll",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08 dialog konfirmasi tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08 Batal mempertahankan data (158 demo)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08 konfirmasi mengosongkan dataset dummy",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Beranda menampilkan state kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Record non-demo tetap utuh di roster",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mulai kembali dari fixture → 158 demo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: sidebar HRD terbuka dari ☰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: roster terbuka, sidebar tertutup",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console/halaman",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

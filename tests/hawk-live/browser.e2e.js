@@ -1,0 +1,119 @@
+/* HAWK four-portal · Phase 1 browser checks (Playwright, real clicks). Needs a static server:
+   python3 -m http.server 8811   then   BASE=http://localhost:8811/hawk-live/ node tests/hawk-live/browser.e2e.js */
+'use strict';
+const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path');
+const BASE = process.env.BASE || 'http://localhost:8811/hawk-live/';
+const out = []; let fail = 0;
+const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: !!cond, info }); console.log(`${cond ? '✓' : '✗'} ${name}${info ? ' · ' + info : ''}`); };
+(async () => {
+  const browser = await chromium.launch();
+  const errors = [];
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  const p = await ctx.newPage();
+  p.on('pageerror', e => errors.push(e.message)); p.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  p.on('dialog', d => d.accept());
+  const text = (sel) => p.locator(sel).first().innerText();
+  await p.goto(BASE + 'index.html#commercial'); await p.waitForSelector('.kpi-row .kpi');
+  /* F1-01 */
+  await p.click('#portal');
+  ok('F1-01 dialog terbuka dari logo', await p.locator('#picker').evaluate(d => d.open));
+  const labels = await p.locator('#options .label').allInnerTexts();
+  ok('F1-01 empat opsi lama berurutan + HRD portal kelima', labels.join(',') === 'Finance,Operational,Commercial,Sales,HRD', labels.join(','));
+  ok('F1-01 Commercial bertanda Portal aktif', (await p.locator('#options [aria-current="true"] .label').innerText()) === 'Commercial');
+  await p.keyboard.press('Tab'); const inDialog = await p.evaluate(() => !!document.activeElement.closest('dialog'));
+  ok('F1-01 fokus keyboard tetap di dalam dialog', inDialog);
+  await p.keyboard.press('Escape');
+  ok('F1-01 Escape menutup dialog', !(await p.locator('#picker').evaluate(d => d.open)));
+  ok('F1-01 fokus kembali ke logo', await p.evaluate(() => document.activeElement.id === 'portal'));
+  await p.click('#portal'); await p.click('#options [data-portal="Sales"]'); await p.waitForTimeout(150);
+  ok('F1-01 pilih Sales membuka Beranda Sales', p.url().endsWith('#sales-home') && (await text('h1')) === 'Beranda Sales');
+  await p.click('#portal');
+  ok('F1-01 buka ulang: Sales bertanda Portal aktif', (await p.locator('#options [aria-current="true"] .label').innerText()) === 'Sales');
+  await p.click('#picker .close');
+  await p.goBack(); await p.waitForTimeout(150);
+  ok('Browser back kembali ke Commercial Executive Summary', p.url().endsWith('#commercial') && (await text('h1')) === 'Executive Performance Summary');
+  /* F1-02 */
+  const rev = () => p.locator('.kpi-row .kpi').nth(0).locator('.val').innerText();
+  ok('F1-02 revenue Agustus semua outlet Rp 4.130 jt', (await rev()) === 'Rp 4.130 jt', await rev());
+  ok('F1-02 Total Guests 5.574 (KPI ke-2)', (await p.locator('.kpi-row .kpi').nth(1).locator('.val').innerText()) === '5.574');
+  ok('F1-02 KPI audit: Revenue Target Attainment dan Country Forecast Accuracy terpisah', (await text('.kpi-row')).includes('Revenue Target Attainment') && (await text('.support-row')).includes('Country Forecast Accuracy'));
+  ok('F1-02 sidebar: Commercial Budget tepat setelah Executive Summary', (await p.locator('#nav .nav-mod.active a > span:nth-child(2)').allInnerTexts()).slice(0, 2).map(s => s.split('\n')[0]).join('|') === 'Executive Summary|Commercial Budget');
+  ok('F1-02 label DATA DEMO / SIMULASI tampil', (await p.locator('.badge').first().innerText()).includes('DEMO'));
+  ok('F1-02 susunan: 4 KPI, 3 panel tengah, 3 panel bawah, insight', (await p.locator('.kpi-row > *').count()) === 4 && (await p.locator('.g-mid > section').count()) === 3 && (await p.locator('.g-bottom > section').count()) === 3 && (await p.locator('.insight').count()) === 1);
+  await p.selectOption('#filters [name=outlet]', 'ubud'); await p.waitForTimeout(150);
+  ok('F1-02 filter outlet Ubud: Rp 1.680 jt dan URL berisi filter', (await rev()) === 'Rp 1.680 jt' && p.url().includes('outlet=ubud'), await rev());
+  ok('F1-02 filter aktif ditampilkan', (await text('.active-filters')).includes('Jaens Spa Center'));
+  await p.selectOption('#filters [name=period]', '2026-07'); await p.waitForTimeout(150);
+  ok('F1-02 filter Juli Ubud: Rp 1.520 jt', (await rev()) === 'Rp 1.520 jt', await rev());
+  await p.click('[data-action="filter-reset"]'); await p.waitForTimeout(150);
+  ok('F1-02 Reset filter kembali ke Agustus · Semua outlet', (await rev()) === 'Rp 4.130 jt');
+  await p.selectOption('#filters [name=period]', '2026-09'); await p.waitForTimeout(150);
+  ok('F1-02 periode belum ditutup (Sep) tanpa data: status kosong dan KPI "—"', (await p.locator('.empty-state').count()) === 1 && (await rev()) === '—');
+  await p.goto(BASE + 'index.html#commercial?state=error'); await p.waitForTimeout(100);
+  ok('F1-02 status error simulasi tanpa angka', (await p.locator('.error-state').count()) === 1 && (await p.locator('.kpi-row .kpi').count()) === 0);
+  await p.click('[data-action="retry"]'); await p.waitForTimeout(150);
+  ok('F1-02 Coba lagi memuat data', (await p.locator('.kpi-row .kpi').count()) === 4);
+  await p.goto(BASE + 'index.html#commercial?state=loading'); await p.waitForTimeout(100);
+  ok('F1-02 status loading simulasi tampil', (await p.locator('.loading').count()) === 1);
+  await p.waitForTimeout(1400);
+  ok('F1-02 loading selesai lalu data tampil', (await p.locator('.kpi-row .kpi').count()) === 4);
+  /* F1-03 */
+  await p.goto(BASE + 'index.html#commercial?period=2026-08&outlet=ubud'); await p.waitForSelector('.kpi-row .kpi');
+  await p.locator('.kpi-row .kpi-btn').nth(0).click(); await p.waitForTimeout(150);
+  ok('F1-03 klik kartu Revenue membuka drill-down dengan filter induk', p.url().includes('commercial-drill') && p.url().includes('outlet=ubud') && p.url().includes('period=2026-08'));
+  const pageInfo = await text('.pager span');
+  ok('F1-03 jumlah baris tabel = order KPI (1.920)', pageInfo.includes('1.920 baris'), pageInfo);
+  ok('F1-03 definisi dan periode pembanding tampil', (await p.locator('.def').count()) >= 2 && (await text('.grid')).includes('Juli 2026'));
+  await p.fill('form[data-search] input[name=q]', 'POS-BK-001'); await p.click('form[data-search] button'); await p.waitForTimeout(150);
+  ok('F1-03 cari transaksi BK-001 (sandbox) ditemukan', (await p.locator('tbody tr').filter({ hasText: 'POS-BK-001' }).count()) === 1);
+  await p.click('a.back'); await p.waitForTimeout(150);
+  ok('F1-03 kembali ke ringkasan dengan filter tetap', p.url().includes('outlet=ubud') && (await rev()) === 'Rp 1.680 jt');
+  await p.locator('.g-bottom .donut-legend a').first().click(); await p.waitForTimeout(150);
+  ok('F1-03 klik bar channel membuka baris grup Paid', p.url().includes('metric=channel') && decodeURIComponent(p.url()).includes('group=Paid'));
+  await p.goto(BASE + 'index.html#commercial-drill?metric=budget&period=2026-08&outlet=ubud'); await p.waitForTimeout(150);
+  ok('F1-03 budget Ubud: baris CMP-001 dari sandbox', (await text('table')).length > 0 && (await p.locator('td').filter({ hasText: 'BGL-UBD-2608-01' }).count()) === 1);
+  /* sandbox → SER through the UI */
+  await p.goto(BASE + 'index.html#commercial-budget?view=requests'); await p.click('form[data-submit=request] button');
+  await p.goto(BASE + 'index.html#mrf'); await p.click('[data-action=approve]'); await p.click('[data-action=post]');
+  await p.goto(BASE + 'index.html#reservation'); await p.selectOption('form[data-submit=book] [name=id]', 'LEAD-001'); await p.click('form[data-submit=book] button');
+  await p.goto(BASE + 'index.html#pos');
+  for (const a of ['checkin', 'complete', 'pay']) await p.click(`[data-action=${a}][data-id=BK-002]`);
+  await p.goto(BASE + 'index.html#commercial?outlet=ubud'); await p.waitForSelector('.kpi-row .kpi');
+  ok('Sandbox UI → SER: revenue Ubud jadi Rp 1.680,75 jt', (await rev()) === 'Rp 1.680,75 jt', await rev());
+  ok('Sandbox UI → SER: realisasi budget Ubud Rp 65 jt', (await text('.g-mid')).includes('Rp 65 jt'));
+  await p.goto(BASE + 'index.html#screens'); await p.click('[data-action=reset]'); await p.goto(BASE + 'index.html#commercial'); await p.waitForSelector('.kpi-row .kpi');
+  ok('Reset Demo mengembalikan Rp 4.130 jt', (await rev()) === 'Rp 4.130 jt');
+  /* F1-04 + F7-01 */
+  await p.goto(BASE + 'index.html#sales-home'); await p.waitForTimeout(100);
+  ok('F1-04 sidebar Sales berurutan', (await p.locator('#nav .nav-mod.active a > span:nth-child(2)').allInnerTexts()).slice(0, 7).map(s => s.split('\n')[0]).join('|') === 'Beranda Sales|Sales Manager|Owner Eagle Eye|Sales B2C & Reservasi|Sales B2B|Driver & Referral|Client Portal');
+  await p.selectOption('#role', 'owner'); await p.waitForTimeout(100);
+  ok('F1-04 role switcher Owner mengarah ke Eagle Eye', (await text('.hero')).includes('Owner Eagle Eye'));
+  await p.goto(BASE + 'index.html#screens'); await p.waitForTimeout(100);
+  { const n = await p.locator('.roadmap tbody tr').count(), hrdN = await p.evaluate(() => HL.SCREENS.filter(s => /^HRD/.test(s[2] || '')).length); ok('F7-01 peta berisi 41 kode layar empat portal + semua layar HRD', n === 41 + hrdN && hrdN >= 8, `${n} = 41 + ${hrdN}`); }
+  await p.goto(BASE + 'commercial.html'); await p.waitForTimeout(150);
+  ok('Entry commercial.html membuka Commercial', p.url().endsWith('#commercial'));
+  await p.goto(BASE + 'sales.html'); await p.waitForTimeout(150);
+  ok('Entry sales.html membuka Sales', p.url().endsWith('#sales-home'));
+  await p.goto(BASE + 'index.html#picker'); await p.waitForTimeout(150);
+  ok('Deep link #picker membuka F1-01', await p.locator('#picker').evaluate(d => d.open));
+  /* mobile */
+  const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  m.on('pageerror', e => errors.push('mobile: ' + e.message));
+  const routes = ['commercial', 'commercial-drill?metric=revenue', 'commercial-drill?metric=customers', 'commercial-drill?metric=budget', 'sales-home', 'screens', 'bridge', 'reservation', 'pos', 'budget'];
+  let maxW = 0;
+  for (const r of routes) { await m.goto(BASE + 'index.html#' + r); await m.waitForTimeout(120); maxW = Math.max(maxW, await m.evaluate(() => document.documentElement.scrollWidth)); }
+  ok('390 px: tanpa scroll horizontal di 10 rute', maxW <= 390, 'maks ' + maxW);
+  ok('390 px: logo pemilih portal terlihat', await m.locator('.tb-portal').isVisible());
+  await m.click('#menu');
+  ok('390 px: tombol Menu membuka sidebar', await m.evaluate(() => document.body.classList.contains('nav-open')) && (await m.locator('#menu').getAttribute('aria-expanded')) === 'true');
+  await m.keyboard.press('Escape');
+  await m.locator('.tb-portal').click();
+  const vis = await m.evaluate(() => [...document.querySelectorAll('#options .option')].every(o => { const r = o.getBoundingClientRect(); return r.left >= 0 && r.right <= 390; }));
+  ok('390 px: keempat kartu portal terjangkau tanpa scroll horizontal', vis);
+  ok('Tidak ada console error', errors.length === 0, errors.slice(0, 3).join(' | '));
+  await browser.close();
+  console.log(`\n${out.length - fail} lulus, ${fail} gagal`);
+  fs.writeFileSync(path.join(__dirname, 'browser-results.json'), JSON.stringify({ ranAt: new Date().toISOString(), base: BASE, pass: out.length - fail, fail, results: out }, null, 1));
+  process.exit(fail ? 1 : 0);
+})();

@@ -1,0 +1,67 @@
+/* HAWK HRD · uji browser perjalanan lintas fase F1–F8: langkah dijalankan di halaman, lalu setiap layar terkait diperiksa
+   menampilkan ID bersama yang sama. python3 -m http.server 8811 lalu node tests/hawk-live/hrd-journey.e2e.js */
+'use strict';
+const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path');
+const BASE = process.env.BASE || 'http://localhost:8811/hawk-live/';
+const SHOTS = process.env.SHOTS;
+const out = []; let fail = 0;
+const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: !!cond, info }); console.log(`${cond ? '✓' : '✗'} ${name}${info ? ' · ' + info : ''}`); };
+(async () => {
+  const browser = await chromium.launch();
+  const errors = [];
+  const p = await browser.newPage({ viewport: { width: 1440, height: 950 } });
+  p.on('pageerror', e => errors.push(e.message)); p.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  const go = async (r) => { await p.goto(BASE + 'hrd.html#' + r); await p.waitForTimeout(160); };
+  const text = () => p.locator('#view').innerText();
+  const shot = async (n) => { if (SHOTS) await p.screenshot({ path: path.join(SHOTS, n + '.png'), fullPage: true }); };
+  if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
+  await go('hrd-home'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(250);
+  await p.addScriptTag({ path: path.join(__dirname, 'hrd-journey-steps.js') });
+  const ids = await p.evaluate(() => {
+    const U = (role, a, i) => HR.update(HL.state, a, { by: role, role, ...i });
+    const r = run(U, () => HL.state.hr); U('hrd', 'pay-generate', { period: '2611' });
+    localStorage.setItem('hawk-integrated-demo-v1', JSON.stringify(HL.state)); return r;
+  });
+  await p.reload(); await p.waitForTimeout(250);
+  ok('Langkah perjalanan berjalan tanpa error', !!ids.emp && !!ids.req && !!ids.follow, `${ids.req} · ${ids.vac} · ${ids.app} · ${ids.emp}`);
+
+  await go('hrd-mp-utility?outlet=OUT-UBD'); await shot('J01-F5-utility-ubud');
+  ok('1 Kebutuhan: utility Ubud di atas kapasitas (F5)', /Di atas kapasitas/.test(await text()));
+  await go('hrd-mp-sim?id=' + ids.sim); await shot('J02-F5-skenario');
+  ok('2 Skenario formasi disetujui & diteruskan ke Rekrutmen', (await text()).includes(ids.req));
+  await go('hrd-task?id=' + ids.workplan); await shot('J03-F3-workplan');
+  ok('3 Workplan F3 (sumber utility Ubud)', /Workplan/.test(await text()) && /UTIL-OUT-UBD-2611/.test(await text()));
+  await go('hrd-rec-jobs'); await shot('J04-F4-lowongan');
+  ok('4 Lowongan dipublikasikan', (await text()).includes(ids.vac));
+  await go('hrd-rec-candidates?id=' + ids.app); await shot('J05-F4-kandidat');
+  ok('5 Lamaran → screening → interview → keputusan tercatat', (await text()).includes(ids.app) && /Ni Kadek Perjalanan/.test(await text()));
+  await go('hrd-rec-onboard'); await shot('J06-F4-onboarding');
+  ok('6 Onboarding memuat karyawan baru', (await text()).includes(ids.emp) || /Ni Kadek Perjalanan/.test(await text()));
+  await go('hrd-rec-place'); await shot('J07-F4-penempatan');
+  ok('7 Penempatan terjadwal Spa Ubud efektif 16 Nov', /Ni Kadek Perjalanan/.test(await text()) && /2026-11-16/.test(await text()));
+  await go('hrd-roster?emp=' + ids.emp); await shot('J08-F2-profil');
+  ok('8 Profil karyawan baru di Direktori (sumber lamaran)', /Ni Kadek Perjalanan/.test(await text()));
+  await go('hrd-mp-handoff'); await shot('J09-F5-progres-formasi');
+  ok('9 Progres formasi di Manpower (permintaan sama)', (await text()).includes(ids.req));
+  await go('hrd-pay-commission?outlet=OUT-UBD&emp=EMP-0002'); await shot('J10-F7-komisi');
+  ok('10 POS → komisi therapist Ubud per Service Line ID', /TRX-UBD/.test(await text()));
+  await go('hrd-pay-slip?emp=' + ids.emp + '&period=2611'); await shot('J11-F7-slip-prorata');
+  ok('11 Slip November hire baru: prorata, tanpa komisi', /Ni Kadek Perjalanan/.test(await text()) && /Gaji pokok/.test(await text()));
+  await go('hrd-xscore?p=2611&emp=EMP-0002'); await shot('J12-F6-xscore');
+  ok('12 KPI: XScore November dari POS F5', /POS F5/.test(await text()) || /EVD-POS-2611/.test(await text()));
+  await go('hrd-race-reflection'); await shot('J13-F8-reflection');
+  const tr = await p.locator('#view tr:has-text("Utility Spa Ubud")').innerText();
+  ok('13 Reflection Ubud membuka kartu Workplan yang sama', tr.includes(ids.workplan));
+  ok('13b Peringatan Santi < 70% bertaut TSK-0002', /Di bawah 70%/.test(await text()) && (await p.locator('#view tr:has-text("Utility Spa Santi")').innerText()).includes('TSK-0002'));
+  await go('hrd-task?id=' + ids.follow); await shot('J14-F3-tindak-lanjut');
+  ok('14 Tindak lanjut coaching 30 hari (HG)', /Coaching 30 hari/.test(await text()));
+  await go('hrd-mp-utility?outlet=OUT-SHT'); await shot('J15-F5-santi');
+  ok('15 Santi: peringatan utility rendah di F5', /Di bawah 70%|di bawah ambang/i.test(await text()));
+  await go('hrd-home'); await shot('J16-F1-beranda');
+  ok('16 Beranda F1 tetap konsisten (Ubud >100%, Santi <70%)', /Ubud/.test(await text()) && /Santi/.test(await text()));
+  ok('Tanpa error console', errors.length === 0, errors.slice(0, 3).join(' | '));
+  await browser.close();
+  fs.writeFileSync(path.join(__dirname, 'hrd-journey-results.json'), JSON.stringify({ pass: out.filter(o => o.ok).length, fail, ids, out }, null, 1));
+  console.log(`\n${out.length - fail} lulus, ${fail} gagal`); process.exit(fail ? 1 : 0);
+})();

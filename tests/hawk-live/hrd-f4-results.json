@@ -1,0 +1,256 @@
+{
+ "pass": 50,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV04 permintaan Therapist Spa Ubud dibuat, menunggu persetujuan",
+   "ok": true,
+   "info": "REQ-HR-2611-011"
+  },
+  {
+   "name": "Manager HRD tidak bisa melewati tahap Operational Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Dua tahap persetujuan → Disetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Lowongan dipublikasikan dari formasi & outlet yang disetujui",
+   "ok": true,
+   "info": "VAC-2611-011"
+  },
+  {
+   "name": "NV01 publik: lowongan Therapist Spa Ubud terlihat tanpa login",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Draf & internal tidak muncul di landing publik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter outlet Bhisma hanya menampilkan Receptionist",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 tautan kanal IG membuka lowongan yang sama + kode kanal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Lowongan ditutup dari tautan lama: tidak menerima lamaran",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03 formulir Therapist berisi pertanyaan teknik treatment",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol kirim muncul hanya setelah tinjau",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tinjau sebelum kirim menampilkan ringkasan jawaban",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Lampiran tidak valid ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03 konfirmasi dengan nomor lamaran & kanal IG",
+   "ok": true,
+   "info": "APP-2611-0101"
+  },
+  {
+   "name": "Retry dengan kunci yang sama tidak membuat lamaran tambahan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05 lamaran publik masuk pipeline",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kandidat dua posisi: satu profil, dua Application ID",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Screening gagal ditampilkan & bisa dicoba lagi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 bukti per kriteria; sertifikat kosong → Perlu Klarifikasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Satu kartu klarifikasi F3 (klik ulang tidak menggandakan)",
+   "ok": true,
+   "info": "TSK-1001"
+  },
+  {
+   "name": "Kartu klarifikasi menaut ke lamaran sumber",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reviewer shortlist setelah klarifikasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Slot bentrok dengan interview lain ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Gagal sinkron kalender ditampilkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Jadwal ulang & retry memakai Event ID yang sama, tanpa undangan ganda",
+   "ok": true,
+   "info": "GCAL-EVT-0101 · undangan 1"
+  },
+  {
+   "name": "NV08 rubric Therapist: demonstrasi treatment & kebersihan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rubric tersimpan, rata-rata 4.3",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Keputusan Ditolak punya status akhir sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Perubahan keputusan tercatat (riwayat dicoret)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penawaran diterima membuka tahap kontrak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanda tangan sebelum verifikasi KTP/foto ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV10 kontrak ditandatangani & terhubung ke Employee ID",
+   "ok": true,
+   "info": "EMP-0159"
+  },
+  {
+   "name": "HG Lead → Kontrak & dokumen = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV11 paket onboarding: subtugas HRD, HG & Supervisor di Planner",
+   "ok": true,
+   "info": "TSK-1002"
+  },
+  {
+   "name": "Mengulang paket onboarding membuka tugas yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV12 penempatan & akun disetujui, status Aktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Satu profil baru di roster Spa Ubud (31 = 30 + 1 rekrutan)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Profil karyawan baru: Therapist Spa Ubud, atasan Mila, PKWT",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konversi & penempatan dapat diaudit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Formulir Receptionist berbeda (slot ganda, booking/POS)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rubric Receptionist: simulasi reservasi & transaksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Manager → Rekrutmen = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist ESS → detail kandidat = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter tanpa hasil → keadaan kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: hrd-rec-candidates",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-rec-candidates?id=APP-2611-0101",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-rec-manage",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px publik: karier.html",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px publik: karier.html#apply=VAC-2611-002",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

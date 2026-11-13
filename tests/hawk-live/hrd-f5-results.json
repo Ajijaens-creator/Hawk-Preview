@@ -1,0 +1,231 @@
+{
+ "pass": 45,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV01: 4 outlet masing-masing 25 Therapist + 5 Receptionist",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01: Office per divisi, PC & Commercial \"headcount belum ditetapkan\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01: peringatan Ubud di atas kapasitas & Santi di bawah 70%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01: label DATA DEMO & sumber simulator",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik outlet → NV02 Kapasitas Spa Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 shift Pagi: 200 jam reguler, 216 jam selesai, 108%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 klik shift → anggota termasuk Bantuan dari Spa Santi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03: jejak 216 ÷ 200 = 108%, kelebihan 16 jam = lembur 10 + bantuan 6",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03: total = pembilang ÷ penyebut (414 / 390)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03: refund, batal & Four Hands dijelaskan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik pembilang → NV06 baris POS Spa Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 detail baris: Transaction ID & Service Line ID",
+   "ok": true,
+   "info": "TRX-UBD-261107-0001P-L1"
+  },
+  {
+   "name": "Refund tercatat, layanan tetap selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Utility tidak berubah oleh refund (106.2%)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi durasi tersimpan di baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Replay batch: 0 baris baru, duplikat diabaikan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Refund & koreksi masuk Audit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 bandingkan 3 opsi dengan utility sebelum/sesudah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario tersimpan → detail sebelum/sesudah, asumsi & bukti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tandai Issue → kartu Planner F3",
+   "ok": true,
+   "info": "TSK-1001"
+  },
+  {
+   "name": "NV03 menampilkan kartu yang sama (satu temuan, satu kartu)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Planner F3 menampilkan kartu utility yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD tidak melihat tombol Setujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Manager HRD menyetujui skenario",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Handoff → permintaan tenaga F4",
+   "ok": true,
+   "info": "REQ-HR-2611-011"
+  },
+  {
+   "name": "Retry handoff tidak membuat permintaan ganda",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08 progres: posisi terbuka 2",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F4 Permintaan memuat sumber Manpower & Task ID",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Santi 66.2% Di bawah 70% → temuan yang sudah ada (TSK-0002), tanpa kartu ganda",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu Santi terbuka dengan sumber utility",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Naik ke Issue di Planner → status sama tampil di Utility",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04: Ubud & Bhisma Sore 17–21 kurang coverage",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04: tiap outlet 5 receptionist",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05: Production data belum lengkap, PC/Commercial belum ditetapkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Dashboard memuat peringatan Reception 17–21",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Oktober: 5512 ÷ 5200 = 106% (sama dengan Beranda F1)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud hanya melihat Spa Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor tidak melihat batch/refund",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Manager → Manpower = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist ESS → POS = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: hrd-manpower",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-mp-utility?outlet=OUT-UBD",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-mp-pos",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-mp-sim?id=SIM-2611-001",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

@@ -32,6 +32,8 @@ const copyDir = (src, dst) => {
   }
 };
 copyDir(path.join(root, 'assets'), path.join(dist, 'assets'));
+/* HAWK four-portal preview (Phase 1+): served at /hawk-live/, independent of the 62-NV app */
+copyDir(path.join(root, 'hawk-live'), path.join(dist, 'hawk-live'));
 fs.writeFileSync(path.join(dist, 'assets/js/boot.js'), "/* boot (moved out of index.html for a strict CSP) */\nwindow.HAWK.boot();\n");
 
 const hash = (rel) => crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, rel))).digest('hex').slice(0, 8);

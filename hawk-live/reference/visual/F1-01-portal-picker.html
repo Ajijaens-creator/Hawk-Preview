@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAWK ERP · F1-01 Pemilih Portal</title>
+<style>
+:root{color-scheme:light;--charcoal:#191919;--ink:#1b1b18;--canvas:#f5f4f0;--card:#fffefb;--line:#e3e0d7;--gold:linear-gradient(135deg,#f3db9d,#ad7d36)}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font:15px system-ui,sans-serif}
+button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #87591d;outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px clamp(14px,4vw,46px);background:var(--charcoal);color:white}
+.brand{display:flex;align-items:center;gap:10px;text-align:left;background:transparent;color:white;border:0;padding:4px;border-radius:8px}
+.brand:focus-visible{outline-color:#f3db9d}.mark{display:grid;place-items:center;width:39px;height:39px;border-radius:9px;background:var(--gold);color:var(--ink);font-size:20px;font-weight:800}
+.brand small{display:block;color:#ead7a9;font-size:9px;letter-spacing:.12em}.chevron{color:#ead7a9;margin-left:5px}
+.badge{background:#f5e8c8;color:#624719;padding:5px 9px;border-radius:30px;font-size:10px;font-weight:800;white-space:nowrap}
+main{max-width:1060px;margin:auto;padding:24px clamp(14px,4vw,34px)}
+.notice{border:1px dashed #b49b67;background:#fff9ec;color:#624719;padding:10px 13px;border-radius:9px;font-size:13px}
+.context{font-size:12px;color:#5e5a50;margin-top:22px}
+h1{font-size:clamp(26px,4vw,36px);margin:5px 0 14px}
+.hero{padding:25px;border-radius:16px;color:#fff8e7;background:radial-gradient(ellipse at 92% 0%,#6b5529,transparent 70%),#191919}
+.hero h2{margin:0;font-size:21px}.hero p{margin:7px 0 0;color:#eee2ca}
+dialog{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:18px;width:min(650px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:22px;box-shadow:0 24px 80px #0004}
+dialog::backdrop{background:#191919a8}.dialog-head{display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:15px}.dialog-head h2{margin:0;font-size:22px}.dialog-head p{margin:4px 0 0;color:#5e5a50;font-size:13px}
+.close{border:1px solid var(--line);border-radius:8px;background:var(--card);width:36px;height:36px;font-size:20px}
+.portals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.option{display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;background:var(--card);color:var(--ink);padding:13px;border:1px solid var(--line);border-radius:11px;min-height:104px}.option:hover,.option[aria-current=true]{background:#fff5dd;border-color:#a77936}.option .label{font-weight:760}.option small{color:#5e5a50}.state{font-size:11px;color:#684a17;font-weight:700}
+@media(max-width:520px){.portals{grid-template-columns:1fr}.option{min-height:0;padding:10px 12px}.dialog-head h2{font-size:19px}dialog{padding:15px}.hero{padding:16px}}
+</style>
+</head>
+<body>
+<header class="top">
+<button class="brand" id="logo" aria-haspopup="dialog" aria-controls="picker" aria-label="HAWK ERP, pilih portal"><span class="mark" aria-hidden="true">H</span><span><b>HAWK ERP</b><small>JAENS ENTERPRISES</small></span><span class="chevron" aria-hidden="true">⌄</span></button>
+<span class="badge">SIMULASI</span>
+</header>
+<main>
+<div class="notice">F1-01 · Wireframe interaktif. Pemilihan portal mengubah tujuan demo pada halaman ini.</div>
+<div class="context">HAWK ERP <span aria-hidden="true">›</span> <span id="context">Commercial</span></div>
+<h1 id="page-title">Commercial</h1>
+<section class="hero" aria-live="polite"><h2 id="destination">Brand, Marketing &amp; Communications</h2><p>Gunakan logo HAWK ERP untuk berpindah portal.</p></section>
+</main>
+<dialog id="picker" aria-labelledby="picker-title" aria-describedby="picker-description">
+<div class="dialog-head"><div><h2 id="picker-title">Pilih portal HAWK</h2><p id="picker-description">Setiap portal punya ruang kerja dan akses sesuai peran.</p></div><form method="dialog"><button class="close" aria-label="Tutup" autofocus>×</button></form></div>
+<div class="portals">
+<button class="option" data-portal="Finance" data-description="Budget 7P, Purchasing, approval dan rekonsiliasi"><span class="label">Finance</span><small>Budget 7P dan Finance</small><span class="state"></span></button>
+<button class="option" data-portal="Operational" data-description="Operasional outlet, terapis, ruangan dan POS"><span class="label">Operational</span><small>Operasional outlet dan POS</small><span class="state"></span></button>
+<button class="option" data-portal="Commercial" data-description="Brand, Marketing &amp; Communications" aria-current="true"><span class="label">Commercial</span><small>Brand, Marketing &amp; Communications</small><span class="state">Portal aktif</span></button>
+<button class="option" data-portal="Sales" data-description="Reservasi B2C, Sales B2B, Driver &amp; Referral dan Client Portal"><span class="label">Sales</span><small>Sales, reservasi dan kemitraan</small><span class="state"></span></button>
+</div>
+</dialog>
+<script>
+const logo = document.querySelector('#logo');
+const picker = document.querySelector('#picker');
+const options = [...picker.querySelectorAll('[data-portal]')];
+
+logo.addEventListener('click', () => picker.showModal());
+picker.addEventListener('close', () => logo.focus());
+
+function selectPortal(option) {
+  options.forEach(item => {
+    const active = item === option;
+    if (active) item.setAttribute('aria-current', 'true');
+    else item.removeAttribute('aria-current');
+    item.querySelector('.state').textContent = active ? 'Portal aktif' : '';
+  });
+  document.querySelector('#context').textContent = option.dataset.portal;
+  document.querySelector('#page-title').textContent = option.dataset.portal;
+  document.querySelector('#destination').textContent = option.dataset.description;
+  picker.close();
+}
+options.forEach(option => option.addEventListener('click', () => selectPortal(option)));
+</script>
+</body>
+</html>

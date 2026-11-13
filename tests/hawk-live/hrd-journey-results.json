@@ -1,0 +1,116 @@
+{
+ "pass": 19,
+ "fail": 0,
+ "ids": {
+  "sim": "SIM-2611-001",
+  "workplan": "TSK-1001",
+  "req": "REQ-HR-2611-011",
+  "vac": "VAC-2611-011",
+  "app": "APP-2611-0101",
+  "appRetry": "APP-2611-0101",
+  "event": "GCAL-EVT-0101",
+  "emp": "EMP-0159",
+  "empRetry": "EMP-0159",
+  "onboard": "TSK-1002",
+  "issue": "TSK-1001",
+  "santi": "TSK-0002",
+  "follow": "TSK-1009"
+ },
+ "out": [
+  {
+   "name": "Langkah perjalanan berjalan tanpa error",
+   "ok": true,
+   "info": "REQ-HR-2611-011 · VAC-2611-011 · APP-2611-0101 · EMP-0159"
+  },
+  {
+   "name": "1 Kebutuhan: utility Ubud di atas kapasitas (F5)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2 Skenario formasi disetujui & diteruskan ke Rekrutmen",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3 Workplan F3 (sumber utility Ubud)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "4 Lowongan dipublikasikan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5 Lamaran → screening → interview → keputusan tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6 Onboarding memuat karyawan baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "7 Penempatan terjadwal Spa Ubud efektif 16 Nov",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "8 Profil karyawan baru di Direktori (sumber lamaran)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "9 Progres formasi di Manpower (permintaan sama)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "10 POS → komisi therapist Ubud per Service Line ID",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "11 Slip November hire baru: prorata, tanpa komisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "12 KPI: XScore November dari POS F5",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13 Reflection Ubud membuka kartu Workplan yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "13b Peringatan Santi < 70% bertaut TSK-0002",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "14 Tindak lanjut coaching 30 hari (HG)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "15 Santi: peringatan utility rendah di F5",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "16 Beranda F1 tetap konsisten (Ubud >100%, Santi <70%)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

@@ -1,0 +1,276 @@
+{
+ "pass": 54,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV01: 6 indikator Vegen, total bobot 100%, skor terukur",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Drill indikator → key metrics dengan target, aktual, bukti, metric version",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bukti/data kosong ditandai gap (Absenteeism)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Goal → Beacon: BCN-02 menaut induk IND-4 dan Task ID",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bobot 99%: tampil \"tetap draf\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Aktivasi 99% ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bobot 101%: tetap draf",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tambah indikator + bobot 100% → siap diaktifkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Aktivasi 100%: v2 aktif, v1 arsip",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Review Success Factors tersimpan dengan bukti & penilai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tab Success Factors: rubric + riwayat review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03: komitmen My Day (TSK-0001) tampil di Daily Race",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Blocker dicatat dari Daily → terlihat di Daily",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu yang sama di My Day F3",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu Planner memuat blocker yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sesi Daily tersimpan dengan status saat review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04: komitmen, terbawa, hambatan, kapasitas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tindakan berikutnya → kartu Workplan F3 (PIC, tenggat, sumber)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05: utility Ubud sama dengan F5 dan \"Di atas kapasitas\"",
+   "ok": true,
+   "info": "106.2"
+  },
+  {
+   "name": "Santi < 70% sudah bertaut ke temuan F5 (TSK-0002)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ubud → Issue F3 dengan Finding ID",
+   "ok": true,
+   "info": "TSK-1002"
+  },
+  {
+   "name": "Reflection menampilkan kartu yang sama (penandaan ulang tidak menggandakan)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Form keputusan terisi kartu & temuan dari Reflection",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Decision ID tercatat dengan kriteria evaluasi",
+   "ok": true,
+   "info": "DEC-2611-002"
+  },
+  {
+   "name": "Workplan dari keputusan (sumber Decision ID)",
+   "ok": true,
+   "info": "TSK-1003"
+  },
+  {
+   "name": "Evaluasi: hasil dibandingkan kriteria saat keputusan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Keputusan Oktober (Santi) terbuka dengan kriteria & hasil November",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07: halaman utility = nilai Reflection",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik bukti → Pusat Laporan (jejak RPT-UTIL-OUT-UBD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Snapshot sesi tersimpan (versi metrik & Race)",
+   "ok": true,
+   "info": "SNP-2611-001-v1"
+  },
+  {
+   "name": "Koreksi → v2 merujuk v1 dan menandai nilai sebelumnya",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Snapshot v1 tetap nilai asli",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08: status Bukti kosong, Kedaluwarsa, Dikoreksi tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Retry refresh: tidak menggandakan kartu, jumlah refresh tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter tanpa hasil → keadaan kosong + reset",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner: biaya Reflection terbatas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner: laporan payroll = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner: ekspor snapshot sensitif ditolak (hak diperiksa ulang)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner membuka snapshot: biaya tetap disembunyikan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud: hanya utility outletnya",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist → Race = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist → e-Deck lewat URL langsung = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Manager HRD: ekspor snapshot disiapkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Keyboard: fokus berpindah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: hrd-race",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-race-beacon",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-race-daily",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-race-weekly",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-race-reflection",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-race-stracon",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-race-deck",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-report-center",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Hapus dataset demo: snapshot & keputusan demo ikut terhapus",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

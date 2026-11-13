@@ -1,0 +1,233 @@
+{
+ "ranAt": "2026-11-13T16:40:23.751Z",
+ "base": "http://localhost:8811/hawk-live/",
+ "pass": 45,
+ "fail": 0,
+ "results": [
+  {
+   "name": "F1-01 dialog terbuka dari logo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-01 empat opsi lama berurutan + HRD portal kelima",
+   "ok": true,
+   "info": "Finance,Operational,Commercial,Sales,HRD"
+  },
+  {
+   "name": "F1-01 Commercial bertanda Portal aktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-01 fokus keyboard tetap di dalam dialog",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-01 Escape menutup dialog",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-01 fokus kembali ke logo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-01 pilih Sales membuka Beranda Sales",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-01 buka ulang: Sales bertanda Portal aktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Browser back kembali ke Commercial Executive Summary",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 revenue Agustus semua outlet Rp 4.130 jt",
+   "ok": true,
+   "info": "Rp 4.130 jt"
+  },
+  {
+   "name": "F1-02 Total Guests 5.574 (KPI ke-2)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 KPI audit: Revenue Target Attainment dan Country Forecast Accuracy terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 sidebar: Commercial Budget tepat setelah Executive Summary",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 label DATA DEMO / SIMULASI tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 susunan: 4 KPI, 3 panel tengah, 3 panel bawah, insight",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 filter outlet Ubud: Rp 1.680 jt dan URL berisi filter",
+   "ok": true,
+   "info": "Rp 1.680 jt"
+  },
+  {
+   "name": "F1-02 filter aktif ditampilkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 filter Juli Ubud: Rp 1.520 jt",
+   "ok": true,
+   "info": "Rp 1.520 jt"
+  },
+  {
+   "name": "F1-02 Reset filter kembali ke Agustus · Semua outlet",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 periode belum ditutup (Sep) tanpa data: status kosong dan KPI \"—\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 status error simulasi tanpa angka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 Coba lagi memuat data",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 status loading simulasi tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-02 loading selesai lalu data tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-03 klik kartu Revenue membuka drill-down dengan filter induk",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-03 jumlah baris tabel = order KPI (1.920)",
+   "ok": true,
+   "info": "Halaman 1 dari 77 · 1.920 baris"
+  },
+  {
+   "name": "F1-03 definisi dan periode pembanding tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-03 cari transaksi BK-001 (sandbox) ditemukan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-03 kembali ke ringkasan dengan filter tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-03 klik bar channel membuka baris grup Paid",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-03 budget Ubud: baris CMP-001 dari sandbox",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sandbox UI → SER: revenue Ubud jadi Rp 1.680,75 jt",
+   "ok": true,
+   "info": "Rp 1.680,75 jt"
+  },
+  {
+   "name": "Sandbox UI → SER: realisasi budget Ubud Rp 65 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reset Demo mengembalikan Rp 4.130 jt",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-04 sidebar Sales berurutan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F1-04 role switcher Owner mengarah ke Eagle Eye",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "F7-01 peta berisi 41 kode layar empat portal + semua layar HRD",
+   "ok": true,
+   "info": "118 = 41 + 77"
+  },
+  {
+   "name": "Entry commercial.html membuka Commercial",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Entry sales.html membuka Sales",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Deep link #picker membuka F1-01",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: tanpa scroll horizontal di 10 rute",
+   "ok": true,
+   "info": "maks 390"
+  },
+  {
+   "name": "390 px: logo pemilih portal terlihat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: tombol Menu membuka sidebar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "390 px: keempat kartu portal terjangkau tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada console error",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

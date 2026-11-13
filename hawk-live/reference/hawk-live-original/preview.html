@@ -1,0 +1,271 @@
+<!doctype html>
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HAWK ERP · Integrasi Demo</title><style>
+:root{--ink:#22241f;--paper:#f5f1e8;--card:#fffdf7;--gold:#d7b36a;--line:#e6dfd0;--muted:#64645a;--green:#23674f}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px system-ui,sans-serif}button,select{font:inherit;cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #a87324;outline-offset:3px}.sidebar{background:#20221e;color:#eee9dc;position:fixed;inset:0 auto 0 0;width:233px;display:flex;flex-direction:column;padding:22px 16px;overflow:auto}.brand{border:0;background:none;color:inherit;display:flex;align-items:center;text-align:left;gap:11px;width:100%;padding:0 6px 24px}.brand strong{font-family:Georgia,serif;font-size:29px;letter-spacing:.12em}.mark,.profile>span{display:grid;place-items:center;background:linear-gradient(140deg,#f3db9d,#ad7d36);color:#211c13;border-radius:11px;width:42px;height:42px;font-size:24px}.switch{margin-left:auto;color:var(--gold)}small{display:block;font-size:11px;color:inherit;opacity:.78}.brand small{letter-spacing:.16em;color:var(--gold)}nav a{display:flex;gap:10px;color:#d4d2c7;text-decoration:none;padding:10px 11px;border-radius:8px;margin:2px 0;white-space:nowrap}nav a span{width:18px;text-align:center;color:var(--gold)}nav a[aria-current],nav a:hover{background:#393426;color:#ffdf9b}.nav-label{color:#b9b4a6;font-size:10px;letter-spacing:.15em;margin:14px 10px 7px}.profile{margin-top:auto;display:flex;gap:9px;align-items:center;padding:18px 0 0;font-size:12px}.profile>span{width:34px;height:34px;font-size:12px}main{margin-left:233px}.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:15px 30px;background:var(--card);color:var(--muted)}.top i{padding:0 9px}#view{padding:25px 30px 36px;max-width:1600px;margin:auto}.hero{background:radial-gradient(ellipse at 90% 10%,#5d4b29,transparent 60%),#242621;border-radius:17px;color:#fff8e9;padding:25px 28px;display:flex;align-items:end;justify-content:space-between;gap:15px}.eyebrow{color:#ebc885;font-size:11px;letter-spacing:.16em;font-weight:700}.hero h2{font:clamp(30px,4vw,49px)/1.03 Georgia,serif;margin:9px 0}.hero p{margin:0;color:#e0d9c9}.badge{display:inline-block;background:#f4e6c3;color:#684a17;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.08em;padding:6px 10px;white-space:nowrap}select,.btn,dialog button{background:#fffaf0;color:var(--ink);border:1px solid #d5c7a9;border-radius:8px;padding:8px 11px}.hero label{display:grid;gap:5px;white-space:nowrap}.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px;margin:17px 0}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}.kpi strong{display:block;font:clamp(21px,2.1vw,32px) Georgia,serif;margin:7px 0}.muted,.card p{color:var(--muted)}.positive{color:var(--green);font-size:12px}.grid{display:grid;grid-template-columns:1.65fr 1fr;gap:15px;margin:15px 0}.stack{display:grid;gap:15px}.card h2{font:24px Georgia,serif;margin:0 0 5px}.card p{margin:4px 0 13px}.chart{width:100%;height:auto;display:block}.chart text{font:12px system-ui;fill:#5b5a51}.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}.legend b{color:var(--ink)}.meter{height:10px;border-radius:20px;background:#eee8da;overflow:hidden;margin:5px 0 10px}.meter span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#a67836,#e7c675)}.metric-row{display:flex;justify-content:space-between;gap:10px;font-size:13px}.mentor{background:#252721;color:#fff8e9;border-color:#252721}.mentor p{color:#e2dac7}.mentor .btn[aria-pressed=true]{background:#e7c675}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.advice{border-left:3px solid var(--gold);padding:8px 12px;background:#36372d;border-radius:5px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;text-align:left;white-space:nowrap}th,td{padding:10px;border-bottom:1px solid var(--line)}th{font-size:11px;color:var(--muted)}details{margin-top:10px}summary{cursor:pointer;color:var(--muted);font-size:12px}.board{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:16px}.board .card{min-height:130px}dialog{width:min(440px,calc(100% - 24px));border:1px solid var(--line);border-radius:17px;background:var(--card);padding:25px}dialog::backdrop{background:#151611a8}.close{float:right}.portal-options{display:grid;gap:9px}.portal-options button{display:flex;justify-content:space-between;text-align:left}.portal-options button:last-child{background:#f1d58f}button:hover{filter:brightness(.95)}@media(max-width:1050px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:720px){.sidebar{position:static;width:auto;padding:12px}.brand{width:210px;padding:0}.sidebar nav{display:flex;overflow:auto;margin-top:8px}.nav-label,.profile{display:none}main{margin:0}.top,#view{padding:12px}.hero{align-items:start;flex-direction:column;padding:20px}.kpis,.board{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:12px}}
+
+/* HAWK ERP shell and demo dashboard styling. */
+:root{--ink:#1b1b18;--paper:#f5f4f0;--card:#fffefb;--line:#e3e0d7}
+.sidebar,.top{background:#191919;color:#f5f2e9}
+.brand strong{font:800 16px system-ui,sans-serif;letter-spacing:.025em}
+.brand small{font-size:9px;letter-spacing:.12em}
+.mark{width:38px;height:38px;font-size:19px;font-weight:800}
+.top{border-color:#2f2f2d}
+.demo-notice{margin:16px 30px 0;padding:10px 13px;border:1px dashed #af9050;border-radius:9px;background:#fff9ec;color:#61491e;font-size:12px}
+.demo-notice b{display:block;margin-bottom:3px}
+.hero{background:radial-gradient(ellipse at 88% 10%,#6a562a,transparent 68%),#151513}
+.hero h2,.card h2,.kpi strong{font-family:system-ui,sans-serif;font-weight:750}
+.hero h2{font-size:clamp(26px,3.25vw,42px)}
+.card h2{font-size:18px}
+.kpi{color:#fff;background:linear-gradient(135deg,#247b6b,#164a42);border:0}
+.kpi:nth-child(2){background:linear-gradient(135deg,#6c4bb6,#3b247d)}
+.kpi:nth-child(3){background:linear-gradient(135deg,#3467b7,#20417b)}
+.kpi:nth-child(4){background:linear-gradient(135deg,#8c6723,#614817)}
+.kpi:nth-child(5){background:linear-gradient(135deg,#48443a,#292923)}
+.kpi .muted,.kpi .positive{color:inherit}
+.portal-options a,.portal-options button{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:10px 12px;border:1px solid #d5c7a9;border-radius:8px;background:#fffaf0;color:var(--ink);text-decoration:none}
+.portal-options small{grid-column:1;grid-row:2}
+.portal-options span{grid-column:2;grid-row:1 / span 2}
+.portal-options button:last-child{background:linear-gradient(135deg,#f3db9d,#d6ad59)}
+@media(max-width:720px){.demo-notice{margin:12px 12px 0}}
+
+.page-heading{margin:0 0 17px}
+.breadcrumb{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+.page-heading h1{font-size:clamp(24px,3vw,34px);line-height:1.15;letter-spacing:-.025em;margin:8px 0 5px}
+.page-heading p{color:var(--muted);margin:0}
+.hero h2{font-size:clamp(21px,2.5vw,30px)}
+.card a,.breadcrumb a{color:#704b17;text-underline-offset:3px}
+nav a[aria-current]{box-shadow:inset 3px 0 #d7b36a}
+.mentor{background:var(--card);color:var(--ink);border-color:var(--line)}
+.mentor p{color:var(--muted)}
+.advice{background:#f7f0e0}
+#campaign-filter{max-width:100%}
+@media(max-width:720px){.sidebar nav{padding:4px 3px 6px}.grid{gap:10px}.hero label{white-space:normal}.page-heading{margin-bottom:13px}}
+.top a{color:#f2d9a2}.sidebar button.brand:focus-visible{outline-color:#f3db9d}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.actions button,form button{background:linear-gradient(135deg,#f3db9d,#d9b26a)}.workflow-form{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:12px 0}.workflow-form label{display:grid;gap:4px}input{font:inherit;padding:8px;border:1px solid #c9bda2;border-radius:8px;max-width:100%}.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0}.flow a{display:block;color:inherit;text-decoration:none}.flow a:hover{border-color:#aa7a31}.flow h2{font-size:17px}.status{margin:10px 0;color:#23674f}.status:empty{display:none}.profile{margin-top:18px}.card button{white-space:nowrap}.table-wrap{max-width:100%}main{min-width:0}.roadmap a{color:#704b17}.roadmap th,.roadmap td{white-space:normal}.roadmap td:first-child{white-space:nowrap}@media(max-width:720px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.workflow-form{align-items:stretch}.workflow-form label{max-width:100%}} 
+</style></head>
+<body><aside class="sidebar"><button class="brand" id="portal" aria-haspopup="dialog" aria-label="HAWK ERP, pilih portal"><span class="mark" aria-hidden="true">H</span><span><strong>HAWK ERP</strong><small>JAENS ENTERPRISES</small></span><span class="switch" aria-hidden="true">⌄</span></button><nav id="nav" aria-label="Workspace"></nav></aside>
+<main><header class="top"><a href="#bridge">Peta alur HAWK</a><span class="badge">DATA DEMO</span></header><div class="demo-notice"><b>PROTOTIPE · SIMULASI</b> Semua perubahan tersimpan di browser demo ini.</div><div id="view"></div></main>
+<dialog id="picker" aria-labelledby="picker-title"><form method="dialog"><button class="close" aria-label="Tutup">×</button></form><h2 id="picker-title">Pilih portal HAWK</h2><div id="options" class="portal-options"></div></dialog>
+<script>
+const HAWK = (() => {
+  const SEED = {
+    budget: 25000000,
+    requests: [{id:'MRF-001',campaign:'CMP-001',amount:3500000,status:'posted'}],
+    leads: [{id:'LEAD-001',name:'Tamu Demo',source:'Instagram',channel:'WhatsApp',campaign:'CMP-001',status:'new'}],
+    bookings: [{id:'BK-001',lead:'LEAD-HISTORY',source:'Organic',channel:'Website',campaign:'',partner:'',slot:'10.00',amount:750000,status:'paid',commissionRate:0,payout:false}],
+    tasks: [{id:'TASK-01',team:'Commercial',person:'Rani',group:'Content',label:'Review materi Wellness Escape',status:'planned'},{id:'TASK-02',team:'Sales',person:'Dewa',group:'Reservasi',label:'Tindak lanjut lead WhatsApp',status:'planned'}],
+    catalog:{name:'Wellness Massage',price:750000,duration:60},
+    partner:{id:'DRV-001',name:'Driver Demo',rate:.1,active:false,agreement:false},
+    b2b:{name:'Ubud Hotel Demo',stage:'Prospek'},
+    slots:['11.00','13.00','15.00'],
+    stock:12
+  };
+  const fresh = () => JSON.parse(JSON.stringify(SEED));
+  const nextId = (prefix, rows) => prefix + '-' + String(rows.length + 1).padStart(3,'0');
+  function totals(state){
+    const actual = state.requests.filter(r=>r.status==='posted').reduce((sum,r)=>sum+r.amount,0);
+    const committed = state.requests.filter(r=>r.status==='approved').reduce((sum,r)=>sum+r.amount,0);
+    const paid = state.bookings.filter(b=>b.status==='paid');
+    const revenue = paid.reduce((sum,b)=>sum+b.amount,0);
+    const commission = paid.reduce((sum,b)=>sum+Math.round(b.amount*b.commissionRate),0);
+    const attributed = paid.filter(b=>b.campaign==='CMP-001').reduce((sum,b)=>sum+b.amount,0);
+    return {actual,committed,remaining:state.budget-actual-committed,revenue,commission,attributed,roas:actual?attributed/actual:null};
+  }
+  function requireState(condition,message){if(!condition)throw Error(message)}
+  function update(state,action,input={}){
+    const row = (rows) => rows.find(r=>r.id===input.id);
+    switch(action){
+      case 'request': {
+        const amount=Number(input.amount);
+        requireState(Number.isSafeInteger(amount)&&amount>0,'Masukkan nominal rupiah yang valid.');
+        state.requests.push({id:nextId('MRF',state.requests),campaign:'CMP-001',amount,status:'submitted'});
+        break;
+      }
+      case 'approve': {
+        const request=row(state.requests);
+        requireState(request?.status==='submitted','Pengajuan sudah diproses.');
+        requireState(request.amount<=totals(state).remaining,'Sisa pagu tidak mencukupi.');
+        request.status='approved';
+        break;
+      }
+      case 'post': {
+        const request=row(state.requests);
+        requireState(request?.status==='approved','Setujui pengajuan sebelum realisasi.');
+        request.status='posted';
+        break;
+      }
+      case 'lead': {
+        requireState(['WhatsApp','Telepon','Website','Sosial media','Email'].includes(input.channel),'Kanal tidak valid.');
+        state.leads.push({id:nextId('LEAD',state.leads),name:'Tamu Demo',source:input.channel==='WhatsApp'?'Instagram':'Tidak diketahui',channel:input.channel,campaign:input.channel==='WhatsApp'?'CMP-001':'',status:'new'});
+        break;
+      }
+      case 'handoff': {
+        const lead=row(state.leads);
+        requireState(lead?.status==='new','Lead sudah ditindaklanjuti.');
+        lead.status='staff';
+        break;
+      }
+      case 'book': {
+        const lead=row(state.leads);
+        const partner=input.referral==='yes';
+        requireState(!partner||state.partner.active,'Partner referral belum aktif.');
+        requireState(state.slots.includes(input.slot)&&!state.bookings.some(b=>b.slot===input.slot&&b.status!=='cancelled'),'Slot sudah tidak tersedia.');
+        requireState(!lead||lead.status!=='booked','Lead sudah memiliki booking.');
+        state.bookings.push({id:nextId('BK',state.bookings),lead:lead?.id||'',source:lead?.source||(partner?'Referral':'Direct'),channel:lead?.channel||'Website',campaign:lead?.campaign||'',partner:partner?state.partner.id:'',slot:input.slot,amount:state.catalog.price,status:'confirmed',commissionRate:partner?state.partner.rate:0,payout:false});
+        if(lead)lead.status='booked';
+        break;
+      }
+      case 'checkin': case 'complete': case 'pay': case 'cancel': case 'refund': {
+        const booking=row(state.bookings);
+        const transitions={checkin:['confirmed','checked-in'],complete:['checked-in','completed'],pay:['completed','paid'],cancel:['confirmed','cancelled'],refund:['paid','refunded']};
+        const [from,to]=transitions[action];
+        requireState(booking?.status===from,'Status booking sudah berubah.');
+        requireState(action!=='refund'||!booking.payout,'Komisi sudah dibayar. Perlu penyesuaian Finance.');
+        booking.status=to;
+        if(action==='cancel'){
+          const lead=state.leads.find(l=>l.id===booking.lead);
+          if(lead)lead.status='staff';
+        }
+        break;
+      }
+      case 'agreement': state.partner.agreement=true; break;
+      case 'activate':
+        requireState(state.partner.agreement,'Perjanjian belum disetujui.');
+        state.partner.active=true;
+        break;
+      case 'payout': {
+        const booking=row(state.bookings);
+        requireState(booking?.status==='paid'&&booking.commissionRate>0&&!booking.payout,'Komisi belum dapat dibayar.');
+        booking.payout=true;
+        break;
+      }
+      case 'pipeline': {
+        const stages=['Prospek','Kualifikasi','Proposal','Negosiasi','Kontrak menang','Aktif','Booking pertama'];
+        const index=stages.indexOf(state.b2b.stage);
+        requireState(index<stages.length-1,'Pipeline telah mencapai tahap akhir.');
+        state.b2b.stage=stages[index+1];
+        break;
+      }
+      case 'task': {
+        const task=row(state.tasks);
+        requireState(task?.status==='planned','Tugas sudah selesai.');
+        task.status='done';
+        break;
+      }
+      default: throw Error('Aksi tidak tersedia.');
+    }
+  }
+  return {fresh,totals,update};
+})();
+const groups = {
+  Finance:[['budget','Budget 7P'],['mrf','Purchasing & MRF'],['commission','Komisi & Rekonsiliasi']],
+  Operational:[['pos','Operational & POS'],['inventory','Inventory']],
+  Commercial:[['commercial','Executive Summary'],['campaign','Campaign Planner'],['studio','Content Studio'],['brand','Brand & Communications'],['digital','Digital Marketing'],['social','Social Media'],['kol','Media Partner & KOL'],['attribution','Audience & Attribution'],['commercial-budget','Commercial Budget'],['mentor','AI Marketing Mentor'],['commercial-team','Kinerja Tim']],
+  Sales:[['sales','Sales Manager'],['owner','Owner Eagle Eye'],['reservation','B2C & Reservasi'],['b2b','Sales B2B'],['driver','Driver & Referral'],['client','Client Portal'],['sales-team','Kinerja Tim']]
+};
+const key='hawk-integrated-demo-v1';
+let state=HAWK.fresh();
+try { const saved=localStorage.getItem(key); if(saved)state=JSON.parse(saved); } catch {}
+const view=document.querySelector('#view');
+const picker=document.querySelector('#picker');
+const nav=document.querySelector('#nav');
+const rp=n=>'Rp '+n.toLocaleString('id-ID');
+const dec=n=>n.toLocaleString('id-ID',{maximumFractionDigits:2});
+const link=(id,title)=>`<a href="#${id}">${title}</a>`;
+const button=(action,title,id='')=>`<button type="button" class="btn" data-action="${action}" data-id="${id}">${title}</button>`;
+const table=(headers,rows)=>`<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const card=(title,body)=>`<section class="card"><h2>${title}</h2>${body}</section>`;
+const metrics=(entries)=>`<section class="kpis">${entries.map(([label,value])=>`<div class="card kpi"><span>${label}</span><strong>${value}</strong></div>`).join('')}</section>`;
+const bar=(label,value,ratio)=>`<div class="metric-row"><span>${label}</span><b>${value}</b></div><div class="meter" aria-hidden="true"><span style="width:${Math.min(100,ratio*100)}%"></span></div>`;
+const requests=()=>table(['ID','Campaign','Nominal','Status','Aksi'],state.requests.map(r=>[r.id,r.campaign,rp(r.amount),r.status,r.status==='submitted'?button('approve','Setujui',r.id):r.status==='approved'?button('post','Catat realisasi',r.id):'—']));
+const bookingRows=(rows,actions=false)=>table(['Booking','Lead','Slot','Nilai','Status',...(actions?['Aksi']:[])],rows.map(b=>[b.id,b.lead||'—',b.slot,rp(b.amount),b.status,...(actions?[
+  ({confirmed:()=>button('checkin','Check-in',b.id)+' '+button('cancel','Batalkan',b.id),'checked-in':()=>button('complete','Selesaikan',b.id),completed:()=>button('pay','Bayar',b.id),paid:()=>b.payout?'Perlu penyesuaian Finance':button('refund','Refund',b.id)})[b.status]?.()||'—'
+]:[])]));
+const budget=()=>{const t=HAWK.totals(state);return metrics([['Pagu 7P',rp(state.budget)],['Komitmen',rp(t.committed)],['Realisasi',rp(t.actual)],['Sisa',rp(t.remaining)]])+card('Realisasi dan komitmen',bar('Realisasi',rp(t.actual),t.actual/state.budget)+bar('Komitmen',rp(t.committed),t.committed/state.budget));};
+const requestForm=()=>`<form class="workflow-form" data-submit="request"><label>Nominal pengajuan (Rp)<input name="amount" type="number" min="1" step="1" required value="2000000"></label><button class="btn">Ajukan MRF</button></form>`;
+const bookingForm=(mode='client')=>{
+  const slots=state.slots.filter(slot=>!state.bookings.some(b=>b.slot===slot&&b.status!=='cancelled'));
+  if(!slots.length)return '<p>Semua slot demo terisi.</p>';
+  const leadOptions=state.leads.filter(l=>l.status!=='booked').map(l=>`<option value="${l.id}">${l.id} · ${l.channel}</option>`).join('');
+  return `<form class="workflow-form" data-submit="book">
+  ${mode==='reservation'?`<label>Lead<select name="id"><option value="">Booking langsung</option>${leadOptions}</select></label>`:''}
+  ${mode==='driver'?'<input type="hidden" name="referral" value="yes">':''}
+  <label>Slot HAWK<select name="slot">${slots.map(s=>`<option>${s}</option>`).join('')}</select></label>
+  <button class="btn">Konfirmasi booking</button></form>`;
+};
+const pipeline=()=>card('Ubud Hotel Demo',`<p>Tahap saat ini <b>${state.b2b.stage}</b></p><p>Guest Referral · On-site Treatment · Spa Partnership</p>${state.b2b.stage==='Booking pertama'?'':button('pipeline','Lanjutkan tahap')}`);
+const teams=scope=>{
+  const tasks=state.tasks.filter(t=>t.team===scope);
+  return metrics([['Pekerjaan',tasks.length],['Terverifikasi selesai',tasks.filter(t=>t.status==='done').length]])+
+    card('Ambidex & XRace · Daily Race',table(['Tim','Grup','PIC','Pekerjaan','Status','Aksi'],tasks.map(t=>[t.team,t.group,t.person,t.label,t.status,t.status==='planned'?button('task','Verifikasi selesai',t.id):'—'])))+
+    '<div class="grid">'+card('Kinerja & KPI',`<p>Completion demo <b>${dec(100*tasks.filter(t=>t.status==='done').length/tasks.length)}%</b></p><p>XScore dan kontrak KPI masuk tahap pengembangan lanjutan.</p>`)+card('Status Tim','<p>Status sesi demo · Tidak diketahui</p><p>Jadwal demo · Dalam shift</p>')+'</div>';
+};
+function bridge(){
+  return '<div class="flow">'+Object.entries(groups).map(([group,items])=>`<a class="card" href="#${items[0][0]}"><h2>${group}</h2><small>${items.length} ruang demo</small></a>`).join('')+'</div>'+
+    card('Skenario uji lintas portal','<ol><li>Ajukan MRF di Commercial Budget. Setujui dan catat realisasi di Finance.</li><li>Buka lead Instagram/WhatsApp di Sales. Alihkan ke staf atau langsung booking.</li><li>Check-in, selesaikan, lalu bayar di Operational & POS. Cek revenue dan atribusi.</li><li>Aktifkan driver setelah perjanjian. Buat booking driver, selesaikan di POS, lalu catat komisi di Finance.</li></ol><div class="actions">'+link('screens','Buka peta semua layar')+button('reset','Reset demo')+'</div>');
+}
+function screen(id){
+  const t=HAWK.totals(state);
+  switch(id){
+    case 'bridge': return bridge();
+    case 'screens': return card('Ruang dalam preview',table(['Portal','Layar'],Object.entries(groups).flatMap(([group,items])=>items.map(([route,title])=>[group,link(route,title)]))));
+    case 'budget': return budget()+card('Daftar pengajuan',requests());
+    case 'commercial-budget': return budget()+card('Pengajuan campaign Wellness Escape',requestForm()+link('mrf','Lihat status di Finance'));
+    case 'mrf': return card('Pengajuan, approval dan realisasi',requests());
+    case 'inventory': return card('Stok demo',table(['Item','Tersedia','Rujukan'],[['Minyak massage',state.stock+' botol',link('mrf','Purchasing / MRF')]]));
+    case 'pos': return card('Booking → treatment → transaksi',bookingRows(state.bookings,true));
+    case 'commission': return metrics([['Revenue dibayar',rp(t.revenue)],['Komisi valid',rp(t.commission)]])+card('Komisi per booking',table(['Booking','Partner','Komisi','Status'],state.bookings.filter(b=>b.partner).map(b=>[b.id,b.partner,b.status==='paid'?rp(Math.round(b.amount*b.commissionRate)):'—',b.payout?'Dibayar (demo)':b.status==='paid'?button('payout','Catat pembayaran',b.id):'Menunggu transaksi valid'])));
+    case 'commercial': return metrics([['Total revenue',rp(t.revenue)],['Revenue campaign',rp(t.attributed)],['Booking dibayar',state.bookings.filter(b=>b.status==='paid').length],['ROAS demo',t.roas===null?'—':dec(t.roas)+'×']])+
+      '<div class="grid">'+card('Campaign Wellness Escape',bar('Lead campaign',state.leads.filter(l=>l.campaign).length,1)+bar('Booking dibayar',state.bookings.filter(b=>b.campaign&&b.status==='paid').length,state.leads.length?state.bookings.filter(b=>b.campaign&&b.status==='paid').length/state.leads.length:0)+link('attribution','Telusuri booking'))+card('Budget Realization',bar('Realisasi',rp(t.actual),t.actual/state.budget)+link('commercial-budget','Lihat budget'))+'</div>'+card('Acuan visual SER','<p><a href="../visual/F1-02-commercial-summary.html">Buka Executive Summary F1‑02 dengan filter periode dan outlet</a></p>');
+    case 'campaign': return card('CMP-001 · Wellness Escape','<p>Instagram → WhatsApp → reservasi Giant Spa</p><div class="actions">'+link('studio','Content Studio')+link('attribution','Lihat atribusi')+link('commercial-budget','Ajukan biaya')+'</div>');
+    case 'studio': return teams('Commercial');
+    case 'brand': return card('Brand & Communications','<p>Pesan demo · Wellness Escape di Giant Spa</p>'+link('campaign','Lihat brief campaign'));
+    case 'digital': return metrics([['Biaya campaign',rp(t.actual)],['Revenue teratribusi',rp(t.attributed)],['ROAS demo',t.roas===null?'—':dec(t.roas)+'×']])+card('Channel campaign',link('attribution','Buka jejak channel'));
+    case 'social': return card('Instagram → WhatsApp',link('reservation','Buka inbox Sales B2C'));
+    case 'kol': return card('Media Partner & KOL','<p>Deliverable demo · Reels Wellness Escape</p>'+link('campaign','Buka campaign terkait'));
+    case 'mentor': return card('AI Marketing Mentor · Simulasi',`<p>${t.attributed?'Bandingkan biaya campaign dengan revenue booking yang telah dibayar.':'Uji CTA WhatsApp dan tinjau apakah lead berubah menjadi booking dibayar.'}</p>`+link('attribution','Lihat angka pendukung'));
+    case 'attribution': return card('Jejak booking',table(['Booking','Lead','Sumber','Kanal','Campaign','Revenue'],state.bookings.map(b=>[b.id,b.lead||'—',b.source,b.channel,b.campaign||'—',b.status==='paid'?rp(b.amount):'—'])));
+    case 'sales': case 'owner': return metrics([['Revenue dibayar',rp(t.revenue)],['Lead terbuka',state.leads.filter(l=>l.status!=='booked').length],['Komisi valid',rp(t.commission)]])+card('Jejak hasil Sales',bookingRows(state.bookings))+pipeline();
+    case 'reservation': return card('Inbox reservasi',`<form class="workflow-form" data-submit="lead"><label>Kanal<select name="channel"><option>WhatsApp</option><option>Telepon</option><option>Website</option><option>Sosial media</option><option>Email</option></select></label><button class="btn">Tambah lead demo</button></form>`+table(['Lead','Sumber','Kanal','Status','Aksi'],state.leads.map(l=>[l.id,l.source,l.channel,l.status,l.status==='new'?button('handoff','Alihkan ke staf',l.id):'—'])))+card('Booking Desk',bookingForm('reservation'));
+    case 'b2b': return pipeline();
+    case 'client': return card('Katalog & booking',`<p>${state.catalog.name} · ${state.catalog.duration} menit · ${rp(state.catalog.price)}</p>`+bookingForm())+card('Riwayat demo',bookingRows(state.bookings.filter(b=>!b.lead&&!b.partner)));
+    case 'driver': return card('Driver Demo · DRV-001',`<p>${state.partner.active?'Aktif':state.partner.agreement?'Menunggu aktivasi':'Perjanjian belum disetujui'} · komisi 10%</p>`+(state.partner.active?bookingForm('driver'):state.partner.agreement?button('activate','Aktifkan partner'):button('agreement','Setujui perjanjian demo')))+card('Booking referral',bookingRows(state.bookings.filter(b=>b.partner)));
+    case 'commercial-team': return teams('Commercial');
+    case 'sales-team': return teams('Sales');
+    default: return bridge();
+  }
+}
+function render(message='',error=false){
+  const id=location.hash.slice(1)||'bridge';
+  const group=Object.entries(groups).find(([,items])=>items.some(([route])=>route===id));
+  const title=group?.[1].find(([route])=>route===id)?.[1]||(id==='screens'?'Peta layar':'Alur lintas portal');
+  nav.innerHTML=(group?.[1]||Object.entries(groups).map(([name,items])=>[items[0][0],name])).map(([route,name])=>`<a href="#${route}" ${route===id?'aria-current="page"':''}>${name}</a>`).join('');
+  view.innerHTML=`<header class="page-heading"><div class="breadcrumb">HAWK ERP › ${group?.[0]||'Demo integrasi'}</div><h1 tabindex="-1">${title}</h1></header><p class="status" role="${error?'alert':'status'}"></p>`+screen(id);
+  view.querySelector('.status').textContent=message;
+}
+function apply(action,input){
+  try{
+    if(action==='reset'){if(!confirm('Kembalikan semua data demo ke kondisi awal?'))return;state=HAWK.fresh();}
+    else HAWK.update(state,action,input);
+    try{localStorage.setItem(key,JSON.stringify(state));}catch{render('Perubahan berlaku selama halaman ini terbuka. Penyimpanan browser tidak tersedia.');return;}
+    render('Perubahan demo tersimpan.');
+  }catch(error){render(error.message,true);}
+}
+document.querySelector('#portal').onclick=()=>picker.showModal();
+document.querySelector('#options').innerHTML=Object.entries(groups).map(([name,items])=>`<button data-route="${items[0][0]}">${name}<span aria-hidden="true">→</span></button>`).join('');
+picker.addEventListener('click',event=>{
+  const route=event.target.closest('[data-route]')?.dataset.route;
+  if(route){picker.close();location.hash=route;}
+});
+view.addEventListener('submit',event=>{
+  const form=event.target;
+  if(!form.dataset.submit)return;
+  event.preventDefault();
+  apply(form.dataset.submit,Object.fromEntries(new FormData(form)));
+});
+view.addEventListener('click',event=>{
+  const control=event.target.closest('[data-action]');
+  if(control)apply(control.dataset.action,{id:control.dataset.id});
+});
+window.addEventListener('hashchange',()=>{render();view.querySelector('h1').focus();});
+render();
+</script>
+</body></html>

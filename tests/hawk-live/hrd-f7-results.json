@@ -1,0 +1,241 @@
+{
+ "pass": 47,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV03: komisi Spa Ubud per therapist, termasuk bantuan dari Santi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Four Hands: jumlah semua bagian = total transaksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Replay transaksi tidak menambah komisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04: draf dibuat PAY-2611-01, sumber November provisional terlihat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Regenerasi memperbarui batch yang sama (v2)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Review → setujui & kunci → snapshot",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05: pendapatan − potongan = take-home pay (rekonsiliasi ✓)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Komisi di slip tertaut ke baris POS",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Status bayar tanpa referensi bukti ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pembayaran gagal tercatat dengan referensi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Refund setelah kunci → penyesuaian ke Desember merujuk baris asal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08: jurnal seimbang = snapshot HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Handoff gagal tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Retry memakai Journal Batch ID sama (percobaan 2)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance melihat agregat per cost center, bukan slip",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance menerima jurnal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance → slip individu = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance dashboard: agregat batch terkunci",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Aturan baru di periode terkunci ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Versi v2 efektif Desember; Oktober tetap v1",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06: cicilan KSB-2611-001-C1 dipakai di PAY-2611-01 tepat sekali",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ledger saldo kasbon Rp1.000.000 setelah cicilan pertama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reimburse kas kecil tidak masuk payroll",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07: 19 entri katalog",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ringkasan Gaji merekonsiliasi batch",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan PPh menampilkan versi aturan simulasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV09: Salary Ratio, Total People Cost Ratio, Revenue/Salary per Employee, ruang anggaran",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Definisi pembilang/penyebut/cakupan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik kartu → Rencana Anggaran dengan filter terbawa",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV10: 12 bulan = total tahun, alokasi Office 100%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV11: tahun berjalan vs setahun penuh terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa Requisition ID F4 → tidak bisa disetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV12: grafik dengan legenda + tabel; kurva S berakhir = total tahun",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pembanding tahun lalu tersedia",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD → Payroll = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD → slip lewat URL langsung = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner: agregat, tanpa tautan slip",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist → slip = Akses ditolak (nominal khusus Manager HRD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter status Gagal (Oktober)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter tanpa hasil → keadaan kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Keyboard: fokus berpindah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: hrd-payroll",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-pay-slip?emp=EMP-0002&period=2611",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-pay-handoff",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-budget",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-bud-trend",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

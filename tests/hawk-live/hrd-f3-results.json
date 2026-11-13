@@ -1,0 +1,206 @@
+{
+ "pass": 40,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV01 Workplace HRD Operations dengan ringkasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik ringkasan Tanpa PIC → List terfilter",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Gap utility Spa Ubud ditandai Issue → Detail Kartu",
+   "ok": true,
+   "info": "TSK-1001"
+  },
+  {
+   "name": "Workplace menaut ke kartu yang sama (tidak membuat ganda)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 Board 7 kolom, kartu baru di Issue",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Drag ke Workplan tanpa PIC ditolak dengan validasi yang sama",
+   "ok": true,
+   "info": "Tetapkan PIC dan tenggat sebelum memindahkan TSK-1001 ke Workplan."
+  },
+  {
+   "name": "NV02 drag-and-drop ke Workplan berhasil",
+   "ok": true,
+   "info": "Perubahan demo tersimpan · TSK-1001."
+  },
+  {
+   "name": "Menu \"Pindahkan ke\" (keyboard/ponsel) ke Priority",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08 histori: aktor, asal → tujuan, via drag & menu, ganti PIC",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 My Tasks Staf HRD memuat kartu baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 My Day memuat kartu yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Fokus tidak mengubah tenggat/PIC/status",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05 pratinjau langkah, PIC berbasis peran, tenggat relatif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Template → kartu induk + 6 subtugas tertaut",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04 List menemukan induk + subtugas onboarding",
+   "ok": true,
+   "info": "2"
+  },
+  {
+   "name": "NV03 Calendar: sesi orientasi & tenggat subtugas tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ubah jadwal pada kartu → kalender mencerminkan acara yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Subtugas HG muncul di My Tasks Human Growth Lead",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Subtugas Supervisor muncul di My Tasks Supervisor Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Diskusi tersimpan dengan penulis & waktu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bukti ditambahkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penutupan sebelum checklist lengkap ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu wajib review tidak bisa langsung Selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reviewer meminta revisi → Dikerjakan dengan catatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 Board: TSK-0003 di kolom Selesai setelah review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Board dan List menampilkan hasil yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Konflik dua perubahan: pesan konflik & status terbaru dimuat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter kosong → keadaan kosong dengan reset",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik sumber kartu membuka layar asal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD → kartu workplace HG = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD → kartu bersumber payroll = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD hanya punya tab HRD Operations",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Manager → Board = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-tasks",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-board",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-myday",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-task?id=TSK-0001",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-calendar",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile: pindah kartu lewat menu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
