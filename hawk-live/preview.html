@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T15:50:45.566Z">
+<meta name="hawk-standalone" content="2026-11-13T15:57:49.193Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Preview lima portal</title>
 <style>
@@ -4066,6 +4066,194 @@ const HRCAREER = (() => {
 if (typeof module !== 'undefined') module.exports = HRCAREER;
 
 ;
+/* HAWK ERP · Portal HRD · model F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
+   Periode Okt 2026 (bulan tertutup, sama dengan Beranda F1) dan Minggu 46 (7–13 Nov, provisional, rincian POS per baris layanan).
+   Utility = jam treatment selesai ÷ jam kapasitas reguler (jam). Agregasi = total pembilang ÷ total penyebut.
+   Baris layanan POS dibangkitkan deterministik (tidak disimpan); yang disimpan hanya batch ingest, refund, koreksi, skenario dan handoff.
+   Memperluas HR.EXT. Tanpa jaringan. */
+const HR5 = (() => {
+  const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
+  const TODAY = H.TODAY;
+  const now = () => `${TODAY} ${new Date().toTimeString().slice(0, 5)}`;
+  const WEEK = ['2026-11-07', '2026-11-08', '2026-11-09', '2026-11-10', '2026-11-11', '2026-11-12', '2026-11-13'];
+  const PERIODS = { 'W46': { label: 'Minggu 46 · 7–13 Nov 2026 (provisional)', closed: false, updated: '2026-11-13 21:00' }, '2610': { label: 'Oktober 2026 (ditutup)', closed: true, updated: '2026-11-01 06:00' } };
+  /* kapasitas reguler (jam bookable setelah istirahat, cuti & jam tidak tersedia) dan jam treatment selesai per outlet × shift */
+  const WEEKLY = {
+    'OUT-UBD': { Pagi: [200, 216], Sore: [190, 198], fails: 23, cancel: 3, ot: 10, help: 6 },
+    'OUT-SHT': { Pagi: [200, 140], Sore: [190, 118], fails: 0, cancel: 14, ot: 0, help: 0 },
+    'OUT-TRL': { Pagi: [200, 172], Sore: [190, 156], fails: 2, cancel: 4, ot: 0, help: 0 },
+    'OUT-BSM': { Pagi: [200, 158], Sore: [190, 146], fails: 1, cancel: 5, ot: 0, help: 0 }
+  };
+  /* Oktober = Beranda F1: therapist × 8 jam × 26 hari; treatment selesai dari UTILITY F1 */
+  const MONTH_DONE = { 'OUT-UBD': 5512, 'OUT-SHT': 3432, 'OUT-TRL': 4368, 'OUT-BSM': 4056 };
+  const status = (u) => u === null || u === undefined || Number.isNaN(u) ? ['Belum tersedia', ''] : u > 1.0000001 ? ['Di atas kapasitas', 'bad'] : u < 0.6999999 ? ['Di bawah 70%', 'sandbox'] : (u < 0.75 || u > 0.95) ? ['Pantau', 'planned'] : ['Sehat', 'ready'];
+  const SVC = [['Balinese Massage', 90], ['Hot Stone', 120], ['Reflexology', 60], ['Body Scrub', 60], ['Four Hands', 90]];
+  const OUTCODE = { 'OUT-UBD': 'UBD', 'OUT-SHT': 'SHT', 'OUT-TRL': 'TRL', 'OUT-BSM': 'BSM' };
+
+  /* ---------- baris layanan POS Minggu 46 (deterministik) ---------- */
+  const cache = new WeakMap();
+  function lines(hr) {
+    const ver = `${hr.f5?.ver || 0}:${hr.placements.length}`; if (cache.has(hr) && cache.get(hr).v === ver) return cache.get(hr).rows;
+    const rows = [], f5 = ensure(hr);
+    const thr = (o) => hr.placements.filter(p => p.location === o && p.position === 'POS-THR' && p.from <= WEEK[6] && (!p.to || p.to >= WEEK[0])).map(p => p.emp);
+    const shiftOf = (emp) => (hr.f2?.schedules || []).find(s => s.emp === emp && s.kind === 'tetap' && s.from <= WEEK[0] && (!s.to || s.to >= WEEK[0]))?.shift || 'Pagi';
+    for (const o of Object.keys(WEEKLY)) {
+      const W = WEEKLY[o], team = thr(o), helpers = o === 'OUT-UBD' ? thr('OUT-SHT').slice(0, 2) : [];
+      for (const sh of ['Pagi', 'Sore']) {
+        const crew = team.filter(e => shiftOf(e) === sh); const pool = crew.length ? crew : team;
+        let target = W[sh][1] * 60, n = 0;
+        const special = o === 'OUT-UBD' && sh === 'Pagi' ? [...Array(W.help / 1.5).fill(0).map((_, i) => ({ emp: helpers[i % helpers.length], dur: 90, help: true })), ...Array(W.ot / 2).fill(0).map((_, i) => ({ emp: pool[i % pool.length], dur: 120, ot: true }))] : [];
+        const push = (emp, dur, extra = {}) => {
+          const d = WEEK[n % 7], k = ++n, svc = extra.four ? SVC[4] : SVC[(k + emp.length) % 4];
+          const startH = extra.ot ? 17 + (k % 2) : (sh === 'Pagi' ? 9 : 13) + (k % 6);
+          const tx = `TRX-${OUTCODE[o]}-${d.slice(2).replace(/-/g, '')}-${String(k).padStart(4, '0')}${sh[0]}`;
+          rows.push({ tx, line: `${tx}-L1`, outlet: o, shift: sh, emp, home: hr.placements.find(p => p.emp === emp && p.from <= d && (!p.to || p.to >= d))?.location || o, date: d, start: `${String(startH).padStart(2, '0')}:00`, dur, svc: svc[0], status: 'Selesai', pay: 'Dibayar', ot: !!extra.ot, help: !!extra.help, alloc: extra.alloc || null });
+        };
+        special.forEach(s => { push(s.emp, s.dur, s); target -= s.dur; });
+        /* satu layanan Four Hands (dua therapist, alokasi durasi masing-masing) per outlet-shift */
+        if (pool.length > 1) { push(pool[0], 90, { four: true, alloc: [pool[0], pool[1]] }); push(pool[1], 90, { four: true, alloc: [pool[0], pool[1]] }); rows[rows.length - 1].tx = rows[rows.length - 2].tx; rows[rows.length - 1].line = rows[rows.length - 2].tx + '-L2'; target -= 180; }
+        let i = 0; while (target > 0) { const dur = target >= 90 ? (i % 3 === 2 ? 60 : 90) : target; push(pool[i % pool.length], dur); target -= dur; i++; }
+      }
+      for (let c = 0; c < W.cancel; c++) rows.push({ tx: `TRX-${OUTCODE[o]}-C${String(c + 1).padStart(3, '0')}`, line: `TRX-${OUTCODE[o]}-C${String(c + 1).padStart(3, '0')}-L1`, outlet: o, shift: c % 2 ? 'Sore' : 'Pagi', emp: team[c % team.length], home: o, date: WEEK[c % 7], start: '15:00', dur: 0, planned: 90, svc: 'Balinese Massage', status: 'Batal', pay: 'Tidak ditagih', ot: false, help: false });
+    }
+    /* refund & koreksi tersimpan diterapkan ke baris asal */
+    for (const r of f5.refunds) { const l = rows.find(x => x.line === r.line); if (l) { l.pay = 'Refund'; l.refund = r.id; } }
+    for (const c of f5.corrections) { const l = rows.find(x => x.line === c.line); if (l) { l.dur = c.after; l.corrected = c.id; } }
+    cache.set(hr, { v: ver, rows });
+    return rows;
+  }
+  const done = (rs) => rs.filter(r => r.status === 'Selesai').reduce((s, r) => s + r.dur, 0) / 60;
+
+  /* ---------- agregat ---------- */
+  function outletUtil(hr, o, period = 'W46', shift) {
+    if (period === '2610') { const thr = 25, cap = thr * 8 * 26, d = MONTH_DONE[o]; const sh = shift ? (shift === 'Pagi' ? 0.52 : 0.48) : 1; return { cap: cap * sh, done: d * sh, u: d / cap, shiftNote: shift ? 'Pembagian shift Oktober diestimasi 52/48 (perlu verifikasi)' : null }; }
+    const rs = lines(hr).filter(r => r.outlet === o && (!shift || r.shift === shift));
+    const cap = shift ? WEEKLY[o][shift][0] : WEEKLY[o].Pagi[0] + WEEKLY[o].Sore[0];
+    const d = done(rs); return { cap, done: d, u: cap ? d / cap : null, ot: done(rs.filter(r => r.ot)), help: done(rs.filter(r => r.help)), cancel: rs.filter(r => r.status === 'Batal').length, refund: rs.filter(r => r.pay === 'Refund').length, fails: shift ? null : WEEKLY[o].fails };
+  }
+  function shiftMembers(hr, o, sh) {
+    const rs = lines(hr).filter(r => r.outlet === o && r.shift === sh && r.status === 'Selesai');
+    const by = {}; rs.forEach(r => { by[r.emp] = by[r.emp] || { emp: r.emp, home: r.home, hours: 0, ot: 0, lines: 0 }; by[r.emp].hours += r.dur / 60; by[r.emp].lines++; if (r.ot) by[r.emp].ot += r.dur / 60; });
+    return Object.values(by).sort((a, b) => b.hours - a.hours);
+  }
+  /* Reception: reservasi, check-in, tunggu rata-rata, coverage per blok jam */
+  /* Reception: rata-rata per hari Minggu 46 · blok jam [blok, staf, check-in, tunggu rata-rata menit] */
+  const RECEPTION = {
+    'OUT-UBD': { Pagi: { res: 46, peak: [['09–11', 2, 18, 6], ['11–13', 3, 26, 7]] }, Sore: { res: 70, peak: [['13–17', 2, 36, 8], ['17–21', 1, 30, 16]] } },
+    'OUT-SHT': { Pagi: { res: 38, peak: [['09–11', 2, 18, 4], ['11–13', 3, 16, 4]] }, Sore: { res: 46, peak: [['13–17', 2, 22, 5], ['17–21', 2, 20, 5]] } },
+    'OUT-TRL': { Pagi: { res: 46, peak: [['09–11', 2, 20, 7], ['11–13', 3, 24, 7]] }, Sore: { res: 61, peak: [['13–17', 2, 30, 8], ['17–21', 2, 28, 8]] } },
+    'OUT-BSM': { Pagi: { res: 46, peak: [['09–11', 2, 20, 6], ['11–13', 3, 24, 6]] }, Sore: { res: 64, peak: [['13–17', 2, 26, 7], ['17–21', 1, 34, 14]] } }
+  };
+  const blockHours = (b) => { const [a, z] = b.split('–').map(Number); return z - a; };
+  const REC_TARGET = { perHour: 6, wait: 10 };
+  const recStatus = (checkins, staff, hours, wait) => { const load = staff ? checkins / (staff * hours) : null; return load === null ? ['Belum tersedia', ''] : load > REC_TARGET.perHour || wait > REC_TARGET.wait ? ['Kurang coverage', 'bad'] : load > REC_TARGET.perHour * 0.85 ? ['Pantau', 'planned'] : ['Cukup', 'ready']; };
+  /* blok kurang coverage untuk peringatan dashboard */
+  const recGaps = (o) => ['Pagi', 'Sore'].flatMap(sh => RECEPTION[o][sh].peak.filter(([b, st, c, w]) => recStatus(c, st, blockHours(b), w)[1] === 'bad').map(([b, st, c, w]) => ({ outlet: o, shift: sh, block: b, staff: st, checkins: c, wait: w })));
+  const DIVISIONS = [
+    { id: 'DIV-FA', name: 'Finance & Accounting', metric: 'Rekonsiliasi bank & POS', unit: 'dokumen', load: 412, output: 365, backlog: 47, sla: '2 hari kerja', slaMet: 0.88, source: 'HAWK Finance (TO VERIFY)', updated: '2026-11-13 18:00', complete: true },
+    { id: 'DIV-MKT', name: 'Marketing', metric: 'Campaign & konten terbit', unit: 'konten', load: 64, output: 58, backlog: 6, sla: 'Sesuai kalender konten', slaMet: 0.91, source: 'Planner Marketing (simulasi)', updated: '2026-11-12 17:00', complete: true },
+    { id: 'DIV-HRD', name: 'HRD & Human Growth', metric: 'Permintaan HRD (cuti, koreksi, rekrutmen)', unit: 'permintaan', load: null, output: null, backlog: null, sla: '1–3 hari', slaMet: null, source: 'Approval F2 + Rekrutmen F4 (live demo)', updated: null, complete: true, live: true },
+    { id: 'DIV-PRD', name: 'Production', metric: 'Batch produk Essence', unit: 'batch', load: 30, output: 26, backlog: 4, sla: 'Rencana mingguan', slaMet: 0.87, source: 'Produksi Essence (TO VERIFY)', updated: '2026-11-10 16:00', complete: false },
+    { id: 'DIV-OPS', name: 'Office Operations', metric: 'Cakupan dukungan outlet', unit: 'kunjungan', load: 24, output: 21, backlog: 3, sla: 'Tiap outlet ≥ 1×/minggu', slaMet: 0.88, source: 'Jadwal OM/AOM (simulasi)', updated: '2026-11-13 12:00', complete: true }
+  ];
+
+  function seed() {
+    const batches = WEEK.map((d, i) => ({ id: `POS-BATCH-${d.replace(/-/g, '')}`, date: d, received: `${d} 23:10`, status: d === TODAY ? 'Sebagian (shift Sore belum ditutup)' : 'Lengkap', replays: 0, demo: true }));
+    return { seeded: true, ver: 0, batches, refunds: [], corrections: [], scenarios: [], seq: { sim: 0, ref: 0, cor: 0 } };
+  }
+  function ensure(hr) { if (hr.f2 && hr.f2.f5) { hr.f5 = hr.f2.f5; delete hr.f2.f5; } if (!hr.f5 || !hr.f5.seeded) { const k = hr.f5; hr.f5 = seed(); if (k) hr.f5.scenarios.push(...(k.scenarios || [])); } return hr.f5; }
+  /* posisi terbuka = formasi permintaan − penempatan aktif dari permintaan itu */
+  function reqProgress(hr, reqId) {
+    const r = hr.f4?.reqs.find(x => x.id === reqId); if (!r) return null;
+    const v = r.vacancy && hr.vacancies.find(x => x.id === r.vacancy);
+    const apps = v ? hr.f4.apps.filter(a => a.vac === v.id) : [];
+    const placed = apps.filter(a => a.stage === 'Penempatan Aktif').length;
+    return { req: r, vac: v, apps: apps.length, placed, open: Math.max(0, r.count - placed) };
+  }
+
+  function simulate(hr, o, option, p) {
+    const base = outletUtil(hr, o, 'W46'), gap0 = base.done - base.cap;
+    let dCap = 0, why = '', assume = [];
+    if (option === 'bantuan') { const h = Number(p.hours || 16); dCap = h; why = `Bantuan ${h} jam/minggu dari ${H.locName(p.from || 'OUT-SHT')} (utility rendah)`; assume = [`Therapist ${H.locName(p.from || 'OUT-SHT')} tersedia ${h} jam di luar jadwal outlet induk`, 'Transport antaroutlet ditanggung outlet penerima']; }
+    else if (option === 'shift') { const h = Number(p.hours || 12); dCap = h; why = `Geser ${h} jam kapasitas Sore → Pagi`; assume = ['Total jam therapist tetap', 'Permintaan Sore turun sebanding (perlu verifikasi)']; }
+    else { const n = Number(p.count || 2); dCap = n * 7 * 6 * 0.8; why = `Tambah ${n} Therapist (7 jam bookable × 6 hari, ramp-up 80%)`; assume = [`Mulai efektif ${p.start || '2026-12-01'}`, 'Onboarding 2 minggu sebelum full booking', 'Biaya per orang dihitung di F7'] }
+    const cap1 = base.cap + dCap, u1 = (base.done + (option === 'formasi' ? WEEKLY[o].fails * 1.5 : 0)) / cap1;
+    return { base: { cap: base.cap, done: base.done, gap: gap0, u: base.u }, after: { cap: cap1, done: base.done + (option === 'formasi' ? WEEKLY[o].fails * 1.5 : 0), gap: base.done - cap1, u: u1 }, why, assume, evidence: [`Booking gagal karena kapasitas: ${WEEKLY[o].fails}`, `Lembur: ${base.ot} jam`, `Bantuan antaroutlet: ${base.help} jam`] };
+  }
+
+  function update(state, hr, action, input, ctx) {
+    const f5 = ensure(hr), { audit, by, role } = ctx;
+    const hrdOnly = () => { if (!['owner', 'hrd', 'hrd-ops'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} tidak mengelola Manpower.`); };
+    switch (action) {
+      case 'pos-ingest': {
+        hrdOnly(); const b = f5.batches.find(x => x.id === input.id); if (!b) throw new Error('Batch tidak dikenal.');
+        b.replays++; const n = lines(hr).filter(r => r.date === b.date).length;
+        audit(hr, by, 'Replay batch POS', `${b.id}: ${n} baris diterima ulang, 0 baris baru (duplikat diabaikan berdasarkan Service Line ID)`, { object: 'POS', ref: b.id });
+        return `${b.id}: 0 baris baru, ${n} duplikat diabaikan`;
+      }
+      case 'pos-refund': {
+        hrdOnly(); const l = lines(hr).find(r => r.line === input.line); if (!l) throw new Error('Baris layanan tidak ditemukan.');
+        if (l.status !== 'Selesai') throw new Error('Refund hanya untuk layanan selesai.');
+        if (f5.refunds.some(r => r.line === l.line)) return f5.refunds.find(r => r.line === l.line).id;
+        const id = `RFD-2611-${String(++f5.seq.ref).padStart(3, '0')}`; f5.refunds.push({ id, line: l.line, tx: l.tx, at: now(), by, reason: input.reason || 'Keluhan tamu', demo: true }); f5.ver++;
+        audit(hr, by, 'Refund POS', `${id} → ${l.line} (layanan tetap selesai; komisi dikoreksi di F7)`, { object: 'POS', ref: l.tx });
+        return id;
+      }
+      case 'pos-correct': {
+        hrdOnly(); const l = lines(hr).find(r => r.line === input.line); if (!l) throw new Error('Baris layanan tidak ditemukan.');
+        const after = Number(input.dur); if (!(after >= 15 && after <= 240)) throw new Error('Durasi 15–240 menit.');
+        if (String(input.reason || '').trim().length < 5) throw new Error('Alasan koreksi minimal 5 karakter.');
+        const id = `COR-2611-${String(++f5.seq.cor).padStart(3, '0')}`; f5.corrections.push({ id, line: l.line, tx: l.tx, before: l.dur, after, at: now(), by, reason: input.reason, demo: true }); f5.ver++;
+        audit(hr, by, 'Koreksi POS', `${id} ${l.line}: ${l.dur} → ${after} menit`, { object: 'POS', ref: l.tx, before: `${l.dur} mnt`, after: `${after} mnt` });
+        return id;
+      }
+      case 'sim-save': {
+        hrdOnly(); const o = input.outlet; if (!WEEKLY[o]) throw new Error('Outlet tidak dikenal.');
+        const opt = ['bantuan', 'shift', 'formasi'].includes(input.option) ? input.option : 'formasi';
+        const r = simulate(hr, o, opt, input);
+        const id = `SIM-2611-${String(++f5.seq.sim).padStart(3, '0')}`;
+        f5.scenarios.push({ id, outlet: o, option: opt, params: { hours: input.hours, count: input.count, start: input.start, from: input.from }, result: r, finding: `FND-UTIL-${OUTCODE[o]}-2611`, status: 'Draf', at: now(), by, approver: null, task: null, req: null, demo: true });
+        return id;
+      }
+      case 'sim-mark': {
+        hrdOnly(); const s = f5.scenarios.find(x => x.id === input.id); if (!s) throw new Error('Skenario tidak ditemukan.');
+        const u = outletUtil(hr, s.outlet), stage = ['Ide', 'Issue', 'Workplan'].includes(input.stage) ? input.stage : 'Issue';
+        const t = H.EXT.update(state, hr, 'task-create', { ws: 'HRD', stage, title: `Utility ${H.locName(s.outlet)} ${Math.round(u.u * 100)}%: ${u.u > 1 ? 'kapasitas therapist kurang' : 'di bawah ambang 70%'}`, scope: s.outlet, sourceId: `UTIL-${s.outlet}-2611`, sourceType: 'Utility', sourceLabel: `Utility ${H.locName(s.outlet)} · ${Math.round(u.u * 100)}%`, sourceRoute: `hrd-mp-utility?outlet=${s.outlet}`, finding: s.finding, pic: stage === 'Workplan' ? 'EMP-0142' : undefined, due: stage === 'Workplan' ? '2026-11-27' : undefined }, ctx);
+        s.task = t; return t;
+      }
+      case 'sim-approve': {
+        if (!['owner', 'hrd'].includes(role)) throw new Error('Akses ditolak: persetujuan skenario oleh Manager HRD.');
+        const s = f5.scenarios.find(x => x.id === input.id); if (!s) throw new Error('Skenario tidak ditemukan.');
+        if (s.status !== 'Draf') return s.id;
+        if (input.decision === 'reject') { s.status = 'Ditolak'; s.approver = by; return s.id; }
+        s.status = 'Disetujui'; s.approver = by; s.approvedAt = now();
+        audit(hr, by, 'Setujui skenario manpower', `${s.id} · ${H.locName(s.outlet)} · ${s.option}`, { object: 'Manpower', ref: s.id });
+        return s.id;
+      }
+      case 'mp-handoff': {
+        hrdOnly(); const s = f5.scenarios.find(x => x.id === input.id); if (!s) throw new Error('Skenario tidak ditemukan.');
+        if (s.status !== 'Disetujui') throw new Error('Handoff butuh persetujuan manusia (Manager HRD) atas skenario.');
+        if (s.option !== 'formasi') throw new Error('Handoff ke Rekrutmen hanya untuk skenario tambah formasi.');
+        if (s.req) return s.req;
+        const req = H.EXT.update(state, hr, 'req-create', { position: 'POS-THR', outlet: s.outlet, count: String(s.params.count || 2), shift: input.shift || 'Pagi/Sore', skills: input.skills || 'Balinese, hot stone', source: `Manpower ${s.id} (${s.finding})`, task: s.task || '' }, { ...ctx, role: role === 'hrd-ops' ? 'hrd-ops' : 'hrd' });
+        const r = hr.f4.reqs.find(x => x.id === req); if (r) { r.needBy = s.params.start || '2026-12-01'; r.scenario = s.id; }
+        s.req = req; audit(hr, by, 'Handoff permintaan tenaga', `${s.id} → ${req}`, { object: 'Manpower', ref: s.id, after: req });
+        return req;
+      }
+      default: return undefined;
+    }
+  }
+  const prev = { ...H.EXT };
+  H.EXT.update = (state, hr, action, input, ctx) => { const r = update(state, hr, action, input, ctx); return r !== undefined ? r : prev.update(state, hr, action, input, ctx); };
+  H.EXT.purge = (hr) => { prev.purge?.(hr); if (hr.f5) { hr.f5.scenarios = hr.f5.scenarios.filter(s => !s.demo); hr.f5.refunds = []; hr.f5.corrections = []; hr.f5.ver++; } };
+  H.EXT.keep = (hr) => { const k = prev.keep?.(hr) || {}; if (hr.f5) k.f5 = { seeded: false, scenarios: hr.f5.scenarios.filter(s => !s.demo) }; return k; };
+  H.EXT.ensure = (hr) => { if (hr.f2 && hr.f2.f5) { hr.f5 = hr.f2.f5; delete hr.f2.f5; } prev.ensure?.(hr); ensure(hr); };
+  H.EXT.utility = (hr, o) => outletUtil(hr, o, '2610');
+  return { WEEK, PERIODS, WEEKLY, RECEPTION, REC_TARGET, blockHours, recGaps, DIVISIONS, OUTCODE, status, recStatus, ensure, lines, outletUtil, shiftMembers, simulate, reqProgress };
+})();
+if (typeof module !== 'undefined') module.exports = HR5;
+
+;
 /* HAWK ERP · portal preview shell (Finance → Operational → Commercial → Sales → HRD; HRD is registered by hrd.js)
    Phase 1: F1-01 portal picker, F1-02 Commercial Executive Summary (SER), F1-03 drill-down,
    F1-04 Sales home, F7-01 screen map. Other routes are the original sandbox screens, labelled with
@@ -5633,6 +5821,182 @@ register('hrd-rec-offer', guard(offer), () => 'Keputusan & Penawaran');
 register('hrd-rec-contract', guard(contract), () => 'Kontrak & Verifikasi Dokumen');
 register('hrd-rec-onboard', guard(onboard), () => 'Onboarding HRD & Human Growth');
 register('hrd-rec-place', guard(place), () => 'Penempatan, Akun & Role');
+})();
+
+;
+/* HAWK ERP · Portal HRD · F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
+   NV01 Dashboard Manpower (hrd-manpower) · NV02 Kapasitas Outlet & Shift (hrd-mp-capacity) · NV03 Therapist Utility (hrd-mp-utility) ·
+   NV04 Coverage Reception (hrd-mp-reception) · NV05 Beban Kerja Divisi Office (hrd-mp-division) · NV06 Data Layanan POS (hrd-mp-pos) ·
+   NV07 Simulasi Kebutuhan & Temuan (hrd-mp-sim) · NV08 Handoff Rekrutmen (hrd-mp-handoff). */
+(() => {
+const H = window.HL;
+const { esc, table, card, qs, link } = H;
+const hr = () => { const h = HR.ensure(H.state); HR.EXT.ensure?.(h); return h; };
+const f5 = () => hr().f5;
+const role = () => H.prefs.role;
+const def = () => HR.roleDef(role());
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const empName = (id) => id ? (hr().people.find(p => p.id === id)?.name || id) : '—';
+const pct = (u) => u === null || u === undefined ? '—' : `${(u * 100).toFixed(1).replace('.0', '')}%`;
+const jam = (x) => `${Math.round(x * 10) / 10} jam`;
+const tabs = (route, cur, list, params = {}, key = 'tab') => `<nav class="tabs" aria-label="Bagian">${list.map(([k, l]) => `<a class="tab${k === cur ? ' on' : ''}" href="#${route}${qs({ ...params, [key]: k })}" ${k === cur ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+const denied = (why) => `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>${why}</p><div class="actions"><button type="button" class="btn" data-hr-role="hrd">Ganti ke Manager HRD</button><button type="button" class="btn ghost" data-hr-role="hrd-ops">Ganti ke Staf HRD</button></div></section>`;
+const register = (id, fn, title, code) => { H.REGISTRY[id] = fn; fn.title = title; if (code) fn.code = code; };
+const KC = ['g-teal', 'g-violet', 'g-blue', 'g-gold'];
+const kpiLinks = (es) => `<section class="grid g4 keep2 kpis">${es.map(([l, v, h, sub], i) => `<a class="kpi ${KC[i % 4]}" href="${h}"><div class="lbl">${l}</div><div class="val">${v}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</a>`).join('')}</section>`;
+const MP_ROLES = ['owner', 'hrd', 'hrd-ops', 'hg-lead', 'ops-manager', 'outlet-spv'];
+const staff = () => ['owner', 'hrd', 'hrd-ops'].includes(role());
+const guard = (fn) => (p) => MP_ROLES.includes(role()) ? fn(p) : denied(`Role demo <b>${esc(def().label)}</b> tidak punya akses Manpower Planning. Tidak ada data kapasitas yang dimuat.`);
+const outlets = () => role() === 'outlet-spv' ? HR.OUTLETS.filter(o => o.id === 'OUT-UBD') : HR.OUTLETS;
+const okOutlet = (o) => outlets().some(x => x.id === o);
+const period = (p) => p.p === '2610' ? '2610' : 'W46';
+const periodBar = (route, params) => `<p class="active-filters">${chip('DATA DEMO', 'sandbox')} Periode: ${['W46', '2610'].map(k => k === period(params) ? `<b>${esc(HR5.PERIODS[k].label)}</b>` : link(route + qs({ ...params, p: k }), HR5.PERIODS[k].label)).join(' · ')} · diperbarui ${esc(HR5.PERIODS[period(params)].updated)} WITA · sumber POS: simulator (UI-ONLY SIMULATION)</p>`;
+const st = (u) => { const [l, t] = HR5.status(u); return chip(l, t); };
+const outSel = (cur, all = false) => `<label>Outlet<select name="outlet">${all ? '<option value="">Semua</option>' : ''}${outlets().map(o => `<option value="${o.id}" ${o.id === cur ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label>`;
+const headcount = (o, posName) => HR.people(hr(), 'hrd', { outlet: o }).filter(p => HR.pos(p.placement.position).name === posName).length;
+const openPositions = () => (hr().f4?.reqs || []).filter(r => r.status !== 'Ditolak').map(r => HR5.reqProgress(hr(), r.id)).reduce((s, x) => s + (x?.open || 0), 0);
+
+/* ---------- NV01 Dashboard Manpower ---------- */
+function dashboard(params) {
+  const P = period(params), h = hr();
+  const rows = outlets().map(o => { const u = HR5.outletUtil(h, o.id, P); return [link('hrd-mp-capacity' + qs({ outlet: o.id, p: P }), o.name), link('hrd-roster' + qs({ outlet: o.id, position: 'POS-THR' }), headcount(o.id, 'Therapist')), link('hrd-roster' + qs({ outlet: o.id, position: 'POS-RCP' }), headcount(o.id, 'Receptionist')), jam(u.cap), jam(u.done), link('hrd-mp-utility' + qs({ outlet: o.id, p: P }), pct(u.u)), st(u.u), P === 'W46' ? `${u.ot} jam · ${u.help} jam` : '—']; });
+  const office = HR.DIVISIONS.filter(d => d.id !== 'DIV-SPA' && HR.EXPECTED.office[d.id] !== undefined).map(d => { const n = HR.people(h, 'hrd', { division: d.id }).filter(p => p.placement.location === HR.HQ.id).length; const want = HR.EXPECTED.office[d.id]; return [esc(d.name), want ? link('hrd-roster' + qs({ division: d.id }), n) : '<i>headcount belum ditetapkan</i>', want || '—', want ? (n === want ? chip('Sesuai', 'ready') : chip(`Selisih ${n - want}`, 'bad')) : chip('Belum ditetapkan', 'planned'), link('hrd-mp-division' + qs({ div: d.id }), 'Beban kerja')]; });
+  const ubud = HR5.outletUtil(h, 'OUT-UBD', P), sht = HR5.outletUtil(h, 'OUT-SHT', P);
+  const recGaps = outlets().flatMap(o => HR5.recGaps(o.id).map(g => `${o.name} ${g.shift} ${g.block} (${g.staff} staf, ${g.checkins} check-in, tunggu ${g.wait} mnt)`));
+  const alerts = [ubud.u > 1 && okOutlet('OUT-UBD') ? `<li>${chip('Di atas kapasitas', 'bad')} Spa Ubud ${pct(ubud.u)}: ${link('hrd-mp-utility' + qs({ outlet: 'OUT-UBD', p: P }), 'lihat pembilang & penyebut')} · ${link('hrd-mp-sim' + qs({ outlet: 'OUT-UBD' }), 'simulasikan')}</li>` : '', sht.u < 0.7 && okOutlet('OUT-SHT') ? `<li>${chip('Di bawah 70%', 'sandbox')} Spa Santi ${pct(sht.u)}: ${link('hrd-mp-utility' + qs({ outlet: 'OUT-SHT', p: P }), 'investigasi')} · ${link('hrd-mp-sim' + qs({ outlet: 'OUT-SHT' }), 'simulasikan')}</li>` : '', ...recGaps.map(g => `<li>${chip('Kurang coverage', 'bad')} Reception ${esc(g)}: ${link('hrd-mp-reception', 'lihat blok jam')}</li>`)].filter(Boolean);
+  return periodBar('hrd-manpower', params) + kpiLinks([['Headcount aktif', h.people.filter(p => HR.placementOn(h, p.id)).length, '#hrd-roster', '4 outlet + Office'], ['Utility Spa Ubud', pct(ubud.u), '#hrd-mp-utility' + qs({ outlet: 'OUT-UBD', p: P }), HR5.status(ubud.u)[0]], ['Utility Spa Santi', pct(sht.u), '#hrd-mp-utility' + qs({ outlet: 'OUT-SHT', p: P }), HR5.status(sht.u)[0]], ['Posisi terbuka', openPositions(), '#hrd-mp-handoff', 'dari permintaan tenaga F4']]) +
+    (alerts.length ? card('Perlu perhatian', `<ul class="hr-alerts">${alerts.join('')}</ul>`) : '') +
+    card('Outlet Spa · therapist & receptionist', table(['Outlet', 'Therapist', 'Receptionist', 'Kapasitas reguler', 'Treatment selesai', 'Utility', 'Status', 'Lembur · bantuan'], rows) + `<p class="muted small">Utility = jam treatment selesai ÷ jam kapasitas reguler. Total = jumlah pembilang ÷ jumlah penyebut (bukan rata-rata persentase). Ambang: &gt;100% di atas kapasitas, &lt;70% di bawah ambang, 70–75% dan 95–100% Pantau.</p>`) +
+    (role() === 'outlet-spv' ? '' : card('Office · headcount per divisi', table(['Divisi', 'Aktif', 'Target roster', 'Status', 'Beban kerja'], office) + '<p class="muted small">PC dan Commercial tercatat sebagai divisi tanpa headcount sampai keputusan formasi ditetapkan.</p>'));
+}
+
+/* ---------- NV02 Kapasitas Outlet & Shift ---------- */
+function capacity(params) {
+  const P = period(params), o = okOutlet(params.outlet) ? params.outlet : outlets()[0].id, h = hr();
+  const rows = ['Pagi', 'Sore'].map(sh => { const u = HR5.outletUtil(h, o, P, sh); return [P === 'W46' ? link('hrd-mp-capacity' + qs({ outlet: o, p: P, shift: sh }), sh) : sh, jam(u.cap), jam(u.done), pct(u.u), st(u.u), P === 'W46' ? `${u.ot} jam` : '—', P === 'W46' ? `${u.help} jam` : '—', P === 'W46' ? link('hrd-mp-pos' + qs({ outlet: o, shift: sh }), 'Baris POS') : '—']; });
+  const tot = HR5.outletUtil(h, o, P);
+  rows.push(['<b>Total</b>', `<b>${jam(tot.cap)}</b>`, `<b>${jam(tot.done)}</b>`, `<b>${pct(tot.u)}</b>`, st(tot.u), P === 'W46' ? `${tot.ot} jam` : '—', P === 'W46' ? `${tot.help} jam` : '—', '']);
+  let members = '';
+  if (params.shift && P === 'W46') {
+    const ms = HR5.shiftMembers(h, o, params.shift);
+    members = card(`Anggota shift ${esc(params.shift)} · ${esc(HR.locName(o))} · ${ms.length} therapist`, table(['Therapist', 'Outlet induk', 'Jam treatment', 'Lembur', 'Baris layanan'], ms.map(m => [link('hrd-roster' + qs({ emp: m.emp }), `${esc(empName(m.emp))} · ${m.emp}`), m.home === o ? esc(HR.locName(m.home)) : `${chip('Bantuan', 'planned')} ${esc(HR.locName(m.home))}`, jam(m.hours), m.ot ? jam(m.ot) : '—', link('hrd-mp-pos' + qs({ outlet: o, shift: params.shift, emp: m.emp }), m.lines)])));
+  }
+  return periodBar('hrd-mp-capacity', params) + `<form id="filters" class="filters" aria-label="Filter kapasitas">${outSel(o)}<input type="hidden" name="p" value="${P}"><label>Shift<select name="shift"><option value="">Pilih shift</option>${['Pagi', 'Sore'].map(s => `<option ${s === params.shift ? 'selected' : ''}>${s}</option>`).join('')}</select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    card(`Kapasitas ${esc(HR.locName(o))}`, table(['Shift', 'Kapasitas reguler', 'Treatment selesai', 'Utility', 'Status', 'Lembur', 'Bantuan antaroutlet', 'Bukti'], rows) + `<p class="muted small">Kapasitas reguler = jam bookable terjadwal setelah istirahat, cuti dan jam tidak tersedia (sampel mingguan dummy). ${P === '2610' ? (tot.shiftNote || 'Pembagian shift Oktober diestimasi 52/48 (perlu verifikasi).') : 'Klik shift untuk melihat anggota, termasuk therapist bantuan dari outlet lain.'}</p>`) + members;
+}
+
+/* ---------- NV03 Therapist Utility ---------- */
+function utility(params) {
+  const P = period(params), o = okOutlet(params.outlet) ? params.outlet : outlets()[0].id, h = hr(), u = HR5.outletUtil(h, o, P);
+  const shifts = ['Pagi', 'Sore'].map(sh => ({ sh, ...HR5.outletUtil(h, o, P, sh) }));
+  const t = (h.f3?.tasks || []).find(x => x.source?.id === `UTIL-${o}-2611`);
+  const flag = u.u > 1 || u.u < 0.7;
+  const stg = u.u > 1 ? 'Issue' : 'Ide';
+  const trace = P === 'W46' ? shifts.map(s => { const reg = s.done - s.ot - s.help; return `<li><b>${s.sh}</b>: ${jam(s.done)} selesai ÷ ${jam(s.cap)} reguler = <b>${pct(s.u)}</b>${s.u > 1 ? ` · kelebihan ${jam(s.done - s.cap)} = lembur ${jam(s.ot)} + bantuan ${jam(s.help)}${reg > s.cap ? ` + ${jam(reg - s.cap)} di jam reguler` : ''}` : ''}</li>`; }).join('') : '';
+  const all = outlets().map(x => { const v = HR5.outletUtil(h, x.id, P); return [link('hrd-mp-utility' + qs({ outlet: x.id, p: P }), x.name), jam(v.done), jam(v.cap), pct(v.u), st(v.u)]; });
+  const sum = outlets().reduce((a, x) => { const v = HR5.outletUtil(h, x.id, P); a.d += v.done; a.c += v.cap; return a; }, { d: 0, c: 0 });
+  all.push(['<b>Gabungan</b>', `<b>${jam(sum.d)}</b>`, `<b>${jam(sum.c)}</b>`, `<b>${pct(sum.d / sum.c)}</b>`, st(sum.d / sum.c)]);
+  const action = !flag ? '' : t && HR3.scopeOk(h, role(), t) ? `<p>Temuan sudah tercatat: ${link('hrd-task' + qs({ id: t.id }), t.id)} · ${chip(t.stage, 'planned')} (satu temuan, satu kartu)</p>` : staff() ? `<p><button type="button" class="btn" data-action="hr:task-create" data-ws="HRD" data-stage="${stg}" data-title="Utility ${esc(HR.locName(o))} ${Math.round(u.u * 100)}%: ${u.u > 1 ? 'kapasitas therapist kurang' : 'di bawah ambang 70%'}" data-scope="${o}" data-source-id="UTIL-${o}-2611" data-source-type="Utility" data-source-label="Utility ${esc(HR.locName(o))} · ${Math.round(u.u * 100)}%" data-source-route="hrd-mp-utility?outlet=${o}" data-finding="FND-UTIL-${HR5.OUTCODE[o]}-2611" data-after="hrd-task?id={id}">Tandai sebagai ${stg}</button> ${link('hrd-mp-sim' + qs({ outlet: o }), 'Simulasikan opsi')}</p>` : '';
+  return periodBar('hrd-mp-utility', params) + `<form id="filters" class="filters" aria-label="Filter utility">${outSel(o)}<input type="hidden" name="p" value="${P}"><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    kpiLinks([['Utility', pct(u.u), '#hrd-mp-capacity' + qs({ outlet: o, p: P }), HR5.status(u.u)[0]], ['Pembilang · treatment selesai', jam(u.done), P === 'W46' ? '#hrd-mp-pos' + qs({ outlet: o }) : '#hrd-mp-utility' + qs({ outlet: o, p: P }), 'dari baris layanan POS'], ['Penyebut · kapasitas reguler', jam(u.cap), '#hrd-mp-capacity' + qs({ outlet: o, p: P }), 'jam bookable terjadwal'], ['Booking gagal (kapasitas)', P === 'W46' ? u.fails : '—', '#hrd-mp-pos' + qs({ outlet: o, status: 'Batal' }), P === 'W46' ? `${u.cancel} batal · ${u.refund} refund` : 'tidak tersedia']]) +
+    card(`Jejak perhitungan · ${esc(HR.locName(o))}`, `${P === 'W46' ? `<ul>${trace}</ul>` : `<p>${jam(u.done)} ÷ (25 therapist × 8 jam × 26 hari = ${jam(u.cap)}) = <b>${pct(u.u)}</b>. Sumber: Beranda F1.</p>`}<p>${st(u.u)} ${HR5.status(u.u)[0] === 'Di atas kapasitas' ? 'Permintaan melebihi kapasitas reguler; ditutup dengan lembur dan bantuan antaroutlet.' : HR5.status(u.u)[0] === 'Di bawah 70%' ? 'Kapasitas tidak terpakai. Periksa pembatalan, jadwal dan permintaan sebelum mengurangi formasi.' : ''}</p>${action}<p class="muted small">Refund tidak mengurangi jam treatment (layanan tetap dilakukan) tetapi mengoreksi komisi di F7. Pembatalan tidak dihitung sebagai treatment selesai. Four Hands dihitung per therapist sesuai alokasi durasi.</p>`) +
+    card('Perbandingan outlet', table(['Outlet', 'Selesai', 'Reguler', 'Utility', 'Status'], all));
+}
+
+/* ---------- NV04 Coverage Reception ---------- */
+function reception(params) {
+  const o = okOutlet(params.outlet) ? params.outlet : '';
+  const list = outlets().filter(x => !o || x.id === o);
+  const rows = list.flatMap(x => ['Pagi', 'Sore'].flatMap(sh => HR5.RECEPTION[x.id][sh].peak.map(([blk, staffN, chk, wait]) => { const hours = HR5.blockHours(blk); const [l, tone] = HR5.recStatus(chk, staffN, hours, wait); return [esc(x.name), sh, blk, staffN, chk, (chk / (staffN * hours)).toFixed(1), `${wait} mnt`, chip(l, tone), link('hrd-roster' + qs({ outlet: x.id, position: 'POS-RCP' }), 'Receptionist')]; })));
+  const sum = list.map(x => { const bl = ['Pagi', 'Sore'].flatMap(sh => HR5.RECEPTION[x.id][sh].peak), res = HR5.RECEPTION[x.id].Pagi.res + HR5.RECEPTION[x.id].Sore.res, chk = bl.reduce((a, b) => a + b[2], 0); return [esc(x.name), headcount(x.id, 'Receptionist'), res, chk, `${Math.round(chk / res * 100)}%`, `${Math.round(bl.reduce((a, b) => a + b[2] * b[3], 0) / chk)} mnt`, HR5.recGaps(x.id).length ? chip(`${HR5.recGaps(x.id).length} blok kurang`, 'bad') : chip('Cukup', 'ready')]; });
+  return `<p class="active-filters">${chip('DATA DEMO', 'sandbox')} Minggu 46 · reservasi & check-in dari simulator POS/reservasi · target ${HR5.REC_TARGET.perHour} check-in per receptionist per jam, tunggu ≤ ${HR5.REC_TARGET.wait} menit</p>` +
+    `<form id="filters" class="filters" aria-label="Filter reception">${outSel(o, true)}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    card('Ringkasan per outlet · rata-rata per hari', table(['Outlet', 'Receptionist', 'Reservasi', 'Check-in', 'Rasio check-in', 'Tunggu rata-rata', 'Coverage'], sum)) +
+    card('Coverage per blok jam', table(['Outlet', 'Shift', 'Blok', 'Staf', 'Check-in', 'Per staf/jam', 'Tunggu', 'Status', 'Roster'], rows) + '<p class="muted small">Kurang coverage bila beban &gt; target per jam atau tunggu rata-rata &gt; 10 menit. Usulan: geser 1 receptionist Pagi ke blok 17–21 atau tambah formasi lewat Simulasi.</p>');
+}
+
+/* ---------- NV05 Beban Kerja Divisi Office ---------- */
+function division(params) {
+  if (role() === 'outlet-spv') return denied('Supervisor outlet tidak melihat beban kerja Office.');
+  const h = hr(), tasks = (h.f3?.tasks || []).filter(t => t.ws === 'HRD' || t.ws === 'HG');
+  const live = { load: tasks.length + (h.f4?.reqs.length || 0), output: tasks.filter(t => t.stage === 'Selesai').length + (h.f4?.reqs.filter(r => r.status !== 'Menunggu Persetujuan').length || 0) };
+  const rows = HR5.DIVISIONS.map(d => { const x = d.live ? { ...d, load: live.load, output: live.output, backlog: live.load - live.output, updated: 'langsung dari F3/F4', slaMet: null } : d; const n = HR.people(h, 'hrd', { division: d.id }).filter(p => p.placement.location === HR.HQ.id).length; return [d.id === params.div ? `<b>${esc(d.name)}</b>` : esc(d.name), link('hrd-roster' + qs({ division: d.id }), n), esc(d.metric), x.load ?? '—', x.output ?? '—', x.backlog ?? '—', esc(d.sla), x.slaMet === null ? '—' : pct(x.slaMet), x.load && n ? (x.load / n).toFixed(1) + ' / orang' : '—', d.complete ? chip('Lengkap', 'ready') : chip('Data belum lengkap', 'sandbox'), `${esc(d.source)} · ${esc(x.updated || '—')}`]; });
+  rows.push(['PC', '—', '—', '—', '—', '—', '—', '—', '—', chip('Headcount belum ditetapkan', 'planned'), 'Menunggu keputusan formasi']);
+  rows.push(['Commercial', '—', '—', '—', '—', '—', '—', '—', '—', chip('Headcount belum ditetapkan', 'planned'), 'Menunggu keputusan formasi']);
+  return `<p class="active-filters">${chip('DATA DEMO', 'sandbox')} Beban kerja Office · Minggu 46 · tiap divisi memakai ukuran kerjanya sendiri</p>` +
+    card('Beban kerja per divisi', table(['Divisi', 'Headcount', 'Ukuran kerja', 'Masuk', 'Selesai', 'Backlog', 'SLA', 'SLA tercapai', 'Beban', 'Kelengkapan', 'Sumber · update'], rows) + '<p class="muted small">Beban antardivisi tidak dibandingkan langsung karena satuannya berbeda. Divisi dengan data belum lengkap tidak dipakai untuk rekomendasi formasi.</p>');
+}
+
+/* ---------- NV06 Data Layanan POS ---------- */
+function pos(params) {
+  const h = hr(), all = HR5.lines(h).filter(r => okOutlet(r.outlet));
+  let rs = all.filter(r => (!params.outlet || r.outlet === params.outlet) && (!params.shift || r.shift === params.shift) && (!params.emp || r.emp === params.emp) && (!params.status || r.status === params.status || r.pay === params.status) && (!params.date || r.date === params.date) && (!params.q || r.tx.includes(params.q.toUpperCase()) || r.line.includes(params.q.toUpperCase())));
+  if (params.tx) rs = all.filter(r => r.tx === params.tx);
+  const page = Math.max(1, Number(params.page || 1)), per = 40, pages = Math.max(1, Math.ceil(rs.length / per)), slice = rs.slice((page - 1) * per, page * per);
+  const opts = (name, pairs, cur, label) => `<label>${label}<select name="${name}"><option value="">Semua</option>${pairs.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
+  const sel = params.line && all.find(r => r.line === params.line);
+  const detail = sel ? card(`Baris layanan ${sel.line}`, table(['Field', 'Nilai'], [['Transaction ID', link('hrd-mp-pos' + qs({ tx: sel.tx }), sel.tx)], ['Service Line ID', sel.line], ['Outlet · shift', `${esc(HR.locName(sel.outlet))} · ${sel.shift}`], ['Therapist', `${link('hrd-roster' + qs({ emp: sel.emp }), esc(empName(sel.emp)))} · outlet induk ${esc(HR.locName(sel.home))}`], ['Tanggal · mulai', `${sel.date} ${sel.start} WITA`], ['Layanan', esc(sel.svc) + (sel.alloc ? ` · alokasi ${sel.alloc.map(e => esc(empName(e))).join(' + ')}` : '')], ['Durasi', `${sel.dur} menit${sel.corrected ? ` · dikoreksi ${sel.corrected}` : ''}`], ['Status · bayar', `${sel.status} · ${sel.pay}${sel.refund ? ` (${sel.refund})` : ''}`], ['Penanda', [sel.ot && 'Lembur', sel.help && 'Bantuan antaroutlet'].filter(Boolean).join(', ') || '—']]) +
+    (staff() && sel.status === 'Selesai' ? `<div class="grid g2">${sel.refund ? '' : `<form class="workflow-form" data-submit="hr:pos-refund" data-after="hrd-mp-pos?line=${sel.line}"><input type="hidden" name="line" value="${sel.line}"><label>Alasan refund<input name="reason" value="Keluhan tamu"></label><button class="btn ghost">Catat refund (simulasi POS)</button></form>`}<form class="workflow-form" data-submit="hr:pos-correct" data-after="hrd-mp-pos?line=${sel.line}"><input type="hidden" name="line" value="${sel.line}"><label>Durasi benar (menit)<input type="number" name="dur" min="15" max="240" value="${sel.dur}"></label><label>Alasan koreksi<input name="reason" placeholder="mis. salah input durasi"></label><button class="btn ghost">Koreksi durasi</button></form></div>` : '') +
+    `<p class="muted small">Refund tidak mengurangi jam treatment; koreksi durasi mengubah pembilang utility. Keduanya tercatat di ${link('hrd-audit' + qs({ q: sel.tx }), 'Audit')}.</p>`) : '';
+  const batches = staff() ? card('Batch POS harian', table(['Batch ID', 'Tanggal', 'Diterima', 'Status', 'Replay', 'Aksi'], f5().batches.map(b => [b.id, b.date, b.received, chip(b.status, /Lengkap/.test(b.status) ? 'ready' : 'sandbox'), b.replays, `<button type="button" class="btn ghost sm" data-action="hr:pos-ingest" data-id="${b.id}">Replay batch</button>`])) + '<p class="muted small">Replay memakai Service Line ID sebagai kunci; baris yang sama tidak dihitung dua kali. Endpoint POS produksi: NEW INTEGRATION REQUIRED.</p>') : '';
+  return `<p class="active-filters">${chip('DATA DEMO', 'sandbox')} Minggu 46 · ${all.length} baris layanan simulator POS · ${rs.length} sesuai filter</p>` +
+    `<form id="filters" class="filters" aria-label="Filter POS">${opts('outlet', outlets().map(o => [o.id, o.name]), params.outlet, 'Outlet')}${opts('shift', [['Pagi', 'Pagi'], ['Sore', 'Sore']], params.shift, 'Shift')}${opts('date', HR5.WEEK.map(d => [d, d]), params.date, 'Tanggal')}${opts('status', [['Selesai', 'Selesai'], ['Batal', 'Batal'], ['Refund', 'Refund']], params.status, 'Status')}${params.emp ? `<input type="hidden" name="emp" value="${esc(params.emp)}">` : ''}<label>Cari<input name="q" value="${esc(params.q || '')}" placeholder="Transaction / Line ID"></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    (params.emp ? `<p class="active-filters">Therapist: ${esc(empName(params.emp))} · ${link('hrd-mp-pos' + qs({ ...params, emp: '' }), 'hapus filter')}</p>` : '') + detail +
+    card(params.tx ? `Transaksi ${esc(params.tx)}` : `Baris layanan · halaman ${page}/${pages}`, slice.length ? table(['Service Line ID', 'Tanggal', 'Outlet · shift', 'Therapist', 'Layanan', 'Durasi', 'Status', 'Bayar'], slice.map(r => [link('hrd-mp-pos' + qs({ ...params, line: r.line }), r.line), `${r.date} ${r.start}`, `${esc(HR.locName(r.outlet))} · ${r.shift}`, esc(empName(r.emp)) + (r.help ? ` ${chip('Bantuan', 'planned')}` : '') + (r.ot ? ` ${chip('Lembur', 'sandbox')}` : ''), esc(r.svc), `${r.dur} mnt`, r.status, r.pay])) + (pages > 1 && !params.tx ? `<p>${page > 1 ? link('hrd-mp-pos' + qs({ ...params, page: page - 1, line: '' }), '← Sebelumnya') : ''} ${page < pages ? link('hrd-mp-pos' + qs({ ...params, page: page + 1, line: '' }), 'Berikutnya →') : ''}</p>` : '') : '<p>Tidak ada baris layanan untuk filter ini.</p>') + batches;
+}
+
+/* ---------- NV07 Simulasi Kebutuhan & Temuan ---------- */
+function sim(params) {
+  const h = hr(), o = okOutlet(params.outlet) ? params.outlet : 'OUT-UBD';
+  const scs = f5().scenarios.filter(s => okOutlet(s.outlet));
+  const s = params.id && scs.find(x => x.id === params.id);
+  const u = HR5.outletUtil(h, o);
+  const cmp = ['bantuan', 'shift', 'formasi'].map(opt => { const r = HR5.simulate(h, o, opt, { from: 'OUT-SHT' }); return [opt === 'bantuan' ? 'Bantuan antaroutlet' : opt === 'shift' ? 'Geser shift' : 'Tambah formasi', esc(r.why), pct(r.base.u), pct(r.after.u), jam(r.base.gap), jam(r.after.gap), st(r.after.u)]; });
+  const form = staff() ? card('Simpan skenario', `<form class="workflow-form" data-submit="hr:sim-save" data-after="hrd-mp-sim?id={id}"><input type="hidden" name="outlet" value="${o}"><label>Opsi<select name="option"><option value="formasi">Tambah formasi therapist</option><option value="bantuan">Bantuan antaroutlet</option><option value="shift">Geser shift</option></select></label><label>Jumlah orang (formasi)<input type="number" name="count" min="1" max="10" value="2"></label><label>Jam (bantuan/geser)<input type="number" name="hours" min="1" max="80" value="16"></label><label>Bantuan dari<select name="from">${HR.OUTLETS.filter(x => x.id !== o).map(x => `<option value="${x.id}" ${x.id === 'OUT-SHT' ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label><label>Mulai efektif<input type="date" name="start" value="2026-12-01"></label><button class="btn">Simpan skenario</button></form><p class="muted small">Simulasi tidak mengubah jadwal atau formasi. Persetujuan oleh Manager HRD; AI tidak menyetujui.</p>`) : '';
+  const detail = s ? card(`Skenario ${s.id} · ${esc(HR.locName(s.outlet))} · ${chip(s.status, s.status === 'Disetujui' ? 'ready' : s.status === 'Ditolak' ? 'bad' : 'sandbox')}`, table(['', 'Sebelum', 'Sesudah'], [['Kapasitas reguler', jam(s.result.base.cap), jam(s.result.after.cap)], ['Treatment (permintaan)', jam(s.result.base.done), jam(s.result.after.done)], ['Gap (permintaan − kapasitas)', jam(s.result.base.gap), jam(s.result.after.gap)], ['Utility', pct(s.result.base.u), pct(s.result.after.u)]]) +
+    `<p><b>${esc(s.result.why)}</b></p><p>Asumsi:</p><ul>${s.result.assume.map(a => `<li>${esc(a)}</li>`).join('')}</ul><p>Bukti:</p><ul>${s.result.evidence.map(a => `<li>${esc(a)}</li>`).join('')}</ul><p>Finding ID: ${esc(s.finding)} · dibuat ${esc(s.at)} oleh ${esc(s.by)}${s.approver ? ` · ${s.status.toLowerCase()} oleh ${esc(s.approver)}` : ''}</p>` +
+    `<div class="actions">${s.task ? `Kartu: ${link('hrd-task' + qs({ id: s.task }), s.task)}` : staff() ? ['Ide', 'Issue', 'Workplan'].map(g => `<button type="button" class="btn ghost sm" data-action="hr:sim-mark" data-id="${s.id}" data-stage="${g}" data-after="hrd-mp-sim?id=${s.id}">Tandai ${g}</button>`).join(' ') : ''} ${s.status === 'Draf' && ['owner', 'hrd'].includes(role()) ? `<button type="button" class="btn sm" data-action="hr:sim-approve" data-id="${s.id}">Setujui</button> <button type="button" class="btn ghost sm" data-action="hr:sim-approve" data-id="${s.id}" data-decision="reject">Tolak</button>` : ''} ${s.status === 'Disetujui' && s.option === 'formasi' ? link('hrd-mp-handoff' + qs({ id: s.id }), 'Lanjut ke Handoff Rekrutmen') : ''}</div>`) : '';
+  return `<p class="active-filters">${chip('SIMULASI', 'sandbox')} Basis Minggu 46 · ${esc(HR.locName(o))} utility ${pct(u.u)} · ${link('hrd-mp-utility' + qs({ outlet: o }), 'bukti utility')}</p>` +
+    `<form id="filters" class="filters" aria-label="Pilih outlet">${outSel(o)}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` + detail +
+    card(`Bandingkan opsi · ${esc(HR.locName(o))}`, table(['Opsi', 'Asumsi utama', 'Utility sebelum', 'Utility sesudah', 'Gap sebelum', 'Gap sesudah', 'Status sesudah'], cmp) + '<p class="muted small">Gap positif = permintaan melebihi kapasitas reguler. Formasi baru menambah permintaan yang sebelumnya gagal dipesan (1,5 jam per booking gagal).</p>') + form +
+    card(`Skenario tersimpan · ${scs.length}`, scs.length ? table(['Scenario ID', 'Outlet', 'Opsi', 'Utility sesudah', 'Status', 'Kartu', 'Permintaan'], scs.map(x => [link('hrd-mp-sim' + qs({ id: x.id }), x.id), esc(HR.locName(x.outlet)), x.option, pct(x.result.after.u), x.status, x.task ? link('hrd-task' + qs({ id: x.task }), x.task) : '—', x.req ? link('hrd-rec-manage', x.req) : '—'])) : '<p>Belum ada skenario. Simpan dari formulir di atas.</p>');
+}
+
+/* ---------- NV08 Handoff Rekrutmen ---------- */
+function handoff(params) {
+  const h = hr(), scs = f5().scenarios.filter(s => okOutlet(s.outlet) && s.option === 'formasi' && s.status === 'Disetujui');
+  const s = params.id && scs.find(x => x.id === params.id);
+  const reqs = (h.f4?.reqs || []).filter(r => okOutlet(r.outlet) || staff()).map(r => HR5.reqProgress(h, r.id)).filter(Boolean);
+  const form = s && !s.req && staff() ? card(`Kirim ${s.id} ke Rekrutmen`, `<form class="workflow-form" data-submit="hr:mp-handoff" data-after="hrd-mp-handoff?id=${s.id}"><input type="hidden" name="id" value="${s.id}"><p>${esc(HR.locName(s.outlet))} · Therapist × ${esc(s.params.count || 2)} · dibutuhkan ${esc(s.params.start || '2026-12-01')} · ${esc(s.finding)}${s.task ? ` · ${s.task}` : ''}</p><label>Shift<select name="shift"><option>Pagi/Sore</option><option>Pagi</option><option>Sore</option></select></label><label>Skill<input name="skills" value="Balinese, hot stone"></label><button class="btn">Kirim permintaan tenaga</button></form><p class="muted small">Mengirim ulang tidak membuat permintaan ganda. Permintaan tetap melewati persetujuan Operational Manager → Manager HRD di F4.</p>`) : '';
+  return `<p class="active-filters">${chip('DATA DEMO', 'sandbox')} Kebutuhan disetujui → permintaan tenaga F4 → lowongan → penempatan. Posisi terbuka = formasi − penempatan aktif.</p>` + form +
+    card(`Skenario disetujui · ${scs.length}`, scs.length ? table(['Scenario ID', 'Outlet', 'Formasi', 'Butuh', 'Disetujui', 'Permintaan', 'Aksi'], scs.map(x => [link('hrd-mp-sim' + qs({ id: x.id }), x.id), esc(HR.locName(x.outlet)), x.params.count || 2, x.params.start || '2026-12-01', esc(x.approver || '—'), x.req ? link('hrd-rec-manage', x.req) : '—', x.req ? '—' : staff() ? link('hrd-mp-handoff' + qs({ id: x.id }), 'Kirim') : '—'])) : `<p>Belum ada skenario formasi yang disetujui. Mulai dari ${link('hrd-mp-sim', 'Simulasi')}.</p>`) +
+    card('Progres permintaan tenaga', reqs.length ? table(['Requisition ID', 'Outlet', 'Formasi', 'Sumber', 'Status', 'Lowongan', 'Lamaran', 'Penempatan aktif', 'Posisi terbuka'], reqs.map(x => [x.req.id, esc(HR.locName(x.req.outlet)), x.req.count, esc(x.req.source) + (x.req.scenario ? ` · ${link('hrd-mp-sim' + qs({ id: x.req.scenario }), x.req.scenario)}` : ''), chip(x.req.status, x.req.status === 'Disetujui' ? 'ready' : x.req.status === 'Ditolak' ? 'bad' : 'sandbox'), x.vac ? `${link('hrd-career-job' + qs({ id: x.vac.id }), x.vac.id)} · ${esc(x.vac.status)}` : '—', x.vac ? link('hrd-rec-candidates' + qs({ vac: x.vac.id }), x.apps) : 0, x.placed, `<b>${x.open}</b>`])) : '<p>Belum ada permintaan tenaga.</p>');
+}
+
+/* ---------- sidebar & registrasi ---------- */
+const items = H.PORTALS.HRD.items;
+const it = items.find(i => i[0] === 'hrd-manpower'); if (it) { it[2] = 'F5-NV01'; it[3] = 'ready'; it[4] = ''; }
+const ix = items.findIndex(i => i[0] === 'hrd-manpower');
+items.splice(ix + 1, 0, ['hrd-mp-capacity', 'Kapasitas Outlet & Shift', 'F5-NV02', 'ready', '', 'sub'], ['hrd-mp-utility', 'Therapist Utility', 'F5-NV03', 'ready', '', 'sub'], ['hrd-mp-reception', 'Coverage Reception', 'F5-NV04', 'ready', '', 'sub'], ['hrd-mp-division', 'Beban Kerja Office', 'F5-NV05', 'ready', '', 'sub'], ['hrd-mp-pos', 'Data Layanan POS', 'F5-NV06', 'ready', '', 'sub'], ['hrd-mp-sim', 'Simulasi Kebutuhan', 'F5-NV07', 'ready', '', 'sub'], ['hrd-mp-handoff', 'Handoff Rekrutmen', 'F5-NV08', 'ready', '', 'sub']);
+Object.assign(H.PURPOSE, {
+  'hrd-manpower': 'Headcount, kapasitas dan utility per outlet, headcount Office per divisi, dan peringatan yang bisa ditelusuri.',
+  'hrd-mp-capacity': 'Kapasitas reguler dan treatment selesai per outlet × shift. Klik shift untuk anggota, termasuk bantuan outlet lain.',
+  'hrd-mp-utility': 'Pembilang, penyebut dan transaksi di balik utility. Ambang 70% dan 100% dengan status Pantau.',
+  'hrd-mp-reception': 'Reservasi, check-in, waktu tunggu dan coverage receptionist per blok jam.',
+  'hrd-mp-division': 'Beban kerja Office per divisi dengan ukuran, SLA, sumber dan kelengkapan data.',
+  'hrd-mp-pos': 'Baris layanan POS dengan Transaction ID & Service Line ID, refund, koreksi dan replay batch tanpa duplikat.',
+  'hrd-mp-sim': 'Bandingkan opsi bantuan, geser shift dan tambah formasi; tandai temuan ke Planner; persetujuan Manager HRD.',
+  'hrd-mp-handoff': 'Kirim kebutuhan disetujui ke Rekrutmen F4 dan pantau sampai penempatan; posisi terbuka turun saat penempatan aktif.'
+});
+H.SCREENS.push(...[['F5-NV01', 'Dashboard Manpower', 'hrd-manpower'], ['F5-NV02', 'Kapasitas Outlet & Shift', 'hrd-mp-capacity?outlet=OUT-UBD&shift=Pagi'], ['F5-NV03', 'Therapist Utility', 'hrd-mp-utility?outlet=OUT-UBD'], ['F5-NV04', 'Coverage Reception', 'hrd-mp-reception'], ['F5-NV05', 'Beban Kerja Divisi Office', 'hrd-mp-division'], ['F5-NV06', 'Data Layanan POS', 'hrd-mp-pos'], ['F5-NV07', 'Simulasi Kebutuhan & Temuan', 'hrd-mp-sim'], ['F5-NV08', 'Handoff Rekrutmen', 'hrd-mp-handoff']].map(([c, t, r]) => [c, 'HRD · ' + t, 'HRD 5', r, 'ready', 'Manager HRD, Staf HRD, OM, Supervisor (Ubud)']));
+register('hrd-manpower', guard(dashboard), () => 'Dashboard Manpower');
+register('hrd-mp-capacity', guard(capacity), () => 'Kapasitas Outlet & Shift');
+register('hrd-mp-utility', guard(utility), () => 'Therapist Utility');
+register('hrd-mp-reception', guard(reception), () => 'Coverage Reception');
+register('hrd-mp-division', guard(division), () => 'Beban Kerja Divisi Office');
+register('hrd-mp-pos', guard(pos), () => 'Data Layanan POS');
+register('hrd-mp-sim', guard(sim), (p) => p.id ? `Skenario ${p.id}` : 'Simulasi Kebutuhan & Temuan');
+register('hrd-mp-handoff', guard(handoff), () => 'Handoff Rekrutmen');
 })();
 
 ;

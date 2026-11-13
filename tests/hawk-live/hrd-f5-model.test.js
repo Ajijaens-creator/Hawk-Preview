@@ -1,0 +1,80 @@
+/* HAWK HRD F5 · uji model (node tests/hawk-live/hrd-f5-model.test.js) — kriteria NB F5 */
+'use strict';
+global.HR = require('../../hawk-live/hrd-model.js');
+global.HR2 = require('../../hawk-live/hrd-f2-model.js');
+global.HR3 = require('../../hawk-live/hrd-f3-model.js');
+global.HR4 = require('../../hawk-live/hrd-f4-model.js');
+const HR5 = require('../../hawk-live/hrd-f5-model.js');
+let pass = 0, fail = 0;
+const ok = (n, c, i = '') => { c ? pass++ : fail++; console.log(`${c ? '✓' : '✗'} ${n}${i ? ' · ' + i : ''}`); };
+const throws = (fn, re) => { try { fn(); return false; } catch (e) { return re.test(e.message) || (console.log('   ↳', e.message), false); } };
+const st = {}; HR.ensure(st); HR.EXT.ensure(st.hr); const hr = () => st.hr;
+const U = (role, a, i) => HR.update(st, a, { by: role, role, ...i });
+const near = (a, b) => Math.abs(a - b) < 1e-6;
+
+const ubP = HR5.outletUtil(hr(), 'OUT-UBD', 'W46', 'Pagi');
+ok('Ubud Pagi: 216 jam treatment ÷ 200 jam reguler = 108%', near(ubP.done, 216) && ubP.cap === 200 && near(ubP.u, 1.08), `${ubP.done}/${ubP.cap}`);
+ok('Kelebihan 16 jam = lembur 10 jam + bantuan Santi 6 jam', near(ubP.done - ubP.cap, 16) && near(ubP.ot, 10) && near(ubP.help, 6));
+const ub = HR5.outletUtil(hr(), 'OUT-UBD');
+ok('Total Ubud = jumlah pembilang ÷ jumlah penyebut (414/390)', near(ub.done, 414) && ub.cap === 390 && near(ub.u, 414 / 390));
+ok('Total bukan rata-rata persentase shift', !near(ub.u, (1.08 + 198 / 190) / 2));
+const sh = HR5.outletUtil(hr(), 'OUT-SHT');
+ok('Santi 258/390 = 66% → Di bawah 70%', near(sh.u, 258 / 390) && HR5.status(sh.u)[0] === 'Di bawah 70%');
+ok('Ambang tepat 70% = Pantau (Santi Pagi 140/200)', HR5.status(HR5.outletUtil(hr(), 'OUT-SHT', 'W46', 'Pagi').u)[0] === 'Pantau');
+ok('Ambang tepat 100% = Pantau, di atas 100% = Di atas kapasitas', HR5.status(1)[0] === 'Pantau' && HR5.status(1.0001)[0] === 'Di atas kapasitas');
+ok('Data tidak tersedia → Belum tersedia', HR5.status(null)[0] === 'Belum tersedia');
+ok('Oktober = angka Beranda F1 (Ubud 5512/5200)', near(HR5.outletUtil(hr(), 'OUT-UBD', '2610').u, 5512 / 5200) && near(HR.EXT.utility(hr(), 'OUT-SHT').u, 0.66));
+const ms = HR5.shiftMembers(hr(), 'OUT-UBD', 'Pagi');
+ok('Anggota shift Ubud Pagi termasuk therapist bantuan dari Santi', ms.some(m => m.home === 'OUT-SHT') && ms.filter(m => m.home === 'OUT-UBD').length > 5);
+ok('Jam anggota shift = pembilang shift', near(ms.reduce((a, m) => a + m.hours, 0), 216));
+const L = HR5.lines(hr());
+ok('Setiap baris punya Transaction ID & Service Line ID unik', L.every(l => l.tx && l.line) && new Set(L.map(l => l.line)).size === L.length, `${L.length} baris`);
+const fh = L.filter(l => l.svc === 'Four Hands' && l.outlet === 'OUT-UBD' && l.shift === 'Pagi');
+ok('Four Hands: satu transaksi, dua baris, dua therapist', fh.length === 2 && fh[0].tx === fh[1].tx && fh[0].emp !== fh[1].emp);
+ok('Pembatalan tidak dihitung sebagai treatment', L.filter(l => l.status === 'Batal').every(l => l.dur === 0) && HR5.outletUtil(hr(), 'OUT-SHT').cancel === 14);
+
+const line = L.find(l => l.outlet === 'OUT-UBD' && l.status === 'Selesai' && !l.ot && !l.help).line;
+const r1 = U('hrd-ops', 'pos-refund', { line, reason: 'Keluhan tamu' });
+ok('Refund tercatat, layanan tetap selesai (utility tidak berubah)', /^RFD-/.test(r1) && near(HR5.outletUtil(hr(), 'OUT-UBD').done, 414) && HR5.lines(hr()).find(l => l.line === line).pay === 'Refund');
+ok('Refund ulang baris sama → id sama (idempoten)', U('hrd-ops', 'pos-refund', { line }) === r1 && hr().f5.refunds.length === 1);
+const before = HR5.lines(hr()).find(l => l.line === line).dur;
+U('hrd', 'pos-correct', { line, dur: String(before - 30), reason: 'Salah input durasi' });
+ok('Koreksi durasi mengubah pembilang (−0,5 jam)', near(HR5.outletUtil(hr(), 'OUT-UBD').done, 413.5));
+ok('Koreksi tanpa alasan ditolak', throws(() => U('hrd', 'pos-correct', { line, dur: '60', reason: '' }), /Alasan/));
+ok('Koreksi tercatat di audit dengan sebelum/sesudah', hr().audit.some(a => /Koreksi POS/.test(a.action)));
+const b = hr().f5.batches[0].id, n0 = HR5.lines(hr()).length;
+const msg = U('hrd-ops', 'pos-ingest', { id: b });
+ok('Replay batch: 0 baris baru, duplikat diabaikan', /0 baris baru/.test(msg) && HR5.lines(hr()).length === n0);
+ok('Supervisor tidak bisa refund/koreksi POS', throws(() => U('outlet-spv', 'pos-refund', { line }), /Akses ditolak/));
+
+/* simulasi → temuan → persetujuan → handoff */
+const sim = U('hrd', 'sim-save', { outlet: 'OUT-UBD', option: 'formasi', count: '2', start: '2026-12-01' });
+const s = hr().f5.scenarios.find(x => x.id === sim);
+ok('Skenario formasi menurunkan utility Ubud ke ≤ 100% (gap sebelum/sesudah)', s.result.base.u > 1 && s.result.after.u <= 1 && s.result.after.gap < s.result.base.gap, `${(s.result.after.u * 100).toFixed(1)}%`);
+ok('Skenario punya asumsi & bukti', s.result.assume.length >= 2 && s.result.evidence.some(e => /Lembur/.test(e)));
+const t1 = U('hrd-ops', 'sim-mark', { id: sim, stage: 'Issue' });
+const t2 = U('hrd-ops', 'task-create', { ws: 'HRD', stage: 'Issue', title: 'Utility Spa Ubud dari F3', sourceId: 'UTIL-OUT-UBD-2611', finding: 'FND-UTIL-UBD-2611' });
+ok('Tandai Issue dari F5 dan dari Planner = satu kartu (dedupe)', t1 === t2 && hr().f3.tasks.filter(t => t.source?.id === 'UTIL-OUT-UBD-2611').length === 1, t1);
+ok('Handoff sebelum persetujuan ditolak', throws(() => U('hrd', 'mp-handoff', { id: sim }), /persetujuan/));
+ok('Staf HRD tidak bisa menyetujui skenario', throws(() => U('hrd-ops', 'sim-approve', { id: sim }), /Manager HRD/));
+U('hrd', 'sim-approve', { id: sim });
+const req = U('hrd-ops', 'mp-handoff', { id: sim });
+const reqs0 = hr().f4.reqs.length;
+ok('Handoff ulang (retry) → permintaan yang sama, tanpa duplikat', U('hrd-ops', 'mp-handoff', { id: sim }) === req && hr().f4.reqs.length === reqs0);
+const R = hr().f4.reqs.find(r => r.id === req);
+ok('Permintaan F4 membawa outlet, formasi, tanggal butuh, sumber & Task ID', R.outlet === 'OUT-UBD' && String(R.count) === '2' && R.needBy === '2026-12-01' && /SIM-/.test(R.source) && R.task === t1 && R.status === 'Menunggu Persetujuan');
+ok('Posisi terbuka = 2 sebelum penempatan', HR5.reqProgress(hr(), req).open === 2);
+const bant = U('hrd', 'sim-save', { outlet: 'OUT-UBD', option: 'bantuan', hours: '16', from: 'OUT-SHT' });
+U('hrd', 'sim-approve', { id: bant });
+ok('Handoff hanya untuk skenario formasi', throws(() => U('hrd', 'mp-handoff', { id: bant }), /formasi/));
+const santi = U('hrd', 'sim-save', { outlet: 'OUT-SHT', option: 'shift', hours: '12' });
+const ts = U('hrd', 'sim-mark', { id: santi, stage: 'Issue' });
+ok('Santi < 70%: Issue investigasi tercatat dengan sumber utility', hr().f3.tasks.find(t => t.id === ts).source.id === 'UTIL-OUT-SHT-2611' && /di bawah ambang 70%/.test(hr().f3.tasks.find(t => t.id === ts).title));
+ok('Reception: kurang coverage hanya Ubud & Bhisma Sore 17–21', ['OUT-UBD', 'OUT-BSM'].every(o => HR5.recGaps(o).length === 1 && HR5.recGaps(o)[0].block === '17–21') && ['OUT-SHT', 'OUT-TRL'].every(o => HR5.recGaps(o).length === 0));
+ok('Divisi Production ditandai data belum lengkap', HR5.DIVISIONS.find(d => d.id === 'DIV-PRD').complete === false);
+
+/* hapus dummy & mulai kembali */
+HR.update(st, 'dummy-delete', { by: 'hrd', role: 'hrd', confirm: 'HAPUS DUMMY' });
+HR.update(st, 'dummy-load', { by: 'hrd', role: 'hrd' });
+ok('Setelah hapus & muat ulang: refund, koreksi & skenario demo bersih, utility kembali 414/390', hr().f5.refunds.length === 0 && hr().f5.corrections.length === 0 && hr().f5.scenarios.length === 0 && near(HR5.outletUtil(hr(), 'OUT-UBD').done, 414));
+console.log(`\n${pass} lulus, ${fail} gagal`); process.exit(fail ? 1 : 0);

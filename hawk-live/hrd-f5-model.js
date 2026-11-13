@@ -25,7 +25,7 @@ const HR5 = (() => {
   /* ---------- baris layanan POS Minggu 46 (deterministik) ---------- */
   const cache = new WeakMap();
   function lines(hr) {
-    if (cache.has(hr) && cache.get(hr).v === (hr.f5?.ver || 0)) return cache.get(hr).rows;
+    const ver = `${hr.f5?.ver || 0}:${hr.placements.length}`; if (cache.has(hr) && cache.get(hr).v === ver) return cache.get(hr).rows;
     const rows = [], f5 = ensure(hr);
     const thr = (o) => hr.placements.filter(p => p.location === o && p.position === 'POS-THR' && p.from <= WEEK[6] && (!p.to || p.to >= WEEK[0])).map(p => p.emp);
     const shiftOf = (emp) => (hr.f2?.schedules || []).find(s => s.emp === emp && s.kind === 'tetap' && s.from <= WEEK[0] && (!s.to || s.to >= WEEK[0]))?.shift || 'Pagi';
@@ -51,7 +51,7 @@ const HR5 = (() => {
     /* refund & koreksi tersimpan diterapkan ke baris asal */
     for (const r of f5.refunds) { const l = rows.find(x => x.line === r.line); if (l) { l.pay = 'Refund'; l.refund = r.id; } }
     for (const c of f5.corrections) { const l = rows.find(x => x.line === c.line); if (l) { l.dur = c.after; l.corrected = c.id; } }
-    cache.set(hr, { v: hr.f5?.ver || 0, rows });
+    cache.set(hr, { v: ver, rows });
     return rows;
   }
   const done = (rs) => rs.filter(r => r.status === 'Selesai').reduce((s, r) => s + r.dur, 0) / 60;
@@ -69,14 +69,18 @@ const HR5 = (() => {
     return Object.values(by).sort((a, b) => b.hours - a.hours);
   }
   /* Reception: reservasi, check-in, tunggu rata-rata, coverage per blok jam */
+  /* Reception: rata-rata per hari Minggu 46 · blok jam [blok, staf, check-in, tunggu rata-rata menit] */
   const RECEPTION = {
-    'OUT-UBD': { Pagi: { res: 168, checkin: 160, wait: 12, staff: 3, peak: [['09–11', 2, 38], ['11–13', 3, 30]] }, Sore: { res: 150, checkin: 144, wait: 14, staff: 2, peak: [['13–17', 2, 52], ['17–21', 1, 41]] } },
-    'OUT-SHT': { Pagi: { res: 96, checkin: 82, wait: 4, staff: 3, peak: [['09–11', 2, 18], ['11–13', 3, 16]] }, Sore: { res: 88, checkin: 76, wait: 5, staff: 2, peak: [['13–17', 2, 22], ['17–21', 2, 20]] } },
-    'OUT-TRL': { Pagi: { res: 120, checkin: 114, wait: 7, staff: 3, peak: [['09–11', 2, 26], ['11–13', 3, 24]] }, Sore: { res: 110, checkin: 104, wait: 8, staff: 2, peak: [['13–17', 2, 30], ['17–21', 2, 28]] } },
-    'OUT-BSM': { Pagi: { res: 110, checkin: 106, wait: 6, staff: 3, peak: [['09–11', 2, 24], ['11–13', 3, 22]] }, Sore: { res: 104, checkin: 100, wait: 9, staff: 2, peak: [['13–17', 2, 26], ['17–21', 1, 34]] } }
+    'OUT-UBD': { Pagi: { res: 46, peak: [['09–11', 2, 18, 6], ['11–13', 3, 26, 7]] }, Sore: { res: 70, peak: [['13–17', 2, 36, 8], ['17–21', 1, 30, 16]] } },
+    'OUT-SHT': { Pagi: { res: 38, peak: [['09–11', 2, 18, 4], ['11–13', 3, 16, 4]] }, Sore: { res: 46, peak: [['13–17', 2, 22, 5], ['17–21', 2, 20, 5]] } },
+    'OUT-TRL': { Pagi: { res: 46, peak: [['09–11', 2, 20, 7], ['11–13', 3, 24, 7]] }, Sore: { res: 61, peak: [['13–17', 2, 30, 8], ['17–21', 2, 28, 8]] } },
+    'OUT-BSM': { Pagi: { res: 46, peak: [['09–11', 2, 20, 6], ['11–13', 3, 24, 6]] }, Sore: { res: 64, peak: [['13–17', 2, 26, 7], ['17–21', 1, 34, 14]] } }
   };
+  const blockHours = (b) => { const [a, z] = b.split('–').map(Number); return z - a; };
   const REC_TARGET = { perHour: 6, wait: 10 };
   const recStatus = (checkins, staff, hours, wait) => { const load = staff ? checkins / (staff * hours) : null; return load === null ? ['Belum tersedia', ''] : load > REC_TARGET.perHour || wait > REC_TARGET.wait ? ['Kurang coverage', 'bad'] : load > REC_TARGET.perHour * 0.85 ? ['Pantau', 'planned'] : ['Cukup', 'ready']; };
+  /* blok kurang coverage untuk peringatan dashboard */
+  const recGaps = (o) => ['Pagi', 'Sore'].flatMap(sh => RECEPTION[o][sh].peak.filter(([b, st, c, w]) => recStatus(c, st, blockHours(b), w)[1] === 'bad').map(([b, st, c, w]) => ({ outlet: o, shift: sh, block: b, staff: st, checkins: c, wait: w })));
   const DIVISIONS = [
     { id: 'DIV-FA', name: 'Finance & Accounting', metric: 'Rekonsiliasi bank & POS', unit: 'dokumen', load: 412, output: 365, backlog: 47, sla: '2 hari kerja', slaMet: 0.88, source: 'HAWK Finance (TO VERIFY)', updated: '2026-11-13 18:00', complete: true },
     { id: 'DIV-MKT', name: 'Marketing', metric: 'Campaign & konten terbit', unit: 'konten', load: 64, output: 58, backlog: 6, sla: 'Sesuai kalender konten', slaMet: 0.91, source: 'Planner Marketing (simulasi)', updated: '2026-11-12 17:00', complete: true },
@@ -177,6 +181,6 @@ const HR5 = (() => {
   H.EXT.keep = (hr) => { const k = prev.keep?.(hr) || {}; if (hr.f5) k.f5 = { seeded: false, scenarios: hr.f5.scenarios.filter(s => !s.demo) }; return k; };
   H.EXT.ensure = (hr) => { if (hr.f2 && hr.f2.f5) { hr.f5 = hr.f2.f5; delete hr.f2.f5; } prev.ensure?.(hr); ensure(hr); };
   H.EXT.utility = (hr, o) => outletUtil(hr, o, '2610');
-  return { WEEK, PERIODS, WEEKLY, RECEPTION, REC_TARGET, DIVISIONS, OUTCODE, status, recStatus, ensure, lines, outletUtil, shiftMembers, simulate, reqProgress };
+  return { WEEK, PERIODS, WEEKLY, RECEPTION, REC_TARGET, blockHours, recGaps, DIVISIONS, OUTCODE, status, recStatus, ensure, lines, outletUtil, shiftMembers, simulate, reqProgress };
 })();
 if (typeof module !== 'undefined') module.exports = HR5;
