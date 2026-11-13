@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T14:59:59.726Z">
+<meta name="hawk-standalone" content="2026-11-13T15:20:46.378Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Portal HRD &amp; Human Growth</title>
 <style>
@@ -1505,6 +1505,18 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-profile h3 { font-size: 13px; margin: 0 0 6px; }
 .sr-only-form { display: inline; }
 .sr-only-form .btn { margin-top: 0; }
+.hr-toolbar { gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; } .hr-toolbar .tabs { margin-bottom: 0; }
+.hr-dtabs h3, .hr-dtabs .tbl-wrap + .tbl-wrap { margin-top: 10px; }
+.hr-steps { display: flex; gap: 8px; flex-wrap: wrap; list-style: none; padding: 0; margin: 0 0 12px; }
+.hr-steps li { padding: 6px 12px; border-radius: 99px; border: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+.hr-steps li.on { background: var(--gold-grad); color: #1b1505; border-color: transparent; font-weight: 700; }
+.hr-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.hr-cal-d { border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; min-height: 58px; display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; overflow-wrap: anywhere; }
+.hr-cal-d.today { outline: 2px solid var(--gold); }
+.hr-map { width: 100%; height: auto; display: block; }
+.hr-map-bg { fill: var(--canvas); stroke: var(--line); }
+.hr-map circle.ok { fill: var(--gold); stroke: var(--black); stroke-width: 1.5; }
+.hr-map circle.warn { fill: var(--bad); stroke: var(--black); stroke-width: 1.5; }
 
 </style>
 </head>
@@ -2731,6 +2743,7 @@ if (typeof module !== 'undefined') module.exports = B27;
    audit dan penghapusan dummy. Deterministik (tanpa Math.random). Tanpa jaringan, akun, atau API. */
 const HR = (() => {
   const TODAY = '2026-11-13';
+  const EXT = {}; /* kait fase berikutnya (F2: attStatus, update) */
   const SCHEMA = 4;
 
   /* ---------- organisasi (dinamis: semua layar membaca daftar ini, tidak ada cabang yang di-hardcode di UI) ---------- */
@@ -2954,7 +2967,7 @@ const HR = (() => {
   }
   /* atasan langsung dari penempatan efektif (garis Spa: Therapist/Receptionist → Supervisor → AOM → OM) */
   function supervisorOf(hr, emp, date = TODAY) {
-    const pl = placementOn(hr, emp, date); if (!pl) return null;
+    const pl = placementOn(hr, emp, date) || upcomingOf(hr, emp, date); if (!pl) return null;
     const find = (fn) => hr.placements.find(x => x.from <= date && (!x.to || x.to >= date) && fn(x))?.emp || null;
     if (['POS-THR', 'POS-RCP'].includes(pl.position)) return find(x => x.position === 'POS-SPV' && x.leads === pl.location);
     if (pl.position === 'POS-SPV' || pl.position === 'POS-OPS') return find(x => x.position === 'POS-AOM');
@@ -2967,8 +2980,11 @@ const HR = (() => {
   /* ---------- penempatan efektif & cakupan ---------- */
   const placementOn = (hr, emp, date = TODAY) => hr.placements.find(p => p.emp === emp && p.from <= date && (!p.to || p.to >= date));
   const locName = (id) => OUTLETS.find(o => o.id === id)?.name || (id === HQ.id ? HQ.name : id);
+  /* penempatan pertama yang belum efektif (karyawan akan bergabung) */
+  function upcomingOf(hr, emp, date = TODAY) { return hr.placements.filter(x => x.emp === emp && x.from > date).sort((a, b) => a.from.localeCompare(b.from))[0] || null; }
+  function joiners(hr, role, date = TODAY) { return hr.people.filter(p => !placementOn(hr, p.id, date) && upcomingOf(hr, p.id, date) && inScope(hr, role, p.id, date)).map(p => ({ ...p, placement: upcomingOf(hr, p.id, date) })); }
   function inScope(hr, role, emp, date = TODAY) {
-    const d = roleDef(role), pl = placementOn(hr, emp, date);
+    const d = roleDef(role), pl = placementOn(hr, emp, date) || upcomingOf(hr, emp, date);
     if (!pl) return false;
     if (d.scope === 'all') return true;
     if (d.scope === 'self') return hr.roleEmp[role] === emp;
@@ -2980,8 +2996,8 @@ const HR = (() => {
   /* filter pemilih cakupan + izin peran */
   function people(hr, role, f = {}, date = TODAY) {
     return hr.people.filter(p => {
-      if (!inScope(hr, role, p.id, date)) return false;
       const pl = placementOn(hr, p.id, date);
+      if (!pl || !inScope(hr, role, p.id, date)) return false;
       if (f.entity && f.entity !== 'all' && pl.entity !== f.entity) return false;
       if (f.division && f.division !== 'all' && pl.division !== f.division) return false;
       if (f.outlet && f.outlet !== 'all' && pl.location !== f.outlet) return false;
@@ -3014,7 +3030,9 @@ const HR = (() => {
     const ids = new Set(list.map(p => p.id));
     /* presensi hari ini (simulasi deterministik per employee ID) */
     const att = { hadir: 0, terlambat: 0, cuti: 0, sakit: 0, libur: 0, belum: 0 };
-    list.forEach(p => { const k = Number(p.id.slice(4)) % 20; att[k < 13 ? 'hadir' : k < 15 ? 'terlambat' : k === 15 ? 'cuti' : k === 16 ? 'sakit' : k < 19 ? 'libur' : 'belum']++; });
+    /* F2 (hrd-f2-model.js) mengganti simulasi ini dengan presensi yang sama seperti layar Presensi */
+    const BUCKET = { Hadir: 'hadir', Terlambat: 'terlambat', Cuti: 'cuti', Izin: 'cuti', Sakit: 'sakit', Libur: 'libur', 'Belum Ada Status': 'belum' };
+    list.forEach(p => { if (EXT.attStatus) { att[BUCKET[EXT.attStatus(hr, p.id, TODAY)] || 'belum']++; return; } const k = Number(p.id.slice(4)) % 20; att[k < 13 ? 'hadir' : k < 15 ? 'terlambat' : k === 15 ? 'cuti' : k === 16 ? 'sakit' : k < 19 ? 'libur' : 'belum']++; });
     const outlets = OUTLETS.filter(o => list.some(p => p.placement.location === o.id)).map(o => {
       const thr = hr.people.filter(p => placementOn(hr, p.id)?.location === o.id && p.position === 'POS-THR').length;
       const cap = thr * 8 * 26, done = UTILITY[o.id];
@@ -3113,6 +3131,7 @@ const HR = (() => {
         hr.settings.calendar = hr.settings.calendar.filter(c => !c.demo);
         hr.accounts = hr.accounts.filter(a => !a.demo);
         hr.queue = hr.queue.filter(q => !q.demo);
+        EXT.purge?.(hr);
         hr.purged = true;
         const removed = before.people - hr.people.length;
         audit(hr, by, 'Hapus dataset dummy', `${removed} profil dan ${before.placements - hr.placements.length} penempatan demo dihapus · ${hr.people.length} profil non-demo tetap`, { object: 'Dataset', before: `${before.people} profil`, after: `${hr.people.length} profil` });
@@ -3122,17 +3141,335 @@ const HR = (() => {
         need('dummy.delete');
         const keep = hr.people.filter(p => !p.demo), keepPl = hr.placements.filter(p => !p.demo), log = hr.audit;
         const f = fresh();
-        state.hr = { ...f, people: [...f.people, ...keep], placements: [...f.placements, ...keepPl], accounts: [...f.accounts, ...hr.accounts.filter(a => !a.demo)], audit: log, seq: hr.seq };
+        const keepF2 = EXT.keep?.(hr);
+        state.hr = { ...f, ...(keepF2 ? { f2: keepF2 } : {}), people: [...f.people, ...keep], placements: [...f.placements, ...keepPl], accounts: [...f.accounts, ...hr.accounts.filter(a => !a.demo)], audit: log, seq: hr.seq };
+        EXT.ensure?.(state.hr);
         audit(state.hr, by, 'Muat dataset dummy', `${f.people.length} profil demo dimuat`, { object: 'Dataset' });
         return f.people.length;
+      }
+      default:
+        if (EXT.update) return EXT.update(state, hr, action, input, { need, audit, by, role });
+        throw new Error('Aksi HRD tidak dikenal: ' + action);
+    }
+  }
+
+  return { EXT, audit: (hr, ...a) => audit(hr, ...a), TODAY, COMPANY, supervisorOf, ENTITIES, OUTLETS, HQ, DIVISIONS, POSITIONS, EXPECTED, ROLE_DEFS, PERM_LABEL, pos, roleDef, can, fresh, ensure, placementOn, upcomingOf, joiners, locName, inScope, people, reconcile, summary, update };
+})();
+if (typeof module !== 'undefined') module.exports = HR;
+
+;
+/* HAWK ERP · Portal HRD · model F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
+   Jadwal & shift efektif, presensi (log + koreksi), pengajuan bertingkat (satu Request ID dibaca modul asal
+   dan inbox Approval), saldo cuti (ledger), klien, kunjungan, pelacakan lokasi, timeline dan impor karyawan.
+   Memperluas HR (hrd-model.js) lewat HR.EXT. Deterministik, tanpa jaringan. */
+const HR2 = (() => {
+  const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
+  const TODAY = H.TODAY;
+  const SHIFTS = { Pagi: ['09:00', '17:00'], Sore: ['13:00', '21:00'], Malam: ['17:00', '22:00'], Kantor: ['08:30', '16:30'] };
+  const DAYS = ['2026-11-07', '2026-11-08', '2026-11-09', '2026-11-10', '2026-11-11', '2026-11-12', '2026-11-13'];
+  const DOW = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const LEAVE = [
+    { id: 'LV-ANN', name: 'Cuti Tahunan', quota: 12, doc: false }, { id: 'LV-SPC', name: 'Cuti Khusus', quota: 3, doc: true },
+    { id: 'LV-SCK', name: 'Sakit', quota: null, doc: true }, { id: 'LV-PRM', name: 'Izin', quota: 2, doc: false },
+    { id: 'LV-UNP', name: 'Cuti Tidak Dibayar', quota: null, doc: false }, { id: 'LV-HOL', name: 'Cuti Libur Nasional', quota: null, doc: false, auto: true }
+  ];
+  const leaveCat = (id) => LEAVE.find(l => l.id === id || l.name === id);
+
+  /* ---------- tanggal ---------- */
+  const d2n = (d) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) / 864e5;
+  const n2d = (n) => new Date(n * 864e5).toISOString().slice(0, 10);
+  const addDays = (d, k) => n2d(d2n(d) + k);
+  const dow = (d) => new Date(d2n(d) * 864e5).getUTCDay();
+  const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3, 5);
+  const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const num = (id) => Number(String(id).replace(/\D/g, '')) || 0;
+
+  /* ---------- seed ---------- */
+  function seed(hr) {
+    const f2 = { seeded: true, schedules: [], overrides: {}, ledger: [], clients: [], visits: [], tracks: [], posts: [], imports: [], docs: [], seq: { req: 10, shf: 1, vis: 20, trk: 40, emp: 159, tl: 10 } };
+    hr.people.filter(p => p.demo).forEach(p => {
+      const off = num(p.id) % 7;
+      f2.schedules.push({ id: 'SHF-' + p.id.slice(4), emp: p.id, shift: p.shift, off, from: '2026-01-01', to: null, kind: 'tetap', demo: true });
+      f2.ledger.push({ id: 'LDG-' + p.id.slice(4) + '-A', emp: p.id, cat: 'LV-ANN', days: (num(p.id) * 3) % 6, ref: 'Saldo awal 2026 (terpakai s/d Okt)', at: '2026-10-31', demo: true });
+    });
+    /* contoh: shift EMP-0012 berubah 2026-11-01 (histori) */
+    const s12 = f2.schedules.find(s => s.emp === 'EMP-0012');
+    if (s12) { f2.schedules.push({ ...s12, id: s12.id + '-A', shift: s12.shift === 'Pagi' ? 'Sore' : 'Pagi', to: '2026-10-31' }); s12.from = '2026-11-01'; }
+    f2.clients = [
+      ['CLI-001', 'Villa Sawah Ubud', 'Ubud', 'Aktif'], ['CLI-002', 'Hotel Tegallalang Demo', 'Tegallalang', 'Aktif'], ['CLI-003', 'Resort Payangan Demo', 'Payangan', 'Aktif'],
+      ['CLI-004', 'Studio Yoga Penestanan', 'Ubud', 'Aktif'], ['CLI-005', 'Villa Keliki Demo', 'Keliki', 'Prospek']
+    ].map(([id, name, area, status]) => ({ id, name, area, status, contact: `pic-${id.toLowerCase()}@example.invalid`, phone: '0361-' + id.slice(-3) + '000', demo: true }));
+    const vis = [['VIS-001', 'EMP-0122', 'CLI-001', '2026-11-11', '10:05', '10:42'], ['VIS-002', 'EMP-0131', 'CLI-002', '2026-11-12', '14:10', '15:05'], ['VIS-003', 'EMP-0122', 'CLI-003', '2026-11-12', '09:30', '10:15'], ['VIS-004', 'EMP-0001', 'CLI-001', '2026-11-13', '11:00', '12:30'], ['VIS-005', 'EMP-0132', 'CLI-004', '2026-11-10', '16:00', '16:40']];
+    const COORD = { 'CLI-001': [-8.5069, 115.2625], 'CLI-002': [-8.4321, 115.2789], 'CLI-003': [-8.4510, 115.2420], 'CLI-004': [-8.5050, 115.2510], 'CLI-005': [-8.4890, 115.2650] };
+    vis.forEach(([id, emp, client, date, tin, tout], i) => {
+      const trk = 'TRK-V' + String(i + 1).padStart(2, '0');
+      f2.visits.push({ id, emp, client, date, in: tin, out: tout, evidence: `Foto bukti kunjungan (sintetis) · ${id}`, note: client === 'CLI-001' && emp === 'EMP-0001' ? 'On-site treatment villa (simulasi)' : 'Kunjungan kemitraan', track: trk, demo: true });
+      f2.tracks.push({ id: trk, emp, at: `${date} ${tin}`, lat: COORD[client][0], lng: COORD[client][1], context: { type: 'Kunjungan', ref: id }, validation: i === 2 ? 'Di luar radius 150 m' : 'Valid', demo: true });
+    });
+    /* titik presensi outlet (contoh) + satu GPS tidak tersedia */
+    const OUTC = { 'OUT-UBD': [-8.5069, 115.2624], 'OUT-SHT': [-8.5102, 115.2650], 'OUT-TRL': [-8.4985, 115.2591], 'OUT-BSM': [-8.5133, 115.2558] };
+    ['EMP-0001', 'EMP-0002', 'EMP-0031', 'EMP-0061', 'EMP-0091'].forEach((emp, i) => {
+      const pl = H.placementOn(hr, emp); const c = OUTC[pl.location];
+      f2.tracks.push({ id: 'TRK-P' + String(i + 1).padStart(2, '0'), emp, at: `${TODAY} ${i === 4 ? '09:12' : '08:5' + i}`, lat: i === 4 ? null : c[0] + i * 0.0002, lng: i === 4 ? null : c[1], context: { type: 'Presensi', ref: `ATT-${TODAY.replace(/-/g, '')}-${emp}` }, validation: i === 4 ? 'GPS tidak tersedia' : 'Valid', demo: true });
+    });
+    f2.posts = [
+      { id: 'TL-001', kind: 'Pengumuman', title: 'Orientasi therapist baru Spa Ubud', at: '2026-11-13 08:00', scope: 'OUT-UBD', ref: null, demo: true },
+      { id: 'TL-002', kind: 'Agenda', title: 'Briefing SOP kebersihan ruang treatment (semua outlet)', at: '2026-11-18 14:00', scope: 'all', ref: null, demo: true },
+      { id: 'TL-003', kind: 'Pengumuman', title: 'Libur nasional Natal & cuti bersama', at: '2026-11-12 09:00', scope: 'all', ref: '#hrd-company?tab=calendar', demo: true }
+    ];
+    f2.docs = []; /* dokumen dummy dibangkitkan per profil saat dibaca */
+    return f2;
+  }
+  /* pengajuan F1 (hr.queue) ditingkatkan menjadi Request bertingkat; satu array dipakai Beranda, modul asal dan Approval */
+  const POLICY_OF = { 'Koreksi presensi': 'APR-ATT', 'Tukar shift': 'APR-SHIFT', Lembur: 'APR-ATT' };
+  const policyFor = (type) => POLICY_OF[type] || (leaveCat(type) ? 'APR-LEAVE' : 'APR-ATT');
+  function upgradeQueue(hr) {
+    hr.queue.forEach(q => {
+      if (q.stages) return;
+      const pol = hr.settings.approval.find(a => a.id === policyFor(q.type));
+      q.policy = pol.id; q.created = q.created || `${q.date} 08:00`;
+      q.stages = pol.chain.map(label => ({ label, decision: null, by: null, at: null, reason: null }));
+      if (q.status === 'Disetujui') q.stages.forEach(s => { s.decision = 'Disetujui'; s.by = 'Fixture'; s.at = `${q.date} 18:00`; });
+      q.stage = q.status === 'Disetujui' ? q.stages.length : 0;
+      if (q.type === 'Koreksi presensi') { q.payload = { att: `ATT-${q.date.replace(/-/g, '')}-${q.emp}`, before: null, after: { in: '09:00' }, reason: q.note, evidence: 'Foto absen manual (sintetis)' }; }
+      if (q.type === 'Cuti Tahunan') { q.payload = { cat: 'LV-ANN', from: '2026-11-20', to: '2026-11-20', days: 1, reason: q.note }; }
+      if (q.type === 'Tukar shift') { q.payload = { date: '2026-11-15', to: 'Sore', reason: q.note }; }
+      if (q.type === 'Lembur') { q.payload = { date: q.date, minutes: 120, reason: q.note }; }
+    });
+  }
+  function ensure(hr) {
+    if (!hr.f2 || !hr.f2.seeded) { const keep = hr.f2; hr.f2 = seed(hr); if (keep) for (const k of ['schedules', 'ledger', 'clients', 'visits', 'tracks', 'posts', 'imports']) hr.f2[k].push(...(keep[k] || [])); }
+    upgradeQueue(hr);
+    return hr.f2;
+  }
+
+  /* ---------- jadwal ---------- */
+  const scheduleOn = (hr, emp, date) => ensure(hr).schedules.find(s => s.emp === emp && s.kind === 'tetap' && s.from <= date && (!s.to || s.to >= date));
+  const extrasOn = (hr, emp, date) => ensure(hr).schedules.filter(s => s.emp === emp && s.kind === 'tambahan' && s.from === date);
+  const overlap = (a, b) => { const [a1, a2] = SHIFTS[a].map(mins), [b1, b2] = SHIFTS[b].map(mins); return a1 < b2 && b1 < a2; };
+
+  /* ---------- presensi ---------- */
+  const attId = (emp, date) => `ATT-${date.replace(/-/g, '')}-${emp}`;
+  function leaveOn(hr, emp, date) { return hr.queue.find(q => q.emp === emp && q.payload?.cat && q.status === 'Disetujui' && q.payload.from <= date && q.payload.to >= date); }
+  function attendance(hr, emp, date) {
+    const f2 = ensure(hr), sch = scheduleOn(hr, emp, date);
+    const id = attId(emp, date);
+    const base = { id, emp, date, shift: sch?.shift || '—', in: null, out: null, breakMin: 0, otMin: 0, late: 0, status: 'Belum Ada Status', evidence: null, corrected: null, provisional: false };
+    if (!sch || date > TODAY) return base;
+    const lv = leaveOn(hr, emp, date);
+    if (lv) return { ...base, status: leaveCat(lv.payload.cat).name === 'Sakit' ? 'Sakit' : 'Cuti', ref: lv.id };
+    if (dow(date) === sch.off) return { ...base, status: 'Libur' };
+    const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
+    if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
+    if (date === TODAY && k >= 18) return base; /* belum absen */
+    const [s1, s2] = SHIFTS[sch.shift].map(mins);
+    const late = k === 14 || k === 15 ? 5 + (n * 3 + k) % 25 : 0;
+    let rec = { ...base, in: hhmm(s1 - 5 + late + (late ? 5 : 0)), out: date === TODAY ? null : hhmm(s2 + (k % 6 === 0 ? 60 : 0)), breakMin: 60, otMin: date !== TODAY && k % 6 === 0 ? 60 : 0, late, status: late ? 'Terlambat' : 'Hadir', evidence: `Selfie + lokasi outlet (sintetis)` };
+    const ov = f2.overrides[id];
+    if (ov) { rec = { ...rec, ...ov.after, corrected: ov }; const lt = Math.max(0, mins(rec.in) - s1); rec.late = lt; rec.status = lt ? 'Terlambat' : 'Hadir'; }
+    rec.provisional = !ov && hr.queue.some(q => q.type === 'Koreksi presensi' && q.payload?.att === id && q.status === 'Menunggu Persetujuan');
+    return rec;
+  }
+  const attStatus = (hr, emp, date) => attendance(hr, emp, date).status;
+  function summary(hr, emps, days = DAYS) {
+    return emps.map(emp => {
+      const rows = days.map(d => attendance(hr, emp, d));
+      const worked = rows.filter(r => r.in && r.out).reduce((a, r) => a + mins(r.out) - mins(r.in) - r.breakMin, 0);
+      return { emp, hadir: rows.filter(r => ['Hadir', 'Terlambat'].includes(r.status)).length, terlambat: rows.filter(r => r.status === 'Terlambat').length, lateMin: rows.reduce((a, r) => a + r.late, 0), cuti: rows.filter(r => r.status === 'Cuti').length, sakit: rows.filter(r => r.status === 'Sakit').length, libur: rows.filter(r => r.status === 'Libur').length, belum: rows.filter(r => r.status === 'Belum Ada Status').length, hours: worked / 60, otMin: rows.reduce((a, r) => a + r.otMin, 0), corrected: rows.filter(r => r.corrected).length };
+    });
+  }
+
+  /* ---------- saldo cuti ---------- */
+  function balance(hr, emp) {
+    const f2 = ensure(hr);
+    return LEAVE.filter(c => !c.auto).map(c => {
+      const used = f2.ledger.filter(l => l.emp === emp && l.cat === c.id).reduce((a, l) => a + l.days, 0);
+      const pending = hr.queue.filter(q => q.emp === emp && q.payload?.cat === c.id && q.status === 'Menunggu Persetujuan').reduce((a, q) => a + q.payload.days, 0);
+      return { ...c, used, pending, left: c.quota === null ? null : c.quota - used };
+    });
+  }
+  const daysBetween = (a, b) => { let n = 0; for (let d = a; d <= b; d = addDays(d, 1)) n++; return n; };
+
+  /* ---------- otorisasi tahap approval ---------- */
+  function canDecide(hr, role, q) {
+    if (!q || q.status !== 'Menunggu Persetujuan') return false;
+    const label = q.stages[q.stage].label;
+    if (/Manager HRD/.test(label)) return role === 'hrd';
+    if (/Owner/.test(label)) return role === 'owner';
+    if (/Assistant Operational Manager/.test(label)) return role === 'ops-manager';
+    if (/Operational Manager|Manager divisi/.test(label)) return role === 'ops-manager' || role === 'hrd';
+    if (/Supervisor|atasan/.test(label)) { const sup = H.supervisorOf(hr, q.emp); return (sup && hr.roleEmp[role] === sup) || role === 'ops-manager'; }
+    return false;
+  }
+
+  /* ---------- aksi ---------- */
+  function update(state, hr, action, input, ctx) {
+    const f2 = ensure(hr), { need, audit, by, role } = ctx;
+    const empOk = (emp) => { if (!hr.people.some(p => p.id === emp)) throw new Error(`Employee ID ${emp} tidak ditemukan.`); if (!H.inScope(hr, role, emp)) throw new Error(`Akses ditolak: ${emp} di luar cakupan role ini.`); };
+    const nextReq = () => 'REQ-2611-' + String(f2.seq.req++).padStart(3, '0');
+    const newRequest = (type, emp, payload, note) => {
+      const pol = hr.settings.approval.find(a => a.id === policyFor(type));
+      const q = { id: nextReq(), emp, type, date: TODAY, note, status: 'Menunggu Persetujuan', policy: pol.id, created: `${TODAY} ${new Date().toTimeString().slice(0, 5)}`, stage: 0, stages: pol.chain.map(label => ({ label, decision: null, by: null, at: null, reason: null })), payload, demo: true };
+      hr.queue.unshift(q); audit(hr, by, 'Pengajuan dibuat', `${q.id} · ${type} · ${emp}`, { object: 'Pengajuan', ref: q.id, before: '—', after: 'Menunggu Persetujuan' });
+      return q.id;
+    };
+    switch (action) {
+      case 'shift-change': {
+        need('people'); empOk(input.emp);
+        if (!SHIFTS[input.shift] || input.shift === 'Malam') throw new Error('Pilih shift tetap: Pagi, Sore atau Kantor.');
+        const from = input.from; if (!/^\d{4}-\d{2}-\d{2}$/.test(from || '')) throw new Error('Isi tanggal efektif.');
+        if (from <= TODAY) throw new Error('Tanggal efektif minimal besok; jadwal tanggal yang sudah berjalan dipertahankan.');
+        const cur = f2.schedules.find(s => s.emp === input.emp && s.kind === 'tetap' && !s.to);
+        if (cur.shift === input.shift) throw new Error(`Shift ${input.emp} sudah ${input.shift}.`);
+        if (cur.from >= from) throw new Error('Sudah ada perubahan jadwal mulai tanggal itu atau sesudahnya.');
+        cur.to = addDays(from, -1);
+        const id = `SHF-${input.emp.slice(4)}-${String(f2.seq.shf++).padStart(2, '0')}`;
+        f2.schedules.push({ id, emp: input.emp, shift: input.shift, off: cur.off, from, to: null, kind: 'tetap', demo: true });
+        audit(hr, by, 'Perubahan shift', `${input.emp}: ${cur.shift} → ${input.shift} efektif ${from}`, { object: 'Jadwal', ref: input.emp, before: `${cur.shift} s/d ${cur.to}`, after: `${input.shift} mulai ${from}`, effective: from });
+        return id;
+      }
+      case 'shift-assign': {
+        need('people'); empOk(input.emp);
+        const date = input.date, shift = input.shift, out = input.outlet;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '') || !SHIFTS[shift]) throw new Error('Isi tanggal dan shift penugasan.');
+        const base = scheduleOn(hr, input.emp, date);
+        const clash = [base, ...extrasOn(hr, input.emp, date)].filter(Boolean).find(s => (s.kind === 'tambahan' || dow(date) !== s.off) && overlap(s.shift, shift));
+        if (clash) throw new Error(`Konflik: ${input.emp} sudah terjadwal ${clash.shift} (${SHIFTS[clash.shift].join('–')}) pada ${date}. Penugasan tumpang tindih ditolak.`);
+        const id = `SHF-${input.emp.slice(4)}-X${String(f2.seq.shf++).padStart(2, '0')}`;
+        f2.schedules.push({ id, emp: input.emp, shift, from: date, to: date, kind: 'tambahan', outlet: out, demo: true });
+        audit(hr, by, 'Penugasan tambahan', `${input.emp} ${shift} di ${H.locName(out)} pada ${date}`, { object: 'Jadwal', ref: input.emp, before: '—', after: `${shift} · ${H.locName(out)}`, effective: date });
+        return id;
+      }
+      case 'att-correct': {
+        if (!H.can(role, "people") && !H.can(role, "ess")) need("people"); empOk(input.emp);
+        const rec = attendance(hr, input.emp, input.date);
+        if (!/^\d{2}:\d{2}$/.test(input.in || '')) throw new Error('Isi jam masuk yang benar (HH:MM).');
+        if (input.out && !/^\d{2}:\d{2}$/.test(input.out)) throw new Error('Format jam keluar HH:MM.');
+        if (String(input.reason || '').trim().length < 5) throw new Error('Alasan koreksi minimal 5 karakter.');
+        if (hr.queue.some(q => q.payload?.att === rec.id && q.status === 'Menunggu Persetujuan')) throw new Error(`Koreksi untuk ${rec.id} sudah menunggu review.`);
+        return newRequest('Koreksi presensi', input.emp, { att: rec.id, date: input.date, before: { in: rec.in, out: rec.out }, after: { in: input.in, ...(input.out ? { out: input.out } : {}) }, reason: input.reason, evidence: 'Lampiran bukti (sintetis)' }, `${rec.in || '—'} → ${input.in}`);
+      }
+      case 'leave-request': {
+        if (!H.can(role, "people") && !H.can(role, "ess")) need("people"); empOk(input.emp);
+        const cat = leaveCat(input.cat); if (!cat || cat.auto) throw new Error('Pilih kategori cuti/izin.');
+        const from = input.from, to = input.to || input.from;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(from || '') || to < from) throw new Error('Periode cuti tidak valid.');
+        const days = daysBetween(from, to);
+        const clash = hr.queue.find(q => q.emp === input.emp && q.payload?.cat && ['Menunggu Persetujuan', 'Disetujui'].includes(q.status) && q.payload.from <= to && q.payload.to >= from);
+        if (clash) throw new Error(`Bertabrakan dengan ${clash.id} (${clash.payload.from} s/d ${clash.payload.to}).`);
+        const bal = balance(hr, input.emp).find(b => b.id === cat.id);
+        if (bal.left !== null && bal.left - bal.pending < days) throw new Error(`Saldo ${cat.name} tidak cukup: sisa ${bal.left - bal.pending} hari.`);
+        return newRequest(cat.name, input.emp, { cat: cat.id, from, to, days, reason: input.reason || '' }, `${days} hari · ${from}${to !== from ? ' s/d ' + to : ''}`);
+      }
+      case 'decide': {
+        const q = hr.queue.find(x => x.id === input.id); if (!q) throw new Error('Pengajuan tidak ditemukan.');
+        if (q.status !== 'Menunggu Persetujuan') throw new Error(`${q.id} sudah final (${q.status}). Keputusan tidak diulang.`);
+        if (!canDecide(hr, role, q)) throw new Error(`Akses ditolak: tahap "${q.stages[q.stage].label}" bukan wewenang role ini.`);
+        const st = q.stages[q.stage], ok = input.decision === 'approve';
+        if (!ok && String(input.reason || '').trim().length < 5) throw new Error('Alasan penolakan minimal 5 karakter.');
+        Object.assign(st, { decision: ok ? 'Disetujui' : 'Ditolak', by, at: `${TODAY} ${new Date().toTimeString().slice(0, 5)}`, reason: input.reason || null });
+        if (!ok) { q.status = 'Ditolak'; }
+        else if (q.stage < q.stages.length - 1) { q.stage++; }
+        else {
+          q.status = 'Disetujui'; q.stage = q.stages.length;
+          if (q.type === 'Koreksi presensi' && !f2.overrides[q.payload.att]) f2.overrides[q.payload.att] = { after: q.payload.after, req: q.id, by, at: st.at };
+          if (q.payload?.cat && !f2.ledger.some(l => l.ref === q.id)) f2.ledger.push({ id: 'LDG-' + q.id, emp: q.emp, cat: q.payload.cat, days: q.payload.days, ref: q.id, at: TODAY, demo: true });
+        }
+        audit(hr, by, 'Keputusan approval', `${q.id} · ${st.label}: ${st.decision}${q.status !== 'Menunggu Persetujuan' ? ' · final' : ' · lanjut ke ' + q.stages[q.stage].label}`, { object: 'Pengajuan', ref: q.id, before: q.type === 'Koreksi presensi' ? JSON.stringify(q.payload.before) : 'Menunggu', after: q.type === 'Koreksi presensi' && q.status === 'Disetujui' ? JSON.stringify(q.payload.after) : q.status });
+        return q.status === 'Menunggu Persetujuan' ? `${q.id} lanjut ke ${q.stages[q.stage].label}` : `${q.id} ${q.status}`;
+      }
+      case 'placement-change': {
+        need('settings.view'); empOk(input.emp);
+        if (!['hrd', 'hrd-ops'].includes(role)) throw new Error('Akses ditolak: perubahan penempatan oleh HRD.');
+        const from = input.from; if (!/^\d{4}-\d{2}-\d{2}$/.test(from || '') || from <= TODAY) throw new Error('Tanggal efektif minimal besok.');
+        const cur = hr.placements.find(p => p.emp === input.emp && !p.to);
+        const loc = input.location, posId = input.position || cur.position;
+        if (![...H.OUTLETS.map(o => o.id), H.HQ.id].includes(loc)) throw new Error('Lokasi tidak dikenal.');
+        if (loc === cur.location && posId === cur.position) throw new Error('Penempatan tidak berubah.');
+        if (cur.from >= from) throw new Error('Sudah ada penempatan mulai tanggal itu atau sesudahnya.');
+        cur.to = addDays(from, -1);
+        const id = `PLC-${input.emp.slice(4)}-${from.replace(/-/g, '').slice(2)}`;
+        hr.placements.push({ ...cur, id, location: loc, entity: loc === H.HQ.id ? 'ENT-HQ' : 'ENT-SPA', position: posId, division: H.pos(posId).division, from, to: null, reason: input.reason || 'Perubahan penempatan', demo: cur.demo });
+        audit(hr, by, 'Penempatan efektif', `${input.emp}: ${H.locName(cur.location)} → ${H.locName(loc)} efektif ${from}`, { object: 'Penempatan', ref: input.emp, before: `${H.locName(cur.location)} · ${H.pos(cur.position).name}`, after: `${H.locName(loc)} · ${H.pos(posId).name} · efektif ${from}`, effective: from });
+        return id;
+      }
+      case 'employee-add': {
+        need('people'); if (!['hrd', 'hrd-ops'].includes(role)) throw new Error('Akses ditolak: tambah karyawan oleh HRD.');
+        const name = String(input.name || '').trim(); if (name.length < 3) throw new Error('Nama minimal 3 karakter.');
+        const loc = input.location, ps = H.pos(input.position);
+        if (!ps) throw new Error('Pilih posisi.');
+        if (![...H.OUTLETS.map(o => o.id), H.HQ.id].includes(loc)) throw new Error('Lokasi tidak dikenal.');
+        if (hr.people.some(p => p.name.toLowerCase() === name.toLowerCase())) throw new Error(`Nama "${name}" sudah ada. Periksa duplikat sebelum menambah.`);
+        return addEmployee(hr, f2, { name, position: ps.id, location: loc, shift: input.shift || (loc === H.HQ.id ? 'Kantor' : 'Pagi'), joined: input.from || addDays(TODAY, 1), phone: input.phone || '' }, by, audit, 'Tambah karyawan');
+      }
+      case 'import-commit': {
+        need('people'); if (!['hrd', 'hrd-ops'].includes(role)) throw new Error('Akses ditolak: impor oleh HRD.');
+        const batch = input.batch; const rows = JSON.parse(input.rows || '[]');
+        if (f2.imports.some(b => b.id === batch)) {
+          const prev = f2.imports.find(b => b.id === batch);
+          const res = { id: batch + '-R' + (prev.retries = (prev.retries || 0) + 1), batch, at: `${TODAY}`, rows: rows.map(r => ({ ...r, result: 'Dilewati', reason: `Batch ${batch} sudah diimpor (${prev.at})` })), demo: true };
+          audit(hr, by, 'Impor ulang', `${batch}: semua baris dilewati, tidak ada profil ganda`, { object: 'Impor', ref: batch });
+          f2.lastImport = res; return 'ulang';
+        }
+        const out = rows.map(r => {
+          const v = validateRow(hr, r, rows);
+          if (v.length) return { ...r, result: v[0].startsWith('Duplikat') ? 'Dilewati' : 'Gagal', reason: v.join('; ') };
+          const id = addEmployee(hr, f2, { name: r.nama, position: posByName(r.posisi).id, location: locByName(r.outlet).id, shift: r.shift || 'Pagi', joined: r.mulai || addDays(TODAY, 1), phone: r.telepon || '', batch }, by, audit, 'Impor karyawan');
+          return { ...r, result: 'Berhasil', reason: id };
+        });
+        f2.imports.push({ id: batch, at: `${TODAY} ${new Date().toTimeString().slice(0, 5)}`, by, rows: out, demo: true });
+        f2.lastImport = { id: batch, batch, rows: out };
+        audit(hr, by, 'Impor karyawan', `${batch}: ${out.filter(r => r.result === 'Berhasil').length} berhasil, ${out.filter(r => r.result === 'Dilewati').length} dilewati, ${out.filter(r => r.result === 'Gagal').length} gagal`, { object: 'Impor', ref: batch });
+        return batch;
       }
       default: throw new Error('Aksi HRD tidak dikenal: ' + action);
     }
   }
+  function addEmployee(hr, f2, d, by, audit, label) {
+    const id = 'EMP-' + String(f2.seq.emp++).padStart(4, '0');
+    const ps = H.pos(d.position);
+    hr.people.push({ id, name: d.name, birth: 2000, religion: '—', education: '—', marital: '—', shift: d.shift, gender: 'P', position: ps.id, division: ps.division, level: ps.level, joined: d.joined, contract: 'Probation', status: 'Aktif', thp: ps.thp, phone: d.phone, demo: true, account: true, batch: d.batch || null });
+    hr.placements.push({ id: 'PLC-' + id.slice(4), emp: id, entity: d.location === H.HQ.id ? 'ENT-HQ' : 'ENT-SPA', division: ps.division, location: d.location, position: ps.id, from: d.joined, to: null, demo: true });
+    hr.accounts.push({ emp: id, role: 'ess', demo: true });
+    f2.schedules.push({ id: 'SHF-' + id.slice(4), emp: id, shift: d.shift, off: num(id) % 7, from: d.joined, to: null, kind: 'tetap', demo: true });
+    audit(hr, by, label, `${id} · ${d.name} · ${ps.name} · ${H.locName(d.location)} mulai ${d.joined}`, { object: 'Karyawan', ref: id, before: '—', after: `${ps.name} · ${H.locName(d.location)}`, effective: d.joined });
+    return id;
+  }
 
-  return { TODAY, COMPANY, supervisorOf, ENTITIES, OUTLETS, HQ, DIVISIONS, POSITIONS, EXPECTED, ROLE_DEFS, PERM_LABEL, pos, roleDef, can, fresh, ensure, placementOn, locName, inScope, people, reconcile, summary, update };
+  /* ---------- impor ---------- */
+  const posByName = (n) => H.POSITIONS.find(p => p.name.toLowerCase() === String(n || '').trim().toLowerCase());
+  const locByName = (n) => [...H.OUTLETS, H.HQ].find(o => o.name.toLowerCase() === String(n || '').trim().toLowerCase() || o.id === n);
+  const SAMPLE_FILES = {
+    'karyawan-baru-nov.csv': 'nama,posisi,outlet,shift,mulai,telepon\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001\nKomang Sri Wahyuni,Receptionist,Spa Bhisma,Sore,2026-11-20,081200000002\nPutu Ari,Therapist,Spa Santi,Pagi,2026-11-20,081200000003\nGede Surya,Therapist,Spa Sanur,Pagi,2026-11-20,081200000004\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001',
+    'kolom-berbeda.csv': 'Nama Lengkap;Jabatan;Lokasi;Shift;Tgl Mulai;HP\nNyoman Budi Santika;Staf Accounting;Office Ubud;Kantor;2026-11-24;081200000005'
+  };
+  const FIELDS = [['nama', 'Nama'], ['posisi', 'Posisi'], ['outlet', 'Outlet / lokasi'], ['shift', 'Shift'], ['mulai', 'Tanggal mulai'], ['telepon', 'Telepon']];
+  function parseFile(name) {
+    const text = SAMPLE_FILES[name]; if (!text) return null;
+    const sep = text.split('\n')[0].includes(';') ? ';' : ',';
+    const [head, ...lines] = text.split('\n').map(l => l.split(sep));
+    return { name, head, rows: lines };
+  }
+  function validateRow(hr, r, all) {
+    const errs = [];
+    if (!r.nama || r.nama.trim().length < 3) errs.push('Nama kosong');
+    if (!posByName(r.posisi)) errs.push(`Posisi "${r.posisi || ''}" tidak dikenal`);
+    if (!locByName(r.outlet)) errs.push(`Outlet "${r.outlet || ''}" tidak dikenal di organisasi`);
+    if (r.shift && !SHIFTS[r.shift]) errs.push(`Shift "${r.shift}" tidak dikenal`);
+    if (hr.people.some(p => p.name.toLowerCase() === String(r.nama).toLowerCase())) errs.unshift('Duplikat: nama sudah ada di roster');
+    else if (all.findIndex(x => x.nama === r.nama && x.telepon === r.telepon) !== all.indexOf(r)) errs.unshift('Duplikat: baris ganda dalam file');
+    return errs;
+  }
+
+  const purge = (hr) => { if (!hr.f2) return; for (const k of ['schedules', 'ledger', 'clients', 'visits', 'tracks', 'posts', 'imports']) hr.f2[k] = hr.f2[k].filter(x => !x.demo); hr.f2.overrides = {}; hr.f2.lastImport = null; };
+  const keep = (hr) => { if (!hr.f2) return null; const k = { seeded: false, overrides: {} }; for (const key of ['schedules', 'ledger', 'clients', 'visits', 'tracks', 'posts', 'imports']) k[key] = hr.f2[key].filter(x => !x.demo); return k; };
+
+  H.EXT.attStatus = attStatus;
+  H.EXT.update = (state, hr, action, input, ctx) => update(state, hr, action, input, ctx);
+  H.EXT.purge = purge; H.EXT.keep = keep; H.EXT.ensure = ensure;
+  return { SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
 })();
-if (typeof module !== 'undefined') module.exports = HR;
+if (typeof module !== 'undefined') module.exports = HR2;
 
 ;
 /* HAWK ERP · portal preview shell (Finance → Operational → Commercial → Sales → HRD; HRD is registered by hrd.js)
@@ -3550,9 +3887,10 @@ function render(message = '', error = false) {
   if (portal && portal !== prefs.portal) { prefs.portal = portal; savePrefs(); }
   renderNav(id, portal);
   document.querySelectorAll('[data-portal-label]').forEach(el => { el.textContent = portal || 'Demo integrasi'; });
-  const it = itemOf(id);
+  const it0 = itemOf(id), cOv = REGISTRY[id]?.code?.(params);
+  const it = it0 && cOv ? Object.assign([...it0], { 2: cOv }) : it0;
   document.title = `HAWK ERP · ${titleOf(id)}`;
-  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${PURPOSE[id] ? `<p>${PURPOSE[id]}</p>` : ''}</div></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
+  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${(REGISTRY[id]?.purpose?.(params) || PURPOSE[id]) ? `<p>${REGISTRY[id]?.purpose?.(params) || PURPOSE[id]}</p>` : ''}</div></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
   view.querySelector('.status').textContent = message;
   if (error) view.querySelector('.status').classList.add('error');
   setNav(false); renderRole();
@@ -3852,27 +4190,39 @@ function roster(params) {
   if (params.emp) {
     const e = person(params.emp);
     if (!e || !HR.inScope(h, role(), e.id)) return `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>Profil ${esc(params.emp)} di luar cakupan role ${esc(d.label)}, atau tidak ditemukan.</p>${link('hrd-roster', '‹ Kembali ke roster')}</section>`;
-    const pl = HR.placementOn(h, e.id), sup = HR.supervisorOf(h, e.id), hist = h.placements.filter(x => x.emp === e.id).sort((a, b) => b.from.localeCompare(a.from));
+    const pl = HR.placementOn(h, e.id) || HR.upcomingOf(h, e.id), sup = HR.supervisorOf(h, e.id), hist = h.placements.filter(x => x.emp === e.id).sort((a, b) => b.from.localeCompare(a.from));
     const acc = h.accounts.find(a => a.emp === e.id);
     const back = { ...params }; delete back.emp;
     return `<section class="card hr-profile" aria-labelledby="pf-t"><h2 id="pf-t">${esc(e.name)} · ${e.id}</h2>
       <div class="grid g2"><div>${table(['Field', 'Nilai'], [
         ['Employee ID', e.id], ['Status kerja', `${esc(e.status)} · ${esc(e.contract)}`], ['Jabatan', esc(posName(pl.position))], ['Divisi', esc(divName(pl.division))],
         ['Outlet induk / lokasi', esc(HR.locName(pl.location)) + (pl.leads ? ` · memimpin ${esc(HR.locName(pl.leads))}` : '')], ['Atasan', sup ? `<a href="#hrd-roster${qs({ emp: sup })}">${esc(empName(sup))}</a> · ${esc(posName(HR.placementOn(h, sup).position))}` : 'Owner'],
-        ['Shift ringkas', esc(e.shift)], ['Penempatan efektif', `${pl.from} → ${pl.to || 'sekarang'}`], ['Akun', `${esc(roleLabel(acc?.role || 'ess'))} · aktif`], ['Dataset', e.demo ? '<span class="badge demo">DEMO</span>' : 'Non-demo'],
+        ['Shift ringkas', esc(e.shift)], ['Penempatan efektif', pl.from > HR.TODAY ? `Akan bergabung ${pl.from}` : `${pl.from} → ${pl.to || 'sekarang'}`], ['Akun', `${esc(roleLabel(acc?.role || 'ess'))} · aktif`], ['Dataset', e.demo ? '<span class="badge demo">DEMO</span>' : 'Non-demo'],
         ...(d.payroll === 'detail' ? [['Take-home pay contoh', rp(e.thp)]] : [['Data payroll', 'Khusus Manager HRD']])
       ])}</div><div><h3>Histori penempatan</h3>${table(['ID', 'Lokasi', 'Posisi', 'Mulai', 'Akhir'], hist.map(x => [x.id, esc(HR.locName(x.location)), esc(posName(x.position)), x.from, x.to || '—']))}${hist.length > 1 ? `<p class="muted small">${esc(hist[0].reason || '')}. Jam, POS dan KPI sebelum ${hist[0].from} tetap di outlet lama.</p>` : ''}</div></div>
       <div class="actions"><a class="btn ghost" href="#hrd-roster${qs(back)}">‹ Kembali ke roster</a>${link('hrd-audit' + qs({ q: e.id }), 'Jejak audit ' + e.id)}</div></section>`;
   }
-  const f = { outlet: params.outlet || '', division: params.division || '', position: params.position || '', shift: params.shift || '', entity: params.entity || '' };
+  const f = { outlet: params.outlet || '', division: params.division || '', position: params.position || '', shift: params.shift || '', contract: params.contract || '', entity: params.entity || '' };
+  const shiftOf = (p) => H.HOOKS.shiftOf ? H.HOOKS.shiftOf(p.id) : p.shift;
   const q = (params.q || '').trim().toLowerCase();
-  const list = all.filter(p => (!f.outlet || p.placement.location === f.outlet) && (!f.division || p.placement.division === f.division) && (!f.position || p.placement.position === f.position) && (!f.shift || p.shift === f.shift) && (!f.entity || p.placement.entity === f.entity) && (!q || `${p.id} ${p.name}`.toLowerCase().includes(q)));
+  const list = all.filter(p => (!f.outlet || p.placement.location === f.outlet) && (!f.division || p.placement.division === f.division) && (!f.position || p.placement.position === f.position) && (!f.shift || shiftOf(p) === f.shift) && (!f.contract || p.contract === f.contract) && (!f.entity || p.placement.entity === f.entity) && (!q || `${p.id} ${p.name}`.toLowerCase().includes(q)));
   const opts = (list2, cur, all2) => `<option value="">${all2}</option>${list2.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`).join('')}`;
   const locs = LOCS().filter(o => all.some(p => p.placement.location === o.id)).map(o => [o.id, o.name]);
   const divs = HR.DIVISIONS.filter(x => all.some(p => p.placement.division === x.id)).map(x => [x.id, x.name]);
   const poss = HR.POSITIONS.filter(x => all.some(p => p.placement.position === x.id)).map(x => [x.id, x.name]);
+  H.HOOKS.lastRoster = list;
   const per = 25, pages = Math.max(1, Math.ceil(list.length / per)), page = Math.min(pages, Math.max(1, Number(params.page) || 1));
-  const keep = { ...f, q: params.q };
+  const keep = { ...f, q: params.q, view: params.view };
+  const view = ['pribadi', 'kontak', 'kepegawaian', 'ess'].includes(params.view) ? params.view : 'kepegawaian';
+  const age2 = (b) => b ? 2026 - b : '—';
+  const COLS = {
+    pribadi: [['Jenis kelamin', p => p.gender === 'L' ? 'Laki-laki' : 'Perempuan'], ['Usia', p => age2(p.birth)], ['Agama', p => esc(p.religion)], ['Pendidikan', p => esc(p.education)], ['Status perkawinan', p => esc(p.marital)]],
+    kontak: [['Telepon', p => esc(p.phone || '—')], ['Email kerja', p => `${p.id.toLowerCase()}@example.invalid`], ['Lokasi', p => esc(HR.locName(p.placement.location))]],
+    kepegawaian: [['Jabatan', p => esc(posName(p.placement.position))], ['Divisi', p => esc(divName(p.placement.division))], ['Outlet / lokasi', p => esc(HR.locName(p.placement.location))], ['Shift', p => esc(shiftOf(p))], ['Status kerja', p => esc(p.contract)], ['Berlaku sejak', p => p.placement.from]],
+    ess: [['Akun', p => esc(roleLabel(h.accounts.find(a => a.emp === p.id)?.role || 'ess'))], ['Status login ESS', p => p.account ? chip('Aktif', 'ready') : chip('Belum aktif')], ['Kredensial', () => '<i>Tidak ditampilkan</i>']]
+  };
+  const canWrite = ['hrd', 'hrd-ops'].includes(role());
+  const toolbar = `<div class="row hr-toolbar">${tabs('hrd-roster', view, [['pribadi', 'Informasi Pribadi'], ['kontak', 'Kontak'], ['kepegawaian', 'Kepegawaian'], ['ess', 'Login ESS']].map(([k, l]) => [k, l]), { ...keep, view: undefined }).replace(/tab=/g, 'view=')}<span class="tb-spacer"></span>${canWrite ? `<a class="btn sm" href="#hrd-employee-new">+ Tambah karyawan</a><a class="btn ghost sm" href="#hrd-import">Impor</a>` : ''}<button type="button" class="btn ghost sm" data-hr-export="1">Ekspor CSV (cakupan ini)</button></div>`;
   const showPay = d.payroll === 'detail';
   return `<form id="filters" class="filters" aria-label="Filter roster">
       <label>Cari nama / ID<input name="q" value="${esc(params.q || '')}" placeholder="mis. EMP-0037" form="hr-search"></label>
@@ -3880,11 +4230,13 @@ function roster(params) {
       <label>Divisi <select name="division">${opts(divs, f.division, 'Semua divisi')}</select></label>
       <label>Posisi <select name="position">${opts(poss, f.position, 'Semua posisi')}</select></label>
       <label>Shift <select name="shift">${opts([['Pagi', 'Pagi'], ['Sore', 'Sore'], ['Kantor', 'Kantor']], f.shift, 'Semua shift')}</select></label>
+      <label>Status kerja <select name="contract">${opts([['PKWTT', 'PKWTT (tetap)'], ['PKWT', 'PKWT (kontrak)'], ['Probation', 'Probation']], f.contract, 'Semua status')}</select></label>
+      ${params.view ? `<input type="hidden" name="view" value="${esc(params.view)}">` : ''}
       ${f.entity ? `<input type="hidden" name="entity" value="${esc(f.entity)}">` : ''}
       <button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>
     <form id="hr-search" data-search="1" role="search" class="sr-only-form"><button class="btn sm">Cari</button></form>
-    <p class="active-filters" role="status"><b>${num(list.length)} orang</b> dari ${num(all.length)} di cakupan ${esc(d.label)}.</p>` +
-    (list.length ? card(`Roster · halaman ${page} dari ${pages}`, table(['Employee ID', 'Nama', 'Jabatan', 'Divisi', 'Outlet / lokasi', 'Shift', 'Berlaku sejak', ...(showPay ? ['THP contoh'] : [])], list.slice((page - 1) * per, page * per).map(p => [p.id, `<a href="#hrd-roster${qs({ ...keep, emp: p.id })}">${esc(p.name)}</a>`, esc(posName(p.placement.position)), esc(divName(p.placement.division)), esc(HR.locName(p.placement.location)), esc(p.shift), p.placement.from, ...(showPay ? [rp(p.thp)] : [])])) +
+    <p class="active-filters" role="status"><b>${num(list.length)} orang</b> dari ${num(all.length)} di cakupan ${esc(d.label)}.${(() => { const j = HR.joiners(h, role()); return j.length ? ` · ${j.length} akan bergabung (${j.map(x => `<a href="#hrd-roster${qs({ emp: x.id })}">${esc(x.name)} ${x.placement.from}</a>`).join(', ')}), belum dihitung.` : ''; })()}</p>` +
+    toolbar + (list.length ? card(`Direktori · halaman ${page} dari ${pages}`, table(['Employee ID', 'Nama', ...COLS[view].map(c => c[0]), ...(showPay && view === 'kepegawaian' ? ['THP contoh'] : [])], list.slice((page - 1) * per, page * per).map(p => [p.id, `<a href="#hrd-roster${qs({ ...keep, emp: p.id })}">${esc(p.name)}</a>`, ...COLS[view].map(c => c[1](p)), ...(showPay && view === 'kepegawaian' ? [rp(p.thp)] : [])])) +
       `<div class="row hr-pager">${page > 1 ? `<a class="btn ghost sm" href="#hrd-roster${qs({ ...keep, page: page - 1 })}">‹ Sebelumnya</a>` : ''}${page < pages ? `<a class="btn ghost sm" href="#hrd-roster${qs({ ...keep, page: page + 1 })}">Berikutnya ›</a>` : ''}</div>${showPay ? '<p class="muted small">Kolom THP hanya untuk Manager HRD.</p>' : ''}`)
       : `<section class="card hr-empty"><h2>Tidak ada hasil</h2><p>Kombinasi filter ini tidak menemukan orang.</p><button type="button" class="btn" data-action="filter-reset">Reset filter</button></section>`);
 }
@@ -4027,6 +4379,270 @@ document.addEventListener('click', (e) => {
   H.prefs.role = b.dataset.hrRole; H.savePrefs();
   const sel = document.getElementById('role'); if (sel) sel.value = H.prefs.role;
   H.render(`Role demo: ${HR.roleDef(H.prefs.role).label}`);
+});
+})();
+
+;
+/* HAWK ERP · Portal HRD · F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
+   F2-NV01 Direktori (hrd-roster) · NV02 Detail Karyawan (hrd-roster?emp=) · NV03 Jadwal Kerja · NV04 Presensi ·
+   NV05 Approval Presensi · NV06 Izin & Cuti · NV07 Approval · NV08 Kunjungan Klien · NV09 Pelacakan Lokasi ·
+   NV10 Klien · NV11 Timeline · NV12 Impor Karyawan. Model: hrd-f2-model.js (HR2). */
+(() => {
+const H = window.HL;
+const { esc, num, rp, table, card, metrics, qs, link } = H;
+const hr = () => { const h = HR.ensure(H.state); HR2.ensure(h); return h; };
+const f2 = () => hr().f2;
+const role = () => H.prefs.role;
+const def = () => HR.roleDef(role());
+const can = (p) => HR.can(role(), p);
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const person = (id) => hr().people.find(p => p.id === id);
+const empName = (id) => person(id)?.name || id;
+const empLink = (id) => HR.inScope(hr(), role(), id) ? `<a href="#hrd-roster${qs({ emp: id })}">${esc(empName(id))}</a>` : esc(empName(id));
+const tabs = (route, cur, list, params = {}, key = 'tab') => `<nav class="tabs" aria-label="Bagian">${list.map(([k, l]) => `<a class="tab${k === cur ? ' on' : ''}" href="#${route}${qs({ ...params, [key]: k })}" ${k === cur ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+const STATUS_TONE = { Hadir: 'ready', Terlambat: 'sandbox', Cuti: 'planned', Izin: 'planned', Sakit: 'planned', Libur: '', 'Belum Ada Status': 'bad', 'Menunggu Persetujuan': 'sandbox', Disetujui: 'ready', Ditolak: 'bad' };
+const st = (s) => chip(s, STATUS_TONE[s] || '');
+const inScopeList = () => HR.people(hr(), role());
+const denied = (perm) => `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>Role demo <b>${esc(def().label)}</b> tidak punya izin <b>${esc(HR.PERM_LABEL[perm] || perm)}</b>. Tidak ada data yang dimuat.</p><div class="actions"><button type="button" class="btn" data-hr-role="hrd">Ganti ke Manager HRD</button><button type="button" class="btn ghost" data-hr-role="hrd-ops">Ganti ke Staf HRD</button></div></section>`;
+const guard = (perm, fn) => (p) => [].concat(perm).some(x => can(x)) ? fn(p) : denied([].concat(perm)[0]);
+const ESS = ['people', 'ess'];
+const register = (id, fn, title) => { H.REGISTRY[id] = fn; fn.title = title; };
+const empty = (title, body, reset = true) => `<section class="card hr-empty"><h2>${title}</h2><p>${body}</p>${reset ? '<button type="button" class="btn" data-action="filter-reset">Reset filter</button>' : ''}</section>`;
+const outletOpts = (cur, all = 'Semua lokasi') => `<option value="">${all}</option>${[...HR.OUTLETS, HR.HQ].filter(o => inScopeList().some(p => p.placement.location === o.id)).map(o => `<option value="${o.id}" ${o.id === cur ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}`;
+const empOpts = (cur, filter = () => true) => inScopeList().filter(filter).map(p => `<option value="${p.id}" ${p.id === cur ? 'selected' : ''}>${p.id} · ${esc(p.name)}</option>`).join('');
+H.HOOKS.shiftOf = (emp) => HR2.scheduleOn(hr(), emp, HR.TODAY)?.shift || person(emp)?.shift;
+
+/* ---------- sidebar: F2 menjadi tersedia ---------- */
+const items = H.PORTALS.HRD.items;
+const set = (route, code, title) => { const it = items.find(i => i[0] === route); if (it) { it[2] = code; it[3] = 'ready'; it[4] = ''; if (title) it[1] = title; } };
+set('hrd-roster', 'F2-NV01'); set('hrd-attendance', 'F2-NV04'); set('hrd-att-approval', 'F2-NV05'); set('hrd-schedule', 'F2-NV03'); set('hrd-presence', 'F2-NV04'); set('hrd-leave', 'F2-NV06');
+set('hrd-visit', 'F2-NV08'); set('hrd-tracking', 'F2-NV09'); set('hrd-approval', 'F2-NV07'); set('hrd-timeline', 'F2-NV11'); set('hrd-clients', 'F2-NV10');
+const ix = items.findIndex(i => i[0] === 'hrd-roster');
+items.splice(ix + 1, 0, ['hrd-import', 'Impor Karyawan', 'F2-NV12', 'ready', '', 'sub'], ['hrd-employee-new', 'Tambah Karyawan', 'F2-NV01', 'hidden']);
+Object.assign(H.PURPOSE, {
+  'hrd-roster': 'Direktori karyawan: cari nama/ID, filter outlet, divisi, posisi, shift dan status. Tab Informasi Pribadi, Kontak, Kepegawaian dan Login ESS.',
+  'hrd-schedule': 'Jadwal tetap dan shift per orang/outlet, tanggal efektif, penugasan tambahan dengan cek konflik, dan riwayat.',
+  'hrd-presence': 'Presensi Harian dan Ringkasan: masuk/keluar, istirahat, lembur, keterlambatan dan bukti. Koreksi melalui approval.',
+  'hrd-attendance': 'Presensi Harian dan Ringkasan: masuk/keluar, istirahat, lembur, keterlambatan dan bukti. Koreksi melalui approval.',
+  'hrd-att-approval': 'Antrean koreksi presensi: bukti, nilai sebelum/sesudah, PIC, keputusan dan histori.',
+  'hrd-leave': 'Saldo, kategori, pengajuan, kalender dan riwayat Izin & Cuti. Pengajuan masuk ke Approval dengan Request ID yang sama.',
+  'hrd-approval': 'Antrean persetujuan lintas jenis pengajuan dengan PIC, tahapan, keputusan dan alasan.',
+  'hrd-visit': 'Daftar dan detail kunjungan klien: petugas, lokasi, waktu masuk/keluar dan bukti.',
+  'hrd-tracking': 'Riwayat titik lokasi yang ditautkan ke presensi atau kunjungan, sesuai izin. Koordinat sintetis.',
+  'hrd-clients': 'Direktori klien dummy, wilayah, status, kontak sesuai izin dan histori kunjungan.',
+  'hrd-timeline': 'Pengumuman, agenda dan aktivitas HRD yang boleh dilihat, dengan tautan ke objek asal.',
+  'hrd-import': 'Pilih file dummy, petakan kolom, pratinjau validasi, konfirmasi dan hasil per baris.',
+  'hrd-employee-new': 'Tambah satu karyawan dengan penempatan dan tanggal mulai.'
+});
+H.SCREENS.push(...[['F2-NV01', 'Direktori Karyawan', 'hrd-roster'], ['F2-NV02', 'Detail Karyawan', 'hrd-roster?emp=EMP-0001'], ['F2-NV03', 'Jadwal Kerja', 'hrd-schedule'], ['F2-NV04', 'Presensi', 'hrd-presence'], ['F2-NV05', 'Approval Presensi', 'hrd-att-approval'], ['F2-NV06', 'Izin & Cuti', 'hrd-leave'], ['F2-NV07', 'Approval', 'hrd-approval'], ['F2-NV08', 'Kunjungan Klien', 'hrd-visit'], ['F2-NV09', 'Pelacakan Lokasi', 'hrd-tracking'], ['F2-NV10', 'Klien', 'hrd-clients'], ['F2-NV11', 'Timeline', 'hrd-timeline'], ['F2-NV12', 'Impor Karyawan', 'hrd-import']].map(([c, t, r]) => [c, 'HRD · ' + t, 'HRD 2', r, 'ready', 'Staf HRD, Manager HRD, Supervisor']));
+
+/* ---------- NV02 Detail Karyawan: tab di bawah profil F1 ---------- */
+const baseRoster = H.REGISTRY['hrd-roster'];
+function detailTabs(params) {
+  const h = hr(), e = person(params.emp); if (!e || !HR.inScope(h, role(), e.id)) return '';
+  const tab = ['pribadi', 'kontak', 'kepegawaian', 'dokumen', 'jadwal', 'ess'].includes(params.dtab) ? params.dtab : 'kepegawaian';
+  const keep = { ...params }; delete keep.dtab;
+  const pl = HR.placementOn(h, e.id) || HR.upcomingOf(h, e.id), write = ['hrd', 'hrd-ops'].includes(role());
+  let body = '';
+  if (tab === 'pribadi') body = table(['Field', 'Nilai'], [['Nama', esc(e.name)], ['Jenis kelamin', e.gender === 'L' ? 'Laki-laki' : 'Perempuan'], ['Tahun lahir', e.birth || '—'], ['Agama', esc(e.religion)], ['Pendidikan', esc(e.education)], ['Status perkawinan', esc(e.marital)]]);
+  else if (tab === 'kontak') body = table(['Field', 'Nilai'], [['Telepon', esc(e.phone || '—')], ['Email kerja', `${e.id.toLowerCase()}@example.invalid`], ['Alamat', 'Gianyar, Bali (sintetis)'], ['Kontak darurat', can('settings.view') ? 'Keluarga · 08xx (sintetis)' : '<i>Sesuai izin</i>']]);
+  else if (tab === 'kepegawaian') {
+    const hist = h.placements.filter(x => x.emp === e.id).sort((a, b) => b.from.localeCompare(a.from));
+    body = table(['Assignment ID', 'Lokasi', 'Posisi', 'Mulai efektif', 'Akhir', 'Alasan'], hist.map(x => [x.id, esc(HR.locName(x.location)), esc(HR.pos(x.position).name), x.from, x.to || (x.from > HR.TODAY ? 'terjadwal' : 'aktif'), esc(x.reason || '—')])) +
+      table(['Kontrak', 'Mulai', 'Status'], [[esc(e.contract), e.joined, e.contract === 'PKWTT' ? chip('Tetap', 'ready') : chip('Berjalan', 'sandbox')]]) +
+      (write ? `<h3>Ubah penempatan (tanggal efektif)</h3><form class="workflow-form" data-submit="hr:placement-change"><input type="hidden" name="emp" value="${e.id}"><label>Lokasi baru<select name="location">${[...HR.OUTLETS, HR.HQ].map(o => `<option value="${o.id}" ${o.id === pl.location ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label><label>Posisi<select name="position">${HR.POSITIONS.map(p => `<option value="${p.id}" ${p.id === pl.position ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select></label><label>Efektif mulai<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 1)}" required></label><label>Alasan<input name="reason" placeholder="mis. Mutasi outlet"></label><button class="btn">Simpan penempatan</button></form><p class="muted small">Penempatan lama tetap berlaku sampai sehari sebelum tanggal efektif. Perubahan tercatat di Audit Aktivitas.</p>` : '') +
+      (def().payroll === 'detail' ? `<p class="small">Payroll: take-home pay contoh ${rp(e.thp)} · detail komponen di HRD F7.</p>` : '<p class="muted small">Informasi payroll khusus Manager HRD (HRD F7).</p>');
+  } else if (tab === 'dokumen') body = table(['Dokumen', 'Versi', 'Status', 'Akses'], [['KTP (sintetis)', 'v1', chip('Terverifikasi', 'ready'), can('settings.view') ? 'HRD' : '<i>Dibatasi</i>'], [`Kontrak ${e.contract} (sintetis)`, 'v1', chip('Ditandatangani', 'ready'), 'HRD, karyawan'], ['Sertifikat keahlian (sintetis)', 'v1', chip('Menunggu verifikasi', 'sandbox'), 'HRD, HG']]) + '<p class="muted small">Dokumen dummy. Penyimpanan dokumen & tanda tangan: NEW INTEGRATION REQUIRED.</p>';
+  else if (tab === 'jadwal') {
+    const sch = h.f2.schedules.filter(s => s.emp === e.id).sort((a, b) => b.from.localeCompare(a.from));
+    const sum = HR2.summary(h, [e.id])[0];
+    body = table(['Shift ID', 'Jenis', 'Shift', 'Mulai', 'Akhir'], sch.map(s => [s.id, s.kind, `${s.shift} ${HR2.SHIFTS[s.shift].join('–')}`, s.from, s.to || '—'])) + `<p class="small">Presensi 7–13 Nov: hadir ${sum.hadir}, terlambat ${sum.terlambat}, jam kerja ${num(sum.hours, 1)}, lembur ${sum.otMin} menit. ${link('hrd-presence' + qs({ tab: 'summary', q: e.id }), 'Buka Ringkasan')}</p>`;
+  } else body = table(['Field', 'Nilai'], [['User ID', e.id], ['Role', esc(h.accounts.find(a => a.emp === e.id)?.role === 'ess' ? 'Karyawan (ESS)' : HR.roleDef(h.accounts.find(a => a.emp === e.id)?.role).label)], ['Status ESS', chip('Aktif', 'ready')], ['Login terakhir', '2026-11-13 08:52 WITA (simulasi)'], ['Kredensial', '<i>Tidak pernah ditampilkan</i>']]);
+  return `<section class="card hr-dtabs"><h2>Detail Karyawan · F2-NV02</h2>${tabs('hrd-roster', tab, [['pribadi', 'Informasi Pribadi'], ['kontak', 'Kontak'], ['kepegawaian', 'Kepegawaian & Kontrak'], ['dokumen', 'Dokumen'], ['jadwal', 'Jadwal & Presensi'], ['ess', 'Akun ESS']], keep, 'dtab')}${body}</section>`;
+}
+const rosterF2 = (params) => { const base = baseRoster(params); return params.emp ? base + detailTabs(params) : base; };
+register('hrd-roster', rosterF2, (pr) => pr.emp ? 'Detail Karyawan' : 'Direktori Karyawan');
+rosterF2.code = (pr) => pr.emp ? 'F2-NV02' : 'F2-NV01';
+rosterF2.purpose = (pr) => pr.emp ? 'Profil, penempatan efektif dan histori, kontrak, dokumen, jadwal & presensi, serta akun ESS satu karyawan.' : null;
+register('hrd-employee-new', guard('people', () => ['hrd', 'hrd-ops'].includes(role()) ? card('Tambah karyawan', `<form class="workflow-form" data-submit="hr:employee-add" data-after="hrd-roster?emp={id}"><label>Nama<input name="name" required minlength="3"></label><label>Posisi<select name="position">${HR.POSITIONS.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label><label>Lokasi<select name="location">${[...HR.OUTLETS, HR.HQ].map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select></label><label>Shift<select name="shift"><option>Pagi</option><option>Sore</option><option>Kantor</option></select></label><label>Mulai<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 1)}"></label><label>Telepon<input name="phone"></label><button class="btn">Simpan</button><a class="btn ghost" href="#hrd-roster">Batal</a></form><p class="muted small">Nama yang sudah ada ditolak sebagai duplikat. Untuk banyak baris gunakan ${link('hrd-import', 'Impor Karyawan')}.</p>`) : denied('people')), () => 'Tambah Karyawan');
+
+/* ---------- NV03 Jadwal Kerja ---------- */
+function schedule(params) {
+  const h = hr(), date = params.date || HR2.addDays(HR.TODAY, 1), out = params.outlet || '';
+  const list = inScopeList().filter(p => !out || p.placement.location === out);
+  const rows = list.slice(0, 60).map(p => {
+    const s = HR2.scheduleOn(h, p.id, date), ex = HR2.extrasOn(h, p.id, date), next = h.f2.schedules.find(x => x.emp === p.id && x.kind === 'tetap' && x.from > date);
+    return [p.id, empLink(p.id), esc(HR.locName(p.placement.location)), s ? (HR2.dow(date) === s.off ? chip('Libur') : `${s.shift} ${HR2.SHIFTS[s.shift].join('–')}`) : '—', s ? `${s.from}` : '—', ex.map(x => `${x.shift} · ${esc(HR.locName(x.outlet))}`).join('<br>') || '—', next ? `${next.shift} mulai ${next.from}` : '—'];
+  });
+  const write = can('people') && ['hrd', 'hrd-ops', 'outlet-spv', 'ops-manager'].includes(role());
+  return `<form id="filters" class="filters" aria-label="Filter jadwal"><label>Tanggal<input type="date" name="date" value="${date}"></label><label>Outlet / lokasi<select name="outlet">${outletOpts(out)}</select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    (write ? `<div class="grid g2">${card('Ubah shift tetap (tanggal efektif)', `<form class="workflow-form" data-submit="hr:shift-change"><label>Karyawan<select name="emp">${empOpts(params.emp)}</select></label><label>Shift baru<select name="shift"><option>Pagi</option><option>Sore</option><option>Kantor</option></select></label><label>Efektif mulai<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 1)}" required></label><button class="btn">Simpan</button></form><p class="muted small">Jadwal sebelum tanggal efektif dipertahankan.</p>`)}${card('Penugasan tambahan', `<form class="workflow-form" data-submit="hr:shift-assign"><label>Karyawan<select name="emp">${empOpts(params.emp)}</select></label><label>Tanggal<input type="date" name="date" value="${HR2.addDays(HR.TODAY, 1)}" required></label><label>Shift<select name="shift"><option>Malam</option><option>Pagi</option><option>Sore</option></select></label><label>Outlet<select name="outlet">${HR.OUTLETS.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select></label><button class="btn">Cek konflik & simpan</button></form><p class="muted small">Pratinjau konflik: penugasan yang tumpang tindih dengan shift terjadwal ditolak dengan alasan.</p>`)}</div>` : '') +
+    (rows.length ? card(`Jadwal ${date} (${HR2.DOW[HR2.dow(date)]}) · ${list.length} orang${list.length > 60 ? ', 60 pertama' : ''}`, table(['Employee ID', 'Nama', 'Lokasi', 'Shift tetap', 'Berlaku sejak', 'Penugasan tambahan', 'Perubahan berikutnya'], rows)) : empty('Tidak ada jadwal', 'Tidak ada orang di filter ini.'));
+}
+
+/* ---------- NV04 Presensi ---------- */
+function presence(params) {
+  const h = hr(), tab = params.tab === 'summary' ? 'summary' : 'daily';
+  const date = params.date || HR.TODAY, out = params.outlet || '', shift = params.shift || '', q = (params.q || '').toLowerCase();
+  const list = inScopeList().filter(p => (!out || p.placement.location === out) && (!q || `${p.id} ${p.name}`.toLowerCase().includes(q)));
+  const dates = [...HR2.DAYS, ...[1, 2, 3].map(k => HR2.addDays(HR.TODAY, k))];
+  const fil = `<form id="filters" class="filters" aria-label="Filter presensi">${tab === 'daily' ? `<label>Tanggal<select name="date">${dates.map(d => `<option ${d === date ? 'selected' : ''}>${d}</option>`).join('')}</select></label>` : ''}<label>Outlet<select name="outlet">${outletOpts(out)}</select></label>${tab === 'daily' ? `<label>Shift<select name="shift"><option value="">Semua shift</option>${['Pagi', 'Sore', 'Kantor'].map(s => `<option ${s === shift ? 'selected' : ''}>${s}</option>`).join('')}</select></label>` : ''}<input type="hidden" name="tab" value="${tab}">${params.q ? `<input type="hidden" name="q" value="${esc(params.q)}">` : ''}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>`;
+  const head = tabs('hrd-presence', tab, [['daily', 'Harian'], ['summary', 'Ringkasan 7–13 Nov']], { outlet: out || undefined, q: params.q });
+  if (tab === 'summary') {
+    const rows = HR2.summary(h, list.map(p => p.id));
+    return head + fil + (rows.length ? card(`Ringkasan · ${rows.length} orang`, table(['Employee ID', 'Nama', 'Hadir', 'Terlambat', 'Menit telat', 'Cuti', 'Sakit', 'Libur', 'Belum ada status', 'Jam kerja', 'Lembur (menit)', 'Terkoreksi'], rows.slice(0, 80).map(r => [r.emp, empLink(r.emp), r.hadir, r.terlambat, r.lateMin, r.cuti, r.sakit, r.libur, r.belum, num(r.hours, 1), r.otMin, r.corrected ? chip(r.corrected + ' disetujui', 'ready') : '—'])) + '<p class="muted small">Ringkasan memakai hasil persetujuan yang sama dengan Harian. Koreksi menunggu review belum mengubah nilai.</p>') : empty('Tidak ada data', 'Filter tidak menemukan orang.'));
+  }
+  const recs = list.map(p => HR2.attendance(h, p.id, date)).filter(r => !shift || r.shift === shift);
+  const corr = params.correct && recs.find(r => r.id === params.correct);
+  const cnt = (s) => recs.filter(r => r.status === s).length;
+  return head + fil + metrics([['Hadir', cnt('Hadir')], ['Terlambat', cnt('Terlambat')], ['Cuti / sakit / libur', cnt('Cuti') + cnt('Sakit') + cnt('Libur')], ['Belum Ada Status', cnt('Belum Ada Status'), date > HR.TODAY ? 'Tanggal mendatang: jadwal saja' : '']]) +
+    (corr ? card(`Ajukan koreksi · ${corr.id}`, `<form class="workflow-form" data-submit="hr:att-correct" data-after="hrd-att-approval?id={id}"><input type="hidden" name="emp" value="${corr.emp}"><input type="hidden" name="date" value="${corr.date}"><p>${esc(empName(corr.emp))} · nilai saat ini masuk <b>${corr.in || '—'}</b>, keluar <b>${corr.out || '—'}</b></p><label>Jam masuk benar<input name="in" placeholder="09:00" required pattern="\\d{2}:\\d{2}"></label><label>Jam keluar benar (opsional)<input name="out" placeholder="17:00"></label><label>Alasan<input name="reason" required minlength="5"></label><button class="btn">Kirim ke Approval</button><a class="btn ghost" href="#hrd-presence${qs({ date })}">Batal</a></form>`) : '') +
+    (recs.length ? card(`Harian ${date} · ${recs.length} orang`, table(['Attendance ID', 'Nama', 'Shift', 'Status', 'Masuk', 'Keluar', 'Istirahat', 'Lembur', 'Terlambat', 'Bukti', 'Aksi'], recs.slice(0, 80).map(r => [r.id, empLink(r.emp), r.shift, st(r.status) + (r.provisional ? ' ' + chip('Koreksi menunggu review', 'sandbox') : '') + (r.corrected ? ' ' + chip('Terkoreksi ' + r.corrected.req, 'ready') : ''), r.in || '—', r.out || '—', r.breakMin ? r.breakMin + ' mnt' : '—', r.otMin ? r.otMin + ' mnt' : '—', r.late ? r.late + ' mnt' : '—', esc(r.evidence || '—'), date <= HR.TODAY && !r.provisional && r.status !== 'Libur' ? `<a class="btn ghost sm" href="#hrd-presence${qs({ date, outlet: out || undefined, correct: r.id })}">Ajukan koreksi</a>` : '—'])) + (recs.length > 80 ? '<p class="muted small">80 baris pertama. Persempit dengan filter outlet/shift.</p>' : '')) : empty('Tidak ada data', 'Filter tidak menemukan orang.'));
+}
+
+/* ---------- NV05 / NV07 Approval ---------- */
+function requestDetail(q) {
+  const h = hr(), mine = HR2.canDecide(h, role(), q);
+  const pl = q.payload || {};
+  const body = q.type === 'Koreksi presensi' ? table(['', 'Masuk', 'Keluar'], [['Sebelum', pl.before?.in || '—', pl.before?.out || '—'], ['Sesudah (diajukan)', pl.after?.in || '—', pl.after?.out || '—']]) + `<p class="small">Attendance ID ${esc(pl.att)} · bukti: ${esc(pl.evidence || '—')} · ${link('hrd-presence' + qs({ date: pl.date || q.date }), 'buka Presensi')}</p>`
+    : pl.cat ? `<p>${esc(q.type)} · ${pl.from} s/d ${pl.to} (${pl.days} hari) · ${link('hrd-leave' + qs({ emp: q.emp }), 'saldo karyawan')}</p>` : `<p>${esc(q.note || '')}</p>`;
+  return card(`${q.id} · ${esc(q.type)} · ${st(q.status)}`, `<p>Karyawan ${empLink(q.emp)} · dibuat ${esc(q.created)} · kebijakan ${esc(q.policy)}</p>${body}
+    <h3>Tahapan</h3>${table(['#', 'Tahap / PIC', 'Keputusan', 'Oleh', 'Waktu (WITA)', 'Alasan'], q.stages.map((s, i) => [i + 1, esc(s.label) + (i === q.stage && q.status === 'Menunggu Persetujuan' ? ' ' + chip('Tahap aktif', 'sandbox') : ''), s.decision ? st(s.decision) : '—', esc(s.by || '—'), esc(s.at || '—'), esc(s.reason || '—')]))}
+    ${q.status === 'Menunggu Persetujuan' ? (mine ? `<div class="actions"><button type="button" class="btn" data-action="hr:decide" data-id="${q.id}" data-decision="approve">Setujui tahap ini</button><form class="inline-form" data-submit="hr:decide"><input type="hidden" name="id" value="${q.id}"><input type="hidden" name="decision" value="reject"><label class="sr" for="rj-${q.id}">Alasan tolak</label><input id="rj-${q.id}" name="reason" placeholder="Alasan penolakan" required minlength="5"><button class="btn ghost sm">Tolak</button></form></div>` : `<p class="muted small">Tahap aktif "${esc(q.stages[q.stage].label)}" bukan wewenang ${esc(def().label)}.</p>`) : ''}
+    <p class="muted small">${link('hrd-audit' + qs({ q: q.id }), 'Jejak audit ' + q.id)}</p>`);
+}
+function inbox(params, onlyType) {
+  const h = hr(), ids = new Set(inScopeList().map(p => p.id));
+  if (params.id) { const q = h.queue.find(x => x.id === params.id); return q && ids.has(q.emp) ? requestDetail(q) + link(onlyType ? 'hrd-att-approval' : 'hrd-approval', '‹ Kembali ke antrean') : denied('people'); }
+  const status = params.status || 'Menunggu Persetujuan', type = onlyType || params.type || '';
+  const types = [...new Set(h.queue.map(q => q.type))];
+  const list = h.queue.filter(q => ids.has(q.emp) && (!type || q.type === type) && (status === 'all' || q.status === status));
+  const route = onlyType ? 'hrd-att-approval' : 'hrd-approval';
+  return `<form id="filters" class="filters" aria-label="Filter approval"><label>Status<select name="status">${[['Menunggu Persetujuan', 'Menunggu Persetujuan'], ['Disetujui', 'Disetujui'], ['Ditolak', 'Ditolak'], ['all', 'Semua']].map(([v, l]) => `<option value="${v}" ${v === status ? 'selected' : ''}>${l}</option>`).join('')}</select></label>${onlyType ? '' : `<label>Jenis<select name="type"><option value="">Semua jenis</option>${types.map(t => `<option ${t === type ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select></label>`}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    (list.length ? card(`${onlyType ? 'Koreksi presensi' : 'Pengajuan'} · ${list.length}`, table(['Request ID', 'Karyawan', 'Jenis', 'Keterangan', 'Tahap aktif / PIC', 'Progres', 'Status', 'Bisa diputuskan'], list.map(q => [`<a href="#${route}${qs({ id: q.id })}">${q.id}</a>`, empLink(q.emp), esc(q.type), esc(q.note || ''), q.status === 'Menunggu Persetujuan' ? esc(q.stages[q.stage].label) : '—', `${q.stages.filter(s => s.decision === 'Disetujui').length}/${q.stages.length}`, st(q.status), HR2.canDecide(h, role(), q) ? chip('Ya', 'ready') : '—']))) : empty('Antrean kosong', 'Tidak ada pengajuan untuk filter ini.'));
+}
+
+/* ---------- NV06 Izin & Cuti ---------- */
+function leave(params) {
+  const h = hr(), tab = ['balance', 'request', 'calendar', 'history', 'policy'].includes(params.tab) ? params.tab : 'balance';
+  const emp = params.emp && HR.inScope(h, role(), params.emp) ? params.emp : (h.roleEmp[role()] && HR.inScope(h, role(), h.roleEmp[role()]) ? h.roleEmp[role()] : inScopeList()[0]?.id);
+  const head = tabs('hrd-leave', tab, [['balance', 'Saldo'], ['request', 'Ajukan'], ['calendar', 'Kalender'], ['history', 'Riwayat'], ['policy', 'Kebijakan']], { emp });
+  const pick = `<form id="filters" class="filters"><label>Karyawan<select name="emp">${empOpts(emp)}</select></label><input type="hidden" name="tab" value="${tab}"></form>`;
+  const leaves = h.queue.filter(q => q.payload?.cat && HR.inScope(h, role(), q.emp));
+  let body = '';
+  if (tab === 'balance') body = card(`Saldo 2026 · ${esc(empName(emp))}`, table(['Kategori', 'Kuota', 'Terpakai (disetujui)', 'Menunggu', 'Sisa'], HR2.balance(h, emp).map(b => [esc(b.name), b.quota ?? 'Tanpa kuota', b.used, b.pending, b.left ?? '—'])) + '<p class="muted small">Saldo dihitung dari ledger: hanya pengajuan yang disetujui mengurangi saldo. Penolakan tidak mengubah saldo.</p>');
+  else if (tab === 'request') body = card('Ajukan izin / cuti', `<form class="workflow-form" data-submit="hr:leave-request" data-after="hrd-approval?id={id}"><label>Karyawan<select name="emp">${empOpts(emp)}</select></label><label>Kategori<select name="cat">${HR2.LEAVE.filter(c => !c.auto).map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</select></label><label>Dari<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 7)}" required></label><label>Sampai<input type="date" name="to" value="${HR2.addDays(HR.TODAY, 7)}" required></label><label>Alasan<input name="reason"></label><button class="btn">Kirim ke Approval</button></form><p class="muted small">Pengajuan yang bertabrakan dengan cuti menunggu/disetujui ditolak. Cuti Libur Nasional berasal dari kalender perusahaan.</p>`);
+  else if (tab === 'calendar') {
+    const days = []; for (let d = '2026-11-01'; d <= '2026-11-30'; d = HR2.addDays(d, 1)) days.push(d);
+    const hol = h.settings.calendar;
+    body = card('Kalender November 2026', `<div class="hr-cal">${days.map(d => { const ls = leaves.filter(q => q.payload.from <= d && q.payload.to >= d && q.status !== 'Ditolak'); const hl = hol.find(c => c.date === d); return `<div class="hr-cal-d${d === HR.TODAY ? ' today' : ''}"><b>${+d.slice(8)}</b>${hl ? `<small>${esc(hl.name)}</small>` : ''}${ls.map(q => `<a href="#hrd-approval${qs({ id: q.id })}" class="small">${esc(empName(q.emp).split(' ')[0])} · ${q.status === 'Disetujui' ? '✓' : '…'}</a>`).join('')}</div>`; }).join('')}</div>`);
+  } else if (tab === 'history') body = card('Riwayat pengajuan', leaves.length ? table(['Request ID', 'Karyawan', 'Kategori', 'Periode', 'Hari', 'Status'], leaves.map(q => [link('hrd-approval' + qs({ id: q.id }), q.id), empLink(q.emp), esc(q.type), `${q.payload.from} s/d ${q.payload.to}`, q.payload.days, st(q.status)])) : '<p>Belum ada pengajuan cuti di cakupan ini.</p>');
+  else body = card('Kebijakan Izin & Cuti', table(['Kategori', 'Kuota/tahun', 'Butuh dokumen', 'Approval'], HR2.LEAVE.map(c => [c.name, c.quota ?? '—', c.doc ? 'Ya' : 'Tidak', c.auto ? 'Kalender perusahaan' : esc(h.settings.approval.find(a => a.id === 'APR-LEAVE').chain.join(' → '))])));
+  return head + (['balance'].includes(tab) ? pick : '') + body;
+}
+
+/* ---------- NV08 Kunjungan · NV09 Pelacakan · NV10 Klien ---------- */
+const client = (id) => f2().clients.find(c => c.id === id);
+const visitsVisible = () => f2().visits.filter(v => HR.inScope(hr(), role(), v.emp));
+function visitDetail(v) {
+  const t = f2().tracks.find(x => x.id === v.track);
+  return card(`${v.id} · ${esc(client(v.client)?.name)}`, table(['Field', 'Nilai'], [['Visit ID', v.id], ['Petugas', empLink(v.emp)], ['Klien', link('hrd-clients' + qs({ id: v.client }), esc(client(v.client)?.name))], ['Tanggal', v.date], ['Masuk / keluar (WITA)', `${v.in} – ${v.out}`], ['Bukti', esc(v.evidence)], ['Catatan', esc(v.note)], ['Titik lokasi', t ? link('hrd-tracking' + qs({ id: t.id }), `${t.id} · ${t.validation}`) : '—']]));
+}
+function visits(params) {
+  if (params.id) { const v = visitsVisible().find(x => x.id === params.id); return v ? visitDetail(v) + link('hrd-visit', '‹ Daftar kunjungan') : denied('people'); }
+  const list = visitsVisible().filter(v => (!params.client || v.client === params.client) && (!params.date || v.date === params.date));
+  return `<form id="filters" class="filters"><label>Tanggal<input type="date" name="date" value="${esc(params.date || '')}"></label><label>Klien<select name="client"><option value="">Semua klien</option>${f2().clients.map(c => `<option value="${c.id}" ${c.id === params.client ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    metrics([['Kunjungan', list.length], ['Klien dikunjungi', new Set(list.map(v => v.client)).size], ['Petugas', new Set(list.map(v => v.emp)).size], ['Lokasi perlu cek', list.filter(v => f2().tracks.find(t => t.id === v.track)?.validation !== 'Valid').length]]) +
+    (list.length ? card('Daftar kunjungan', table(['Visit ID', 'Tanggal', 'Petugas', 'Klien', 'Masuk–keluar', 'Bukti'], list.map(v => [link('hrd-visit' + qs({ id: v.id }), v.id), v.date, empLink(v.emp), esc(client(v.client)?.name), `${v.in}–${v.out}`, esc(v.evidence)]))) : empty('Tidak ada kunjungan', 'Filter tidak menemukan kunjungan di cakupan Anda.'));
+}
+function tracking(params) {
+  const h = hr(), all = f2().tracks;
+  if (params.id) {
+    const t = all.find(x => x.id === params.id);
+    if (!t) return card('Titik tidak ditemukan', link('hrd-tracking', '‹ Kembali'));
+    if (!HR.inScope(h, role(), t.emp)) return `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>Titik ${esc(t.id)} milik karyawan di luar cakupan ${esc(def().label)}.</p>${link('hrd-tracking', '‹ Kembali')}</section>`;
+    const src = t.context.type === 'Kunjungan' ? link('hrd-visit' + qs({ id: t.context.ref }), t.context.ref) : link('hrd-presence' + qs({ date: HR.TODAY, q: t.emp }), t.context.ref);
+    return card(`${t.id} · ${esc(t.context.type)}`, table(['Field', 'Nilai'], [['Karyawan', empLink(t.emp)], ['Waktu (WITA)', t.at], ['Koordinat (sintetis)', t.lat === null ? chip('GPS tidak tersedia', 'bad') : `${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}`], ['Validasi', chip(t.validation, t.validation === 'Valid' ? 'ready' : 'sandbox')], ['Sumber', src]])) + link('hrd-tracking', '‹ Riwayat lokasi');
+  }
+  const list = all.filter(t => HR.inScope(h, role(), t.emp));
+  const pts = list.filter(t => t.lat !== null), lat = pts.map(t => t.lat), lng = pts.map(t => t.lng);
+  const [a1, a2, b1, b2] = [Math.min(...lat), Math.max(...lat), Math.min(...lng), Math.max(...lng)];
+  const X = (v) => 20 + (v - b1) / ((b2 - b1) || 1) * 560, Y = (v) => 180 - (v - a1) / ((a2 - a1) || 1) * 160;
+  const map = pts.length ? `<svg class="hr-map" viewBox="0 0 600 200" role="img" aria-label="Peta titik lokasi sintetis"><rect x="0" y="0" width="600" height="200" rx="10" class="hr-map-bg"/>${pts.map(t => `<a href="#hrd-tracking?id=${t.id}"><circle cx="${X(t.lng).toFixed(1)}" cy="${Y(t.lat).toFixed(1)}" r="7" class="${t.validation === 'Valid' ? 'ok' : 'warn'}"><title>${t.id} · ${esc(empName(t.emp))} · ${t.validation}</title></circle></a>`).join('')}</svg>` : '';
+  return (list.length ? card(`Peta titik (sintetis) · ${pts.length} titik`, map + '<p class="muted small">Tanpa layanan peta eksternal. Klik titik untuk sumbernya.</p>') + card('Riwayat lokasi', table(['Track ID', 'Waktu (WITA)', 'Karyawan', 'Konteks', 'Validasi'], list.map(t => [link('hrd-tracking' + qs({ id: t.id }), t.id), t.at, empLink(t.emp), `${esc(t.context.type)} · ${esc(t.context.ref)}`, chip(t.validation, t.validation === 'Valid' ? 'ready' : t.lat === null ? 'bad' : 'sandbox')]))) : empty('Belum ada titik lokasi', 'Tidak ada riwayat lokasi di cakupan Anda.', false));
+}
+function clients(params) {
+  if (params.id) {
+    const c = client(params.id); if (!c) return card('Klien tidak ditemukan', link('hrd-clients', '‹ Kembali'));
+    const vs = visitsVisible().filter(v => v.client === c.id);
+    return card(`${c.id} · ${esc(c.name)}`, table(['Field', 'Nilai'], [['Wilayah', esc(c.area)], ['Status', chip(c.status, c.status === 'Aktif' ? 'ready' : 'sandbox')], ['Kontak', can('settings.view') ? esc(c.contact) + ' · ' + esc(c.phone) : '<i>Sesuai izin</i>']])) +
+      (vs.length ? card('Riwayat kunjungan', table(['Visit ID', 'Tanggal', 'Petugas', 'Waktu'], vs.map(v => [link('hrd-visit' + qs({ id: v.id }), v.id), v.date, empLink(v.emp), `${v.in}–${v.out}`]))) : empty('Belum ada kunjungan', 'Klien ini belum pernah dikunjungi.', false)) + link('hrd-clients', '‹ Direktori klien');
+  }
+  return card(`Direktori klien · ${f2().clients.length}`, table(['Client ID', 'Nama', 'Wilayah', 'Status', 'Kunjungan'], f2().clients.map(c => [link('hrd-clients' + qs({ id: c.id }), c.id), esc(c.name), esc(c.area), chip(c.status, c.status === 'Aktif' ? 'ready' : 'sandbox'), visitsVisible().filter(v => v.client === c.id).length])));
+}
+
+/* ---------- NV11 Timeline ---------- */
+function timeline() {
+  const h = hr(), ids = new Set(inScopeList().map(p => p.id)), payOk = def().payroll === 'detail';
+  const myLoc = HR.roleDef(role()).scope.startsWith('outlet:') ? HR.roleDef(role()).scope.slice(7) : null;
+  const posts = f2().posts.filter(p => p.scope === 'all' || !myLoc || p.scope === myLoc).map(p => ({ at: p.at, kind: p.kind, title: esc(p.title), link: p.ref ? `<a href="${p.ref}">Buka sumber</a>` : '—' }));
+  const reqs = h.queue.filter(q => ids.has(q.emp)).map(q => ({ at: q.created, kind: 'Aktivitas · Pengajuan', title: `${esc(q.type)} · ${esc(empName(q.emp))} · ${esc(q.status)}`, link: link('hrd-approval' + qs({ id: q.id }), q.id) }));
+  const aud = can('audit.view') ? h.audit.filter(a => !(a.ref && /^EMP-/.test(a.ref)) || ids.has(a.ref)).map(a => ({ at: a.at, kind: 'Aktivitas · ' + a.object, title: a.sensitive && !payOk ? 'Perubahan payroll (rincian khusus Manager HRD)' : esc(a.detail), link: link('hrd-audit' + qs({ id: a.id }), a.id) })) : [];
+  const rows = [...posts, ...reqs, ...aud].sort((a, b) => b.at.localeCompare(a.at));
+  return card(`Timeline · ${rows.length}`, table(['Waktu (WITA)', 'Jenis', 'Judul', 'Sumber'], rows.slice(0, 60).map(r => [esc(r.at), esc(r.kind), r.title, r.link])) + '<p class="muted small">Isi mengikuti cakupan objek asal: pengajuan di luar tim dan rincian payroll tidak ditampilkan.</p>');
+}
+
+/* ---------- NV12 Impor ---------- */
+function importer(params) {
+  if (!['hrd', 'hrd-ops'].includes(role())) return denied('people');
+  const step = params.step || 'file', file = params.file;
+  const steps = `<ol class="hr-steps">${[['file', '1 · Pilih file'], ['map', '2 · Petakan kolom'], ['preview', '3 · Pratinjau & validasi'], ['result', '4 · Hasil']].map(([k, l]) => `<li class="${k === step ? 'on' : ''}">${l}</li>`).join('')}</ol>`;
+  if (step === 'file' || !file) return steps + card('Pilih file dummy', `<div class="actions">${Object.keys(HR2.SAMPLE_FILES).map(f => `<a class="btn ghost" href="#hrd-import${qs({ step: 'map', file: f })}">${f}</a>`).join('')}</div><p class="muted small">R&D memakai file sintetis. Pada cloud, validasi jenis dan ukuran file sebelum diproses.</p>`);
+  const pf = HR2.parseFile(file); if (!pf) return steps + empty('File tidak dikenal', 'Pilih ulang file dummy.', false);
+  const guess = (field) => { const i = pf.head.findIndex(c => c.toLowerCase().includes(field) || ({ nama: /nama/, posisi: /posisi|jabatan/, outlet: /outlet|lokasi/, shift: /shift/, mulai: /mulai/, telepon: /telepon|hp/ })[field].test(c.toLowerCase())); return i; };
+  const map = Object.fromEntries(HR2.FIELDS.map(([k]) => [k, params['m_' + k] !== undefined ? Number(params['m_' + k]) : guess(k)]));
+  const rows = pf.rows.map((r, i) => ({ baris: i + 2, ...Object.fromEntries(HR2.FIELDS.map(([k]) => [k, map[k] >= 0 ? (r[map[k]] || '').trim() : ''])) }));
+  if (step === 'map') return steps + card(`Petakan kolom · ${esc(file)}`, `<form class="workflow-form" data-search-import="1">${HR2.FIELDS.map(([k, l]) => `<label>${l}<select name="m_${k}"><option value="-1">— tidak dipakai —</option>${pf.head.map((c, i) => `<option value="${i}" ${i === map[k] ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>`).join('')}<a class="btn" data-import-next="preview" href="#hrd-import${qs({ step: 'preview', file, ...Object.fromEntries(Object.entries(map).map(([k, v]) => ['m_' + k, v])) })}">Lanjut ke pratinjau</a></form>`);
+  const batch = 'IMP-2611-' + file.replace(/\W+/g, '-').replace(/-csv$/, '').toUpperCase();
+  if (step === 'preview') {
+    const h = hr(); const checked = rows.map(r => ({ ...r, errs: HR2.validateRow(h, r, rows) }));
+    const done = f2().imports.some(b => b.id === batch);
+    return steps + card(`Pratinjau · ${rows.length} baris · batch ${batch}`, table(['Baris', 'Nama', 'Posisi', 'Outlet', 'Shift', 'Mulai', 'Validasi'], checked.map(r => [r.baris, esc(r.nama), esc(r.posisi), esc(r.outlet), esc(r.shift), esc(r.mulai), r.errs.length ? chip(r.errs.join('; '), r.errs[0].startsWith('Duplikat') ? 'sandbox' : 'bad') : chip('Siap diimpor', 'ready')])) +
+      `${done ? '<p class="phase-banner"><b>Batch ini sudah pernah diimpor.</b> Mengonfirmasi lagi tidak menggandakan profil: semua baris dilewati.</p>' : ''}<form class="workflow-form" data-submit="hr:import-commit" data-after="hrd-import${qs({ step: 'result', file })}"><input type="hidden" name="batch" value="${batch}"><input type="hidden" name="rows" value="${esc(JSON.stringify(rows))}"><p>Akan diimpor: <b>${checked.filter(r => !r.errs.length).length}</b> · dilewati/gagal: <b>${checked.filter(r => r.errs.length).length}</b></p><div class="actions"><button class="btn">Konfirmasi impor</button><a class="btn ghost" href="#hrd-import">Batal</a></div></form>`);
+  }
+  const res = f2().lastImport;
+  if (!res) return steps + empty('Belum ada hasil', 'Jalankan impor terlebih dahulu.', false);
+  const c = (k) => res.rows.filter(r => r.result === k).length;
+  return steps + metrics([['Berhasil', c('Berhasil')], ['Dilewati', c('Dilewati')], ['Gagal', c('Gagal')], ['Batch', res.batch]]) + card('Hasil per baris', table(['Baris', 'Nama', 'Hasil', 'Keterangan'], res.rows.map(r => [r.baris, esc(r.nama), chip(r.result, r.result === 'Berhasil' ? 'ready' : r.result === 'Dilewati' ? 'sandbox' : 'bad'), /^EMP-/.test(r.reason) ? link('hrd-roster' + qs({ emp: r.reason }), r.reason) : esc(r.reason)]))) + `<div class="actions">${link('hrd-roster', 'Buka Direktori')} ${link('hrd-import' + qs({ step: 'preview', file }), 'Impor ulang batch yang sama')}</div>`;
+}
+
+register('hrd-schedule', guard(ESS, schedule), () => 'Jadwal Kerja');
+register('hrd-presence', guard(ESS, presence), () => 'Presensi');
+register('hrd-attendance', guard(ESS, presence), () => 'Kehadiran · Presensi');
+register('hrd-att-approval', guard('people', (p) => inbox(p, 'Koreksi presensi')), () => 'Approval Presensi');
+register('hrd-approval', guard(ESS, (p) => inbox(p)), () => 'Approval');
+register('hrd-leave', guard(ESS, leave), () => 'Izin & Cuti');
+register('hrd-visit', guard('people', visits), () => 'Kunjungan Klien');
+register('hrd-tracking', guard('people', tracking), () => 'Pelacakan Lokasi');
+register('hrd-clients', guard('people', clients), () => 'Klien');
+register('hrd-timeline', guard(['dashboard', 'ess'], timeline), () => 'Timeline');
+register('hrd-import', guard('people', importer), () => 'Impor Karyawan');
+
+/* mapping kolom impor: pilihan langsung memperbarui tautan lanjut */
+document.addEventListener('change', (e) => {
+  const f = e.target.closest('form[data-search-import]'); if (!f) return;
+  const { params } = H.parseHash(); const data = Object.fromEntries(new FormData(f));
+  H.go('hrd-import', { ...params, ...data }, true);
+});
+/* ekspor CSV cakupan aktif (tanpa kolom payroll kecuali Manager HRD) */
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('[data-hr-export]')) return;
+  const list = H.HOOKS.lastRoster || [], pay = def().payroll === 'detail';
+  const rows = [['employee_id', 'nama', 'jabatan', 'divisi', 'lokasi', 'shift', 'status_kerja', ...(pay ? ['thp_contoh'] : [])], ...list.map(p => [p.id, p.name, HR.pos(p.placement.position).name, HR.DIVISIONS.find(d => d.id === p.placement.division).name, HR.locName(p.placement.location), H.HOOKS.shiftOf(p.id), p.contract, ...(pay ? [p.thp] : [])])];
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `hrd-direktori-${role()}.csv`; a.click(); } catch (err) { /* unduhan diblokir */ }
+  window.__hrLastExport = { rows: list.length, pay };
+  H.render(`Ekspor ${list.length} baris sesuai cakupan ${def().label}${pay ? '' : ' (tanpa kolom payroll)'}.`);
 });
 })();
 

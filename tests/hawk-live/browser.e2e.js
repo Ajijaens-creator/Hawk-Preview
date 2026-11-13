@@ -90,7 +90,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.selectOption('#role', 'owner'); await p.waitForTimeout(100);
   ok('F1-04 role switcher Owner mengarah ke Eagle Eye', (await text('.hero')).includes('Owner Eagle Eye'));
   await p.goto(BASE + 'index.html#screens'); await p.waitForTimeout(100);
-  ok('F7-01 peta berisi 41 kode layar empat portal + 8 layar HRD F1', (await p.locator('.roadmap tbody tr').count()) === 49);
+  { const n = await p.locator('.roadmap tbody tr').count(), hrdN = await p.evaluate(() => HL.SCREENS.filter(s => /^HRD/.test(s[2] || '')).length); ok('F7-01 peta berisi 41 kode layar empat portal + semua layar HRD', n === 41 + hrdN && hrdN >= 8, `${n} = 41 + ${hrdN}`); }
   await p.goto(BASE + 'commercial.html'); await p.waitForTimeout(150);
   ok('Entry commercial.html membuka Commercial', p.url().endsWith('#commercial'));
   await p.goto(BASE + 'sales.html'); await p.waitForTimeout(150);

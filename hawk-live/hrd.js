@@ -211,27 +211,39 @@ function roster(params) {
   if (params.emp) {
     const e = person(params.emp);
     if (!e || !HR.inScope(h, role(), e.id)) return `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>Profil ${esc(params.emp)} di luar cakupan role ${esc(d.label)}, atau tidak ditemukan.</p>${link('hrd-roster', '‹ Kembali ke roster')}</section>`;
-    const pl = HR.placementOn(h, e.id), sup = HR.supervisorOf(h, e.id), hist = h.placements.filter(x => x.emp === e.id).sort((a, b) => b.from.localeCompare(a.from));
+    const pl = HR.placementOn(h, e.id) || HR.upcomingOf(h, e.id), sup = HR.supervisorOf(h, e.id), hist = h.placements.filter(x => x.emp === e.id).sort((a, b) => b.from.localeCompare(a.from));
     const acc = h.accounts.find(a => a.emp === e.id);
     const back = { ...params }; delete back.emp;
     return `<section class="card hr-profile" aria-labelledby="pf-t"><h2 id="pf-t">${esc(e.name)} · ${e.id}</h2>
       <div class="grid g2"><div>${table(['Field', 'Nilai'], [
         ['Employee ID', e.id], ['Status kerja', `${esc(e.status)} · ${esc(e.contract)}`], ['Jabatan', esc(posName(pl.position))], ['Divisi', esc(divName(pl.division))],
         ['Outlet induk / lokasi', esc(HR.locName(pl.location)) + (pl.leads ? ` · memimpin ${esc(HR.locName(pl.leads))}` : '')], ['Atasan', sup ? `<a href="#hrd-roster${qs({ emp: sup })}">${esc(empName(sup))}</a> · ${esc(posName(HR.placementOn(h, sup).position))}` : 'Owner'],
-        ['Shift ringkas', esc(e.shift)], ['Penempatan efektif', `${pl.from} → ${pl.to || 'sekarang'}`], ['Akun', `${esc(roleLabel(acc?.role || 'ess'))} · aktif`], ['Dataset', e.demo ? '<span class="badge demo">DEMO</span>' : 'Non-demo'],
+        ['Shift ringkas', esc(e.shift)], ['Penempatan efektif', pl.from > HR.TODAY ? `Akan bergabung ${pl.from}` : `${pl.from} → ${pl.to || 'sekarang'}`], ['Akun', `${esc(roleLabel(acc?.role || 'ess'))} · aktif`], ['Dataset', e.demo ? '<span class="badge demo">DEMO</span>' : 'Non-demo'],
         ...(d.payroll === 'detail' ? [['Take-home pay contoh', rp(e.thp)]] : [['Data payroll', 'Khusus Manager HRD']])
       ])}</div><div><h3>Histori penempatan</h3>${table(['ID', 'Lokasi', 'Posisi', 'Mulai', 'Akhir'], hist.map(x => [x.id, esc(HR.locName(x.location)), esc(posName(x.position)), x.from, x.to || '—']))}${hist.length > 1 ? `<p class="muted small">${esc(hist[0].reason || '')}. Jam, POS dan KPI sebelum ${hist[0].from} tetap di outlet lama.</p>` : ''}</div></div>
       <div class="actions"><a class="btn ghost" href="#hrd-roster${qs(back)}">‹ Kembali ke roster</a>${link('hrd-audit' + qs({ q: e.id }), 'Jejak audit ' + e.id)}</div></section>`;
   }
-  const f = { outlet: params.outlet || '', division: params.division || '', position: params.position || '', shift: params.shift || '', entity: params.entity || '' };
+  const f = { outlet: params.outlet || '', division: params.division || '', position: params.position || '', shift: params.shift || '', contract: params.contract || '', entity: params.entity || '' };
+  const shiftOf = (p) => H.HOOKS.shiftOf ? H.HOOKS.shiftOf(p.id) : p.shift;
   const q = (params.q || '').trim().toLowerCase();
-  const list = all.filter(p => (!f.outlet || p.placement.location === f.outlet) && (!f.division || p.placement.division === f.division) && (!f.position || p.placement.position === f.position) && (!f.shift || p.shift === f.shift) && (!f.entity || p.placement.entity === f.entity) && (!q || `${p.id} ${p.name}`.toLowerCase().includes(q)));
+  const list = all.filter(p => (!f.outlet || p.placement.location === f.outlet) && (!f.division || p.placement.division === f.division) && (!f.position || p.placement.position === f.position) && (!f.shift || shiftOf(p) === f.shift) && (!f.contract || p.contract === f.contract) && (!f.entity || p.placement.entity === f.entity) && (!q || `${p.id} ${p.name}`.toLowerCase().includes(q)));
   const opts = (list2, cur, all2) => `<option value="">${all2}</option>${list2.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`).join('')}`;
   const locs = LOCS().filter(o => all.some(p => p.placement.location === o.id)).map(o => [o.id, o.name]);
   const divs = HR.DIVISIONS.filter(x => all.some(p => p.placement.division === x.id)).map(x => [x.id, x.name]);
   const poss = HR.POSITIONS.filter(x => all.some(p => p.placement.position === x.id)).map(x => [x.id, x.name]);
+  H.HOOKS.lastRoster = list;
   const per = 25, pages = Math.max(1, Math.ceil(list.length / per)), page = Math.min(pages, Math.max(1, Number(params.page) || 1));
-  const keep = { ...f, q: params.q };
+  const keep = { ...f, q: params.q, view: params.view };
+  const view = ['pribadi', 'kontak', 'kepegawaian', 'ess'].includes(params.view) ? params.view : 'kepegawaian';
+  const age2 = (b) => b ? 2026 - b : '—';
+  const COLS = {
+    pribadi: [['Jenis kelamin', p => p.gender === 'L' ? 'Laki-laki' : 'Perempuan'], ['Usia', p => age2(p.birth)], ['Agama', p => esc(p.religion)], ['Pendidikan', p => esc(p.education)], ['Status perkawinan', p => esc(p.marital)]],
+    kontak: [['Telepon', p => esc(p.phone || '—')], ['Email kerja', p => `${p.id.toLowerCase()}@example.invalid`], ['Lokasi', p => esc(HR.locName(p.placement.location))]],
+    kepegawaian: [['Jabatan', p => esc(posName(p.placement.position))], ['Divisi', p => esc(divName(p.placement.division))], ['Outlet / lokasi', p => esc(HR.locName(p.placement.location))], ['Shift', p => esc(shiftOf(p))], ['Status kerja', p => esc(p.contract)], ['Berlaku sejak', p => p.placement.from]],
+    ess: [['Akun', p => esc(roleLabel(h.accounts.find(a => a.emp === p.id)?.role || 'ess'))], ['Status login ESS', p => p.account ? chip('Aktif', 'ready') : chip('Belum aktif')], ['Kredensial', () => '<i>Tidak ditampilkan</i>']]
+  };
+  const canWrite = ['hrd', 'hrd-ops'].includes(role());
+  const toolbar = `<div class="row hr-toolbar">${tabs('hrd-roster', view, [['pribadi', 'Informasi Pribadi'], ['kontak', 'Kontak'], ['kepegawaian', 'Kepegawaian'], ['ess', 'Login ESS']].map(([k, l]) => [k, l]), { ...keep, view: undefined }).replace(/tab=/g, 'view=')}<span class="tb-spacer"></span>${canWrite ? `<a class="btn sm" href="#hrd-employee-new">+ Tambah karyawan</a><a class="btn ghost sm" href="#hrd-import">Impor</a>` : ''}<button type="button" class="btn ghost sm" data-hr-export="1">Ekspor CSV (cakupan ini)</button></div>`;
   const showPay = d.payroll === 'detail';
   return `<form id="filters" class="filters" aria-label="Filter roster">
       <label>Cari nama / ID<input name="q" value="${esc(params.q || '')}" placeholder="mis. EMP-0037" form="hr-search"></label>
@@ -239,11 +251,13 @@ function roster(params) {
       <label>Divisi <select name="division">${opts(divs, f.division, 'Semua divisi')}</select></label>
       <label>Posisi <select name="position">${opts(poss, f.position, 'Semua posisi')}</select></label>
       <label>Shift <select name="shift">${opts([['Pagi', 'Pagi'], ['Sore', 'Sore'], ['Kantor', 'Kantor']], f.shift, 'Semua shift')}</select></label>
+      <label>Status kerja <select name="contract">${opts([['PKWTT', 'PKWTT (tetap)'], ['PKWT', 'PKWT (kontrak)'], ['Probation', 'Probation']], f.contract, 'Semua status')}</select></label>
+      ${params.view ? `<input type="hidden" name="view" value="${esc(params.view)}">` : ''}
       ${f.entity ? `<input type="hidden" name="entity" value="${esc(f.entity)}">` : ''}
       <button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>
     <form id="hr-search" data-search="1" role="search" class="sr-only-form"><button class="btn sm">Cari</button></form>
-    <p class="active-filters" role="status"><b>${num(list.length)} orang</b> dari ${num(all.length)} di cakupan ${esc(d.label)}.</p>` +
-    (list.length ? card(`Roster · halaman ${page} dari ${pages}`, table(['Employee ID', 'Nama', 'Jabatan', 'Divisi', 'Outlet / lokasi', 'Shift', 'Berlaku sejak', ...(showPay ? ['THP contoh'] : [])], list.slice((page - 1) * per, page * per).map(p => [p.id, `<a href="#hrd-roster${qs({ ...keep, emp: p.id })}">${esc(p.name)}</a>`, esc(posName(p.placement.position)), esc(divName(p.placement.division)), esc(HR.locName(p.placement.location)), esc(p.shift), p.placement.from, ...(showPay ? [rp(p.thp)] : [])])) +
+    <p class="active-filters" role="status"><b>${num(list.length)} orang</b> dari ${num(all.length)} di cakupan ${esc(d.label)}.${(() => { const j = HR.joiners(h, role()); return j.length ? ` · ${j.length} akan bergabung (${j.map(x => `<a href="#hrd-roster${qs({ emp: x.id })}">${esc(x.name)} ${x.placement.from}</a>`).join(', ')}), belum dihitung.` : ''; })()}</p>` +
+    toolbar + (list.length ? card(`Direktori · halaman ${page} dari ${pages}`, table(['Employee ID', 'Nama', ...COLS[view].map(c => c[0]), ...(showPay && view === 'kepegawaian' ? ['THP contoh'] : [])], list.slice((page - 1) * per, page * per).map(p => [p.id, `<a href="#hrd-roster${qs({ ...keep, emp: p.id })}">${esc(p.name)}</a>`, ...COLS[view].map(c => c[1](p)), ...(showPay && view === 'kepegawaian' ? [rp(p.thp)] : [])])) +
       `<div class="row hr-pager">${page > 1 ? `<a class="btn ghost sm" href="#hrd-roster${qs({ ...keep, page: page - 1 })}">‹ Sebelumnya</a>` : ''}${page < pages ? `<a class="btn ghost sm" href="#hrd-roster${qs({ ...keep, page: page + 1 })}">Berikutnya ›</a>` : ''}</div>${showPay ? '<p class="muted small">Kolom THP hanya untuk Manager HRD.</p>' : ''}`)
       : `<section class="card hr-empty"><h2>Tidak ada hasil</h2><p>Kombinasi filter ini tidak menemukan orang.</p><button type="button" class="btn" data-action="filter-reset">Reset filter</button></section>`);
 }

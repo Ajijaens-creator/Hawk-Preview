@@ -413,9 +413,10 @@ function render(message = '', error = false) {
   if (portal && portal !== prefs.portal) { prefs.portal = portal; savePrefs(); }
   renderNav(id, portal);
   document.querySelectorAll('[data-portal-label]').forEach(el => { el.textContent = portal || 'Demo integrasi'; });
-  const it = itemOf(id);
+  const it0 = itemOf(id), cOv = REGISTRY[id]?.code?.(params);
+  const it = it0 && cOv ? Object.assign([...it0], { 2: cOv }) : it0;
   document.title = `HAWK ERP · ${titleOf(id)}`;
-  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${PURPOSE[id] ? `<p>${PURPOSE[id]}</p>` : ''}</div></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
+  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${(REGISTRY[id]?.purpose?.(params) || PURPOSE[id]) ? `<p>${REGISTRY[id]?.purpose?.(params) || PURPOSE[id]}</p>` : ''}</div></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
   view.querySelector('.status').textContent = message;
   if (error) view.querySelector('.status').classList.add('error');
   setNav(false); renderRole();

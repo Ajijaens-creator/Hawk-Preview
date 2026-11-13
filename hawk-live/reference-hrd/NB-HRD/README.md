@@ -30,6 +30,16 @@ Paket rancangan untuk review visual dan penulisan master prompt Cloud Developer 
 [NB Fase 1 · Delapan NV](F1-FONDASI-DAN-BERANDA.md)
 [NB Fase 2 · Dua belas NV](F2-OPERASI-HRD-DAN-DIREKTORI.md)
 [NB Fase 3 · Delapan NV](F3-PLANNER-DAN-WORKPLACE.md)
+[NB Fase 4 · Dua belas NV](F4-REKRUTMEN-DAN-PENEMPATAN.md)
+[NB Fase 5 · Delapan NV](F5-MANPOWER-PLANNING-DAN-POS.md)
+[NB Fase 6 · Sembilan NV](F6-HUMAN-GROWTH-DAN-KINERJA.md)
+[NB Fase 7 · Dua belas NV](F7-PAYROLL-DAN-PEOPLE-BUDGETING.md)
+[NB Fase 8 · Delapan NV](F8-AMBIDEX-REPORTING-DAN-REFLECTION.md)
+
+Delapan NB fase mencakup **77 NV utama**, dengan jumlah berturut-turut 8, 12, 8, 12, 8, 9, 12 dan 8. Tab, dialog dan halaman e-Deck mengikuti NV induknya. Status implementasi dan bukti verifikasi dilaporkan per fase.
+
+
+
 
 
 

@@ -3,6 +3,7 @@
    audit dan penghapusan dummy. Deterministik (tanpa Math.random). Tanpa jaringan, akun, atau API. */
 const HR = (() => {
   const TODAY = '2026-11-13';
+  const EXT = {}; /* kait fase berikutnya (F2: attStatus, update) */
   const SCHEMA = 4;
 
   /* ---------- organisasi (dinamis: semua layar membaca daftar ini, tidak ada cabang yang di-hardcode di UI) ---------- */
@@ -226,7 +227,7 @@ const HR = (() => {
   }
   /* atasan langsung dari penempatan efektif (garis Spa: Therapist/Receptionist → Supervisor → AOM → OM) */
   function supervisorOf(hr, emp, date = TODAY) {
-    const pl = placementOn(hr, emp, date); if (!pl) return null;
+    const pl = placementOn(hr, emp, date) || upcomingOf(hr, emp, date); if (!pl) return null;
     const find = (fn) => hr.placements.find(x => x.from <= date && (!x.to || x.to >= date) && fn(x))?.emp || null;
     if (['POS-THR', 'POS-RCP'].includes(pl.position)) return find(x => x.position === 'POS-SPV' && x.leads === pl.location);
     if (pl.position === 'POS-SPV' || pl.position === 'POS-OPS') return find(x => x.position === 'POS-AOM');
@@ -239,8 +240,11 @@ const HR = (() => {
   /* ---------- penempatan efektif & cakupan ---------- */
   const placementOn = (hr, emp, date = TODAY) => hr.placements.find(p => p.emp === emp && p.from <= date && (!p.to || p.to >= date));
   const locName = (id) => OUTLETS.find(o => o.id === id)?.name || (id === HQ.id ? HQ.name : id);
+  /* penempatan pertama yang belum efektif (karyawan akan bergabung) */
+  function upcomingOf(hr, emp, date = TODAY) { return hr.placements.filter(x => x.emp === emp && x.from > date).sort((a, b) => a.from.localeCompare(b.from))[0] || null; }
+  function joiners(hr, role, date = TODAY) { return hr.people.filter(p => !placementOn(hr, p.id, date) && upcomingOf(hr, p.id, date) && inScope(hr, role, p.id, date)).map(p => ({ ...p, placement: upcomingOf(hr, p.id, date) })); }
   function inScope(hr, role, emp, date = TODAY) {
-    const d = roleDef(role), pl = placementOn(hr, emp, date);
+    const d = roleDef(role), pl = placementOn(hr, emp, date) || upcomingOf(hr, emp, date);
     if (!pl) return false;
     if (d.scope === 'all') return true;
     if (d.scope === 'self') return hr.roleEmp[role] === emp;
@@ -252,8 +256,8 @@ const HR = (() => {
   /* filter pemilih cakupan + izin peran */
   function people(hr, role, f = {}, date = TODAY) {
     return hr.people.filter(p => {
-      if (!inScope(hr, role, p.id, date)) return false;
       const pl = placementOn(hr, p.id, date);
+      if (!pl || !inScope(hr, role, p.id, date)) return false;
       if (f.entity && f.entity !== 'all' && pl.entity !== f.entity) return false;
       if (f.division && f.division !== 'all' && pl.division !== f.division) return false;
       if (f.outlet && f.outlet !== 'all' && pl.location !== f.outlet) return false;
@@ -286,7 +290,9 @@ const HR = (() => {
     const ids = new Set(list.map(p => p.id));
     /* presensi hari ini (simulasi deterministik per employee ID) */
     const att = { hadir: 0, terlambat: 0, cuti: 0, sakit: 0, libur: 0, belum: 0 };
-    list.forEach(p => { const k = Number(p.id.slice(4)) % 20; att[k < 13 ? 'hadir' : k < 15 ? 'terlambat' : k === 15 ? 'cuti' : k === 16 ? 'sakit' : k < 19 ? 'libur' : 'belum']++; });
+    /* F2 (hrd-f2-model.js) mengganti simulasi ini dengan presensi yang sama seperti layar Presensi */
+    const BUCKET = { Hadir: 'hadir', Terlambat: 'terlambat', Cuti: 'cuti', Izin: 'cuti', Sakit: 'sakit', Libur: 'libur', 'Belum Ada Status': 'belum' };
+    list.forEach(p => { if (EXT.attStatus) { att[BUCKET[EXT.attStatus(hr, p.id, TODAY)] || 'belum']++; return; } const k = Number(p.id.slice(4)) % 20; att[k < 13 ? 'hadir' : k < 15 ? 'terlambat' : k === 15 ? 'cuti' : k === 16 ? 'sakit' : k < 19 ? 'libur' : 'belum']++; });
     const outlets = OUTLETS.filter(o => list.some(p => p.placement.location === o.id)).map(o => {
       const thr = hr.people.filter(p => placementOn(hr, p.id)?.location === o.id && p.position === 'POS-THR').length;
       const cap = thr * 8 * 26, done = UTILITY[o.id];
@@ -385,6 +391,7 @@ const HR = (() => {
         hr.settings.calendar = hr.settings.calendar.filter(c => !c.demo);
         hr.accounts = hr.accounts.filter(a => !a.demo);
         hr.queue = hr.queue.filter(q => !q.demo);
+        EXT.purge?.(hr);
         hr.purged = true;
         const removed = before.people - hr.people.length;
         audit(hr, by, 'Hapus dataset dummy', `${removed} profil dan ${before.placements - hr.placements.length} penempatan demo dihapus · ${hr.people.length} profil non-demo tetap`, { object: 'Dataset', before: `${before.people} profil`, after: `${hr.people.length} profil` });
@@ -394,14 +401,18 @@ const HR = (() => {
         need('dummy.delete');
         const keep = hr.people.filter(p => !p.demo), keepPl = hr.placements.filter(p => !p.demo), log = hr.audit;
         const f = fresh();
-        state.hr = { ...f, people: [...f.people, ...keep], placements: [...f.placements, ...keepPl], accounts: [...f.accounts, ...hr.accounts.filter(a => !a.demo)], audit: log, seq: hr.seq };
+        const keepF2 = EXT.keep?.(hr);
+        state.hr = { ...f, ...(keepF2 ? { f2: keepF2 } : {}), people: [...f.people, ...keep], placements: [...f.placements, ...keepPl], accounts: [...f.accounts, ...hr.accounts.filter(a => !a.demo)], audit: log, seq: hr.seq };
+        EXT.ensure?.(state.hr);
         audit(state.hr, by, 'Muat dataset dummy', `${f.people.length} profil demo dimuat`, { object: 'Dataset' });
         return f.people.length;
       }
-      default: throw new Error('Aksi HRD tidak dikenal: ' + action);
+      default:
+        if (EXT.update) return EXT.update(state, hr, action, input, { need, audit, by, role });
+        throw new Error('Aksi HRD tidak dikenal: ' + action);
     }
   }
 
-  return { TODAY, COMPANY, supervisorOf, ENTITIES, OUTLETS, HQ, DIVISIONS, POSITIONS, EXPECTED, ROLE_DEFS, PERM_LABEL, pos, roleDef, can, fresh, ensure, placementOn, locName, inScope, people, reconcile, summary, update };
+  return { EXT, audit: (hr, ...a) => audit(hr, ...a), TODAY, COMPANY, supervisorOf, ENTITIES, OUTLETS, HQ, DIVISIONS, POSITIONS, EXPECTED, ROLE_DEFS, PERM_LABEL, pos, roleDef, can, fresh, ensure, placementOn, upcomingOf, joiners, locName, inScope, people, reconcile, summary, update };
 })();
 if (typeof module !== 'undefined') module.exports = HR;

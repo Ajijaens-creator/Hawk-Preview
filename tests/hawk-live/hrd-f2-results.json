@@ -1,0 +1,231 @@
+{
+ "pass": 45,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV01 Direktori Karyawan, kode F2-NV01, 158 orang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01 filter Spa Ubud + Therapist = 25",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 Detail Karyawan (kode F2-NV02) dari klik nama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02 enam tab detail berpindah tanpa error",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03 ubah shift efektif tersimpan",
+   "ok": true,
+   "info": "Perubahan demo tersimpan · SHF-0001-01."
+  },
+  {
+   "name": "NV03 jadwal sebelum tanggal efektif dipertahankan",
+   "ok": true,
+   "info": "EMP-0001 Putu Ari Spa Ubud Sore 13:00–21:00 2026-01-01 — Pagi mulai 2026-11-20 | EMP-0001 Putu Ari Spa Ubud Pagi 09:00–17:00 2026-11-20 — —"
+  },
+  {
+   "name": "NV03 penugasan tumpang tindih ditolak dengan alasan",
+   "ok": true,
+   "info": "Konflik: EMP-0001 sudah terjadwal Pagi (09:00–17:00) pada 2026-11-21. Penugasan tumpang tindih ditolak."
+  },
+  {
+   "name": "NV04 Harian punya Attendance ID dan aksi koreksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04 → NV05 koreksi masuk Approval Presensi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04 koreksi menunggu review tampil provisional",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Manager HRD bukan PIC tahap Supervisor: tidak bisa memutuskan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05 Supervisor Ubud menyetujui koreksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ringkasan memakai hasil persetujuan (Terkoreksi)",
+   "ok": true,
+   "info": "EMP-0001 Putu Ari 6 0 0 0 0 1 0 37,6 120 1 disetujui"
+  },
+  {
+   "name": "Keputusan tercatat sekali di audit (idempoten)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist ESS hanya bisa memilih diri sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 → NV07 pengajuan cuti membuka Request ID yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06 pengajuan bertabrakan ditolak",
+   "ok": true,
+   "info": "Bertabrakan dengan REQ-2611-011 (2026-11-24 s/d 2026-11-25)."
+  },
+  {
+   "name": "NV07 tahap 1 Supervisor disetujui, status masih menunggu Manager HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07 tahap akhir Manager HRD → Disetujui",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Saldo cuti berkurang 2 setelah disetujui",
+   "ok": true,
+   "info": "Cuti Tahunan 12 3 2 9 → Cuti Tahunan 12 5 0 7"
+  },
+  {
+   "name": "NV11 Timeline Therapist: hanya pengajuan sendiri, tanpa rincian payroll",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV11 Timeline Manager HRD menautkan ke objek asal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV10 direktori klien 5",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV10 klien tanpa kunjungan → keadaan kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV10 → NV08 detail kunjungan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08 → NV09 titik lokasi tertaut kunjungan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV09 titik GPS tidak tersedia ditandai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV09 Supervisor Ubud: titik di luar cakupan = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV12 langkah peta kolom terisi otomatis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV12 pratinjau: valid, duplikat, outlet tidak dikenal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV12 hasil: 2 berhasil, 2 dilewati, 1 gagal",
+   "ok": true,
+   "info": "2/2/1"
+  },
+  {
+   "name": "NV12 → NV02 profil hasil impor terbuka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01 direktori: 158 aktif + 2 akan bergabung (efektif 2026-11-20)",
+   "ok": true,
+   "info": "158 orang dari 158 di cakupan Manager HRD. · 2 akan bergabung (Kadek Ayu Lestari 2026-11-20, Komang Sri Wahyuni 2026-11-20), belum dihitung."
+  },
+  {
+   "name": "Impor ulang batch sama tidak menggandakan (0 berhasil)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Direktori tetap 158 + 2 akan bergabung",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "File kolom berbeda (;) dipetakan dari judul kolom",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD: tab Kepegawaian tanpa nominal payroll",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist → Impor = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Manager → Presensi = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter approval tanpa hasil → keadaan kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-presence",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-leave?tab=request",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-approval",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px tanpa scroll horizontal halaman: hrd-import?step=preview&file=karyawan-baru-nov.csv",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
