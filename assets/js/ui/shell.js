@@ -503,7 +503,9 @@
       const u = user();
       renderSidebar(0, u);
       renderTopbar(u);
-      if (!$('#view').querySelector('[data-dx-root]')) {
+      const dxRoot = $('#view').querySelector('[data-dx-root]');
+      const dxTeam = (/[?&]team=([a-z]+)/.exec(location.hash) || [])[1] || '';
+      if (!dxRoot || (dxRoot.dataset.team || '') !== dxTeam) {
         $('#view').innerHTML = HAWK.dxCenter.render(makeCtx(0, {}));
         $('#view').dataset.nv = 'dx';
         HAWK.dxCenter.mount(makeCtx(0, {}));
