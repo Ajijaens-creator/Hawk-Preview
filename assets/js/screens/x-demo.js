@@ -89,14 +89,15 @@
   /* Fokus tim (Aji 13 Nov 2026): #/dx?team=finance = Demo Experience khusus portal Finance. Hanya skenario yang punya
      langkah Finance; langkah tim lain dalam alur yang sama dijalankan otomatis sebagai konteks (operasi yang sama
      dengan tombol aslinya). Tanpa ?team= perilaku #/dx tidak berubah. */
-  const TEAMS = { finance: { key: 'finance', uid: 'U-FIN', label: 'Finance', nv: 47 } };
+  const TEAMS = { finance: { key: 'finance', uid: 'U-FIN', uids: ['U-FIN', 'U-GAS', 'U-TAX'], label: 'Finance', nv: 47 } };
+  const inTeam = (t, uid) => (t.uids || [t.uid]).includes(uid);
   const team = () => {
     const m = /[?&]team=([a-z]+)/.exec(location.hash || '');
     return (m && TEAMS[m[1]]) || null;
   };
   const scenarios = () => {
     const t = team();
-    return t ? DX.SCENARIOS.filter((x) => x.steps.some((y) => y.as === t.uid)) : DX.SCENARIOS;
+    return t ? DX.SCENARIOS.filter((x) => x.steps.some((y) => inTeam(t, y.as))) : DX.SCENARIOS;
   };
   /* jalankan langkah tim lain sampai giliran tim fokus (atau skenario selesai) */
   function skipToTeam() {
@@ -105,7 +106,7 @@
     const ran = [];
     for (let guard = 0; guard < 60; guard++) {
       const c = cur();
-      if (!c || c.done || c.step.as === t.uid) break;
+      if (!c || c.done || inTeam(t, c.step.as)) break;
       const step = c.step;
       const r = DX.runStep(HAWK.store, HAWK.api);
       if (!r.ok) break;
@@ -310,7 +311,7 @@
     const el = $('#dx-labhead');
     if (!el) return;
     const uid = L.labUser || 'U-STF';
-    const all = team() ? [team().uid] : DX.ROLE5.map((r) => r.user).concat(Object.keys(DX.SUPPORT));
+    const all = team() ? team().uids : DX.ROLE5.map((r) => r.user).concat(Object.keys(DX.SUPPORT));
     el.innerHTML = `<span class="tiny b">Login role (DEMO):</span>${all.map((u) => `<button class="chip ${u === uid ? 'on' : ''}" data-dx="as" data-u="${u}">${esc(roleLabel(u).replace(' (peran pendukung)', ''))}</button>`).join('')}
       <span class="dx-sep"></span>${Object.entries(DX.DEVICES).map(([k, d]) => `<button class="chip ${($('.dx-cell[data-cell="lab"]') || {}).dataset && $('.dx-cell[data-cell="lab"]').dataset.device === k ? 'on' : ''}" data-dx="labdev" data-d="${k}">${d.label}</button>`).join('')}`;
   }
@@ -331,13 +332,13 @@
       L.mode = 'lab';
       if (!scenarios().some((x) => x.id === L.sc)) L.sc = scenarios()[0].id;
       const c = cur();
-      if (!c || c.done || !scenarios().some((x) => x.id === c.sc.id)) L.labUser = t.uid;
+      if (!c || c.done || !scenarios().some((x) => x.id === c.sc.id) || !inTeam(t, L.labUser)) L.labUser = t.uid;
       const n = scenarios().length;
       return `<div data-dx-root data-team="${t.key}" class="dx">
       <div class="dx-hero"><div><div class="eyebrow">HAWK × JAENS · DEMO EXPERIENCE · PORTAL ${esc(t.label.toUpperCase())}</div><h1>Demo Experience Center · ${esc(t.label)}</h1>
         <p>Fokus pada pekerjaan tim ${esc(t.label)} saja. Hanya ${n} skenario yang punya langkah ${esc(t.label)}; langkah tim lain yang langsung berkaitan dengan alur dijalankan otomatis sebagai konteks, jadi Anda hanya menekan tombol ${esc(t.label)}. Tidak terhubung ke HAWK produksi.</p></div>
-        <div class="dx-hero-r"><span class="badge demo">DEMO / NO LIVE API</span><span class="dx-pill">Role ${esc(roleLabel(t.uid))} · ${n} skenario</span><span class="dx-pill" id="dx-hero-prog"></span></div></div>
-      <div class="row" style="gap:8px;flex-wrap:wrap"><span class="tiny muted" style="align-self:center">Layar di bawah adalah aplikasi HAWK yang sebenarnya (bukan gambar) dengan hak akses role ${esc(t.label)}. <a href="#/dx">Demo Center lintas divisi ›</a></span></div>
+        <div class="dx-hero-r"><span class="badge demo">DEMO / NO LIVE API</span><span class="dx-pill">${t.uids.length} role tim ${esc(t.label)} · ${n} skenario</span><span class="dx-pill" id="dx-hero-prog"></span></div></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><span class="tiny muted" style="align-self:center">Layar di bawah adalah aplikasi HAWK yang sebenarnya (bukan gambar) dengan hak akses role tim ${esc(t.label)}; pindah role dan layar Desktop / iPad / Mobile di bawah. <a href="#/dx">Demo Center lintas divisi ›</a></span></div>
       <div class="dx-main">
         <div class="dx-stage">
           <div class="dx-lab-wrap"><div class="dx-labhead row" id="dx-labhead"></div>${cellHtml('lab', '', 'Test Lab', L.labDevice || 'desktop', 'lab')}</div>
