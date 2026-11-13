@@ -6,12 +6,20 @@
 const ERP = 'https://preview.hawk.jaens.id/';
 /* [route, title, screen code, status] · status: ready | sandbox | planned | hidden */
 const PORTALS = {
-  Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
+  /* Finance = modul Finance lengkap di app HAWK 60 NV (Modul H NV-47..52, ruang kerja Finance, Demo Experience Center).
+     Rute berawalan '/' membuka app 60 NV (as=U-FIN = role demo Finance Manager Asri). Halaman sandbox lama
+     (budget, mrf, commission) DIARSIPKAN: status 'archived', tidak tampil di menu Finance, tetap bisa dibuka dari
+     Preview › Arsip Finance dan dari tautan Commercial/Sales/HRD yang sudah ada. */
+  Finance: { desc: 'Modul Finance lengkap HAWK: dashboard, AI capture, 3-way matching, hutang, GL, alokasi, budget 7P + Demo Center', items: [
+    ['/?as=U-FIN#/nv/47', 'Finance Control Dashboard', 'NV-47', 'ready'], ['/?as=U-FIN#/nv/48', 'AI Invoice & Receipt Capture', 'NV-48', 'ready'], ['/?as=U-FIN#/nv/49', 'PO–Receipt–Invoice Three-Way Matching', 'NV-49', 'ready'], ['/?as=U-FIN#/nv/50', 'Accounts Payable & Payment Control', 'NV-50', 'ready'], ['/?as=U-FIN#/nv/51', 'GL Posting, Accounting & Exception Review', 'NV-51', 'ready'], ['/?as=U-FIN#/nv/52', 'Cost Allocation & Inter-BU Reconciliation', 'NV-52', 'ready'],
+    ['-', 'Budget & referensi'], ['/?as=U-FIN#/nv/15', 'Budget tahunan', 'NV-15', 'ready'], ['/?as=U-FIN#/nv/16', '7P overview', 'NV-16', 'ready'], ['/?as=U-FIN#/nv/22', 'Revisi & reforecast', 'NV-22', 'ready'], ['/?as=U-FIN#/nv/23', 'Budget vs actual', 'NV-23', 'ready'], ['/?as=U-FIN#/nv/07', 'Shared Office', 'NV-07', 'ready'], ['/?as=U-FIN#/nv/36', 'Referensi PO', 'NV-36', 'ready'], ['/?as=U-FIN#/nv/40', 'Referensi stok', 'NV-40', 'ready'], ['/?as=U-FIN#/nv/53', 'Referensi aset', 'NV-53', 'ready'], ['/?as=U-FIN#/nv/56', 'Kapitalisasi', 'NV-56', 'ready'], ['/?as=U-FIN#/nv/61', 'Control Tower', 'NV-61', 'ready'],
+    ['-', 'Demo'], ['/#/dx', 'Demo Experience Center', 'DX', 'ready'],
+    ['budget', 'Budget 7P (arsip)', '', 'archived'], ['mrf', 'Purchasing & MRF (arsip)', '', 'archived'], ['commission', 'Komisi & Rekonsiliasi (arsip)', 'F5-02', 'archived']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
   Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['budget-2027', 'Master Budget 2027', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
-const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
+const HOME = { Finance: '/?as=U-FIN#/nv/47', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
 const SCREENS = [
   ['F1-01', 'Pemilih Portal', 1, 'picker', 'ready', 'Semua role'], ['F1-02', 'Commercial Executive Summary', 1, 'commercial', 'ready', 'Commercial Manager, Owner'], ['F1-03', 'Drill-down Executive Summary', 1, 'commercial-drill?metric=revenue', 'ready', 'Commercial Manager, Owner'], ['F1-04', 'Beranda Sales', 1, 'sales-home', 'ready', 'Sales Manager, Owner, staf'],
   ['F2-01', 'Brand & Communications', 2, 'brand', 'ready', 'Commercial Manager, Brand Designer'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'ready', 'Commercial Manager, Digital'], ['F2-03', 'Campaign Detail', 2, 'campaign-detail?id=CMP-001', 'ready', 'Commercial Manager, PIC campaign'], ['F2-04', 'Content Studio', 2, 'studio', 'ready', 'Content Lead, Creator, Editor, Reviewer'], ['F2-05', 'Digital Marketing', 2, 'digital', 'ready', 'Digital Marketing, Commercial Manager'], ['F2-06', 'Social Media', 2, 'social', 'ready', 'Social Media, Content Lead'], ['F2-07', 'Media & KOL', 2, 'kol', 'ready', 'Commercial Manager, PIC partner'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'ready', 'Commercial Manager, Finance'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'ready', 'Commercial Manager, Finance'], ['F2-10', 'AI Mentor', 2, 'mentor', 'ready', 'Commercial Manager'],
@@ -21,7 +29,10 @@ const SCREENS = [
   ['F6-01', 'Daily Race', 6, 'sales-team', 'sandbox'], ['F6-02', 'Weekly Race', 6, '', 'planned'], ['F6-03', 'Monthly Reflection & STRACON', 6, '', 'planned'], ['F6-04', 'Kinerja & KPI Overview', 6, 'sales-kpi', 'planned'], ['F6-05', 'XScore & People Performance', 6, '', 'planned'], ['F6-06', 'KPI Library & Kontrak', 6, '', 'planned'], ['F6-07', 'Status Tim', 6, 'sales-status', 'planned'],
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution?view=journey&q=LEAD-001', 'ready', 'Semua role']
 ];
-const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
+const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia', archived: 'Diarsipkan' };
+const EXT = (r) => typeof r === 'string' && r[0] === '/';
+const homeHref = (g) => EXT(HOME[g]) ? HOME[g] : '#' + HOME[g];
+const ARCHIVED = (i) => i[3] === 'hidden' || i[3] === 'archived';
 const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B'], ['finance-manager', 'Finance Manager'], ['hrd', 'HRD (People Cost)']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
@@ -102,7 +113,7 @@ const teams = scope => {
     '<div class="grid">' + card('Kinerja & KPI', `<p>Completion demo <b>${dec(100 * tasks.filter(t => t.status === 'done').length / tasks.length)}%</b></p><p>XScore dan kontrak KPI masuk tahap pengembangan lanjutan.</p>`) + card('Status Tim', '<p>Status sesi demo · Tidak diketahui</p><p>Jadwal demo · Dalam shift</p>') + '</div>';
 };
 function bridge() {
-  return '<div class="flow">' + Object.entries(PORTALS).map(([group, p]) => `<a class="card" href="#${HOME[group]}"><h2>${group}</h2><small>${p.items.filter(i => i[0] !== '-' && i[3] !== 'hidden').length} ruang demo</small></a>`).join('') + '</div>' +
+  return '<div class="flow">' + Object.entries(PORTALS).map(([group, p]) => `<a class="card" href="${homeHref(group)}"><h2>${group}</h2><small>${p.items.filter(i => i[0] !== '-' && !ARCHIVED(i)).length} ruang demo</small></a>`).join('') + '</div>' +
     card('Skenario uji lintas portal', '<ol><li>Ajukan MRF di Commercial Budget. Setujui dan catat realisasi di Finance.</li><li>Buka lead Instagram/WhatsApp di Sales. Alihkan ke staf atau langsung booking.</li><li>Check-in, selesaikan, lalu bayar di Operational & POS. Cek revenue dan atribusi di Executive Summary (Giant Spa Ubud · Agustus 2026).</li><li>Aktifkan driver setelah perjanjian. Buat booking driver, selesaikan di POS, lalu catat komisi di Finance.</li></ol><div class="actions">' + link('screens', 'Buka peta semua layar') + button('reset', 'Reset demo') + '</div>');
 }
 function sandboxScreen(id) {
@@ -135,6 +146,7 @@ function sandboxScreen(id) {
 const erpLinks = (items) => `<p class="erp-links">Modul resmi di HAWK ERP preview (rute terverifikasi): ${items.map(([nv, label]) => `<a href="${ERP}#/nv/${nv}" target="_blank" rel="noopener">${label} ↗</a>`).join(' · ')}</p>`;
 const phaseBanner = (code, status) => {
   const s = SCREENS.find(x => x[0] === code);
+  if (status === 'archived') return `<div class="phase-banner"><b>Diarsipkan</b> Halaman sandbox Finance lama ini tidak lagi tampil di menu Finance. Portal Finance sekarang memakai <a href="/?as=U-FIN#/nv/47">modul Finance lengkap HAWK (NV-47)</a>. Data dan interaksi di bawah tetap berjalan untuk alur Commercial, Sales, dan HRD.</div>`;
   if (!s || status === 'ready' || status === 'hidden') return '';
   return `<div class="phase-banner"><b>${code} · ${status === 'planned' ? 'Belum dibuat' : 'Versi sandbox'}</b> Layar lengkap dijadwalkan pada Fase ${s[2]}. ${status === 'planned' ? 'Belum ada interaksi di layar ini.' : 'Interaksi sandbox di bawah sudah tersambung ke model lintas portal.'}</div>`;
 };
@@ -386,11 +398,11 @@ const navOpen = new Set();
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
-  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
+  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : EXT(route) ? `<a href="${route}" class="nav-ext"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
   nav.innerHTML = Object.entries(PORTALS).map(([name, p]) => {
     const open = navOpen.has(name);
-    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => i[3] !== 'hidden').map(navLink).join('')}</div></div>`;
-  }).join('') + `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
+    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => !ARCHIVED(i)).map(navLink).join('')}</div></div>`;
+  }).join('') + `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a><p class="nav-sub">Arsip Finance (lama)</p>${PORTALS.Finance.items.filter(i => i[3] === 'archived').map(navLink).join('')}</div></div>`;
 }
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-mod]');
@@ -453,7 +465,7 @@ picker.addEventListener('close', () => { if (parseHash().id === 'picker') histor
 picker.addEventListener('click', (e) => {
   if (e.target === picker) { picker.close(); return; }
   const opt = e.target.closest('.option[data-portal]');
-  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); location.hash = HOME[opt.dataset.portal]; }
+  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); if (EXT(HOME[opt.dataset.portal])) location.href = HOME[opt.dataset.portal]; else location.hash = HOME[opt.dataset.portal]; }
 });
 document.querySelectorAll('[data-open-picker]').forEach(b => b.addEventListener('click', () => openPicker(b)));
 $('#menu').addEventListener('click', () => { const open = !shell.classList.contains('nav-open'); setNav(open); if (open) (nav.querySelector('a.cur') || nav.querySelector('button'))?.focus(); });
@@ -497,6 +509,7 @@ window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt,
 document.addEventListener('DOMContentLoaded', () => {
   HOOKS.boot?.forEach(fn => fn());
   fillRoles();
+  if (!location.hash && document.body.dataset.portal && EXT(HOME[document.body.dataset.portal])) { location.replace(HOME[document.body.dataset.portal]); return; }
   if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
   render();
 });
