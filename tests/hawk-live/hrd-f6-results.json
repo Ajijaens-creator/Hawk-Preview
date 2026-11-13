@@ -1,0 +1,266 @@
+{
+ "pass": 52,
+ "fail": 0,
+ "out": [
+  {
+   "name": "NV01: skor tim dan rata-rata XScore personal tampil terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01: cakupan bukti, readiness, QoH, efektivitas pelatihan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV01: label simulasi formula XScore",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik kartu XScore → daftar dengan cakupan outlet yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05: scorecard target, aktual, bobot, kontribusi, bukti, status Final",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik bukti utility → baris POS therapist (F5)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV06: profil Employee ID F2, kompetensi, aspirasi, histori penempatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV07: matriks dengan Stars & tombol Belum Dinilai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik kotak → daftar nama, alasan, validasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pindah kotak mencatat alasan & reviewer di histori",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "HG memvalidasi, masih menunggu Supervisor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor + HG → Final",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV08: Workplan coaching dibuat dari 9-Box",
+   "ok": true,
+   "info": "PLAN-0001 · TSK-1001"
+  },
+  {
+   "name": "Menandai ulang kebutuhan yang sama membuka rencana terkait",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bukti coaching muncul di profil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu Planner F3 memuat sumber 9-Box",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV09: kehadiran & praktik dibaca terpisah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor memverifikasi Lulus → Evidence ID praktik",
+   "ok": true,
+   "info": "EVD-PRC-HOT-2611-0002"
+  },
+  {
+   "name": "NV06: kompetensi Hot Stone memuat bukti praktik yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "KPI Learning November memakai bukti pelatihan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03: definisi Efektivitas Pelatihan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Efektivitas dengan cakupan verifikasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Quality of Hire: review tertunda terlihat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV02: 15 ekspektasi tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik ekspektasi → detail dengan metrik",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Absenteeism: belum terverifikasi & perlu konfirmasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Staf HRD: rasio salary disembunyikan (izin Manager HRD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV03: versi baru v2, kontrak aktif tetap v1",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV04: kontrak 90% ditandai draf",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan dengan bobot < 100% ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bobot 100% → diajukan → aktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tutup tanpa konfirmasi bukti belum lengkap ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penutupan menyimpan snapshot versi, cakupan, 100 scorecard",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05: bukti kosong → Provisional, cakupan 80%",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "NV05: aktual nol terverifikasi dibedakan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist ESS → XScore sendiri",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi setelah penutupan tercatat menunggu review",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Therapist tidak bisa membuka scorecard orang lain",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "HG menerima koreksi → tercatat dan dapat ditinjau",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud hanya melihat therapist Spa Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud → profil therapist Santi = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner tidak diberi skor personal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Finance Manager → Human Growth = Akses ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter bukti belum lengkap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Belum Dinilai menampilkan alasan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Navigasi keyboard: fokus terlihat pada elemen interaktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: hrd-kpi",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-xscore?emp=EMP-0001",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-ninebox",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-kpi-contract?id=CTR-2610-THR",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Mobile 390 px: hrd-training",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
