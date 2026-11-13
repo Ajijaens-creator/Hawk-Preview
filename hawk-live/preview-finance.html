@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T16:40:13.032Z">
+<meta name="hawk-standalone" content="2026-11-13T23:09:51.433Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Finance</title>
 <style>
@@ -1578,6 +1578,12 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-acts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:170px}
 .trail{margin:0;padding-left:1.2em;display:grid;gap:6px}
 .workflow-form select{max-width:100%}
+/* HRD Demo Experience Center */
+.dx-persona h3{margin:4px 0}.dx-persona.on{outline:2px solid var(--gold,#C99A2E)}
+.dx-steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dx-step{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line,#e5e5e5);border-radius:10px}
+.dx-step.done{opacity:.75}.dx-step.next{border-color:var(--gold,#C99A2E);background:rgba(201,154,46,.06)}
+.dx-step .actions{margin:0}
 
 </style>
 </head>
@@ -2838,7 +2844,7 @@ const HR = (() => {
     ['POS-AOM', 'Assistant Operational Manager', 'DIV-OPS', 'manager', 6400000], ['POS-OPS', 'Staf Operations', 'DIV-OPS', 'staff', 3600000],
     ['POS-FM', 'Finance Manager', 'DIV-FA', 'manager', 7000000], ['POS-ACC', 'Staf Accounting', 'DIV-FA', 'staff', 3800000], ['POS-FIN', 'Staf Finance', 'DIV-FA', 'staff', 3600000],
     ['POS-MM', 'Marketing Manager', 'DIV-MKT', 'manager', 7000000], ['POS-CRT', 'Content Creator', 'DIV-MKT', 'staff', 3600000], ['POS-SOC', 'Social Media Admin', 'DIV-MKT', 'staff', 3400000], ['POS-FV', 'Foto & Video', 'DIV-MKT', 'staff', 3600000],
-    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Staf HRD Operations', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Recruiter', 'DIV-HRD', 'staff', 3700000],
+    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Admin HRD', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Koordinator Rekrutmen', 'DIV-HRD', 'staff', 3700000],
     ['POS-PDM', 'Production Lead', 'DIV-PRD', 'supervisor', 5000000], ['POS-PDS', 'Staf Production', 'DIV-PRD', 'staff', 3200000]
   ].map(([id, name, division, level, thp]) => ({ id, name, division, level, thp }));
   const pos = (id) => POSITIONS.find(p => p.id === id);
@@ -2848,7 +2854,7 @@ const HR = (() => {
   const GIVEN = ['Ari', 'Sari', 'Dewi', 'Wulan', 'Indra', 'Yasa', 'Mahendra', 'Ratna', 'Sinta', 'Lestari', 'Dian', 'Rai', 'Suastini', 'Adnyani', 'Pradnya', 'Widya', 'Purnami', 'Juliani', 'Astiti', 'Arsana', 'Budiasa', 'Candra', 'Darmayanti', 'Eka'];
   /* akun demo yang sudah dipakai di HAWK (lihat memori project) dipertahankan namanya */
   const NAMED = {
-    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa']
+    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa'], 'POS-HRO': ['Ayu'], 'POS-REC': ['Harja']
   };
 
   /* roster: 4 spa × (25 Therapist + 5 Receptionist) + Office 12 F&A, 9 Marketing, 4 HRD, 5 Production, 8 Operations = 158 */
@@ -3808,7 +3814,7 @@ const HR4 = (() => {
       A('APP-2611-0005', 'CAN-0003', 'VAC-2611-002', 'Lamaran Masuk', { frontdesk: '', volume: '', pos: '', lang: 'Indonesia, Inggris', shiftReady: 'Pagi/Sore', situational: 'Cek jadwal lalu tawarkan alternatif.', startReady: '2026-12-01' }, { channel: 'WEB', at: '2026-11-11 08:00' }),
       A('APP-2611-0006', 'CAN-0005', 'VAC-2611-001', 'Ditolak', { ...thrOk, years: '0', cert: '', sessions: '2' }, { channel: 'WA' })
     ];
-    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Wayan Wulan D (Recruiter)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
+    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Harja (Koordinator Rekrutmen)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
     return { seeded: true, reqs, candidates, apps, seq: { req: 10, vac: 10, app: 100, cand: 100, iv: 100, offer: 100, ctr: 100, evt: 1000 } };
   }
   function ensure(hr) {
@@ -3816,7 +3822,7 @@ const HR4 = (() => {
     if (!hr.f4 || !hr.f4.seeded) {
       const keep = hr.f4; hr.f4 = seed(hr);
       hr.f4.apps.forEach(a => { if (['Shortlist', 'Interview', 'Screening'].includes(a.stage) || a.stage === 'Ditolak') runScreen(hr, a, 'Seed fixture'); });
-      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Wayan Wulan D (Recruiter)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
+      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Harja (Koordinator Rekrutmen)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
       hr.f4.apps.forEach(a => { if (!a.screening) a.screening = { status: 'Menunggu', version: 1, runs: 0 }; });
       if (keep) for (const k of ['reqs', 'candidates', 'apps']) hr.f4[k].push(...(keep[k] || []));
     }
@@ -7565,6 +7571,175 @@ register('hrd-race-reflection', guard(reflectionPage), () => 'Monthly Reflection
 register('hrd-race-stracon', guard(stracon), (p) => p.id || 'STRACON');
 register('hrd-race-deck', guard(deck), (p) => p.snap || 'e-Deck Reflection HRD');
 register('hrd-report-center', guard(reportCenter), (p) => p.id || 'Pusat Laporan & Jejak Bukti');
+})();
+
+;
+/* HAWK ERP · Portal HRD · Demo Experience Center HRD (#hrd-dx) — DATA DEMO / SIMULASI.
+   Persona nyata tim HRD dan divisi (Made Gunarsa, Harja, Ayu, HG, Finance, Operational, Supervisor, Therapist, Owner, kandidat)
+   menjalankan skenario lintas divisi langkah demi langkah di atas model F1–F8 yang sama. Setiap langkah memakai izin role persona,
+   tercatat di audit atas nama persona, dan membuka layar aslinya. Panel Kinerja Tim membaca produktivitas tiap divisi.
+   Tidak ada layar tiruan: tautan "Buka layar" masuk ke prototype dengan role persona. */
+(() => {
+const H = window.HL;
+const { esc, table, card, qs, link } = H;
+const KEY = 'hawk-integrated-demo-v1';
+const hr = () => { const h = HR.ensure(H.state); HR.EXT.ensure?.(h); return h; };
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const empName = (id) => id ? (hr().people.find(p => p.id === id)?.name || id) : '—';
+const register = (id, fn, title) => { H.REGISTRY[id] = fn; fn.title = title; };
+const now = () => `${HR.TODAY} ${new Date().toTimeString().slice(0, 5)}`;
+
+/* ---------- persona ---------- */
+const PERSONAS = [
+  { id: 'made', emp: 'EMP-0142', role: 'hrd', title: 'Manager HRD', home: 'hrd-home', does: 'Menyetujui permintaan tenaga, keputusan & penawaran, penempatan, payroll, Race dan STRACON.' },
+  { id: 'harja', emp: 'EMP-0145', role: 'hrd-ops', title: 'Koordinator Rekrutmen', home: 'hrd-rec-candidates', does: 'Publikasi lowongan, screening, shortlist dan jadwal interview.' },
+  { id: 'ayu', emp: 'EMP-0143', role: 'hrd-ops', title: 'Admin HRD', home: 'hrd-roster', does: 'Direktori, presensi, verifikasi dokumen, kontrak dan onboarding.' },
+  { id: 'hg', emp: 'EMP-0144', role: 'hg-lead', title: 'Lead Human Growth', home: 'hrd-training', does: 'Pelatihan, 9-Box, rencana pengembangan dan coaching.' },
+  { id: 'asri', emp: 'EMP-0121', role: 'finance-manager', title: 'Finance Manager', home: 'hrd-pay-handoff?period=2610', does: 'Menerima jurnal payroll agregat dan memantau biaya tenaga kerja.' },
+  { id: 'eni', emp: 'EMP-0151', role: 'ops-manager', title: 'Operational Manager', home: 'hrd-manpower', does: 'Memantau kapasitas 4 outlet, menyetujui kebutuhan tenaga dari Supervisor.' },
+  { id: 'mila', emp: 'EMP-0153', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'hrd-mp-utility?outlet=OUT-UBD', does: 'Mengajukan kebutuhan therapist/receptionist, menilai praktik, verifikasi pelatihan.' },
+  { id: 'ari', emp: 'EMP-0001', role: 'therapist', title: 'Therapist Spa Ubud (ESS)', home: 'hrd-myday', does: 'Melihat tugas, jadwal dan XScore miliknya sendiri.' },
+  { id: 'owner', emp: null, name: 'Owner', role: 'owner', title: 'Owner', home: 'hrd-race', does: 'Melihat agregat, Race Vegen dan e-Deck tanpa nominal personal.' },
+  { id: 'cand', emp: null, name: 'Kandidat (publik)', role: 'public', title: 'Pelamar via halaman karier', home: null, does: 'Melamar dan merespons penawaran lewat karier publik.' }
+];
+const P = (id) => PERSONAS.find(p => p.id === id);
+const pName = (p) => p.name || empName(p.emp);
+const actorOf = (p) => `${pName(p)} (${p.title})`;
+const curPersona = () => { const p = P(H.prefs.persona); return p && p.role === H.prefs.role ? p : null; };
+const prevActor = H.HOOKS.actor;
+H.HOOKS.actor = () => { const p = curPersona(); return p ? actorOf(p) : (prevActor ? prevActor() : 'Demo'); };
+
+/* ---------- skenario ---------- */
+const CAND = (n) => ({ name: `Ni Komang Demo ${n}`, email: `demo${n}@example.invalid`, phone: '0812-0' + n, consent: '1', docs: 'cv.pdf', techniques: 'Balinese, hot stone', years: '3', cert: 'LSP 2023', sessions: '6', lang: 'Inggris', shiftReady: 'Pagi', situational: 'tanya kenyamanan tamu', submitKey: `DX-${n}` });
+const view = (msg = 'dilihat') => () => msg;
+const SC = [
+  { id: 'rekrut', name: 'Kebutuhan → penempatan therapist Spa Ubud', why: 'Utility Ubud di atas 100%: Supervisor mengajukan kebutuhan, OM & HRD menyetujui, rekrutmen berjalan sampai penempatan dan coaching.', steps: [
+    { who: 'eni', title: 'Lihat utility Spa Ubud di atas kapasitas', route: () => 'hrd-mp-utility?outlet=OUT-UBD', run: view() },
+    { who: 'mila', title: 'Ajukan kebutuhan 2 therapist Spa Ubud', route: (c) => 'hrd-recruit', run: (U, c) => { c.req = U('req-create', { position: 'POS-THR', outlet: 'OUT-UBD', count: '2', shift: 'Pagi/Sore', skills: 'Balinese, hot stone' }); return c.req; } },
+    { who: 'eni', title: 'Setujui permintaan sebagai Operational Manager', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'made', title: 'Setujui permintaan sebagai Manager HRD', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'harja', title: 'Publikasikan lowongan dari formasi disetujui', route: (c) => 'hrd-rec-jobs', run: (U, c) => { c.vac = U('vac-publish', { req: c.req }); return c.vac; } },
+    { who: 'cand', title: 'Kandidat melamar lewat halaman karier', route: (c) => c.vac ? `hrd-career-job?id=${c.vac}` : 'hrd-rec-jobs', run: (U, c) => { c.n = c.n || (Date.now() % 100000); c.app = U('app-submit', { vac: c.vac, ...CAND(c.n) }); return c.app; } },
+    { who: 'harja', title: 'Screening, shortlist & jadwalkan interview praktik', route: (c) => `hrd-rec-candidates?id=${c.app}`, run: (U, c) => { U('screen-run', { id: c.app }); U('app-stage', { id: c.app, to: 'Shortlist' }); return U('iv-schedule', { id: c.app, slot: '2026-11-14 10:00', iv2: 'EMP-0153' }); } },
+    { who: 'mila', title: 'Nilai praktik kandidat (rubric)', route: (c) => `hrd-rec-interview?id=${c.app}`, run: (U, c) => U('iv-score', { id: c.app, s0: 4, s1: 4, s2: 5, s3: 4, note: 'Praktik hot stone rapi' }) },
+    { who: 'made', title: 'Putuskan Diterima & kirim penawaran (mulai 16 Nov)', route: (c) => `hrd-rec-offer?id=${c.app}`, run: (U, c) => { U('rec-decide', { id: c.app, value: 'Diterima', reason: 'Rubric praktik baik' }); return U('offer-send', { id: c.app, start: '2026-11-16' }); } },
+    { who: 'cand', title: 'Kandidat menerima penawaran', route: (c) => `hrd-rec-offer?id=${c.app}`, run: (U, c) => U('offer-respond', { id: c.app, answer: 'accept' }) },
+    { who: 'ayu', title: 'Verifikasi dokumen, tanda tangan kontrak & onboarding', route: (c) => `hrd-rec-onboard`, run: (U, c) => { U('doc-verify', { id: c.app, kind: 'KTP' }); U('doc-verify', { id: c.app, kind: 'Foto' }); c.emp = U('contract-sign', { id: c.app }); c.onb = U('onboard-create', { id: c.app }); return `${c.emp} · ${c.onb}`; } },
+    { who: 'made', title: 'Setujui penempatan Spa Ubud & akun ESS', route: () => 'hrd-rec-place', run: (U, c) => U('place-approve', { id: c.app, accRole: 'ess' }) },
+    { who: 'hg', title: 'Buat coaching 30 hari untuk therapist baru', route: (c) => c.coach ? `hrd-task?id=${c.coach}` : 'hrd-tasks', run: (U, c) => { c.coach = U('weekly-action', { ws: 'HG', title: `Coaching 30 hari ${empName(c.emp)}`, pic: 'EMP-0144', due: '2026-12-16', sourceId: `ONB-${c.emp}` }); return c.coach; } }
+  ] },
+  { id: 'reception', name: 'Receptionist Spa Bhisma shift Sore', why: 'Celah antrean check-in sore di Bhisma: OM mengajukan 1 receptionist, HRD menyetujui dan lowongan dibuka.', steps: [
+    { who: 'eni', title: 'Lihat celah reception Bhisma 17–21', route: () => 'hrd-mp-reception?outlet=OUT-BSM', run: view() },
+    { who: 'eni', title: 'Ajukan 1 receptionist shift Sore Bhisma', route: () => 'hrd-recruit', run: (U, c) => { c.req = U('req-create', { position: 'POS-RCP', outlet: 'OUT-BSM', count: '1', shift: 'Sore', skills: 'Check-in, bahasa Inggris' }); return c.req; } },
+    { who: 'eni', title: 'Setujui sebagai Operational Manager', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'made', title: 'Setujui sebagai Manager HRD', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'harja', title: 'Publikasikan lowongan Receptionist', route: () => 'hrd-rec-jobs', run: (U, c) => { c.vac = U('vac-publish', { req: c.req }); return c.vac; } }
+  ] },
+  { id: 'kinerja', name: 'Kinerja & pengembangan therapist', why: 'Supervisor memverifikasi praktik pelatihan, HG memindahkan 9-Box dengan alasan, keduanya memvalidasi, lalu rencana coaching dibuat.', steps: [
+    { who: 'mila', title: 'Verifikasi praktik Hot Stone peserta Ubud', route: () => 'hrd-training', run: (U, c, h) => { const prg = HR6.programs(h).find(p => p.id === 'PRG-HOT-2611'); const pt = prg && prg.participants.find(x => x.practice === 'Menunggu verifikasi' && x.attend === 'Hadir' && h.placements.some(pl => pl.emp === x.emp && pl.location === 'OUT-UBD' && !pl.to)); if (!pt) return 'Tidak ada peserta Ubud yang menunggu verifikasi'; c.trainee = pt.emp; return U('train-verify', { id: 'PRG-HOT-2611', emp: pt.emp }); } },
+    { who: 'ari', title: 'Therapist melihat XScore miliknya', route: () => 'hrd-kpi', run: view() },
+    { who: 'hg', title: 'Pindahkan Putu Ari ke Calon Bintang (alasan wajib)', route: () => 'hrd-ninebox', run: (U) => U('nine-move', { emp: 'EMP-0001', box: 'M-H', reason: 'Asesmen potensi Nov: siap mentor hot stone' }) },
+    { who: 'mila', title: 'Validasi 9-Box sebagai Supervisor', route: () => 'hrd-ninebox', run: (U) => U('nine-validate', { emp: 'EMP-0001' }) },
+    { who: 'hg', title: 'Validasi HG & buat rencana pengembangan', route: (c) => c.plan ? `hrd-dev?id=${c.plan}` : 'hrd-dev', run: (U, c) => { U('nine-validate', { emp: 'EMP-0001' }); c.plan = U('plan-create', { emp: 'EMP-0001', comp: 'COMP-HYG', from: 'ninebox' }); return c.plan; } }
+  ] },
+  { id: 'payroll', name: 'Payroll November → Finance', why: 'Komisi POS masuk payroll, Manager HRD mengunci batch, jurnal agregat diserahkan dan diterima Finance Manager.', steps: [
+    { who: 'made', title: 'Cek komisi POS per Service Line', route: () => 'hrd-pay-commission?outlet=OUT-UBD', run: view() },
+    { who: 'made', title: 'Generate draf payroll November', route: () => 'hrd-pay-process?period=2611', run: (U) => U('pay-generate', { period: '2611' }) },
+    { who: 'made', title: 'Review & kunci batch (snapshot)', route: () => 'hrd-pay-process?period=2611', run: (U) => { U('pay-review', { period: '2611' }); return U('pay-lock', { period: '2611' }); } },
+    { who: 'made', title: 'Kirim jurnal agregat ke Finance', route: () => 'hrd-pay-handoff?period=2611', run: (U) => U('fin-handoff', { period: '2611' }) },
+    { who: 'asri', title: 'Finance Manager menerima jurnal (selisih 0)', route: () => 'hrd-pay-handoff?period=2611', run: (U) => U('fin-ack', { period: '2611', variance: '0' }) },
+    { who: 'owner', title: 'Owner melihat rasio biaya tenaga kerja (agregat)', route: () => 'hrd-budget', run: view() }
+  ] },
+  { id: 'reflection', name: 'Monthly Reflection → STRACON', why: 'Temuan kapasitas Ubud dibahas di Reflection, diputuskan di STRACON, dijalankan sebagai Workplan dan dipresentasikan di e-Deck.', steps: [
+    { who: 'eni', title: 'Baca Monthly Reflection November', route: () => 'hrd-race-reflection', run: view() },
+    { who: 'made', title: 'Tandai utility Ubud sebagai Issue', route: (c) => c.task ? `hrd-task?id=${c.task}` : 'hrd-race-reflection', run: (U, c) => { c.task = U('rfl-mark', { key: 'UTIL-OUT-UBD', period: '2611', stage: 'Issue' }); return c.task; } },
+    { who: 'made', title: 'Catat keputusan kapasitas di STRACON', route: (c) => c.dec ? `hrd-race-stracon?id=${c.dec}` : 'hrd-race-stracon', run: (U, c) => { c.dec = U('dec-create', { title: 'Tambah 2 therapist Spa Ubud', finding: 'FND-UTIL-UBD-2611', task: c.task, alternatives: 'Lembur terjadwal|Bantuan Santi|Rekrut 2 therapist', chosen: 'Rekrut 2 therapist', reason: 'Utility di atas 100% dan lembur berulang', owner: 'EMP-0142', due: '2026-11-30', ckey: 'UTIL-OUT-UBD', cop: '<=', cvalue: '100', cperiod: '2612' }); return c.dec; } },
+    { who: 'made', title: 'Jadikan keputusan Workplan', route: (c) => c.wp ? `hrd-task?id=${c.wp}` : 'hrd-race-stracon', run: (U, c) => { c.wp = U('dec-workplan', { id: c.dec }); return c.wp; } },
+    { who: 'owner', title: 'Owner membuka e-Deck halaman Utility', route: () => 'hrd-race-deck?page=1', run: view() }
+  ] }
+];
+const S = (id) => SC.find(s => s.id === id);
+const dx = () => { const h = hr(); h.dx = h.dx || { runs: {} }; return h.dx; };
+const run = (id) => { const d = dx(); d.runs[id] = d.runs[id] || { ctx: {}, done: [], log: [] }; return d.runs[id]; };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(H.state)); } catch (e) { /* in-memory */ } };
+const prevExt = { ...HR.EXT };
+HR.EXT.purge = (h) => { prevExt.purge?.(h); delete h.dx; };
+
+function usePersona(p) { H.prefs.role = p.role === 'public' ? 'hrd' : p.role; H.prefs.persona = p.role === 'public' ? null : p.id; H.savePrefs(); const sel = document.getElementById('role'); if (sel) sel.value = H.prefs.role; }
+function runStep(scId, i) {
+  const s = S(scId), r = run(scId), st = s.steps[i], p = P(st.who);
+  if (r.done.includes(i)) return H.render(`Langkah ${i + 1} sudah selesai.`);
+  if (i > 0 && !r.done.includes(i - 1)) return H.render('Jalankan langkah sebelumnya terlebih dahulu.', true);
+  const by = actorOf(p);
+  const U = (a, input) => HR.update(H.state, a, { by, role: p.role === 'public' ? 'hrd' : p.role, ...input });
+  try {
+    const out = st.run(U, r.ctx, hr());
+    r.done.push(i); r.log.push({ i, at: now(), by, result: typeof out === 'string' ? out : '' }); save();
+    H.render(`Langkah ${i + 1} selesai oleh ${by}${typeof out === 'string' ? ' · ' + out : ''}`);
+  } catch (e) { save(); H.render(`Langkah ${i + 1} gagal: ${e.message}`, true); }
+}
+
+/* ---------- kinerja tim per divisi ---------- */
+function divisions() {
+  const h = hr(), rows = [];
+  const pct = (v) => v === null || v === undefined ? '—' : `${(v * 100).toFixed(1)}%`;
+  const hc = (pred) => h.placements.filter(pl => !pl.to && pl.from <= HR.TODAY && pred(pl)).length;
+  if (typeof HR5 !== 'undefined') for (const o of HR.OUTLETS) {
+    const u = HR5.outletUtil(h, o.id, 'W46'), xs = typeof HR6 !== 'undefined' ? HR6.avgX(h, HR6.therapists(h, o.id), '2610') : null;
+    rows.push([`Operational · ${esc(o.name)}`, hc(pl => pl.location === o.id), 'Utility therapist (jam treatment ÷ kapasitas)', `${pct(u.u)} · ${Math.round(u.done)}/${Math.round(u.cap)} jam`, xs && xs.avg !== null ? `XScore rata-rata Okt ${xs.avg.toFixed(1)}` : '—', 'POS F5 + XScore F6 (simulasi)', u.u > 1 ? chip('Di atas kapasitas', 'bad') : u.u < 0.7 ? chip('Di bawah 70%', 'bad') : chip('Sehat', 'ready'), link(`hrd-mp-utility?outlet=${o.id}`, 'Buka')]);
+  }
+  const D = (id) => typeof HR5 !== 'undefined' ? HR5.DIVISIONS.find(d => d.id === id) : null;
+  const divRow = (label, id, extra, route) => { const d = D(id); if (!d) return; rows.push([label, hc(pl => pl.division === id && pl.location === HR.HQ.id), esc(d.metric), d.load === null ? 'live' : `${d.output}/${d.load} ${esc(d.unit)} · backlog ${d.backlog}`, (d.slaMet === null ? '' : `SLA ${esc(d.sla)} tercapai ${pct(d.slaMet)}`) + (extra || ''), esc(d.source), d.complete ? chip('Data lengkap', 'ready') : chip('Data belum lengkap', 'sandbox'), link(route || `hrd-mp-division?id=${id}`, 'Buka')]); };
+  divRow('Operational · Office (OM/AOM/Supervisor)', 'DIV-OPS');
+  const b = typeof HR7 !== 'undefined' ? HR7.batchOf(h, '2610') : null;
+  divRow('Finance & Accounting', 'DIV-FA', b ? ` · jurnal payroll ${esc(b.id)}: ${esc(b.handoff?.status || 'belum dikirim')}` : '');
+  divRow('Marketing', 'DIV-MKT');
+  if (typeof CX !== 'undefined') {
+    if (!H.state.cx) CX.ensure(H.state);
+    const c = H.state.cx.content || [], done = c.filter(x => ['Published', 'Analysed'].includes(x.stage)).length, team = CX.PEOPLE.length;
+    rows.push(['Commercial · tim konten & kampanye', `${team} (portal Commercial)`, 'Konten berjalan → terbit/dianalisis', `${done}/${c.length} konten`, `${(H.state.cx.campaigns || []).length} kampanye aktif`, 'Portal Commercial (data demo)', chip('Headcount HRD belum ditetapkan', 'sandbox'), '<a href="commercial.html">Buka</a>']);
+  }
+  const f4 = h.f4 || { reqs: [], apps: [] }, open = typeof HR5 !== 'undefined' ? f4.reqs.filter(r => r.status !== 'Ditolak').map(r => HR5.reqProgress(h, r.id)).reduce((s, x) => s + (x?.open || 0), 0) : 0;
+  const hrdTasks = (h.f3?.tasks || []).filter(t => t.ws === 'HRD' || t.ws === 'HG');
+  rows.push(['HRD & Human Growth', hc(pl => pl.division === 'DIV-HRD'), 'Kartu Planner selesai · formasi terbuka', `${hrdTasks.filter(t => t.stage === 'Selesai').length}/${hrdTasks.length} kartu · ${open} posisi terbuka`, `${f4.apps.filter(a => !['Ditolak', 'Mengundurkan diri', 'Penempatan Aktif'].includes(a.stage)).length} lamaran diproses`, 'Planner F3 + Rekrutmen F4 (live demo)', chip('Live', 'ready'), link('hrd-tasks', 'Buka')]);
+  divRow('Production · JAENS Essence', 'DIV-PRD');
+  return rows;
+}
+
+/* ---------- layar ---------- */
+function center(params) {
+  const sc = S(params.sc) || null, cur = curPersona();
+  const personaCards = `<section class="grid g4 keep2">${PERSONAS.map(p => `<article class="card dx-persona${cur && cur.id === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}</div><h3>${esc(pName(p))}</h3><p class="muted small">${esc(p.does)}</p>${p.role === 'public' ? '<a class="btn ghost sm" href="karier.html">Buka karier publik</a>' : `<button type="button" class="btn sm" data-dx-persona="${p.id}">Masuk sebagai ${esc(pName(p))}</button>`}</article>`).join('')}</section>`;
+  const scList = card('Skenario lintas divisi', table(['Skenario', 'Persona terlibat', 'Langkah', 'Progres', ''], SC.map(s => { const r = dx().runs[s.id]; const n = r ? r.done.length : 0; return [link('hrd-dx' + qs({ sc: s.id }), esc(s.name)), [...new Set(s.steps.map(x => pName(P(x.who)).split(' ')[0]))].join(', '), s.steps.length, n === s.steps.length ? chip('Selesai', 'ready') : n ? chip(`${n}/${s.steps.length}`, 'planned') : chip('Belum', 'sandbox'), link('hrd-dx' + qs({ sc: s.id }), n ? 'Lanjutkan' : 'Mulai')]; })));
+  let detail = '';
+  if (sc) {
+    const r = dx().runs[sc.id] || { ctx: {}, done: [], log: [] };
+    detail = card(`${esc(sc.name)}`, `<p>${esc(sc.why)}</p>` + `<ol class="dx-steps">${sc.steps.map((st, i) => { const p = P(st.who), done = r.done.includes(i), next = !done && (i === 0 || r.done.includes(i - 1)); const lg = r.log.find(l => l.i === i); return `<li class="dx-step${done ? ' done' : next ? ' next' : ''}"><div><b>${i + 1}. ${esc(st.title)}</b><div class="muted small">${esc(pName(p))} · ${esc(p.title)}${lg ? ` · ${esc(lg.at)}${lg.result ? ' · ' + esc(lg.result) : ''}` : ''}</div></div><div class="actions">${done ? chip('Selesai', 'ready') : next ? `<button type="button" class="btn sm" data-dx-run="${sc.id}:${i}">Jalankan sebagai ${esc(pName(p).split(' ')[0])}</button>` : chip('Menunggu', 'sandbox')}${p.role !== 'public' || st.route(r.ctx) ? `<button type="button" class="btn ghost sm" data-dx-open="${sc.id}:${i}">Buka layar</button>` : ''}</div></li>`; }).join('')}</ol>` +
+      (Object.keys(r.ctx).length ? `<p class="muted small">ID bersama: ${Object.entries(r.ctx).filter(([k]) => k !== 'n').map(([k, v]) => `${esc(k)} ${esc(v)}`).join(' · ')}</p>` : '') +
+      `<div class="actions">${r.done.length ? `<button type="button" class="btn ghost sm" data-dx-restart="${sc.id}">Ulangi skenario (data yang sudah dibuat tetap)</button>` : ''}${link('hrd-dx', '‹ Semua skenario')}</div>`);
+  }
+  return `<p class="active-filters">${chip('DATA DEMO · R&D', 'sandbox')} Persona menjalankan langkah dengan izin role-nya sendiri. Setiap langkah tercatat di ${link('hrd-audit', 'audit')} atas nama persona. Reset Demo Data mengembalikan semuanya.${cur ? ` · Persona aktif: <b>${esc(actorOf(cur))}</b>` : ''}</p>` + detail +
+    card('Persona demo', personaCards + '<p class="muted small">Supervisor Tina (Santi), Dewik (Triloka) dan Wahyudi (Bhisma) tercatat di struktur; role demo Supervisor saat ini berlingkup Spa Ubud, outlet lain dipantau lewat Operational Manager.</p>') + scList +
+    card('Kinerja tim per divisi', table(['Divisi / tim', 'Orang', 'Metrik produktivitas', 'Output', 'Kinerja', 'Sumber', 'Status', ''], divisions()) + '<p class="muted small">Produktivitas dibaca dari sumber tiap divisi (POS, Planner, Rekrutmen, Finance, Commercial, Produksi Essence). Nilai individu tetap mengikuti izin: Owner dan Finance hanya agregat.</p>');
+}
+
+document.addEventListener('click', (e) => {
+  const pb = e.target.closest('[data-dx-persona]');
+  if (pb) { const p = P(pb.dataset.dxPersona); usePersona(p); location.hash = p.home; return; }
+  const rb = e.target.closest('[data-dx-run]');
+  if (rb) { const [s, i] = rb.dataset.dxRun.split(':'); runStep(s, Number(i)); return; }
+  const ob = e.target.closest('[data-dx-open]');
+  if (ob) { const [s, i] = ob.dataset.dxOpen.split(':'); const st = S(s).steps[Number(i)], p = P(st.who); usePersona(p); location.hash = st.route(run(s).ctx); return; }
+  const xb = e.target.closest('[data-dx-restart]');
+  if (xb) { dx().runs[xb.dataset.dxRestart] = { ctx: {}, done: [], log: [] }; save(); H.render('Skenario dimulai ulang.'); }
+});
+
+const items = H.PORTALS.HRD.items;
+const ih = items.findIndex(i => i[0] === 'hrd-home');
+items.splice(ih + 1, 0, ['hrd-dx', 'Demo Experience Center', 'DX-HRD', 'ready', '', 'sub']);
+H.PURPOSE['hrd-dx'] = 'Persona tim HRD & divisi menjalankan skenario lintas divisi di prototype yang sama, plus kinerja tim tiap divisi.';
+H.SCREENS.push(['DX-HRD', 'HRD · Demo Experience Center', 'HRD DX', 'hrd-dx', 'ready', 'Semua persona demo']);
+register('hrd-dx', center, (p) => S(p.sc)?.name || 'Demo Experience Center HRD');
 })();
 
 ;

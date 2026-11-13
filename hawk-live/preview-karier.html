@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T16:40:13.089Z">
+<meta name="hawk-standalone" content="2026-11-13T23:09:51.479Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1578,6 +1578,12 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-acts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:170px}
 .trail{margin:0;padding-left:1.2em;display:grid;gap:6px}
 .workflow-form select{max-width:100%}
+/* HRD Demo Experience Center */
+.dx-persona h3{margin:4px 0}.dx-persona.on{outline:2px solid var(--gold,#C99A2E)}
+.dx-steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dx-step{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line,#e5e5e5);border-radius:10px}
+.dx-step.done{opacity:.75}.dx-step.next{border-color:var(--gold,#C99A2E);background:rgba(201,154,46,.06)}
+.dx-step .actions{margin:0}
 
 </style>
 </head>
@@ -1762,7 +1768,7 @@ const HR = (() => {
     ['POS-AOM', 'Assistant Operational Manager', 'DIV-OPS', 'manager', 6400000], ['POS-OPS', 'Staf Operations', 'DIV-OPS', 'staff', 3600000],
     ['POS-FM', 'Finance Manager', 'DIV-FA', 'manager', 7000000], ['POS-ACC', 'Staf Accounting', 'DIV-FA', 'staff', 3800000], ['POS-FIN', 'Staf Finance', 'DIV-FA', 'staff', 3600000],
     ['POS-MM', 'Marketing Manager', 'DIV-MKT', 'manager', 7000000], ['POS-CRT', 'Content Creator', 'DIV-MKT', 'staff', 3600000], ['POS-SOC', 'Social Media Admin', 'DIV-MKT', 'staff', 3400000], ['POS-FV', 'Foto & Video', 'DIV-MKT', 'staff', 3600000],
-    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Staf HRD Operations', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Recruiter', 'DIV-HRD', 'staff', 3700000],
+    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Admin HRD', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Koordinator Rekrutmen', 'DIV-HRD', 'staff', 3700000],
     ['POS-PDM', 'Production Lead', 'DIV-PRD', 'supervisor', 5000000], ['POS-PDS', 'Staf Production', 'DIV-PRD', 'staff', 3200000]
   ].map(([id, name, division, level, thp]) => ({ id, name, division, level, thp }));
   const pos = (id) => POSITIONS.find(p => p.id === id);
@@ -1772,7 +1778,7 @@ const HR = (() => {
   const GIVEN = ['Ari', 'Sari', 'Dewi', 'Wulan', 'Indra', 'Yasa', 'Mahendra', 'Ratna', 'Sinta', 'Lestari', 'Dian', 'Rai', 'Suastini', 'Adnyani', 'Pradnya', 'Widya', 'Purnami', 'Juliani', 'Astiti', 'Arsana', 'Budiasa', 'Candra', 'Darmayanti', 'Eka'];
   /* akun demo yang sudah dipakai di HAWK (lihat memori project) dipertahankan namanya */
   const NAMED = {
-    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa']
+    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa'], 'POS-HRO': ['Ayu'], 'POS-REC': ['Harja']
   };
 
   /* roster: 4 spa × (25 Therapist + 5 Receptionist) + Office 12 F&A, 9 Marketing, 4 HRD, 5 Production, 8 Operations = 158 */
@@ -2732,7 +2738,7 @@ const HR4 = (() => {
       A('APP-2611-0005', 'CAN-0003', 'VAC-2611-002', 'Lamaran Masuk', { frontdesk: '', volume: '', pos: '', lang: 'Indonesia, Inggris', shiftReady: 'Pagi/Sore', situational: 'Cek jadwal lalu tawarkan alternatif.', startReady: '2026-12-01' }, { channel: 'WEB', at: '2026-11-11 08:00' }),
       A('APP-2611-0006', 'CAN-0005', 'VAC-2611-001', 'Ditolak', { ...thrOk, years: '0', cert: '', sessions: '2' }, { channel: 'WA' })
     ];
-    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Wayan Wulan D (Recruiter)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
+    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Harja (Koordinator Rekrutmen)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
     return { seeded: true, reqs, candidates, apps, seq: { req: 10, vac: 10, app: 100, cand: 100, iv: 100, offer: 100, ctr: 100, evt: 1000 } };
   }
   function ensure(hr) {
@@ -2740,7 +2746,7 @@ const HR4 = (() => {
     if (!hr.f4 || !hr.f4.seeded) {
       const keep = hr.f4; hr.f4 = seed(hr);
       hr.f4.apps.forEach(a => { if (['Shortlist', 'Interview', 'Screening'].includes(a.stage) || a.stage === 'Ditolak') runScreen(hr, a, 'Seed fixture'); });
-      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Wayan Wulan D (Recruiter)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
+      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Harja (Koordinator Rekrutmen)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
       hr.f4.apps.forEach(a => { if (!a.screening) a.screening = { status: 'Menunggu', version: 1, runs: 0 }; });
       if (keep) for (const k of ['reqs', 'candidates', 'apps']) hr.f4[k].push(...(keep[k] || []));
     }

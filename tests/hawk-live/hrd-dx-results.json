@@ -1,0 +1,101 @@
+{
+ "pass": 17,
+ "fail": 2,
+ "out": [
+  {
+   "name": "Persona tampil: Made Gunarsa, Harja, Ayu, Asri, Eni Restini, Mila",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5 skenario lintas divisi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kinerja tim: Operational 4 outlet, Finance, Marketing, Commercial, HRD, Production Essence",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario rekrut: semua 13 langkah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario reception: semua 5 langkah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario kinerja: semua 5 langkah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario payroll: semua 6 langkah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario reflection: semua 5 langkah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Rekrutmen: karyawan baru, penempatan Spa Ubud terjadwal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Audit mencatat persona (Harja, Ayu, Mila, Eni Restini)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Payroll: Finance Manager menerima jurnal November",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reflection: keputusan STRACON + Workplan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Buka layar sebagai Harja → kandidat, role Staf HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Masuk sebagai Asri → Handoff Finance (agregat)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Persona aktif ditampilkan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol jalankan tidak muncul lagi untuk skenario selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile 390 px: hrd-dx",
+   "ok": false,
+   "info": "397"
+  },
+  {
+   "name": "Mobile 390 px: hrd-dx?sc=rekrut",
+   "ok": false,
+   "info": "397"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

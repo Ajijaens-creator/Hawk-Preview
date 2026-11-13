@@ -51,7 +51,7 @@ const HR4 = (() => {
       A('APP-2611-0005', 'CAN-0003', 'VAC-2611-002', 'Lamaran Masuk', { frontdesk: '', volume: '', pos: '', lang: 'Indonesia, Inggris', shiftReady: 'Pagi/Sore', situational: 'Cek jadwal lalu tawarkan alternatif.', startReady: '2026-12-01' }, { channel: 'WEB', at: '2026-11-11 08:00' }),
       A('APP-2611-0006', 'CAN-0005', 'VAC-2611-001', 'Ditolak', { ...thrOk, years: '0', cert: '', sessions: '2' }, { channel: 'WA' })
     ];
-    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Wayan Wulan D (Recruiter)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
+    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Harja (Koordinator Rekrutmen)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
     return { seeded: true, reqs, candidates, apps, seq: { req: 10, vac: 10, app: 100, cand: 100, iv: 100, offer: 100, ctr: 100, evt: 1000 } };
   }
   function ensure(hr) {
@@ -59,7 +59,7 @@ const HR4 = (() => {
     if (!hr.f4 || !hr.f4.seeded) {
       const keep = hr.f4; hr.f4 = seed(hr);
       hr.f4.apps.forEach(a => { if (['Shortlist', 'Interview', 'Screening'].includes(a.stage) || a.stage === 'Ditolak') runScreen(hr, a, 'Seed fixture'); });
-      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Wayan Wulan D (Recruiter)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
+      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Harja (Koordinator Rekrutmen)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
       hr.f4.apps.forEach(a => { if (!a.screening) a.screening = { status: 'Menunggu', version: 1, runs: 0 }; });
       if (keep) for (const k of ['reqs', 'candidates', 'apps']) hr.f4[k].push(...(keep[k] || []));
     }
