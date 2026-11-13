@@ -229,7 +229,9 @@
       .join('');
     const dx = EMBED ? '' : `<a class="nav-dx ${isDx() ? 'cur' : ''}" href="#/dx">${ui.icon('play', 16)}<span><b>Demo Experience Center</b><small>Test Lab · 5 layar · 7 skenario</small></span></a>`;
     const ms = `<a class="nav-dx nav-ms ${isMs() ? 'cur' : ''}" href="#/m">${ui.icon('user', 16)}<span><b>Smart Staff Mobile</b><small>MS-01–12 · Pandu Saya 5 skenario</small></span></a>`;
-    $('#nav').innerHTML = dx + ms + mods;
+    /* Tautan ke pemilih 5 portal hawk-live (Finance, Operational, Commercial, Sales, HRD). Hanya tautan; tidak mengubah data app ini. */
+    const portal = EMBED || location.protocol === 'file:' ? '' : `<a class="nav-dx nav-portal" href="/hawk-live/portal">${ui.icon('org', 16)}<span><b>HAWK 5 Portal</b><small>Finance · Ops · Commercial · Sales · HRD</small></span></a>`;
+    $('#nav').innerHTML = dx + ms + portal + mods;
   }
 
   /* ---------- topbar ---------- */
