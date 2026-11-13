@@ -19,8 +19,8 @@ Status per 14 Nov 2026 (WITA). Prototype portal kelima HRD, 77 NV, DATA DEMO / S
 | F5 Manpower Planning & POS | 8 | Dashboard, kapasitas, utility, reception, divisi, POS, simulasi, handoff rekrutmen | 34/34 | 45/45 | 9316a2c |
 | F6 Human Growth & Kinerja | 9 | KPI, SER, KPI Library, kontrak KPI, XScore, People Performance, 9-Box, development, training | 42/42 | 52/52 | 0d4ff40 |
 | F7 Payroll & People Budgeting | 12 | Payroll, aturan, komisi POS, proses, slip, kasbon/reimburse, laporan, handoff Finance, budgeting, rencana, simulasi, kurva S | 52/52 | 47/47 | 1a7d026 |
-| F8 AmbideX, Reporting & Reflection | 8 | Race Vegen, Beacon & Success Factors, Daily, Weekly, Monthly Reflection, STRACON, e-Deck 8 halaman, Pusat Laporan | 49/49 | 54/54 | (lihat §6) |
-| Lintas fase F1–F8 | — | Perjalanan Ubud dan peringatan Santi | 29/29 | 19/19 | (lihat §6) |
+| F8 AmbideX, Reporting & Reflection | 8 | Race Vegen, Beacon & Success Factors, Daily, Weekly, Monthly Reflection, STRACON, e-Deck 8 halaman, Pusat Laporan | 49/49 | 54/54 | dd38a93 |
+| Lintas fase F1–F8 | — | Perjalanan Ubud dan peringatan Santi | 29/29 | 19/19 | dd38a93 |
 
 Regresi penuh (`bash tests/hawk-live/run-all.sh`) lulus semua, termasuk uji empat portal lama: model 104, design-lock 17, browser 45, fase2 30, budget2027 20. Screenshot desktop dan mobile 390 px tiap fase ada di Library: `hawk-hrd/f1` … `hawk-hrd/f8`. Laporan per fase ada di `docs/hawk-live/HRD-F1-LAPORAN.md` … `HRD-F8-LAPORAN.md`.
 
@@ -84,7 +84,7 @@ Semua fase diuji juga dengan keyboard, mobile 390 px, filter kosong, sumber gaga
 - **Belum di-merge ke main,** menunggu persetujuan Aji.
 
 ## 6. Checkpoint terakhir dan langkah lanjut
-- Branch `claude/project-thread-f0itz7`, commit terakhir: lihat pesan rilis F8 (checkpoint F7 = 1a7d026).
+- Branch `claude/project-thread-f0itz7`, commit terakhir dd38a93 (F8 + uji lintas fase + laporan akhir).
 - Langkah lanjut yang disarankan:
   1. Aji mereview preview, terutama alur perjalanan di §3.
   2. Aji menjawab daftar konfirmasi di §7.
