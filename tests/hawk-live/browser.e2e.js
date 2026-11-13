@@ -19,7 +19,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.click('#portal');
   ok('F1-01 dialog terbuka dari logo', await p.locator('#picker').evaluate(d => d.open));
   const labels = await p.locator('#options .label').allInnerTexts();
-  ok('F1-01 empat opsi berurutan', labels.join(',') === 'Finance,Operational,Commercial,Sales', labels.join(','));
+  ok('F1-01 empat opsi lama berurutan + HRD portal kelima', labels.join(',') === 'Finance,Operational,Commercial,Sales,HRD', labels.join(','));
   ok('F1-01 Commercial bertanda Portal aktif', (await p.locator('#options [aria-current="true"] .label').innerText()) === 'Commercial');
   await p.keyboard.press('Tab'); const inDialog = await p.evaluate(() => !!document.activeElement.closest('dialog'));
   ok('F1-01 fokus keyboard tetap di dalam dialog', inDialog);
@@ -90,7 +90,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.selectOption('#role', 'owner'); await p.waitForTimeout(100);
   ok('F1-04 role switcher Owner mengarah ke Eagle Eye', (await text('.hero')).includes('Owner Eagle Eye'));
   await p.goto(BASE + 'index.html#screens'); await p.waitForTimeout(100);
-  ok('F7-01 peta berisi 41 kode layar', (await p.locator('.roadmap tbody tr').count()) === 41);
+  ok('F7-01 peta berisi 41 kode layar empat portal + 8 layar HRD F1', (await p.locator('.roadmap tbody tr').count()) === 49);
   await p.goto(BASE + 'commercial.html'); await p.waitForTimeout(150);
   ok('Entry commercial.html membuka Commercial', p.url().endsWith('#commercial'));
   await p.goto(BASE + 'sales.html'); await p.waitForTimeout(150);

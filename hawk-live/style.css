@@ -263,3 +263,24 @@ a.status-chip { text-decoration: none; }
 .board, .tbl-wrap, .gantt { position: relative; }
 .insight .tbl td, .panel .tbl td { white-space: normal; min-width: 110px; } .insight .tbl td:first-child { min-width: 200px; }
 @media (max-width: 720px) { .cal-d:not(:has(.cal-item)):not(.today) { display: none; } }
+
+/* ---------- Portal HRD (hrd.js) · komponen tambahan, warna dari hawk.css ---------- */
+.nav-items a.nav-child { padding-left: 22px; font-size: 12px; }
+.nav-items a.nav-child .nvc { min-width: 30px; }
+.hr-outlets .card, .hr-node, .hr-integ { display: flex; flex-direction: column; gap: 4px; }
+a.hr-outlet { color: inherit; text-decoration: none; }
+a.hr-outlet:hover, a.hr-outlet:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+a.kpi { color: inherit; text-decoration: none; display: block; }
+a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.hr-big { font-size: 26px; font-weight: 800; margin: 2px 0; }
+.hr-big small { font-size: 12px; font-weight: 600; color: var(--muted); }
+.hr-trail { margin: 4px 0 12px; font-size: 13px; }
+.hr-chain { margin: 6px 0 8px 18px; display: grid; gap: 4px; }
+.hr-denied { border-left: 4px solid var(--bad); }
+.hr-confirm { border-left: 4px solid var(--gold); }
+.hr-empty { text-align: left; }
+.hr-pager { gap: 8px; align-items: center; margin-top: 8px; }
+.hr-matrix td { text-align: center; } .hr-matrix td:first-child, .hr-matrix td:nth-child(2) { text-align: left; }
+.hr-profile h3 { font-size: 13px; margin: 0 0 6px; }
+.sr-only-form { display: inline; }
+.sr-only-form .btn { margin-top: 0; }

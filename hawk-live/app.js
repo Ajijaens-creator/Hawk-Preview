@@ -1,4 +1,4 @@
-/* HAWK ERP · four-portal preview shell (Finance → Operational → Commercial → Sales)
+/* HAWK ERP · portal preview shell (Finance → Operational → Commercial → Sales → HRD; HRD is registered by hrd.js)
    Phase 1: F1-01 portal picker, F1-02 Commercial Executive Summary (SER), F1-03 drill-down,
    F1-04 Sales home, F7-01 screen map. Other routes are the original sandbox screens, labelled with
    the phase that completes them. DATA DEMO / SIMULASI · no network, no accounts, no deployment calls. */
@@ -27,7 +27,7 @@ const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
   'commercial-drill': 'Definisi metrik, pembanding, rincian outlet, dan transaksi POS pendukung.',
   'sales-home': 'Revenue B2C, B2B, dan referral dari dataset yang sama, plus pintu masuk tiap ruang kerja Sales.',
-  screens: 'Semua 41 kode layar, status, fase, role, dan link langsung.',
+  screens: 'Semua kode layar empat portal (41) dan HRD, status, fase, role, dan link langsung.',
   bridge: 'Satu alur demo dari MRF sampai booking dan POS, lintas empat portal.'
 };
 const ROLE_SUMMARY = {
@@ -352,12 +352,12 @@ function salesHome() {
 function screensMap() {
   const counts = { ready: 0, sandbox: 0, planned: 0 }; SCREENS.forEach(s => counts[s[4]]++);
   return metrics([['Layar dalam katalog', SCREENS.length], ['Tersedia (Fase 1)', counts.ready], ['Versi sandbox', counts.sandbox], ['Belum dibuat', counts.planned]]) +
-    card('Peta Preview · 41 layar', table(['Kode', 'Layar', 'Fase', 'Status', 'Role', 'Link langsung'], SCREENS.map(([code, title, ph, route, st, role]) => [`<b>${code}</b>`, title, ph, `<span class="status-chip ${st}">${STATUS_LABEL[st]}</span>`, role || '—', route ? link(route, '#' + route.split('?')[0]) : '—']), 'roadmap')) +
+    card(`Peta Preview · ${SCREENS.length} layar`, table(['Kode', 'Layar', 'Fase', 'Status', 'Role', 'Link langsung'], SCREENS.map(([code, title, ph, route, st, role]) => [`<b>${code}</b>`, title, ph, `<span class="status-chip ${st}">${STATUS_LABEL[st]}</span>`, role || '—', route ? link(route, '#' + route.split('?')[0]) : '—']), 'roadmap')) +
     card('Reset dan skenario demo', `<ol><li>Tekan <b>Reset demo</b>: pagu Rp25.000.000, aktual Rp3.500.000, komitmen nol, sisa Rp21.500.000. Executive Summary Agustus 2026: revenue Rp2.820 jt, 3.195 pelanggan, 3.260 order.</li><li>Commercial Budget → ajukan Rp2.000.000 → Finance setujui → catat realisasi. Cek Budget Realization Giant Spa Ubud.</li><li>Sales B2C → booking LEAD-001 → POS check-in, selesai, bayar. Revenue Ubud Agustus naik Rp750.000 dan transaksi POS-BK-002 muncul paling atas di drill-down.</li></ol><div class="actions">${button('reset', 'Reset demo')}${link('bridge', 'Peta alur HAWK')}</div>`);
 }
 
 /* ---------- render ---------- */
-const REGISTRY = {};
+const REGISTRY = {}, HOOKS = {};
 function screen(id, params) {
   if (REGISTRY[id]) return REGISTRY[id](params);
   switch (id) {
@@ -381,12 +381,12 @@ function titleOf(id) {
   if (id === 'bridge' || id === 'picker') return 'Alur lintas portal';
   return itemOf(id)?.[1] || 'Alur lintas portal';
 }
-const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S' };
+const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S', HRD: 'H' };
 const navOpen = new Set();
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
-  const navLink = ([route, name, code, st]) => route === '-' ? `<p class="nav-sub">${name}</p>` : `<a href="#${route}" ${cur(route) ? 'class="cur" aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' ? ` <small class="soon">Fase ${SCREENS.find(x => x[0] === code)?.[2] || ''}</small>` : ''}</span></a>`;
+  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
   nav.innerHTML = Object.entries(PORTALS).map(([name, p]) => {
     const open = navOpen.has(name);
     return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => i[3] !== 'hidden').map(navLink).join('')}</div></div>`;
@@ -402,7 +402,7 @@ nav.addEventListener('click', (e) => {
 const initials = (label) => label.split(/\s+/).filter(w => /^[A-Z]/.test(w)).slice(0, 2).map(w => w[0]).join('') || label.slice(0, 2).toUpperCase();
 function renderRole() {
   const label = ROLES.find(r => r[0] === prefs.role)[1];
-  $('#role-name').textContent = label; $('#role-av').textContent = initials(label);
+  $('#role-name').textContent = label; $('#role-av').textContent = initials(label); if (roleSel && roleSel.value !== prefs.role) roleSel.value = prefs.role;
 }
 const setNav = (open) => { $('#sidebar').classList.toggle('on', open); $('.scrim').classList.toggle('on', open); shell.classList.toggle('nav-open', open); $('#menu').setAttribute('aria-expanded', String(open)); };
 let lastFocus = null;
@@ -429,6 +429,7 @@ function apply(action, input, after) {
   try {
     let result;
     if (action === 'reset') { if (!confirm('Kembalikan semua data demo ke kondisi awal?')) return; state = HAWK.fresh(); }
+    else if (action.startsWith('hr:')) result = HR.update(state, action.slice(3), { by: HOOKS.actor ? HOOKS.actor() : 'Demo', role: prefs.role, ...input });
     else if (action.startsWith('cx:')) result = CX.update(state, action.slice(3), { by: CX.PEOPLE.find(p => p.id === prefs.member)?.id || 'MBR-C01', ...input });
     else HAWK.update(state, action, input);
     let saved = true;
@@ -451,7 +452,7 @@ picker.addEventListener('close', () => { if (parseHash().id === 'picker') histor
 picker.addEventListener('click', (e) => {
   if (e.target === picker) { picker.close(); return; }
   const opt = e.target.closest('.option[data-portal]');
-  if (opt) { prefs.portal = opt.dataset.portal; savePrefs(); picker.close(); location.hash = HOME[opt.dataset.portal]; }
+  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); location.hash = HOME[opt.dataset.portal]; }
 });
 document.querySelectorAll('[data-open-picker]').forEach(b => b.addEventListener('click', () => openPicker(b)));
 $('#menu').addEventListener('click', () => { const open = !shell.classList.contains('nav-open'); setNav(open); if (open) (nav.querySelector('a.cur') || nav.querySelector('button'))?.focus(); });
@@ -459,7 +460,7 @@ document.querySelector('[data-close-nav]').addEventListener('click', () => setNa
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shell.classList.contains('nav-open')) { setNav(false); $('#menu').focus(); } });
 document.querySelector('[data-global-reset]').addEventListener('click', () => apply('reset'));
 const roleSel = $('#role');
-roleSel.innerHTML = ROLES.map(([k, l]) => `<option value="${k}" ${k === prefs.role ? 'selected' : ''}>${l}</option>`).join('');
+const fillRoles = () => { if (!ROLES.some(r => r[0] === prefs.role)) prefs.role = 'commercial-manager'; roleSel.innerHTML = ROLES.map(([k, l]) => `<option value="${k}" ${k === prefs.role ? 'selected' : ''}>${l}</option>`).join(''); };
 roleSel.addEventListener('change', () => { prefs.role = roleSel.value; savePrefs(); render(`Role demo: ${ROLES.find(r => r[0] === prefs.role)[1]}`); });
 
 view.addEventListener('change', (e) => {
@@ -490,7 +491,12 @@ view.addEventListener('click', (e) => {
 });
 window.addEventListener('hashchange', () => { render(); view.querySelector('h1').focus(); });
 window.addEventListener('storage', (e) => { if (e.key === KEY) { try { state = JSON.parse(e.newValue) || HAWK.fresh(); } catch (er) { state = HAWK.fresh(); } render(); } });
-if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
-window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt, pct, dec, link, button, table, card, hero, metrics, bar, qs, go, parseHash, apply, filtersOf, filterBar, activeFilters, donut, delta, outletName, campaignName, drillHref, REGISTRY, render, condSelect };
-document.addEventListener('DOMContentLoaded', () => render());
+window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt, pct, dec, link, button, table, card, hero, metrics, bar, qs, go, parseHash, apply, filtersOf, filterBar, activeFilters, donut, delta, outletName, campaignName, drillHref, REGISTRY, HOOKS, PORTALS, HOME, LETTER, ROLES, SCREENS, STATUS_LABEL, PURPOSE, render, condSelect };
+/* extension scripts (commercial.js, hrd.js …) run before DOMContentLoaded and may add portals, roles and routes */
+document.addEventListener('DOMContentLoaded', () => {
+  HOOKS.boot?.forEach(fn => fn());
+  fillRoles();
+  if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
+  render();
+});
 })();

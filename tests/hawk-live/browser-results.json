@@ -1,5 +1,5 @@
 {
- "ranAt": "2026-11-11T12:57:27.871Z",
+ "ranAt": "2026-11-13T14:59:55.904Z",
  "base": "http://localhost:8811/hawk-live/",
  "pass": 45,
  "fail": 0,
@@ -10,9 +10,9 @@
    "info": ""
   },
   {
-   "name": "F1-01 empat opsi berurutan",
+   "name": "F1-01 empat opsi lama berurutan + HRD portal kelima",
    "ok": true,
-   "info": "Finance,Operational,Commercial,Sales"
+   "info": "Finance,Operational,Commercial,Sales,HRD"
   },
   {
    "name": "F1-01 Commercial bertanda Portal aktif",
@@ -185,7 +185,7 @@
    "info": ""
   },
   {
-   "name": "F7-01 peta berisi 41 kode layar",
+   "name": "F7-01 peta berisi 41 kode layar empat portal + 8 layar HRD F1",
    "ok": true,
    "info": ""
   },

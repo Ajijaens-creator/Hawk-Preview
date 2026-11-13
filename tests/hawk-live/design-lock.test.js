@@ -7,7 +7,7 @@ const ok = (name, cond) => { cond ? pass++ : fail++; console.log(`${cond ? '✓'
 const css = fs.readFileSync(path.join(dir, 'style.css'), 'utf8');
 ok('style.css tanpa :root sendiri', !/:root\s*\{/.test(css));
 ok('style.css tanpa definisi token --x:', !/(^|[;{\s])--[a-z0-9-]+\s*:/i.test(css.replace(/\/\*[\s\S]*?\*\//g, '')));
-for (const f of ['index.html', 'portal.html', 'finance.html', 'operational.html', 'commercial.html', 'sales.html']) {
+for (const f of ['index.html', 'portal.html', 'finance.html', 'operational.html', 'commercial.html', 'sales.html', 'hrd.html']) {
   const html = fs.readFileSync(path.join(dir, f), 'utf8');
   const a = html.indexOf('href="../assets/css/hawk.css"'), b = html.indexOf('href="style.css"');
   ok(`${f}: hawk.css dimuat sebelum style.css`, a > -1 && b > a);
