@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T15:20:46.361Z">
+<meta name="hawk-standalone" content="2026-11-13T15:29:25.006Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Finance</title>
 <style>
@@ -1517,6 +1517,27 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-map-bg { fill: var(--canvas); stroke: var(--line); }
 .hr-map circle.ok { fill: var(--gold); stroke: var(--black); stroke-width: 1.5; }
 .hr-map circle.warn { fill: var(--bad); stroke: var(--black); stroke-width: 1.5; }
+
+/* HRD F3 Planner */
+.hr-board { display: grid; grid-template-columns: repeat(7, minmax(190px, 1fr)); gap: 10px; overflow-x: auto; padding-bottom: 8px; }
+.hr-col { background: var(--canvas); border: 1px solid var(--line); border-radius: 12px; padding: 8px; min-height: 160px; }
+.hr-col.over { outline: 2px dashed var(--gold); }
+.hr-col h3 { font-size: 13px; margin: 2px 4px 8px; display: flex; justify-content: space-between; }
+.hr-kcard { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px; margin-bottom: 8px; cursor: grab; font-size: 12.5px; }
+.hr-kcard.blocked { border-left: 3px solid var(--bad); }
+.hr-kcard.dragging { opacity: .5; }
+.hr-kcard:focus-visible { outline: 2px solid var(--gold); }
+.hr-kt { display: block; color: inherit; text-decoration: none; margin-bottom: 6px; }
+.hr-kmeta { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; color: var(--muted); }
+.hr-move { display: flex; gap: 4px; margin-top: 6px; }
+.hr-move select { flex: 1; min-width: 0; font-size: 12px; padding: 2px 4px; }
+.bad-text { color: var(--bad); font-weight: 600; }
+.hr-ag { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hr-ag.due { color: var(--bad); }
+.hr-chat { list-style: none; padding: 0; } .hr-chat li { border-bottom: 1px solid var(--line); padding: 6px 0; } .hr-chat p { margin: 4px 0 0; }
+.hr-check { list-style: none; padding: 0; } .hr-check li { padding: 4px 0; }
+.kpis a.kpi { text-decoration: none; color: inherit; }
+@media (max-width: 720px) { .hr-board { grid-template-columns: repeat(7, 78vw); scroll-snap-type: x mandatory; } .hr-col { scroll-snap-align: start; } }
 
 </style>
 </head>
@@ -3472,6 +3493,228 @@ const HR2 = (() => {
 if (typeof module !== 'undefined') module.exports = HR2;
 
 ;
+/* HAWK ERP · Portal HRD · model F3 Planner & Workplace — DATA DEMO / SIMULASI.
+   Satu objek kartu (Task ID) dibaca Workplace, Board, Calendar, List, My Tasks, My Day dan Detail Kartu.
+   Setiap perubahan menyimpan event (aktor, waktu WITA, sebelum/sesudah). Versi kartu untuk deteksi konflik.
+   Memperluas HR.EXT (dirantai setelah F2). Deterministik, tanpa jaringan. */
+const HR3 = (() => {
+  const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
+  const TODAY = H.TODAY;
+  const STAGES = ['Ide', 'Issue', 'Workplan', 'Priority', 'Dikerjakan', 'Review', 'Selesai'];
+  const PRIOS = ['Tinggi', 'Sedang', 'Rendah'];
+  const WS = { HRD: { id: 'HRD', name: 'HRD Operations', lead: 'EMP-0142' }, HG: { id: 'HG', name: 'Human Growth', lead: 'EMP-0144' } };
+  /* peran PIC untuk template → Employee ID default */
+  const ROLE_PIC = { 'Staf HRD': 'EMP-0143', 'Manager HRD': 'EMP-0142', 'Human Growth Lead': 'EMP-0144', 'Rekruter HRD': 'EMP-0145', 'Supervisor Outlet': null };
+  const addDays = (d, n) => { const t = new Date(d + 'T00:00:00Z'); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
+  const now = () => `${TODAY} ${new Date().toTimeString().slice(0, 5)}`;
+
+  const TEMPLATES = () => [
+    { id: 'TPL-ONB', name: 'Onboarding administratif therapist', kind: 'Checklist', ws: 'HRD', version: 2, active: true, review: true, history: [{ v: 1, at: '2026-08-01', note: 'Versi awal' }, { v: 2, at: '2026-10-15', note: 'Tambah akun POS & ESS sebelum hari pertama' }],
+      steps: [['Kontrak & dokumen identitas lengkap', 'Staf HRD', -3, 'HRD'], ['Akun HAWK, ESS & POS dibuat', 'Staf HRD', -1, 'HRD'], ['Orientasi SOP & keselamatan', 'Human Growth Lead', 0, 'HG'], ['Pendampingan treatment hari 1–3', 'Supervisor Outlet', 3, 'HG'], ['Verifikasi praktik oleh Supervisor', 'Supervisor Outlet', 7, 'HG'], ['Review akhir onboarding', 'Manager HRD', 10, 'HRD']] },
+    { id: 'TPL-KOMP', name: 'Verifikasi kompetensi therapist', kind: 'Rubric', ws: 'HG', version: 1, active: true, review: true, history: [{ v: 1, at: '2026-09-01', note: 'Rubric 5 treatment inti' }],
+      steps: [['Jadwalkan observasi praktik', 'Human Growth Lead', 0, 'HG'], ['Observasi Balinese massage & hot stone', 'Supervisor Outlet', 2, 'HG'], ['Isi rubric & bukti video (sintetis)', 'Human Growth Lead', 3, 'HG'], ['Rencana coaching bila skor < 3', 'Human Growth Lead', 5, 'HG']] },
+    { id: 'SOP-HYG', name: 'SOP kebersihan ruang treatment', kind: 'SOP', ws: 'HG', version: 3, active: true, review: false, history: [{ v: 3, at: '2026-07-10', note: 'Revisi linen' }], steps: [] },
+    { id: 'TPL-UTIL', name: 'Respons utility outlet', kind: 'Checklist', ws: 'HRD', version: 1, active: true, review: true, history: [{ v: 1, at: '2026-10-01', note: 'Ambang 100%/70%' }],
+      steps: [['Validasi data jam treatment POS', 'Staf HRD', 1, 'HRD'], ['Diskusi kapasitas dengan Supervisor', 'Supervisor Outlet', 2, 'HRD'], ['Usulan tambah formasi / bantuan antaroutlet', 'Manager HRD', 5, 'HRD']] }
+  ];
+
+  function seed() {
+    const T = (o) => ({ demo: true, contributors: [], checklist: [], discussion: [], assets: [], blocker: null, parent: null, reviewer: null, requireReview: false, sessionAt: null, version: 1, finding: null, ...o });
+    const tasks = [
+      T({ id: 'TSK-0001', ws: 'HRD', title: 'Validasi jam treatment POS Spa Ubud Okt–Nov', stage: 'Workplan', prio: 'Tinggi', pic: 'EMP-0142', reviewer: null, due: '2026-11-18', scope: 'OUT-UBD', source: { type: 'POS', id: 'POS-HRS-UBD-2611', label: 'Jam treatment POS Spa Ubud (F5)', route: 'hrd-home?outlet=OUT-UBD' }, checklist: [{ id: 'C1', text: 'Validasi jam treatment POS', done: true }, { id: 'C2', text: 'Usulan formasi ke OM', done: false }] }),
+      T({ id: 'TSK-0002', ws: 'HRD', title: 'Utility Spa Santi 66%: di bawah ambang 70%', stage: 'Ide', prio: 'Sedang', pic: null, due: null, scope: 'OUT-SHT', source: { type: 'Utility', id: 'UTIL-OUT-SHT-2611', label: 'Utility Spa Santi Nov 2026 · 66%', route: 'hrd-home?outlet=OUT-SHT' }, finding: 'FND-UTIL-SHT-2611' }),
+      T({ id: 'TSK-0003', ws: 'HRD', title: 'Perpanjang kontrak PKWT 3 receptionist', stage: 'Workplan', prio: 'Sedang', pic: 'EMP-0143', due: '2026-11-25', scope: 'ENT-SPA', source: { type: 'Kontrak', id: 'CTR-2611', label: 'Kontrak berakhir ≤ 30 hari', route: 'hrd-roster?contract=PKWT' }, checklist: [{ id: 'C1', text: 'Daftar karyawan', done: true }, { id: 'C2', text: 'Draf kontrak', done: false }, { id: 'C3', text: 'Tanda tangan', done: false }], requireReview: true, reviewer: 'EMP-0142' }),
+      T({ id: 'TSK-0004', ws: 'HRD', title: 'Interview kandidat therapist Ubud (3 orang)', stage: 'Priority', prio: 'Tinggi', pic: 'EMP-0145', due: '2026-11-17', sessionAt: '2026-11-16 10:00', scope: 'OUT-UBD', source: { type: 'Rekrutmen', id: 'VAC-2611-001', label: 'Lowongan Therapist Spa Ubud', route: 'hrd-recruit' }, contributors: ['EMP-0153'] }),
+      T({ id: 'TSK-0005', ws: 'HRD', title: 'Rekap koreksi presensi minggu 7–13 Nov', stage: 'Dikerjakan', prio: 'Rendah', pic: 'EMP-0143', due: '2026-11-14', scope: 'ENT-SPA', source: { type: 'Presensi', id: 'ATT-W46', label: 'Approval Presensi', route: 'hrd-att-approval' }, blocker: { reason: 'Menunggu keputusan Supervisor Santi', waiting: 'EMP-0154', next: 'Ingatkan via Approval', at: '2026-11-13 09:10' } }),
+      T({ id: 'TSK-0006', ws: 'HRD', title: 'Laporan BPJS Oktober siap dikirim', stage: 'Review', prio: 'Sedang', pic: 'EMP-0143', reviewer: 'EMP-0142', requireReview: true, due: '2026-11-13', scope: 'ENT-HQ', source: { type: 'Laporan', id: 'RPT-BPJS-2610', label: 'BPJS Oktober (F7)', route: 'hrd-reports' }, checklist: [{ id: 'C1', text: 'Rekonsiliasi peserta', done: true }, { id: 'C2', text: 'Unggah dokumen (sintetis)', done: true }] }),
+      T({ id: 'TSK-0007', ws: 'HRD', title: 'Arsip slip Oktober', stage: 'Selesai', prio: 'Rendah', pic: 'EMP-0142', due: '2026-11-05', scope: 'ENT-HQ', source: { type: 'Payroll', id: 'PAY-2610', label: 'Payroll Oktober', route: 'hrd-payroll', sensitive: true } }),
+      T({ id: 'TSK-0008', ws: 'HRD', title: 'Update data kontak darurat Office', stage: 'Workplan', prio: 'Rendah', pic: 'EMP-0143', due: '2026-11-10', scope: 'ENT-HQ', source: { type: 'Direktori', id: 'DIR-HQ', label: 'Direktori Office', route: 'hrd-roster?outlet=LOC-HQ' } }),
+      T({ id: 'TSK-0101', ws: 'HG', title: 'Coaching hot stone untuk 4 therapist Triloka', stage: 'Priority', prio: 'Tinggi', pic: 'EMP-0144', due: '2026-11-20', sessionAt: '2026-11-19 14:00', scope: 'OUT-TRL', source: { type: 'KPI', id: 'KPI-QA-TRL', label: 'Skor kualitas treatment Triloka (F6)', route: 'hrd-kpi' }, contributors: ['EMP-0155'] }),
+      T({ id: 'TSK-0102', ws: 'HG', title: 'Training SOP kebersihan v3 (semua outlet)', stage: 'Workplan', prio: 'Sedang', pic: 'EMP-0144', due: '2026-11-22', sessionAt: '2026-11-18 14:00', scope: 'ENT-SPA', source: { type: 'Library', id: 'SOP-HYG', label: 'SOP kebersihan v3', route: 'hrd-library?id=SOP-HYG' } }),
+      T({ id: 'TSK-0103', ws: 'HG', title: 'Ide: buddy system therapist baru', stage: 'Ide', prio: 'Rendah', pic: null, due: null, scope: 'ENT-SPA', source: { type: 'Reflection', id: 'RFL-2610', label: 'Monthly Reflection Okt (F8)', route: 'hrd-race' } }),
+      T({ id: 'TSK-0104', ws: 'HG', title: 'Verifikasi kompetensi therapist Ubud batch Okt', stage: 'Review', prio: 'Sedang', pic: 'EMP-0144', reviewer: 'EMP-0142', requireReview: true, due: '2026-11-15', scope: 'OUT-UBD', source: { type: 'Template', id: 'TPL-KOMP', label: 'Verifikasi kompetensi v1', route: 'hrd-library?id=TPL-KOMP' }, checklist: [{ id: 'C1', text: 'Observasi 5 therapist', done: true }, { id: 'C2', text: 'Rubric terisi', done: false }] }),
+      T({ id: 'TSK-0105', ws: 'HG', title: 'Rencana karier receptionist → supervisor', stage: 'Issue', prio: 'Sedang', pic: 'EMP-0144', due: '2026-11-28', scope: 'ENT-SPA', source: { type: 'Talent', id: '9BOX-2611', label: '9-Box Talent (F6)', route: 'hrd-ninebox' } })
+    ];
+    const events = tasks.map((t, i) => ({ id: `EVT-${String(i + 1).padStart(4, '0')}`, task: t.id, by: 'Seed fixture', at: '2026-11-10 08:00', kind: 'Dibuat', before: null, after: t.stage, demo: true }));
+    events.push({ id: 'EVT-0100', task: 'TSK-0001', by: 'Made Gunarsa (Manager HRD)', at: '2026-11-12 09:00', kind: 'Pindah tahap', before: 'Issue', after: 'Workplan', demo: true });
+    tasks[0].discussion.push({ id: 'MSG-0001', by: 'Mila (Supervisor Outlet)', at: '2026-11-12 10:15', text: 'Sabtu–Minggu antrean > 2 jam. Butuh 2–3 therapist tambahan.', demo: true });
+    tasks[0].assets.push({ id: 'AST-0001', name: 'utility-ubud-nov.csv (sintetis)', by: 'Made Gunarsa (Manager HRD)', at: '2026-11-12 09:05', demo: true });
+    return { seeded: true, tasks, events, templates: TEMPLATES(), focus: [{ emp: 'EMP-0142', task: 'TSK-0001', date: TODAY }, { emp: 'EMP-0143', task: 'TSK-0005', date: TODAY }], seq: { task: 1000, evt: 1000, msg: 100, ast: 100 } };
+  }
+  function ensure(hr) {
+    if (!hr.f3 || !hr.f3.seeded) { const keep = hr.f3; hr.f3 = seed(); if (keep) for (const k of ['tasks', 'events', 'focus']) hr.f3[k].push(...(keep[k] || [])); }
+    return hr.f3;
+  }
+  const scopeOk = (hr, role, t) => {
+    const d = H.roleDef(role), me = hr.roleEmp[role];
+    if (d.scope === 'none') return false;
+    if (t.source?.sensitive && d.payroll !== 'detail' && t.pic !== me) return false;
+    if (['owner', 'hrd'].includes(role)) return true;
+    if (role === 'hrd-ops') return t.ws === 'HRD' || [t.pic, t.reviewer, ...t.contributors].includes(me);
+    if (role === 'hg-lead') return t.ws === 'HG' || [t.pic, t.reviewer, ...t.contributors].includes(me);
+    if ([t.pic, t.reviewer, ...t.contributors].includes(me)) return true;
+    if (role === 'outlet-spv') return t.scope === 'OUT-UBD';
+    if (role === 'ops-manager') return /^OUT-|ENT-SPA/.test(t.scope || '');
+    return false;
+  };
+  const visible = (hr, role) => ensure(hr).tasks.filter(t => scopeOk(hr, role, t));
+  const wsVisible = (role) => ({ owner: ['HRD', 'HG'], hrd: ['HRD', 'HG'], 'hrd-ops': ['HRD'], 'hg-lead': ['HG'], 'outlet-spv': ['HRD', 'HG'], 'ops-manager': ['HRD', 'HG'] }[role] || []);
+  const overdue = (t) => t.due && t.due < TODAY && t.stage !== 'Selesai';
+  const agenda = (hr, role) => visible(hr, role).flatMap(t => [
+    ...(t.sessionAt ? [{ kind: 'Sesi', date: t.sessionAt.slice(0, 10), time: t.sessionAt.slice(11), task: t.id, title: t.title, ws: t.ws }] : []),
+    ...(t.due && t.stage !== 'Selesai' ? [{ kind: 'Tenggat', date: t.due, time: '23:59', task: t.id, title: t.title, ws: t.ws }] : [])]);
+  const myTasks = (hr, role) => { const me = hr.roleEmp[role]; return visible(hr, role).filter(t => t.pic === me || t.checklist.some(c => c.pic === me)); };
+  const reviewQueue = (hr, role) => { const me = hr.roleEmp[role]; return visible(hr, role).filter(t => t.stage === 'Review' && t.reviewer === me); };
+  const focusOf = (hr, emp, date = TODAY) => ensure(hr).focus.filter(f => f.emp === emp && f.date === date).map(f => ensure(hr).tasks.find(t => t.id === f.task)).filter(Boolean);
+
+  function update(state, hr, action, input, ctx) {
+    const f3 = ensure(hr), { need, audit, by, role } = ctx;
+    const me = hr.roleEmp[role];
+    const ev = (t, kind, before, after, reason) => { f3.events.push({ id: `EVT-${++f3.seq.evt}`, task: t.id, by, at: now(), kind, before, after, reason: reason || null, demo: t.demo }); t.version++; };
+    const get = (id) => { const t = f3.tasks.find(x => x.id === id); if (!t) throw new Error('Kartu tidak ditemukan.'); if (!scopeOk(hr, role, t)) throw new Error(`Akses ditolak: kartu ${id} di luar cakupan ${H.roleDef(role).label}.`); return t; };
+    const writer = () => { if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
+    const ver = (t) => { if (input.version !== undefined && input.version !== '' && Number(input.version) !== t.version) throw new Error(`Konflik: kartu ${t.id} sudah diubah orang lain (versi ${t.version}). Status terbaru dimuat; ulangi perubahan Anda.`); };
+    switch (action) {
+      case 'task-create': {
+        writer();
+        const stage = input.stage || 'Ide'; if (!['Ide', 'Issue', 'Workplan'].includes(stage)) throw new Error('Temuan masuk sebagai Ide, Issue atau Workplan.');
+        if (input.sourceId) {
+          const dup = f3.tasks.find(t => t.source?.id === input.sourceId && (t.finding || '') === (input.finding || ''));
+          if (dup) { return dup.id; }
+        }
+        const title = String(input.title || '').trim(); if (title.length < 5) throw new Error('Judul minimal 5 karakter.');
+        if (stage === 'Workplan' && (!input.pic || !input.due)) throw new Error('Workplan membutuhkan PIC dan tenggat.');
+        const ws = input.ws || (role === 'hg-lead' ? 'HG' : 'HRD');
+        const t = { id: `TSK-${++f3.seq.task}`, ws, title, stage, prio: input.prio || 'Sedang', pic: input.pic || null, reviewer: input.reviewer || null, contributors: [], due: input.due || null, sessionAt: input.sessionAt || null, scope: input.scope || 'ENT-SPA', source: input.sourceId ? { type: input.sourceType || 'Temuan', id: input.sourceId, label: input.sourceLabel || input.sourceId, route: input.sourceRoute || '' } : null, finding: input.finding || null, checklist: [], discussion: [], assets: [], blocker: null, parent: input.parent || null, requireReview: !!input.requireReview, version: 1, demo: true };
+        f3.tasks.push(t); ev(t, 'Dibuat', null, stage); t.version = 1;
+        audit(hr, by, 'Buat kartu', `${t.id} · ${title} (${stage})`, { object: 'Tugas', ref: t.id });
+        return t.id;
+      }
+      case 'task-move': {
+        writer(); const t = get(input.id); ver(t);
+        const to = input.to; if (!STAGES.includes(to)) throw new Error('Tahap tidak dikenal.');
+        if (to === t.stage) return t.id;
+        if (['Workplan', 'Priority', 'Dikerjakan', 'Review'].includes(to) && (!t.pic || !t.due)) throw new Error(`Tetapkan PIC dan tenggat sebelum memindahkan ${t.id} ke ${to}.`);
+        if (to === 'Selesai') {
+          const open = t.checklist.filter(c => !c.done).length;
+          if (open) throw new Error(`Belum bisa Selesai: ${open} butir checklist belum lengkap.`);
+          if (t.requireReview && !(t.stage === 'Review' && t.reviewer === me)) throw new Error(`Kartu ini wajib direview. Pindahkan ke Review; hanya reviewer ${t.reviewer || '(belum ditetapkan)'} yang menyelesaikan.`);
+        }
+        if (to === 'Review' && t.requireReview && !t.reviewer) throw new Error('Tetapkan reviewer sebelum Review.');
+        const from = t.stage; t.stage = to; if (to === 'Selesai') t.blocker = null;
+        ev(t, 'Pindah tahap', from, to, input.via ? `via ${input.via}` : null);
+        return t.id;
+      }
+      case 'task-assign': {
+        writer(); const t = get(input.id); ver(t);
+        const field = input.field || 'pic'; if (!['pic', 'reviewer'].includes(field)) throw new Error('Field tidak dikenal.');
+        const emp = input.emp || null; if (emp && !hr.people.some(p => p.id === emp)) throw new Error('Karyawan tidak ditemukan.');
+        const before = t[field]; if (before === emp) return t.id;
+        t[field] = emp; ev(t, field === 'pic' ? 'Ganti PIC' : 'Ganti reviewer', before, emp);
+        if (field === 'pic' && before) f3.focus = f3.focus.filter(f => !(f.task === t.id && f.emp === before));
+        return t.id;
+      }
+      case 'task-edit': {
+        writer(); const t = get(input.id); ver(t);
+        const ch = [];
+        if (input.due !== undefined && input.due !== (t.due || '')) { ch.push(['Tenggat', t.due, input.due || null]); t.due = input.due || null; }
+        if (input.prio && input.prio !== t.prio) { ch.push(['Prioritas', t.prio, input.prio]); t.prio = input.prio; }
+        if (input.sessionAt !== undefined && (input.sessionAt || null) !== t.sessionAt) { ch.push(['Jadwal sesi', t.sessionAt, input.sessionAt || null]); t.sessionAt = input.sessionAt || null; }
+        if (!ch.length) throw new Error('Tidak ada perubahan.');
+        ch.forEach(([k, b, a]) => ev(t, 'Ubah ' + k, b, a));
+        return t.id;
+      }
+      case 'task-comment': {
+        const t = get(input.id); const text = String(input.text || '').trim(); if (text.length < 2) throw new Error('Tulis pesan diskusi.');
+        t.discussion.push({ id: `MSG-${++f3.seq.msg}`, by, at: now(), text, demo: t.demo }); ev(t, 'Diskusi', null, text.slice(0, 40));
+        return t.id;
+      }
+      case 'task-asset': {
+        writer(); const t = get(input.id); const name = String(input.name || '').trim(); if (!name) throw new Error('Nama file bukti wajib.');
+        if (/\.(exe|js|bat|sh)$/i.test(name)) throw new Error('Jenis file tidak diizinkan.');
+        t.assets.push({ id: `AST-${++f3.seq.ast}`, name: name + ' (sintetis)', by, at: now(), demo: t.demo }); ev(t, 'Bukti ditambah', null, name);
+        return t.id;
+      }
+      case 'task-check': {
+        writer(); const t = get(input.id);
+        if (input.text) { const c = { id: 'C' + (t.checklist.length + 1), text: String(input.text).trim(), done: false, pic: input.pic || null }; t.checklist.push(c); ev(t, 'Checklist ditambah', null, c.text); return t.id; }
+        const c = t.checklist.find(x => x.id === input.item); if (!c) throw new Error('Butir checklist tidak ditemukan.');
+        c.done = !c.done; ev(t, c.done ? 'Checklist selesai' : 'Checklist dibuka', c.text, c.done ? 'selesai' : 'terbuka');
+        return t.id;
+      }
+      case 'task-blocker': {
+        writer(); const t = get(input.id);
+        if (input.clear) { if (!t.blocker) return t.id; const b = t.blocker.reason; t.blocker = null; ev(t, 'Blocker dilepas', b, null); return t.id; }
+        if (t.stage === 'Selesai') throw new Error('Kartu selesai tidak bisa diberi blocker.');
+        const reason = String(input.reason || '').trim(); if (reason.length < 5) throw new Error('Alasan blocker minimal 5 karakter.');
+        t.blocker = { reason, waiting: input.waiting || null, next: input.next || '', at: now() }; ev(t, 'Blocker dicatat', null, reason);
+        return t.id;
+      }
+      case 'task-review': {
+        const t = get(input.id); ver(t);
+        if (t.stage !== 'Review') throw new Error(`${t.id} tidak sedang di Review.`);
+        if (t.reviewer !== me) throw new Error('Akses ditolak: hanya reviewer yang memutuskan review.');
+        if (input.decision === 'return') {
+          const note = String(input.note || '').trim(); if (note.length < 5) throw new Error('Catatan revisi minimal 5 karakter.');
+          t.stage = 'Dikerjakan'; t.discussion.push({ id: `MSG-${++f3.seq.msg}`, by, at: now(), text: 'Revisi: ' + note, demo: t.demo }); ev(t, 'Dikembalikan dari review', 'Review', 'Dikerjakan', note); return t.id;
+        }
+        const open = t.checklist.filter(c => !c.done).length; if (open) throw new Error(`Belum bisa Selesai: ${open} butir checklist belum lengkap.`);
+        t.stage = 'Selesai'; t.blocker = null; ev(t, 'Review diterima', 'Review', 'Selesai');
+        return t.id;
+      }
+      case 'template-apply': {
+        writer(); const tp = f3.templates.find(x => x.id === input.template); if (!tp || !tp.steps.length) throw new Error('Template tidak punya langkah.');
+        const start = input.start || addDays(TODAY, 3); if (!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error('Tanggal mulai tidak valid.');
+        const emp = input.emp ? hr.people.find(p => p.id === input.emp) : null;
+        const loc = emp ? (H.placementOn(hr, emp.id) || H.upcomingOf(hr, emp.id))?.location : (input.scope || 'OUT-UBD');
+        const spv = hr.placements.find(x => x.position === 'POS-SPV' && x.leads === loc && !x.to)?.emp || 'EMP-0153';
+        const key = `${tp.id}:${emp ? emp.id : loc}:${start}`;
+        const dup = f3.tasks.find(t => t.source?.id === key); if (dup) return dup.id;
+        const parentId = `TSK-${++f3.seq.task}`;
+        const parent = { id: parentId, ws: tp.ws, title: `${tp.name}${emp ? ' · ' + emp.name : ''}`, stage: 'Workplan', prio: 'Tinggi', pic: tp.ws === 'HG' ? 'EMP-0144' : 'EMP-0143', reviewer: tp.review ? 'EMP-0142' : null, requireReview: tp.review, contributors: [], due: addDays(start, Math.max(...tp.steps.map(s => s[2]))), sessionAt: null, scope: loc, source: { type: 'Template', id: key, label: `${tp.id} v${tp.version}`, route: `hrd-library?id=${tp.id}`, template: tp.id, templateVersion: tp.version }, finding: null, checklist: [], discussion: [], assets: [], blocker: null, parent: null, version: 1, demo: true };
+        f3.tasks.push(parent); ev(parent, 'Dibuat dari template', null, `${tp.id} v${tp.version}`); parent.version = 1;
+        tp.steps.forEach(([text, picRole, rel, ws], i) => {
+          const pic = picRole === 'Supervisor Outlet' ? spv : ROLE_PIC[picRole];
+          const sid = `TSK-${++f3.seq.task}`;
+          const sub = { id: sid, ws, title: text + (emp ? ' · ' + emp.name : ''), stage: 'Workplan', prio: 'Sedang', pic, reviewer: null, requireReview: false, contributors: [], due: addDays(start, rel), sessionAt: /Orientasi|Observasi/.test(text) ? `${addDays(start, rel)} 10:00` : null, scope: loc, source: { type: 'Template', id: `${key}#${i + 1}`, label: `${tp.id} v${tp.version} · langkah ${i + 1}`, route: `hrd-library?id=${tp.id}` }, finding: null, checklist: [], discussion: [], assets: [], blocker: null, parent: parentId, version: 1, demo: true };
+          f3.tasks.push(sub); ev(sub, 'Dibuat dari template', null, `${tp.id} langkah ${i + 1}`); sub.version = 1;
+          parent.checklist.push({ id: 'C' + (i + 1), text, done: false, pic, sub: sid });
+        });
+        audit(hr, by, 'Terapkan template', `${tp.id} v${tp.version} → ${parentId} (${tp.steps.length} subtugas)`, { object: 'Tugas', ref: parentId });
+        return parentId;
+      }
+      case 'template-version': {
+        if (!['owner', 'hrd', 'hg-lead'].includes(role)) throw new Error('Akses ditolak: versi template oleh Manager HRD / HG Lead.');
+        const tp = f3.templates.find(x => x.id === input.template); if (!tp) throw new Error('Template tidak ditemukan.');
+        const note = String(input.note || '').trim(); if (note.length < 5) throw new Error('Catatan versi minimal 5 karakter.');
+        if (input.step) tp.steps.push([String(input.step), input.picRole || 'Staf HRD', Number(input.rel || 0), tp.ws]);
+        tp.version++; tp.history.push({ v: tp.version, at: TODAY, note });
+        audit(hr, by, 'Versi template', `${tp.id} → v${tp.version}: ${note}`, { object: 'Template', ref: tp.id, before: `v${tp.version - 1}`, after: `v${tp.version}` });
+        return `${tp.id} v${tp.version}`;
+      }
+      case 'focus-toggle': {
+        const t = get(input.id), date = input.date || TODAY; if (!me) throw new Error('Role ini tidak punya My Day.');
+        const i = f3.focus.findIndex(f => f.emp === me && f.task === t.id && f.date === date);
+        if (i >= 0) { f3.focus.splice(i, 1); return 'dilepas dari My Day'; }
+        f3.focus.push({ emp: me, task: t.id, date }); return 'ditambahkan ke My Day';
+      }
+      default: return undefined;
+    }
+  }
+  const purge = (hr) => { if (!hr.f3) return; hr.f3.tasks = hr.f3.tasks.filter(t => !t.demo); hr.f3.events = hr.f3.events.filter(e => !e.demo); hr.f3.focus = hr.f3.focus.filter(f => hr.f3.tasks.some(t => t.id === f.task)); };
+  const keep = (hr) => hr.f3 ? { seeded: false, tasks: hr.f3.tasks.filter(t => !t.demo), events: hr.f3.events.filter(e => !e.demo), focus: [] } : null;
+
+  /* rantai HR.EXT: F3 menangani aksinya sendiri, sisanya diteruskan ke ekstensi sebelumnya */
+  const prev = { ...H.EXT };
+  H.EXT.update = (state, hr, action, input, ctx) => { const r = update(state, hr, action, input, ctx); return r !== undefined ? r : prev.update ? prev.update(state, hr, action, input, ctx) : (() => { throw new Error('Aksi tidak dikenal: ' + action); })(); };
+  H.EXT.purge = (hr) => { prev.purge?.(hr); purge(hr); };
+  H.EXT.keep = (hr) => { const k = prev.keep?.(hr); const k3 = keep(hr); if (k && k3) k.f3 = k3; return k || (k3 ? { f3: k3 } : null); };
+  H.EXT.ensure = (hr) => { prev.ensure?.(hr); if (hr.f2 && hr.f2.f3) { hr.f3 = hr.f2.f3; delete hr.f2.f3; } ensure(hr); };
+  return { STAGES, PRIOS, WS, ROLE_PIC, TEMPLATES, addDays, ensure, scopeOk, visible, wsVisible, overdue, agenda, myTasks, reviewQueue, focusOf };
+})();
+if (typeof module !== 'undefined') module.exports = HR3;
+
+;
 /* HAWK ERP · portal preview shell (Finance → Operational → Commercial → Sales → HRD; HRD is registered by hrd.js)
    Phase 1: F1-01 portal picker, F1-02 Commercial Executive Summary (SER), F1-03 drill-down,
    F1-04 Sales home, F7-01 screen map. Other routes are the original sandbox screens, labelled with
@@ -4644,6 +4887,209 @@ document.addEventListener('click', (e) => {
   window.__hrLastExport = { rows: list.length, pay };
   H.render(`Ekspor ${list.length} baris sesuai cakupan ${def().label}${pay ? '' : ' (tanpa kolom payroll)'}.`);
 });
+})();
+
+;
+/* HAWK ERP · Portal HRD · F3 Planner & Workplace — DATA DEMO / SIMULASI.
+   F3-NV01 Workplace (hrd-tasks) · NV02 Board (hrd-board) · NV03 Calendar (hrd-calendar) · NV04 List (hrd-list) ·
+   NV05 Library (hrd-library) · NV06 My Tasks (hrd-mytasks) · NV07 My Day (hrd-myday) · NV08 Detail Kartu (hrd-task?id=).
+   Model: hrd-f3-model.js (HR3). Satu Task ID dipakai di semua tampilan. */
+(() => {
+const H = window.HL;
+const { esc, num, table, card, metrics, qs, link } = H;
+const hr = () => { const h = HR.ensure(H.state); if (typeof HR2 !== 'undefined') HR2.ensure(h); HR3.ensure(h); return h; };
+const f3 = () => hr().f3;
+const role = () => H.prefs.role;
+const def = () => HR.roleDef(role());
+const me = () => hr().roleEmp[role()];
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const person = (id) => hr().people.find(p => p.id === id);
+const empName = (id) => id ? (person(id)?.name || id) : '—';
+const tabs = (route, cur, list, params = {}, key = 'tab') => `<nav class="tabs" aria-label="Bagian">${list.map(([k, l]) => `<a class="tab${k === cur ? ' on' : ''}" href="#${route}${qs({ ...params, [key]: k })}" ${k === cur ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+const denied = (why) => `<section class="card hr-denied" role="alert"><h2>Akses ditolak</h2><p>${why}</p><div class="actions"><button type="button" class="btn" data-hr-role="hrd">Ganti ke Manager HRD</button><button type="button" class="btn ghost" data-hr-role="hg-lead">Ganti ke Human Growth Lead</button></div></section>`;
+const register = (id, fn, title, code) => { H.REGISTRY[id] = fn; fn.title = title; if (code) fn.code = code; };
+const empty = (title, body, reset = true) => `<section class="card hr-empty"><h2>${title}</h2><p>${body}</p>${reset ? '<button type="button" class="btn" data-action="filter-reset">Reset filter</button>' : ''}</section>`;
+const STAGE_TONE = { Ide: '', Issue: 'bad', Workplan: 'planned', Priority: 'sandbox', Dikerjakan: 'sandbox', Review: 'planned', Selesai: 'ready' };
+const PRIO_TONE = { Tinggi: 'bad', Sedang: 'sandbox', Rendah: '' };
+const scopeName = (s) => s === 'ENT-SPA' ? 'Semua outlet Spa' : s === 'ENT-HQ' ? 'Office' : HR.locName(s);
+const guarded = (fn) => (p) => HR3.wsVisible(role()).length || hr().roleEmp[role()] && HR3.visible(hr(), role()).length ? fn(p) : denied(`Role demo <b>${esc(def().label)}</b> tidak punya workplace HRD atau Human Growth. Tidak ada kartu yang dimuat.`);
+const KC = ['g-teal', 'g-violet', 'g-blue', 'g-gold'];
+const kpiLinks = (es) => `<section class="grid g4 keep2 kpis">${es.map(([l, v, h, sub], i) => `<a class="kpi ${KC[i % 4]}" href="${h}"><div class="lbl">${l}</div><div class="val">${v}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</a>`).join('')}</section>`;
+const taskLink = (t) => `<a href="#hrd-task${qs({ id: t.id })}">${t.id}</a>`;
+const picOpts = (cur) => `<option value="">— tanpa PIC —</option>` + ['EMP-0142', 'EMP-0143', 'EMP-0144', 'EMP-0145', 'EMP-0151', 'EMP-0152', 'EMP-0153', 'EMP-0154', 'EMP-0155', 'EMP-0156'].map(id => `<option value="${id}" ${id === cur ? 'selected' : ''}>${esc(empName(id))} · ${esc(HR.pos((HR.placementOn(hr(), id) || {}).position)?.name || '')}</option>`).join('');
+
+/* filter bersama Board / List: tetap terbawa saat membuka kartu */
+function filterTasks(params) {
+  const q = (params.q || '').toLowerCase();
+  return HR3.visible(hr(), role()).filter(t => (!params.ws || t.ws === params.ws) && (!params.outlet || t.scope === params.outlet) && (!params.pic || (params.pic === 'none' ? !t.pic : t.pic === params.pic)) && (!params.prio || t.prio === params.prio) && (!params.stage || t.stage === params.stage) &&
+    (!params.only || (params.only === 'nopic' && !t.pic) || (params.only === 'overdue' && HR3.overdue(t)) || (params.only === 'review' && t.stage === 'Review') || (params.only === 'blocked' && t.blocker)) && (!q || `${t.id} ${t.title}`.toLowerCase().includes(q)));
+}
+function filterForm(params, route, extra = '') {
+  const vis = HR3.visible(hr(), role());
+  const pics = [...new Set(vis.map(t => t.pic).filter(Boolean))];
+  const outs = [...new Set(vis.map(t => t.scope))];
+  const sel = (name, opts, cur, all) => `<label>${all.split(' ')[1] ? all.replace('Semua ', '').replace(/^./, c => c.toUpperCase()) : all}<select name="${name}"><option value="">${all}</option>${opts.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
+  return `<form id="filters" class="filters" aria-label="Filter tugas"><label>Cari<input name="q" value="${esc(params.q || '')}" placeholder="Task ID / judul"></label>
+    ${sel('ws', HR3.wsVisible(role()).map(w => [w, HR3.WS[w].name]), params.ws, 'Semua workplace')}
+    ${sel('outlet', outs.map(o => [o, scopeName(o)]), params.outlet, 'Semua cakupan')}
+    ${sel('pic', [['none', 'Tanpa PIC'], ...pics.map(p => [p, empName(p)])], params.pic, 'Semua PIC')}
+    ${sel('prio', HR3.PRIOS.map(p => [p, p]), params.prio, 'Semua prioritas')}${extra}
+    ${params.only ? `<input type="hidden" name="only" value="${esc(params.only)}">` : ''}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>`;
+}
+const keepParams = (params) => { const k = { ...params }; delete k.id; delete k.tab; return k; };
+
+/* ---------- NV01 Workplace ---------- */
+function workplace(params) {
+  const wsList = HR3.wsVisible(role()); const ws = wsList.includes(params.ws) ? params.ws : wsList[0];
+  if (!ws) return denied('Tidak ada workplace dalam cakupan Anda.');
+  const all = HR3.visible(hr(), role()).filter(t => t.ws === ws), open = all.filter(t => t.stage !== 'Selesai');
+  const byPic = {}; open.forEach(t => { if (t.pic) byPic[t.pic] = (byPic[t.pic] || 0) + 1; });
+  const handoff = open.filter(t => t.checklist.some(c => c.sub && f3().tasks.find(x => x.id === c.sub)?.ws !== t.ws));
+  const L = (only, n) => `#hrd-list${qs({ ws, only })}`;
+  const util = [['OUT-UBD', 106, 'Issue'], ['OUT-SHT', 66, 'Ide']].map(([o, u, stg]) => {
+    const t = f3().tasks.find(x => x.source?.id === `UTIL-${o}-2611`);
+    return [esc(HR.locName(o)), `${u}%`, u > 100 ? chip('Di atas 100%', 'bad') : chip('Di bawah 70%', 'sandbox'), t && HR3.scopeOk(hr(), role(), t) ? `${taskLink(t)} · ${chip(t.stage, STAGE_TONE[t.stage])}` : `<button type="button" class="btn sm" data-action="hr:task-create" data-ws="HRD" data-stage="${stg}" data-title="Utility ${esc(HR.locName(o))} ${u}%: ${u > 100 ? 'kapasitas therapist kurang' : 'di bawah ambang 70%'}" data-scope="${o}" data-source-id="UTIL-${o}-2611" data-source-type="Utility" data-source-label="Utility ${esc(HR.locName(o))} Nov 2026 · ${u}%" data-source-route="hrd-home?outlet=${o}" data-finding="FND-UTIL-${o.slice(4)}-2611" data-after="hrd-task?id={id}">Tandai sebagai ${stg}</button>`];
+  });
+  return tabs('hrd-tasks', ws, wsList.map(w => [w, HR3.WS[w].name]), {}, 'ws') +
+    kpiLinks([['Kartu aktif', open.length, `#hrd-board${qs({ ws })}`], ['Tanpa PIC', open.filter(t => !t.pic).length, L('nopic')], ['Lewat tenggat', open.filter(HR3.overdue).length, L('overdue')], ['Terblokir', open.filter(t => t.blocker).length, L('blocked')], ['Menunggu review', open.filter(t => t.stage === 'Review').length, L('review')]]) +
+    `<div class="grid g2">${card('Beban per PIC', Object.keys(byPic).length ? table(['PIC', 'Kartu aktif', ''], Object.entries(byPic).sort((a, b) => b[1] - a[1]).map(([p, n]) => [esc(empName(p)), n, `<a href="#hrd-list${qs({ ws, pic: p })}">Lihat</a>`])) : '<p>Belum ada kartu ber-PIC.</p>')}
+    ${card('Temuan kapasitas (F5, sintetis)', table(['Outlet', 'Utility', 'Status', 'Kartu'], util) + '<p class="muted small">Penandaan ulang untuk sumber dan temuan yang sama membuka kartu yang sudah ada.</p>')}</div>` +
+    card('Handoff lintas tim', handoff.length ? table(['Kartu', 'Judul', 'Subtugas tim lain'], handoff.map(t => [taskLink(t), esc(t.title), t.checklist.filter(c => c.sub).map(c => { const s = f3().tasks.find(x => x.id === c.sub); return s && s.ws !== t.ws ? `${link('hrd-task' + qs({ id: s.id }), s.id)} (${s.ws})` : ''; }).filter(Boolean).join(', ')])) : `<p>Belum ada handoff. Terapkan template onboarding di ${link('hrd-library', 'Library')} untuk membuat subtugas HRD dan HG.</p>`) +
+    `<div class="actions">${link('hrd-board' + qs({ ws }), 'Board')} ${link('hrd-calendar', 'Calendar')} ${link('hrd-list' + qs({ ws }), 'List')} ${link('hrd-mytasks', 'My Tasks')} ${link('hrd-myday', 'My Day')}</div>`;
+}
+
+/* ---------- NV02 Board ---------- */
+function board(params) {
+  const list = filterTasks(params), kp = keepParams(params);
+  const cardHtml = (t) => `<article class="hr-kcard${t.blocker ? ' blocked' : ''}" draggable="true" data-task="${t.id}" data-version="${t.version}" tabindex="0" aria-label="${esc(t.id)} ${esc(t.title)}">
+    <a href="#hrd-task${qs({ ...kp, id: t.id })}" class="hr-kt"><b>${t.id}</b> ${esc(t.title)}</a>
+    <div class="hr-kmeta">${chip(t.prio, PRIO_TONE[t.prio])} ${t.pic ? esc(empName(t.pic)) : chip('Tanpa PIC', 'bad')} ${t.due ? `<span class="${HR3.overdue(t) ? 'bad-text' : ''}">⏱ ${t.due}</span>` : ''} ${t.blocker ? chip('Blocker', 'bad') : ''} ${t.checklist.length ? `☑ ${t.checklist.filter(c => c.done).length}/${t.checklist.length}` : ''}</div>
+    <form class="hr-move" data-submit="hr:task-move"><input type="hidden" name="id" value="${t.id}"><input type="hidden" name="version" value="${t.version}"><input type="hidden" name="via" value="menu"><label class="sr" for="mv-${t.id}">Pindahkan ${t.id} ke</label><select id="mv-${t.id}" name="to">${HR3.STAGES.map(s => `<option ${s === t.stage ? 'selected' : ''}>${s}</option>`).join('')}</select><button class="btn ghost sm">Pindahkan</button></form></article>`;
+  return filterForm(params, 'hrd-board') + `<p class="active-filters" role="status"><b>${list.length} kartu</b> · seret kartu ke kolom lain, atau pakai menu <i>Pindahkan</i> (keyboard/ponsel). Validasi sama untuk keduanya.</p>` +
+    (list.length ? `<div class="hr-board" role="list">${HR3.STAGES.map(s => { const col = list.filter(t => t.stage === s); return `<section class="hr-col" data-stage="${s}" role="listitem" aria-label="Kolom ${s}"><h3>${s} <span class="muted">${col.length}</span></h3>${col.map(cardHtml).join('') || '<p class="muted small">Kosong</p>'}</section>`; }).join('')}</div>` : empty('Tidak ada kartu', 'Filter ini tidak menemukan kartu dalam cakupan Anda.'));
+}
+/* drag-and-drop memakai aksi yang sama dengan menu */
+document.addEventListener('dragstart', (e) => { const c = e.target.closest?.('.hr-kcard'); if (!c) return; e.dataTransfer.setData('text/plain', JSON.stringify({ id: c.dataset.task, version: c.dataset.version })); c.classList.add('dragging'); });
+document.addEventListener('dragend', (e) => { e.target.closest?.('.hr-kcard')?.classList.remove('dragging'); });
+document.addEventListener('dragover', (e) => { const col = e.target.closest?.('.hr-col'); if (col) { e.preventDefault(); col.classList.add('over'); } });
+document.addEventListener('dragleave', (e) => { e.target.closest?.('.hr-col')?.classList.remove('over'); });
+document.addEventListener('drop', (e) => { const col = e.target.closest?.('.hr-col'); if (!col) return; e.preventDefault(); col.classList.remove('over'); try { const d = JSON.parse(e.dataTransfer.getData('text/plain')); H.apply('hr:task-move', { id: d.id, version: d.version, to: col.dataset.stage, via: 'drag' }); } catch (err) { /* abaikan */ } });
+
+/* ---------- NV03 Calendar ---------- */
+function calendar(params) {
+  const ag = HR3.agenda(hr(), role()).filter(a => !params.kind || a.kind === params.kind);
+  const days = []; for (let d = '2026-11-01'; d <= '2026-11-30'; d = HR3.addDays(d, 1)) days.push(d);
+  const noDue = HR3.visible(hr(), role()).filter(t => !t.due && t.stage !== 'Selesai');
+  return `<form id="filters" class="filters" aria-label="Filter kalender"><label>Jenis<select name="kind"><option value="">Sesi & tenggat</option><option ${params.kind === 'Sesi' ? 'selected' : ''}>Sesi</option><option ${params.kind === 'Tenggat' ? 'selected' : ''}>Tenggat</option></select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    card('November 2026 · WITA', `<div class="hr-cal">${days.map(d => `<div class="hr-cal-d${d === HR.TODAY ? ' today' : ''}"><b>${+d.slice(8)}</b>${ag.filter(a => a.date === d).map(a => `<a href="#hrd-task${qs({ id: a.task })}" class="small hr-ag ${a.kind === 'Sesi' ? 'sesi' : 'due'}" title="${esc(a.title)}">${a.kind === 'Sesi' ? '● ' + a.time : '⏱'} ${a.task}</a>`).join('')}</div>`).join('')}</div><p class="muted small">● waktu sesi (interview, coaching, training) · ⏱ batas penyelesaian. Klik untuk membuka kartu.</p>`) +
+    card('Agenda berurutan', ag.length ? table(['Tanggal', 'Waktu', 'Jenis', 'Kartu', 'Judul', 'Workplace'], ag.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).map(a => [a.date, a.time, a.kind === 'Sesi' ? chip('Sesi', 'planned') : chip('Tenggat', 'sandbox'), link('hrd-task' + qs({ id: a.task }), a.task), esc(a.title), a.ws])) : '<p>Tidak ada agenda.</p>') +
+    (noDue.length ? `<p class="muted small">${noDue.length} kartu tanpa tenggat tetap tersedia di ${link('hrd-list' + qs({ only: '' }), 'List')} (${noDue.map(t => t.id).join(', ')}).</p>` : '');
+}
+
+/* ---------- NV04 List ---------- */
+function list(params) {
+  const rows = filterTasks(params), kp = keepParams(params);
+  const only = (k, l) => `<a class="tab${params.only === k ? ' on' : ''}" href="#hrd-list${qs({ ...kp, only: params.only === k ? '' : k })}">${l}</a>`;
+  return filterForm(params, 'hrd-list', `<label>Tahap<select name="stage"><option value="">Semua tahap</option>${HR3.STAGES.map(s => `<option ${s === params.stage ? 'selected' : ''}>${s}</option>`).join('')}</select></label>`) +
+    `<nav class="tabs" aria-label="Filter cepat">${only('nopic', 'Tanpa PIC')}${only('overdue', 'Terlambat')}${only('review', 'Menunggu review')}${only('blocked', 'Terblokir')}</nav>` +
+    `<p class="active-filters" role="status"><b>${rows.length} kartu</b> di cakupan ${esc(def().label)}.</p>` +
+    (rows.length ? card('Daftar tugas', table(['Task ID', 'Judul', 'Cakupan', 'Jenis sumber', 'PIC', 'Prioritas', 'Tahap', 'Tenggat', 'Blocker'], rows.map(t => [`<a href="#hrd-task${qs({ ...kp, id: t.id })}">${t.id}</a>`, esc(t.title) + (t.parent ? ` <span class="muted small">↳ ${t.parent}</span>` : ''), esc(scopeName(t.scope)), esc(t.source?.type || '—'), t.pic ? esc(empName(t.pic)) : chip('Tanpa PIC', 'bad'), chip(t.prio, PRIO_TONE[t.prio]), chip(t.stage, STAGE_TONE[t.stage]), t.due ? (HR3.overdue(t) ? chip(t.due + ' · terlambat', 'bad') : t.due) : '—', t.blocker ? esc(t.blocker.reason) : '—']))) : empty('Tidak ada kartu', 'Kombinasi filter ini kosong.'));
+}
+
+/* ---------- NV05 Library ---------- */
+function library(params) {
+  const tps = f3().templates;
+  if (params.id) {
+    const tp = tps.find(t => t.id === params.id); if (!tp) return empty('Template tidak ditemukan', link('hrd-library', '‹ Library'), false);
+    const used = f3().tasks.filter(t => t.source?.template === tp.id);
+    const canWrite = ['owner', 'hrd', 'hrd-ops', 'hg-lead'].includes(role());
+    const cand = [...HR.joiners(hr(), role()), ...HR.people(hr(), role()).filter(p => p.placement.position === 'POS-THR')].slice(0, 40);
+    return card(`${tp.id} · ${esc(tp.name)} · v${tp.version}`, `<p>${chip(tp.kind, 'planned')} ${chip(HR3.WS[tp.ws].name)} ${tp.review ? chip('Wajib review', 'sandbox') : ''}</p>` +
+      (tp.steps.length ? table(['#', 'Langkah', 'PIC (peran)', 'Tenggat relatif', 'Tim'], tp.steps.map((s, i) => [i + 1, esc(s[0]), esc(s[1]), (s[2] >= 0 ? 'H+' : 'H') + s[2], s[3]])) : '<p>Dokumen SOP (tanpa langkah). Pratinjau isi: dummy.</p>') +
+      `<h3>Riwayat versi</h3>${table(['Versi', 'Tanggal', 'Catatan'], tp.history.map(h => ['v' + h.v, h.at, esc(h.note)]))}`) +
+      (tp.steps.length && canWrite ? card('Terapkan sebagai Workplan', `<form class="workflow-form" data-submit="hr:template-apply" data-after="hrd-task?id={id}"><input type="hidden" name="template" value="${tp.id}"><label>Karyawan<select name="emp">${cand.map(p => `<option value="${p.id}">${p.id} · ${esc(p.name)}${p.placement.from > HR.TODAY ? ' (mulai ' + p.placement.from + ')' : ''}</option>`).join('')}</select></label><label>Hari H (mulai kerja)<input type="date" name="start" value="${HR3.addDays(HR.TODAY, 7)}" required></label><button class="btn">Buat kartu & subtugas</button></form><p class="muted small">Membuat 1 kartu induk dan ${tp.steps.length} subtugas dengan PIC berbasis peran dan tenggat relatif. Menerapkan lagi untuk orang dan tanggal yang sama membuka kartu yang sudah ada.</p>`) : '') +
+      (['owner', 'hrd', 'hg-lead'].includes(role()) ? card('Terbitkan versi baru', `<form class="workflow-form" data-submit="hr:template-version"><input type="hidden" name="template" value="${tp.id}"><label>Langkah tambahan (opsional)<input name="step" placeholder="mis. Foto seragam & ID card"></label><label>Peran PIC<select name="picRole">${Object.keys(HR3.ROLE_PIC).map(r => `<option>${r}</option>`).join('')}</select></label><label>Tenggat relatif (hari)<input type="number" name="rel" value="0"></label><label>Catatan versi<input name="note" required minlength="5"></label><button class="btn">Terbitkan v${tp.version + 1}</button></form><p class="muted small">Versi baru berlaku pada penerapan berikutnya; kartu lama tetap merujuk versi saat dibuat.</p>`) : '') +
+      card('Dipakai oleh', used.length ? table(['Kartu', 'Judul', 'Versi', 'Tahap'], used.map(t => [taskLink(t), esc(t.title), 'v' + t.source.templateVersion, chip(t.stage, STAGE_TONE[t.stage])])) : '<p>Belum pernah diterapkan.</p>') + link('hrd-library', '‹ Library');
+  }
+  return card('Library · versi aktif', table(['ID', 'Nama', 'Jenis', 'Workplace', 'Versi', 'Langkah', ''], tps.map(t => [t.id, esc(t.name), chip(t.kind, 'planned'), HR3.WS[t.ws].name, 'v' + t.version, t.steps.length || '—', link('hrd-library' + qs({ id: t.id }), 'Pratinjau')])));
+}
+
+/* ---------- NV06 My Tasks · NV07 My Day ---------- */
+const focusBtn = (t) => { const on = HR3.focusOf(hr(), me()).some(x => x.id === t.id); return `<button type="button" class="btn ${on ? 'ghost ' : ''}sm" data-action="hr:focus-toggle" data-id="${t.id}">${on ? 'Lepas dari My Day' : '+ My Day'}</button>`; };
+function myTasks() {
+  if (!me()) return denied('Role ini tidak punya daftar tugas pribadi.');
+  const mine = HR3.myTasks(hr(), role()), rev = HR3.reviewQueue(hr(), role());
+  const subs = HR3.visible(hr(), role()).filter(t => t.checklist.some(c => c.pic === me() && !c.done) && t.pic !== me());
+  return `<p class="active-filters"><b>${esc(empName(me()))}</b> · ${esc(def().label)}</p>` +
+    card(`Tugas saya · ${mine.length}`, mine.length ? table(['Task ID', 'Judul', 'Tahap', 'Tenggat', 'Induk', 'My Day'], mine.map(t => [taskLink(t), esc(t.title), chip(t.stage, STAGE_TONE[t.stage]), t.due ? (HR3.overdue(t) ? chip(t.due, 'bad') : t.due) : '—', t.parent ? link('hrd-task' + qs({ id: t.parent }), t.parent) : '—', t.stage === 'Selesai' ? '—' : focusBtn(t)])) : '<p>Tidak ada tugas atas nama Anda.</p>') +
+    card(`Antrean review · ${rev.length}`, rev.length ? table(['Task ID', 'Judul', 'PIC', 'Checklist'], rev.map(t => [taskLink(t), esc(t.title), esc(empName(t.pic)), `${t.checklist.filter(c => c.done).length}/${t.checklist.length}`])) : '<p>Tidak ada kartu menunggu review Anda.</p>') +
+    (subs.length ? card('Butir checklist atas nama saya', table(['Kartu', 'Butir'], subs.flatMap(t => t.checklist.filter(c => c.pic === me() && !c.done).map(c => [taskLink(t), esc(c.text)])))) : '');
+}
+function myDay() {
+  if (!me()) return denied('Role ini tidak punya My Day.');
+  const foc = HR3.focusOf(hr(), me()), mine = HR3.myTasks(hr(), role());
+  const ag = HR3.agenda(hr(), role()).filter(a => a.date === HR.TODAY || a.date === HR3.addDays(HR.TODAY, 1));
+  const carried = mine.filter(t => HR3.overdue(t)), blocked = mine.filter(t => t.blocker);
+  return `<p class="active-filters"><b>My Day · ${HR.TODAY} (Jumat) WITA</b> · ${esc(empName(me()))}. Fokus tidak mengubah tenggat, PIC atau status.</p>` +
+    card(`Fokus hari ini · ${foc.length}`, foc.length ? table(['Task ID', 'Judul', 'Tahap', 'Tenggat', 'PIC', ''], foc.map(t => [taskLink(t), esc(t.title), chip(t.stage, STAGE_TONE[t.stage]), t.due || '—', esc(empName(t.pic)), focusBtn(t)])) : `<p>Belum ada fokus. Tambahkan dari ${link('hrd-mytasks', 'My Tasks')}.</p>`) +
+    `<div class="grid g2">${card('Agenda hari ini & besok', ag.length ? table(['Tanggal', 'Waktu', 'Jenis', 'Kartu'], ag.map(a => [a.date, a.time, a.kind, link('hrd-task' + qs({ id: a.task }), a.task)])) : '<p>Tidak ada agenda.</p>')}${card('Hambatan', blocked.length ? table(['Kartu', 'Blocker', 'Menunggu'], blocked.map(t => [taskLink(t), esc(t.blocker.reason), esc(empName(t.blocker.waiting))])) : '<p>Tidak ada blocker.</p>')}</div>` +
+    card('Pekerjaan terbawa (lewat tenggat)', carried.length ? table(['Kartu', 'Judul', 'Tenggat asal', 'My Day'], carried.map(t => [taskLink(t), esc(t.title), chip(t.due, 'bad'), focusBtn(t)])) : '<p>Tidak ada pekerjaan terbawa.</p>');
+}
+
+/* ---------- NV08 Detail Kartu ---------- */
+function detail(params) {
+  const t = f3().tasks.find(x => x.id === params.id);
+  if (!t) return empty('Kartu tidak ditemukan', link('hrd-list', '‹ List'), false);
+  if (!HR3.scopeOk(hr(), role(), t)) return denied(`Kartu ${esc(t.id)} di luar cakupan ${esc(def().label)}${t.source?.sensitive ? ' (sumber payroll khusus Manager HRD)' : ''}.`);
+  const tab = ['preview', 'files', 'discussion', 'checklist', 'history'].includes(params.tab) ? params.tab : 'preview';
+  const kp = keepParams(params), back = params.from === 'board' || params.ws || params.only ? '' : '';
+  const ro = !['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role());
+  const V = `<input type="hidden" name="id" value="${t.id}"><input type="hidden" name="version" value="${t.version}">`;
+  const src = t.source ? (t.source.sensitive && def().payroll !== 'detail' ? `${esc(t.source.type)} · <i>tautan khusus Manager HRD</i>` : `${esc(t.source.type)} · ${t.source.route ? `<a href="#${t.source.route}">${esc(t.source.label)}</a>` : esc(t.source.label)} <span class="muted small">(${esc(t.source.id)})</span>`) : '—';
+  const subs = f3().tasks.filter(x => x.parent === t.id);
+  let body = '';
+  if (tab === 'preview') body = table(['Field', 'Nilai'], [['Task ID', t.id + ` · versi ${t.version}`], ['Workplace', HR3.WS[t.ws].name], ['Sumber', src], ['Finding ID', esc(t.finding || '—')], ['Cakupan', esc(scopeName(t.scope))], ['Tahap', chip(t.stage, STAGE_TONE[t.stage])], ['Prioritas', chip(t.prio, PRIO_TONE[t.prio])], ['PIC', t.pic ? esc(empName(t.pic)) : chip('Tanpa PIC', 'bad')], ['Reviewer', esc(empName(t.reviewer)) + (t.requireReview ? ' · wajib review' : '')], ['Kontributor', t.contributors.map(empName).map(esc).join(', ') || '—'], ['Tenggat', t.due || '—'], ['Jadwal sesi', t.sessionAt ? t.sessionAt + ' WITA' : '—'], ['Induk', t.parent ? link('hrd-task' + qs({ id: t.parent }), t.parent) : '—'], ['Blocker', t.blocker ? `${esc(t.blocker.reason)} · menunggu ${esc(empName(t.blocker.waiting))} · berikutnya: ${esc(t.blocker.next || '—')}` : '—']]) +
+    (ro ? '' : `<div class="grid g2"><form class="workflow-form" data-submit="hr:task-move">${V}<input type="hidden" name="via" value="detail"><label>Pindahkan ke<select name="to">${HR3.STAGES.map(s => `<option ${s === t.stage ? 'selected' : ''}>${s}</option>`).join('')}</select></label><button class="btn">Pindahkan</button></form>
+      <form class="workflow-form" data-submit="hr:task-assign">${V}<input type="hidden" name="field" value="pic"><label>PIC<select name="emp">${picOpts(t.pic)}</select></label><button class="btn ghost">Tetapkan PIC</button></form>
+      <form class="workflow-form" data-submit="hr:task-assign">${V}<input type="hidden" name="field" value="reviewer"><label>Reviewer<select name="emp">${picOpts(t.reviewer)}</select></label><button class="btn ghost">Tetapkan reviewer</button></form>
+      <form class="workflow-form" data-submit="hr:task-edit">${V}<label>Tenggat<input type="date" name="due" value="${t.due || ''}"></label><label>Prioritas<select name="prio">${HR3.PRIOS.map(p => `<option ${p === t.prio ? 'selected' : ''}>${p}</option>`).join('')}</select></label><label>Jadwal sesi<input name="sessionAt" value="${t.sessionAt || ''}" placeholder="2026-11-20 10:00"></label><button class="btn ghost">Simpan</button></form>
+      ${t.blocker ? `<div><button type="button" class="btn ghost" data-action="hr:task-blocker" data-id="${t.id}" data-clear="1">Lepas blocker</button></div>` : `<form class="workflow-form" data-submit="hr:task-blocker">${V}<label>Blocker<input name="reason" placeholder="alasan"></label><label>Menunggu<select name="waiting">${picOpts('')}</select></label><label>Tindakan berikutnya<input name="next"></label><button class="btn ghost">Catat blocker</button></form>`}</div>`) +
+    (t.stage === 'Review' && t.reviewer === me() ? `<div class="card hr-review"><h3>Keputusan review</h3><div class="actions"><button type="button" class="btn" data-action="hr:task-review" data-id="${t.id}" data-version="${t.version}" data-decision="accept">Terima → Selesai</button><form class="inline-form" data-submit="hr:task-review">${V}<input type="hidden" name="decision" value="return"><label class="sr" for="rv-${t.id}">Catatan revisi</label><input id="rv-${t.id}" name="note" placeholder="Catatan revisi" required minlength="5"><button class="btn ghost sm">Kembalikan</button></form></div></div>` : '') +
+    (me() && t.stage !== 'Selesai' ? `<p>${focusBtn(t)}</p>` : '');
+  else if (tab === 'files') body = (t.assets.length ? table(['Asset ID', 'File', 'Oleh', 'Waktu (WITA)'], t.assets.map(a => [a.id, esc(a.name), esc(a.by), a.at])) : '<p>Belum ada bukti.</p>') + (ro ? '' : `<form class="inline-form" data-submit="hr:task-asset">${V}<label class="sr" for="as-${t.id}">Nama file</label><input id="as-${t.id}" name="name" placeholder="bukti.pdf" required><button class="btn sm">Tambah bukti (sintetis)</button></form>`) + '<p class="muted small">Penyimpanan file: NEW INTEGRATION REQUIRED. Preview hanya mencatat nama file.</p>';
+  else if (tab === 'discussion') body = (t.discussion.length ? `<ol class="hr-chat">${t.discussion.map(m => `<li><b>${esc(m.by)}</b> <span class="muted small">${m.at} WITA · ${m.id}</span><p>${esc(m.text)}</p></li>`).join('')}</ol>` : '<p>Belum ada diskusi.</p>') + `<form class="workflow-form" data-submit="hr:task-comment">${V}<label>Pesan<textarea name="text" rows="2" required></textarea></label><button class="btn">Kirim</button></form>`;
+  else if (tab === 'checklist') body = (t.checklist.length ? `<ul class="hr-check">${t.checklist.map(c => `<li><button type="button" class="btn ${c.done ? '' : 'ghost '}sm" data-action="hr:task-check" data-id="${t.id}" data-item="${c.id}" ${ro ? 'disabled' : ''} aria-pressed="${c.done}">${c.done ? '☑' : '☐'}</button> ${esc(c.text)}${c.pic ? ` · <span class="muted">${esc(empName(c.pic))}</span>` : ''}${c.sub ? ` · ${link('hrd-task' + qs({ id: c.sub }), c.sub)}` : ''}</li>`).join('')}</ul>` : '<p>Belum ada checklist.</p>') +
+    (ro ? '' : `<form class="inline-form" data-submit="hr:task-check">${V}<label class="sr" for="ck-${t.id}">Butir baru</label><input id="ck-${t.id}" name="text" placeholder="Butir checklist baru" required><button class="btn sm">Tambah</button></form>`) +
+    (subs.length ? `<h3>Subtugas · ${subs.length}</h3>` + table(['Task ID', 'Judul', 'PIC', 'Tahap', 'Tenggat'], subs.map(s => [taskLink(s), esc(s.title), esc(empName(s.pic)), chip(s.stage, STAGE_TONE[s.stage]), s.due])) : '');
+  else body = table(['Event ID', 'Waktu (WITA)', 'Aktor', 'Perubahan', 'Sebelum', 'Sesudah', 'Alasan'], f3().events.filter(e => e.task === t.id).slice().reverse().map(e => [e.id, e.at, esc(e.by), esc(e.kind), esc(e.before ?? '—'), esc(e.after ?? '—'), esc(e.reason || '—')]));
+  return `<p class="active-filters">${link('hrd-board' + qs(kp), '‹ Board')} · ${link('hrd-list' + qs(kp), 'List')} · filter tetap terbawa</p>` +
+    card(`${t.id} · ${esc(t.title)}`, tabs('hrd-task', tab, [['preview', 'Preview'], ['files', `Files & Assets (${t.assets.length})`], ['discussion', `Discussion (${t.discussion.length})`], ['checklist', `Tasks & Checklist (${t.checklist.length})`], ['history', 'Activity & History']], { ...kp, id: t.id }) + body);
+}
+
+/* ---------- sidebar & registrasi ---------- */
+const items = H.PORTALS.HRD.items;
+const ti = items.find(i => i[0] === 'hrd-tasks'); if (ti) { ti[2] = 'F3-NV01'; ti[3] = 'ready'; ti[4] = ''; }
+const ix = items.findIndex(i => i[0] === 'hrd-tasks');
+items.splice(ix + 1, 0, ['hrd-board', 'Board', 'F3-NV02', 'ready', '', 'sub'], ['hrd-calendar', 'Calendar', 'F3-NV03', 'ready', '', 'sub'], ['hrd-list', 'List', 'F3-NV04', 'ready', '', 'sub'], ['hrd-library', 'Library', 'F3-NV05', 'ready', '', 'sub'], ['hrd-mytasks', 'My Tasks', 'F3-NV06', 'ready', '', 'sub'], ['hrd-myday', 'My Day', 'F3-NV07', 'ready', '', 'sub'], ['hrd-task', 'Detail Kartu', 'F3-NV08', 'hidden']);
+Object.assign(H.PURPOSE, {
+  'hrd-tasks': 'Workplace HRD Operations atau Human Growth: beban per PIC, kartu tanpa PIC, lewat tenggat, blocker, review dan handoff lintas tim.',
+  'hrd-board': 'Tujuh kolom Ide → Selesai. Seret kartu atau pakai menu Pindahkan ke; validasi dan histori sama.',
+  'hrd-calendar': 'Agenda interview, coaching, training dan tenggat. Waktu sesi dibedakan dari batas penyelesaian.',
+  'hrd-list': 'Tabel tugas dengan filter tanpa PIC, terlambat, menunggu review dan terblokir.',
+  'hrd-library': 'SOP, rubric, checklist dan template versi aktif. Terapkan template menjadi kartu dan subtugas tertaut.',
+  'hrd-mytasks': 'Tugas milik Anda, antrean review dan butir checklist atas nama Anda.',
+  'hrd-myday': 'Fokus pribadi hari ini, agenda, hambatan dan pekerjaan terbawa.',
+  'hrd-task': 'Preview, Files & Assets, Discussion, Tasks & Checklist serta Activity & History satu kartu.'
+});
+H.SCREENS.push(...[['F3-NV01', 'Workplace', 'hrd-tasks'], ['F3-NV02', 'Board', 'hrd-board'], ['F3-NV03', 'Calendar', 'hrd-calendar'], ['F3-NV04', 'List', 'hrd-list'], ['F3-NV05', 'Library', 'hrd-library'], ['F3-NV06', 'My Tasks', 'hrd-mytasks'], ['F3-NV07', 'My Day', 'hrd-myday'], ['F3-NV08', 'Detail Kartu', 'hrd-task?id=TSK-0001']].map(([c, t, r]) => [c, 'HRD · ' + t, 'HRD 3', r, 'ready', 'HRD, Human Growth, Supervisor']));
+register('hrd-tasks', guarded(workplace), () => 'Workplace');
+register('hrd-board', guarded(board), () => 'Board');
+register('hrd-calendar', guarded(calendar), () => 'Calendar');
+register('hrd-list', guarded(list), () => 'List');
+register('hrd-library', guarded(library), () => 'Library');
+register('hrd-mytasks', guarded(myTasks), () => 'My Tasks');
+register('hrd-myday', guarded(myDay), () => 'My Day');
+register('hrd-task', guarded(detail), (p) => p.id ? `Detail Kartu ${p.id}` : 'Detail Kartu');
 })();
 
 ;
