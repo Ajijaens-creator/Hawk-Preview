@@ -21,7 +21,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-home'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(200);
 
   /* Jalur 1: NV01 → NV02 → NV03 → NV04 → NV05 */
-  await go('hrd-roster'); await shot('F2-NV01-direktori');
+  await go('hrd-roster?arsip=1'); await shot('F2-NV01-direktori');
   ok('NV01 Direktori Karyawan, kode F2-NV01, 158 orang', (await p.locator('.nv-tag').innerText()) === 'F2-NV01' && (await p.locator('.active-filters').innerText()).startsWith('158 orang'));
   await p.selectOption('#filters [name=outlet]', 'OUT-UBD'); await p.waitForTimeout(150);
   await p.selectOption('#filters [name=position]', 'POS-THR'); await p.waitForTimeout(150);
@@ -121,12 +121,12 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV12 hasil: 2 berhasil, 2 dilewati, 1 gagal', (await kv(0)) === '2' && (await kv(1)) === '2' && (await kv(2)) === '1', [await kv(0), await kv(1), await kv(2)].join('/'));
   await p.locator('a[href*="hrd-roster?emp="]').first().click(); await p.waitForTimeout(150);
   ok('NV12 → NV02 profil hasil impor terbuka', (await p.locator('h1').innerText()) === 'Detail Karyawan' && /Kadek Ayu Lestari|Komang Sri Wahyuni/.test(await text()));
-  await go('hrd-roster');
+  await go('hrd-roster?arsip=1');
   ok('NV01 direktori: 158 aktif + 2 akan bergabung (efektif 2026-11-20)', /^158 orang[\s\S]*2 akan bergabung/.test(await p.locator('.active-filters').innerText()), await p.locator('.active-filters').innerText());
   await go('hrd-import?step=preview&file=karyawan-baru-nov.csv');
   await p.click('form[data-submit="hr:import-commit"] button'); await p.waitForTimeout(250);
   ok('Impor ulang batch sama tidak menggandakan (0 berhasil)', (await kv(0)) === '0');
-  await go('hrd-roster');
+  await go('hrd-roster?arsip=1');
   ok('Direktori tetap 158 + 2 akan bergabung', /2 akan bergabung/.test(await p.locator('.active-filters').innerText()));
   await go('hrd-import?step=map&file=kolom-berbeda.csv');
   ok('File kolom berbeda (;) dipetakan dari judul kolom', (await p.locator('select[name=m_posisi]').inputValue()) === '1' && (await p.locator('select[name=m_outlet]').inputValue()) === '2');

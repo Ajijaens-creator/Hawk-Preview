@@ -75,7 +75,29 @@ function detailTabs(params) {
   } else body = table(['Field', 'Nilai'], [['User ID', e.id], ['Role', esc(h.accounts.find(a => a.emp === e.id)?.role === 'ess' ? 'Karyawan (ESS)' : HR.roleDef(h.accounts.find(a => a.emp === e.id)?.role).label)], ['Status ESS', chip('Aktif', 'ready')], ['Login terakhir', '2026-11-13 08:52 WITA (simulasi)'], ['Kredensial', '<i>Tidak pernah ditampilkan</i>']]);
   return `<section class="card hr-dtabs"><h2>Detail Karyawan · F2-NV02</h2>${tabs('hrd-roster', tab, [['pribadi', 'Informasi Pribadi'], ['kontak', 'Kontak'], ['kepegawaian', 'Kepegawaian & Kontrak'], ['dokumen', 'Dokumen'], ['jadwal', 'Jadwal & Presensi'], ['ess', 'Akun ESS']], keep, 'dtab')}${body}</section>`;
 }
-const rosterF2 = (params) => { const base = baseRoster(params); return params.emp ? base + detailTabs(params) : base; };
+/* ---------- Data karyawan asli (Aji 14 Nov): hanya angka agregat yang tampil online.
+   Daftar 214 orang, KTP, alamat dan kontak tetap di portal lokal Mac (database privat), tidak di website publik.
+   Roster dummy 158 orang = arsip demo, tersembunyi secara default. ---------- */
+const REAL = { total: 214, pdf: 856, therapist: 85, reception: 29, pending: 214, asOf: '14 Nov 2026',
+  groups: [['Spa Operations', 162], ['Commercial · Marketing', 15], ['Finance & Accounting', 11], ['HRD & General Affairs', 7], ['Project & Construction', 7], ['Commercial · Sales', 6], ['Production', 4], ['Information Technology', 1], ['Executive', 1]] };
+const ARSIP = 'hawk-hrd-arsip-demo';
+const FILTERS = ['q', 'outlet', 'division', 'position', 'shift', 'status', 'view', 'page', 'loc', 'tab'];
+const arsipOn = (params) => { if (params.arsip === '1') { try { localStorage.setItem(ARSIP, '1'); } catch (e) { /* abaikan */ } return true; }
+  if (params.arsip === '0') { try { localStorage.removeItem(ARSIP); } catch (e) { /* abaikan */ } return false; }
+  if (FILTERS.some(k => params[k])) return true;
+  try { return localStorage.getItem(ARSIP) === '1'; } catch (e) { return false; } };
+function realSummary(open) {
+  const cards = [['Karyawan asli', REAL.total, `${REAL.total} ID unik · ${REAL.pdf} PDF sumber`, 'g-teal'], ['Therapist', REAL.therapist, 'jabatan pada sumber', 'g-violet'], ['Receptionist', REAL.reception, 'jabatan pada sumber', 'g-blue'], ['Menunggu penetapan', REAL.pending, 'lokasi/divisi belum dikonfirmasi', 'g-gold']];
+  return `<section class="hr-real" data-real-summary><p class="demo-banner"><b>DATA KARYAWAN ASLI · RINGKASAN.</b> Angka di bawah dihitung dari ekspor karyawan asli per ${REAL.asOf}. Daftar nama, identitas, alamat dan kontak tidak dipublikasikan di website ini; detail per karyawan hanya dibuka di portal HRD lokal yang aman.</p>
+    <section class="grid g4 keep2 kpis">${cards.map(([l, v, sub, c]) => `<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${num(v)}</div><div class="sub">${sub}</div></div>`).join('')}</section>
+    ${card('Usulan fungsi dari jabatan (bukan organisasi resmi)', table(['Fungsi', 'Jumlah'], [...REAL.groups.map(([g, n]) => [esc(g), num(n)]), ['<b>Total</b>', `<b>${num(REAL.groups.reduce((a, [, n]) => a + n, 0))}</b>`]]) + '<p class="muted small">Lokasi kerja, divisi resmi, business unit, cost center, status aktif, kontrak dan shift belum tercantum di sumber: semua 214 profil menunggu penetapan oleh HRD.</p>')}
+    <p class="actions">${open ? `<a class="btn ghost" href="#hrd-roster?arsip=0" data-arsip-hide>Sembunyikan arsip · kembali ke data asli</a>` : `<a class="btn ghost" href="#hrd-roster?arsip=1" data-arsip-show>Tampilkan arsip demo</a>`}</p></section>`;
+}
+const rosterF2 = (params) => {
+  if (params.emp) return baseRoster(params) + detailTabs(params);
+  const open = arsipOn(params);
+  return realSummary(open) + (open ? `<section class="hr-arsip"><p class="demo-banner"><b>ARSIP DEMO · 158 orang sintetis.</b> Tidak termasuk headcount asli, tidak dipakai untuk payroll atau kinerja nyata.</p>${baseRoster(params)}</section>` : '');
+};
 register('hrd-roster', rosterF2, (pr) => pr.emp ? 'Detail Karyawan' : 'Direktori Karyawan');
 rosterF2.code = (pr) => pr.emp ? 'F2-NV02' : 'F2-NV01';
 rosterF2.purpose = (pr) => pr.emp ? 'Profil, penempatan efektif dan histori, kontrak, dokumen, jadwal & presensi, serta akun ESS satu karyawan.' : null;

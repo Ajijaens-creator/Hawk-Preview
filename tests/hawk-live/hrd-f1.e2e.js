@@ -46,7 +46,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV02 Office terbuka; PC & Commercial "Headcount belum ditetapkan"', (hq.match(/Headcount belum ditetapkan/g) || []).length >= 2);
 
   /* NV03 */
-  await go('hrd-roster'); await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
+  await go('hrd-roster?arsip=1'); await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
   await p.selectOption('#filters [name=position]', 'POS-RCP'); await p.waitForTimeout(150);
   ok('NV03 Spa Bisma + Receptionist = 5 orang', (await p.locator('.active-filters').innerText()).startsWith('5 orang'));
   const first = p.locator('.tbl tbody tr').first(); const id = await first.locator('td').first().innerText();
@@ -119,7 +119,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV08 konfirmasi mengosongkan dataset dummy', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '0');
   await go('hrd-home');
   ok('Beranda menampilkan state kosong', (await p.locator('.hr-empty').count()) === 1);
-  await go('hrd-roster');
+  await go('hrd-roster?arsip=1');
   ok('Record non-demo tetap utuh di roster', (await text()).includes('EMP-REAL-001'));
   await go('hrd-demo'); await p.click('[data-action="hr:dummy-load"]'); await p.waitForTimeout(200);
   ok('Mulai kembali dari fixture → 158 demo', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '158');

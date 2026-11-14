@@ -120,7 +120,7 @@
   {
    "name": "Attendant pindahkan TSK-0201 ke Review dari mobile → F3 (Task ID sama, pelaku tercatat)",
    "ok": true,
-   "info": "{\"id\":\"EVT-1001\",\"task\":\"TSK-0201\",\"by\":\"Gede Ari (Spa Attendant)\",\"at\":\"2026-11-13 05:10\",\"kind\":\"Pindah tahap\",\"before\":\"Dikerjakan\",\"after\":\"Review\",\"reason\":\"via JAENS Mobile\",\"demo\":true}"
+   "info": "{\"id\":\"EVT-1001\",\"task\":\"TSK-0201\",\"by\":\"Gede Ari (Spa Attendant)\",\"at\":\"2026-11-13 14:53\",\"kind\":\"Pindah tahap\",\"before\":\"Dikerjakan\",\"after\":\"Review\",\"reason\":\"via JAENS Mobile\",\"demo\":true}"
   },
   {
    "name": "Therapist tidak bisa memindahkan kartu orang lain",
