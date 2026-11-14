@@ -37,7 +37,7 @@ const HR = (() => {
     ['POS-AOM', 'Assistant Operational Manager', 'DIV-OPS', 'manager', 6400000], ['POS-OPS', 'Staf Operations', 'DIV-OPS', 'staff', 3600000],
     ['POS-FM', 'Finance Manager', 'DIV-FA', 'manager', 7000000], ['POS-ACC', 'Staf Accounting', 'DIV-FA', 'staff', 3800000], ['POS-FIN', 'Staf Finance', 'DIV-FA', 'staff', 3600000],
     ['POS-MM', 'Marketing Manager', 'DIV-MKT', 'manager', 7000000], ['POS-CRT', 'Content Creator', 'DIV-MKT', 'staff', 3600000], ['POS-SOC', 'Social Media Admin', 'DIV-MKT', 'staff', 3400000], ['POS-FV', 'Foto & Video', 'DIV-MKT', 'staff', 3600000],
-    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Staf HRD Operations', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Recruiter', 'DIV-HRD', 'staff', 3700000],
+    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Admin HRD', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Koordinator Rekrutmen', 'DIV-HRD', 'staff', 3700000],
     ['POS-PDM', 'Production Lead', 'DIV-PRD', 'supervisor', 5000000], ['POS-PDS', 'Staf Production', 'DIV-PRD', 'staff', 3200000]
   ].map(([id, name, division, level, thp]) => ({ id, name, division, level, thp }));
   const pos = (id) => POSITIONS.find(p => p.id === id);
@@ -47,7 +47,7 @@ const HR = (() => {
   const GIVEN = ['Ari', 'Sari', 'Dewi', 'Wulan', 'Indra', 'Yasa', 'Mahendra', 'Ratna', 'Sinta', 'Lestari', 'Dian', 'Rai', 'Suastini', 'Adnyani', 'Pradnya', 'Widya', 'Purnami', 'Juliani', 'Astiti', 'Arsana', 'Budiasa', 'Candra', 'Darmayanti', 'Eka'];
   /* akun demo yang sudah dipakai di HAWK (lihat memori project) dipertahankan namanya */
   const NAMED = {
-    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa']
+    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa'], 'POS-HRO': ['Ayu'], 'POS-REC': ['Harja']
   };
 
   /* roster: 4 spa × (25 Therapist + 5 Receptionist) + Office 12 F&A, 9 Marketing, 4 HRD, 5 Production, 8 Operations = 158 */

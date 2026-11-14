@@ -137,7 +137,7 @@ const HR8 = (() => {
   }
   const activeRace = (hr) => { const r = ensure(hr).races[0]; return { race: r, ver: [...r.versions].reverse().find(v => v.status === 'Aktif'), draft: r.versions.find(v => v.status === 'Draf') }; };
   const canSee = (role) => ['owner', 'hrd', 'hrd-ops', 'hg-lead', 'ops-manager', 'outlet-spv'].includes(role);
-  const evaluate = (hr, d) => { const c = d.criteria; if (!c) return null; const row = reflection(hr, c.period, 'hrd').find(r => r.key === c.key); if (!row || row.actual === null) return { actual: null, met: null }; const met = c.op === '>=' ? row.actual >= c.value : row.actual <= c.value; return { actual: row.actual, met, label: row.label }; };
+  const evaluate = (hr, d) => { const c = d.criteria; if (!c) return null; if (!['2610', '2611'].includes(String(c.period))) return { actual: null, met: null, pending: `Data ${c.period} belum tersedia` }; const row = reflection(hr, c.period, 'hrd').find(r => r.key === c.key); if (!row || row.actual === null) return { actual: null, met: null }; const met = c.op === '>=' ? row.actual >= c.value : row.actual <= c.value; return { actual: row.actual, met, label: row.label }; };
 
   function update(state, hr, action, input, ctx) {
     const f8 = ensure(hr), { audit, by, role } = ctx;

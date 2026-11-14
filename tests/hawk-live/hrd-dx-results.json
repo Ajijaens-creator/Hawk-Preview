@@ -1,0 +1,141 @@
+{
+ "pass": 27,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Login role hanya tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D",
+   "ok": true,
+   "info": "Made Gunarsa · Manager HRD | Harja · Koordinator Rekrutmen | Ayu · Admin HRD | Putu Dewi D · Lead Human Growth"
+  },
+  {
+   "name": "Divisi lain tidak punya tombol login (Eni, Mila, Asri)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pilihan perangkat Desktop, iPad, Mobile",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Smart Tutor & 5 skenario",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Login sebagai Harja → frame asli role Staf HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Frame menampilkan nama persona (Harja)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mobile: frame 390 px",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "iPad: frame 834 px",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Skenario rekrut: semua 13 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "13/13"
+  },
+  {
+   "name": "Skenario reception: semua 5 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "5/5"
+  },
+  {
+   "name": "Skenario kinerja: semua 5 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "5/5"
+  },
+  {
+   "name": "Skenario payroll: semua 6 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "6/6"
+  },
+  {
+   "name": "Skenario reflection: semua 5 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "5/5"
+  },
+  {
+   "name": "Rekrutmen: karyawan baru, penempatan Spa Ubud terjadwal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Audit atas nama persona (Harja, Ayu, Made)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah divisi lain berjalan otomatis (Mila, Eni Restini, Asri)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Payroll: Finance Manager menerima jurnal November",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reflection: keputusan STRACON + Workplan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Frame berbagi sandbox yang sama (lowongan baru terlihat di frame)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Render ulang halaman tidak memuat ulang frame",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Simulator 4 layar: Made, Harja, Ayu, Lead HG",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Simulator: perangkat berbeda (Desktop, iPad, Mobile)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kinerja tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Fokus portal HRD: tanpa panel divisi lain",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mulai ulang: data demo kembali ke awal, progres 0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Halaman Demo Center di layar 390 px",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

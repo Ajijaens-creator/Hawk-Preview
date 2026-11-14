@@ -357,3 +357,14 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-acts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:170px}
 .trail{margin:0;padding-left:1.2em;display:grid;gap:6px}
 .workflow-form select{max-width:100%}
+/* Demo Experience Center template (dx-lab.js) — layout di hawk.css (.dx-*), di sini hanya penyesuaian hawk-live */
+.dx-persona h3{margin:4px 0}.dx-persona.on{outline:2px solid var(--gold,#C99A2E)}.dx-persona{min-width:0}
+#dxlab-stage{display:flex;flex-direction:column;gap:12px;margin-top:12px;min-width:0}
+#dxlab-stage[hidden],#dxlab-stage .dxl-pane[hidden]{display:none}
+.dxl-tabs{gap:8px;flex-wrap:wrap;align-items:center}
+#dxlab-stage .dx-labhead .chip{white-space:normal;text-align:left}
+#dxlab-stage .dx-tutor .stack{display:flex;flex-direction:column}
+#dxlab-stage .dx-tutor .btn.block{width:100%;justify-content:center;white-space:normal}
+#dxlab-stage .dx-li{width:100%}
+.dx-embed .demo-banner{display:none}
+@media (max-width:720px){.dx-hero{flex-direction:column;align-items:flex-start}.dx-hero-r{align-items:flex-start}.dx-sim{grid-template-columns:1fr}}
