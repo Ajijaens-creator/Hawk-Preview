@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:44:45.884Z">
+<meta name="hawk-standalone" content="2026-11-14T01:49:33.003Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1633,6 +1633,10 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .nav-chev { transition: transform .15s ease; }
 .nav-grp.open > .nav-grp-row .nav-chev, .nav-sec.open > .nav-sec-btn .nav-chev { transform: rotate(90deg); }
 .nav-sec-btn { display: flex; width: calc(100% - 20px); align-items: center; justify-content: space-between; border: 0; background: none; cursor: pointer; padding: 6px 0; border-radius: 6px; text-align: left; font: inherit; }
+/* Aji 14 Nov 2026: kode NV tidak tampil di sidebar akun demo (nama menu saja). Kode tetap di data (PORTALS, atribut data-nv)
+   dan di docs/hawk-live/NV-MAP.md untuk melacak fitur → NV → fase. */
+.nav .nav-items .nvc { display: none; }
+.nav .nav-items a { gap: 0; }
 
 </style>
 </head>

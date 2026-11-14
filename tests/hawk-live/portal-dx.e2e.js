@@ -81,6 +81,7 @@ const CHECK = {
   const visN = () => p.evaluate(() => [...document.querySelectorAll('#nav .nav-items a')].filter(a => a.offsetParent).length);
   const n0 = await visN(); await grp.locator('[data-grp]').click(); const n1 = await visN(); await grp.locator('[data-grp]').click(); const n2 = await visN();
   ok('Sidebar: tombol kategori menutup lalu membuka sub-menu', n1 < n0 && n2 === n0, `${n0} → ${n1} → ${n2}`);
+  ok('Sidebar: kode NV tidak tampil (nama menu saja), kode tetap di data-nv', !/\b(F\d-NV\d+|NV-\d+)\b/.test(await p.locator('#nav').innerText()) && (await p.locator('#nav a[data-nv="F2-NV06"]').count()) === 1);
   await p.goto(BASE + 'commercial.html#commercial'); await p.waitForTimeout(600);
   const sec = p.locator('#nav .nav-sec'); const sv = () => sec.locator('a').first().isVisible();
   const a0 = await sv(); await sec.locator('.nav-sec-btn').click(); const a1 = await sv();
