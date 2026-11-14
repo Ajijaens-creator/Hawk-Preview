@@ -1,0 +1,166 @@
+{
+ "pass": 32,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Pemilih akun: tim HRD bernama Made Gunarsa, Harja, Ayu, Putu Dewi D",
+   "ok": true,
+   "info": "Made Gunarsa · Manager HRD | Harja · Koordinator Rekrutmen | Ayu · Admin HRD | Putu Dewi D · Lead Human Growth"
+  },
+  {
+   "name": "Tanpa opsi generik \"Manager HRD\"/\"Staf HRD\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Default masuk sebagai Made Gunarsa (chip profil)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Made Gunarsa (Manager HRD) membuka payroll dengan nominal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Made Gunarsa membuka slip gaji",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Beranda Manager HRD: ringkasan payroll dengan take-home pay",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Direktori Manager HRD: kolom THP contoh",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: masuk otomatis dengan role hrd-ops",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: chip profil menampilkan nama & jabatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: semua layar payroll/slip/budget gaji ditolak tanpa nominal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: Beranda tanpa nominal gaji (khusus Manager HRD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: profil karyawan tanpa take-home pay",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: direktori tanpa kolom THP",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ayu: masuk otomatis dengan role hrd-ops",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ayu: chip profil menampilkan nama & jabatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ayu: semua layar payroll/slip/budget gaji ditolak tanpa nominal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ayu: Beranda tanpa nominal gaji (khusus Manager HRD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ayu: profil karyawan tanpa take-home pay",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ayu: direktori tanpa kolom THP",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Putu Dewi D: masuk otomatis dengan role hg-lead",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Putu Dewi D: chip profil menampilkan nama & jabatan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Putu Dewi D: semua layar payroll/slip/budget gaji ditolak tanpa nominal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Putu Dewi D: Beranda tanpa nominal gaji (khusus Manager HRD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Putu Dewi D: profil karyawan tanpa take-home pay",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Putu Dewi D: direktori tanpa kolom THP",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja tetap membuka kandidat rekrutmen",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Harja: ekspektasi gaji kandidat dibatasi (khusus Manager HRD)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Audit atas nama Ayu (Admin HRD)",
+   "ok": true,
+   "info": "Ayu (Admin HRD)"
+  },
+  {
+   "name": "Audit atas nama Harja (Koordinator Rekrutmen)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Akun tetap Harja setelah muat ulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Portal Commercial tetap pemilih role biasa",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
