@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T01:45:01.693Z",
+ "at": "2026-11-14T02:00:04.970Z",
  "pass": 42,
  "fail": 0,
  "out": [
@@ -19,9 +19,9 @@
    "info": ""
   },
   {
-   "name": "Sidebar urutan GajiHub lalu tambahan HAWK",
+   "name": "Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah",
    "ok": true,
-   "info": "Beranda|Karyawan|Kehadiran|Pelacakan Lokasi|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Tugas|Pengaturan|FAQ|Kinerja & KPI|AmbideX & Race|Manpower Planning|9-Box Talent|People Budgeting"
+   "info": "Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ"
   },
   {
    "name": "NV01 filter Spa Ubud = 30 orang",

@@ -26,7 +26,15 @@ const register = (id, fn, title) => { H.REGISTRY[id] = fn; if (title) fn.title =
 /* [route, nama sidebar, kode, status, label fase, 'sub'] */
 const P = (n) => `HRD F${n}`; /* label fase; sidebar menampilkan kode F<n> */
 const ITEMS = [
-  ['hrd-home', 'Beranda', 'F1-NV01', 'ready'],
+  /* Aji 14 Nov 2026: kategori Dashboard paling atas (Dashboard HRD + dashboard Manpower, 9-Box, People Budgeting, Kinerja & KPI, AmbideX & Race); FAQ paling bawah */
+  ['-', 'Dashboard'],
+  ['hrd-home', 'Dashboard HRD', 'F1-NV01', 'ready'],
+  ['hrd-manpower', 'Manpower Planning', 'F5', 'planned', P(5)],
+  ['hrd-ninebox', '9-Box Talent', 'F6', 'planned', P(6)],
+  ['hrd-budget', 'People Budgeting', 'F7', 'planned', P(7)],
+  ['hrd-kpi', 'Kinerja & KPI', 'F6', 'planned', P(6)],
+  ['hrd-race', 'AmbideX & Race', 'F8', 'planned', P(8)],
+  ['-end'],
   ['hrd-roster', 'Karyawan', 'F1-NV03', 'ready'],
   ['hrd-attendance', 'Kehadiran', 'F2', 'planned', P(2)],
   ['hrd-att-approval', 'Approval Presensi', 'F2', 'planned', P(2), 'sub'], ['hrd-schedule', 'Jadwal Kerja', 'F2', 'planned', P(2), 'sub'], ['hrd-presence', 'Presensi', 'F2', 'planned', P(2), 'sub'], ['hrd-leave', 'Izin & Cuti', 'F2', 'planned', P(2), 'sub'], ['hrd-visit', 'Kunjungan Klien', 'F2', 'planned', P(2), 'sub'],
@@ -40,18 +48,13 @@ const ITEMS = [
   ['hrd-timeline', 'Timeline', 'F2', 'planned', P(2)],
   ['hrd-clients', 'Klien', 'F2', 'planned', P(2)],
   ['hrd-reports', 'Laporan', 'F7', 'planned', P(7)],
-  ['hrd-tasks', 'Tugas', 'F3', 'planned', P(3)],
+  ['hrd-tasks', 'Workspace', 'F3', 'planned', P(3)],
   ['hrd-settings', 'Pengaturan', 'F1', 'ready'],
   ['hrd-org', 'Struktur Organisasi', 'F1-NV02', 'ready', '', 'sub'], ['hrd-access', 'Akun, Role & Akses', 'F1-NV04', 'ready', '', 'sub'], ['hrd-company', 'Pengaturan Perusahaan', 'F1-NV05', 'ready', '', 'sub'],
   ['hrd-system', 'Pengaturan Sistem', 'F1-NV06', 'ready', '', 'sub'], ['hrd-audit', 'Audit Aktivitas', 'F1-NV07', 'ready', '', 'sub'], ['hrd-demo', 'Kelola Data Demo R&D', 'F1-NV08', 'ready', '', 'sub'],
-  ['hrd-faq', 'FAQ', 'F1-NV06', 'ready'],
-  ['hrd-kpi', 'Kinerja & KPI', 'F6', 'planned', P(6)],
-  ['hrd-race', 'AmbideX & Race', 'F8', 'planned', P(8)],
-  ['hrd-manpower', 'Manpower Planning', 'F5', 'planned', P(5)],
-  ['hrd-ninebox', '9-Box Talent', 'F6', 'planned', P(6)],
-  ['hrd-budget', 'People Budgeting', 'F7', 'planned', P(7)]
+  ['hrd-faq', 'FAQ', 'F1-NV06', 'ready']
 ];
-const TITLES = { 'hrd-home': 'Beranda HRD', 'hrd-roster': 'Roster & Penempatan', 'hrd-settings': 'Pengaturan', 'hrd-faq': 'Pengaturan Sistem · FAQ' };
+const TITLES = { 'hrd-home': 'Dashboard HRD', 'hrd-roster': 'Roster & Penempatan', 'hrd-settings': 'Pengaturan', 'hrd-faq': 'Pengaturan Sistem · FAQ' };
 H.PORTALS.HRD = { desc: 'HRD Operations, Human Growth, payroll dan kinerja orang', items: ITEMS };
 H.HOME.HRD = 'hrd-home';
 const r0 = H.ROLES.find(r => r[0] === 'hrd'); if (r0) r0[1] = 'Manager HRD';
@@ -148,7 +151,7 @@ function home(params) {
     ['Status kerja', groupCount(s.list, p => p.contract)]
   ];
   const statsOpen = params.stat && stats.find(x => x[0] === params.stat);
-  return hero('Ruang kerja Human Resources', `JUMAT, 13 NOVEMBER 2026 · WITA · ${esc(d.label)} · ${HERO_TEXT[role()] || ''}`, [['#hrd-org', 'Struktur organisasi'], ['#hrd-tasks', 'Tugas'], ['#hrd-manpower', 'Manpower Planning']]) + scopeBar(params) +
+  return hero('Ruang kerja Human Resources', `JUMAT, 13 NOVEMBER 2026 · WITA · ${esc(d.label)} · ${HERO_TEXT[role()] || ''}`, [['#hrd-org', 'Struktur organisasi'], ['#hrd-tasks', 'Workspace'], ['#hrd-manpower', 'Manpower Planning']]) + scopeBar(params) +
     `<section class="grid g4 keep2 kpis">
       <a class="kpi g-teal" href="#hrd-roster${qs(rosterQ)}"><div class="lbl">Karyawan</div><div class="val">${num(s.count)}</div><div class="sub">Buka roster pada cakupan ini ›</div></a>
       <a class="kpi g-violet" href="#hrd-presence"><div class="lbl">Hadir hari ini</div><div class="val">${num(present)}</div><div class="sub">${num(s.att.terlambat)} terlambat · ${num(s.att.belum)} belum absen</div></a>
@@ -324,7 +327,7 @@ function system(params) {
   let body = '';
   if (tab === 'notifications') body = card('Notifikasi', table(['Pemicu', 'Status', ...(edit ? ['Aksi'] : [])], s.notifications.map(n => [esc(n.name), chip(n.on ? 'Aktif' : 'Nonaktif', n.on ? 'ready' : ''), ...(edit ? [btn('notif-toggle', n.on ? 'Nonaktifkan' : 'Aktifkan', { id: n.id }, 'ghost sm')] : [])])) + `<p class="muted small">Pengiriman ${integ('UI-ONLY SIMULATION')}: tidak ada pesan yang dikirim.</p>` + history('NTF-'));
   else if (tab === 'integrations') body = `<div class="grid g2">${s.integrations.map(([n, st, note]) => { const last = s.lastTest?.[n]; return `<section class="card hr-integ"><h2>${esc(n)}</h2><p>${integ(st)} ${last ? chip(last, /Gagal/.test(last) ? 'bad' : /Belum/.test(last) ? 'sandbox' : 'ready') : chip('Belum diuji')}</p><p class="small">${esc(note)}</p><p class="muted small">Sumber di R&D: fixture lokal · tidak ada koneksi produksi.</p>${btn('integration-test', 'Uji koneksi (simulasi)', { id: n }, 'ghost sm')}</section>`; }).join('')}</div>`;
-  else if (tab === 'tasks') body = card('Aturan Tugas', table(['Aturan', 'Isi'], s.taskRules.map(([a, b]) => [esc(a), esc(b)])) + `<p class="muted small">Board, My Day dan kartu lintas modul di ${link('hrd-tasks', 'Tugas (HRD F3)')}.</p>`);
+  else if (tab === 'tasks') body = card('Aturan Tugas', table(['Aturan', 'Isi'], s.taskRules.map(([a, b]) => [esc(a), esc(b)])) + `<p class="muted small">Board, My Day dan kartu lintas modul di ${link('hrd-tasks', 'Workspace (HRD F3)')}.</p>`);
   else body = s.faq.map(([q, a]) => card(esc(q), `<p>${esc(a)}</p>`)).join('') + card('Bagaimana mencoba pembatasan akses?', `<p>Ganti role demo di sidebar ke Staf HRD, lalu buka ${link('hrd-payroll', 'Payroll')} atau ${link('hrd-reports', 'Laporan')}. Layar menampilkan Akses ditolak.</p>`);
   return (tab === 'faq' ? '' : roBanner()) + tabs('hrd-system', tab, [['notifications', 'Notifikasi'], ['integrations', 'Integrasi'], ['tasks', 'Aturan Tugas'], ['faq', 'FAQ']]) + body;
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:49:32.988Z">
+<meta name="hawk-standalone" content="2026-11-14T01:58:01.870Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Sales</title>
 <style>
@@ -5654,9 +5654,12 @@ function renderNav(id, portal) {
       h += `<div class="nav-grp${open ? ' open' : ''}"><div class="nav-grp-row">${navLink(it)}<button type="button" class="nav-tog" data-grp="${esc(key)}" aria-expanded="${open}" aria-label="Buka/tutup ${esc(it[1])}">${chev}</button></div><div class="nav-grp-kids">${kids.map(navLink).join('')}</div></div>`;
     } return h; };
     let body = '';
+    /* ['-', judul] membuka seksi; ['-end'] menutup seksi sehingga item berikutnya kembali ke tingkat atas */
+    const mark = (i) => i && (i[0] === '-' || i[0] === '-end');
     for (let k = 0; k < rest.length; k++) {
-      if (rest[k][0] !== '-') { const top = []; while (k < rest.length && rest[k][0] !== '-') top.push(rest[k++]); k--; body += list(top); continue; }
-      const head = rest[k], kids = []; while (rest[k + 1] && rest[k + 1][0] !== '-') kids.push(rest[++k]);
+      if (rest[k][0] === '-end') continue;
+      if (rest[k][0] !== '-') { const top = []; while (k < rest.length && !mark(rest[k])) top.push(rest[k++]); k--; body += list(top); continue; }
+      const head = rest[k], kids = []; while (rest[k + 1] && !mark(rest[k + 1])) kids.push(rest[++k]);
       const key = 'sec:' + head[1], open = isOpen(key, kids);
       body += `<div class="nav-sec${open ? ' open' : ''}"><button type="button" class="nav-sub nav-sec-btn" data-grp="${esc(key)}" aria-expanded="${open}"><span>${head[1]}</span>${chev}</button><div class="nav-grp-kids">${list(kids)}</div></div>`;
     }
@@ -5807,7 +5810,15 @@ const register = (id, fn, title) => { H.REGISTRY[id] = fn; if (title) fn.title =
 /* [route, nama sidebar, kode, status, label fase, 'sub'] */
 const P = (n) => `HRD F${n}`; /* label fase; sidebar menampilkan kode F<n> */
 const ITEMS = [
-  ['hrd-home', 'Beranda', 'F1-NV01', 'ready'],
+  /* Aji 14 Nov 2026: kategori Dashboard paling atas (Dashboard HRD + dashboard Manpower, 9-Box, People Budgeting, Kinerja & KPI, AmbideX & Race); FAQ paling bawah */
+  ['-', 'Dashboard'],
+  ['hrd-home', 'Dashboard HRD', 'F1-NV01', 'ready'],
+  ['hrd-manpower', 'Manpower Planning', 'F5', 'planned', P(5)],
+  ['hrd-ninebox', '9-Box Talent', 'F6', 'planned', P(6)],
+  ['hrd-budget', 'People Budgeting', 'F7', 'planned', P(7)],
+  ['hrd-kpi', 'Kinerja & KPI', 'F6', 'planned', P(6)],
+  ['hrd-race', 'AmbideX & Race', 'F8', 'planned', P(8)],
+  ['-end'],
   ['hrd-roster', 'Karyawan', 'F1-NV03', 'ready'],
   ['hrd-attendance', 'Kehadiran', 'F2', 'planned', P(2)],
   ['hrd-att-approval', 'Approval Presensi', 'F2', 'planned', P(2), 'sub'], ['hrd-schedule', 'Jadwal Kerja', 'F2', 'planned', P(2), 'sub'], ['hrd-presence', 'Presensi', 'F2', 'planned', P(2), 'sub'], ['hrd-leave', 'Izin & Cuti', 'F2', 'planned', P(2), 'sub'], ['hrd-visit', 'Kunjungan Klien', 'F2', 'planned', P(2), 'sub'],
@@ -5821,18 +5832,13 @@ const ITEMS = [
   ['hrd-timeline', 'Timeline', 'F2', 'planned', P(2)],
   ['hrd-clients', 'Klien', 'F2', 'planned', P(2)],
   ['hrd-reports', 'Laporan', 'F7', 'planned', P(7)],
-  ['hrd-tasks', 'Tugas', 'F3', 'planned', P(3)],
+  ['hrd-tasks', 'Workspace', 'F3', 'planned', P(3)],
   ['hrd-settings', 'Pengaturan', 'F1', 'ready'],
   ['hrd-org', 'Struktur Organisasi', 'F1-NV02', 'ready', '', 'sub'], ['hrd-access', 'Akun, Role & Akses', 'F1-NV04', 'ready', '', 'sub'], ['hrd-company', 'Pengaturan Perusahaan', 'F1-NV05', 'ready', '', 'sub'],
   ['hrd-system', 'Pengaturan Sistem', 'F1-NV06', 'ready', '', 'sub'], ['hrd-audit', 'Audit Aktivitas', 'F1-NV07', 'ready', '', 'sub'], ['hrd-demo', 'Kelola Data Demo R&D', 'F1-NV08', 'ready', '', 'sub'],
-  ['hrd-faq', 'FAQ', 'F1-NV06', 'ready'],
-  ['hrd-kpi', 'Kinerja & KPI', 'F6', 'planned', P(6)],
-  ['hrd-race', 'AmbideX & Race', 'F8', 'planned', P(8)],
-  ['hrd-manpower', 'Manpower Planning', 'F5', 'planned', P(5)],
-  ['hrd-ninebox', '9-Box Talent', 'F6', 'planned', P(6)],
-  ['hrd-budget', 'People Budgeting', 'F7', 'planned', P(7)]
+  ['hrd-faq', 'FAQ', 'F1-NV06', 'ready']
 ];
-const TITLES = { 'hrd-home': 'Beranda HRD', 'hrd-roster': 'Roster & Penempatan', 'hrd-settings': 'Pengaturan', 'hrd-faq': 'Pengaturan Sistem · FAQ' };
+const TITLES = { 'hrd-home': 'Dashboard HRD', 'hrd-roster': 'Roster & Penempatan', 'hrd-settings': 'Pengaturan', 'hrd-faq': 'Pengaturan Sistem · FAQ' };
 H.PORTALS.HRD = { desc: 'HRD Operations, Human Growth, payroll dan kinerja orang', items: ITEMS };
 H.HOME.HRD = 'hrd-home';
 const r0 = H.ROLES.find(r => r[0] === 'hrd'); if (r0) r0[1] = 'Manager HRD';
@@ -5929,7 +5935,7 @@ function home(params) {
     ['Status kerja', groupCount(s.list, p => p.contract)]
   ];
   const statsOpen = params.stat && stats.find(x => x[0] === params.stat);
-  return hero('Ruang kerja Human Resources', `JUMAT, 13 NOVEMBER 2026 · WITA · ${esc(d.label)} · ${HERO_TEXT[role()] || ''}`, [['#hrd-org', 'Struktur organisasi'], ['#hrd-tasks', 'Tugas'], ['#hrd-manpower', 'Manpower Planning']]) + scopeBar(params) +
+  return hero('Ruang kerja Human Resources', `JUMAT, 13 NOVEMBER 2026 · WITA · ${esc(d.label)} · ${HERO_TEXT[role()] || ''}`, [['#hrd-org', 'Struktur organisasi'], ['#hrd-tasks', 'Workspace'], ['#hrd-manpower', 'Manpower Planning']]) + scopeBar(params) +
     `<section class="grid g4 keep2 kpis">
       <a class="kpi g-teal" href="#hrd-roster${qs(rosterQ)}"><div class="lbl">Karyawan</div><div class="val">${num(s.count)}</div><div class="sub">Buka roster pada cakupan ini ›</div></a>
       <a class="kpi g-violet" href="#hrd-presence"><div class="lbl">Hadir hari ini</div><div class="val">${num(present)}</div><div class="sub">${num(s.att.terlambat)} terlambat · ${num(s.att.belum)} belum absen</div></a>
@@ -6105,7 +6111,7 @@ function system(params) {
   let body = '';
   if (tab === 'notifications') body = card('Notifikasi', table(['Pemicu', 'Status', ...(edit ? ['Aksi'] : [])], s.notifications.map(n => [esc(n.name), chip(n.on ? 'Aktif' : 'Nonaktif', n.on ? 'ready' : ''), ...(edit ? [btn('notif-toggle', n.on ? 'Nonaktifkan' : 'Aktifkan', { id: n.id }, 'ghost sm')] : [])])) + `<p class="muted small">Pengiriman ${integ('UI-ONLY SIMULATION')}: tidak ada pesan yang dikirim.</p>` + history('NTF-'));
   else if (tab === 'integrations') body = `<div class="grid g2">${s.integrations.map(([n, st, note]) => { const last = s.lastTest?.[n]; return `<section class="card hr-integ"><h2>${esc(n)}</h2><p>${integ(st)} ${last ? chip(last, /Gagal/.test(last) ? 'bad' : /Belum/.test(last) ? 'sandbox' : 'ready') : chip('Belum diuji')}</p><p class="small">${esc(note)}</p><p class="muted small">Sumber di R&D: fixture lokal · tidak ada koneksi produksi.</p>${btn('integration-test', 'Uji koneksi (simulasi)', { id: n }, 'ghost sm')}</section>`; }).join('')}</div>`;
-  else if (tab === 'tasks') body = card('Aturan Tugas', table(['Aturan', 'Isi'], s.taskRules.map(([a, b]) => [esc(a), esc(b)])) + `<p class="muted small">Board, My Day dan kartu lintas modul di ${link('hrd-tasks', 'Tugas (HRD F3)')}.</p>`);
+  else if (tab === 'tasks') body = card('Aturan Tugas', table(['Aturan', 'Isi'], s.taskRules.map(([a, b]) => [esc(a), esc(b)])) + `<p class="muted small">Board, My Day dan kartu lintas modul di ${link('hrd-tasks', 'Workspace (HRD F3)')}.</p>`);
   else body = s.faq.map(([q, a]) => card(esc(q), `<p>${esc(a)}</p>`)).join('') + card('Bagaimana mencoba pembatasan akses?', `<p>Ganti role demo di sidebar ke Staf HRD, lalu buka ${link('hrd-payroll', 'Payroll')} atau ${link('hrd-reports', 'Laporan')}. Layar menampilkan Akses ditolak.</p>`);
   return (tab === 'faq' ? '' : roBanner()) + tabs('hrd-system', tab, [['notifications', 'Notifikasi'], ['integrations', 'Integrasi'], ['tasks', 'Aturan Tugas'], ['faq', 'FAQ']]) + body;
 }
@@ -6573,8 +6579,8 @@ H.HRGEO = { page, report };
 })();
 
 ;
-/* HAWK ERP · Portal HRD · F3 Planner & Workplace — DATA DEMO / SIMULASI.
-   F3-NV01 Workplace (hrd-tasks) · NV02 Board (hrd-board) · NV03 Calendar (hrd-calendar) · NV04 List (hrd-list) ·
+/* HAWK ERP · Portal HRD · F3 Planner & Workspace — DATA DEMO / SIMULASI.
+   F3-NV01 Workspace (hrd-tasks) · NV02 Board (hrd-board) · NV03 Calendar (hrd-calendar) · NV04 List (hrd-list) ·
    NV05 Library (hrd-library) · NV06 My Tasks (hrd-mytasks) · NV07 My Day (hrd-myday) · NV08 Detail Kartu (hrd-task?id=).
    Model: hrd-f3-model.js (HR3). Satu Task ID dipakai di semua tampilan. */
 (() => {
@@ -6621,7 +6627,7 @@ function filterForm(params, route, extra = '') {
 }
 const keepParams = (params) => { const k = { ...params }; delete k.id; delete k.tab; return k; };
 
-/* ---------- NV01 Workplace ---------- */
+/* ---------- NV01 Workspace ---------- */
 function workplace(params) {
   const wsList = HR3.wsVisible(role()); const ws = wsList.includes(params.ws) ? params.ws : wsList[0];
   if (!ws) return denied('Tidak ada workplace dalam cakupan Anda.');
@@ -6665,7 +6671,7 @@ function calendar(params) {
   const noDue = HR3.visible(hr(), role()).filter(t => !t.due && t.stage !== 'Selesai');
   return `<form id="filters" class="filters" aria-label="Filter kalender"><label>Jenis<select name="kind"><option value="">Sesi & tenggat</option><option ${params.kind === 'Sesi' ? 'selected' : ''}>Sesi</option><option ${params.kind === 'Tenggat' ? 'selected' : ''}>Tenggat</option></select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
     card('November 2026 · WITA', `<div class="hr-cal">${days.map(d => `<div class="hr-cal-d${d === HR.TODAY ? ' today' : ''}"><b>${+d.slice(8)}</b>${ag.filter(a => a.date === d).map(a => `<a href="#hrd-task${qs({ id: a.task })}" class="small hr-ag ${a.kind === 'Sesi' ? 'sesi' : 'due'}" title="${esc(a.title)}">${a.kind === 'Sesi' ? '● ' + a.time : '⏱'} ${a.task}</a>`).join('')}</div>`).join('')}</div><p class="muted small">● waktu sesi (interview, coaching, training) · ⏱ batas penyelesaian. Klik untuk membuka kartu.</p>`) +
-    card('Agenda berurutan', ag.length ? table(['Tanggal', 'Waktu', 'Jenis', 'Kartu', 'Judul', 'Workplace'], ag.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).map(a => [a.date, a.time, a.kind === 'Sesi' ? chip('Sesi', 'planned') : chip('Tenggat', 'sandbox'), link('hrd-task' + qs({ id: a.task }), a.task), esc(a.title), a.ws])) : '<p>Tidak ada agenda.</p>') +
+    card('Agenda berurutan', ag.length ? table(['Tanggal', 'Waktu', 'Jenis', 'Kartu', 'Judul', 'Workspace'], ag.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).map(a => [a.date, a.time, a.kind === 'Sesi' ? chip('Sesi', 'planned') : chip('Tenggat', 'sandbox'), link('hrd-task' + qs({ id: a.task }), a.task), esc(a.title), a.ws])) : '<p>Tidak ada agenda.</p>') +
     (noDue.length ? `<p class="muted small">${noDue.length} kartu tanpa tenggat tetap tersedia di ${link('hrd-list' + qs({ only: '' }), 'List')} (${noDue.map(t => t.id).join(', ')}).</p>` : '');
 }
 
@@ -6694,7 +6700,7 @@ function library(params) {
       (['owner', 'hrd', 'hg-lead'].includes(role()) ? card('Terbitkan versi baru', `<form class="workflow-form" data-submit="hr:template-version"><input type="hidden" name="template" value="${tp.id}"><label>Langkah tambahan (opsional)<input name="step" placeholder="mis. Foto seragam & ID card"></label><label>Peran PIC<select name="picRole">${Object.keys(HR3.ROLE_PIC).map(r => `<option>${r}</option>`).join('')}</select></label><label>Tenggat relatif (hari)<input type="number" name="rel" value="0"></label><label>Catatan versi<input name="note" required minlength="5"></label><button class="btn">Terbitkan v${tp.version + 1}</button></form><p class="muted small">Versi baru berlaku pada penerapan berikutnya; kartu lama tetap merujuk versi saat dibuat.</p>`) : '') +
       card('Dipakai oleh', used.length ? table(['Kartu', 'Judul', 'Versi', 'Tahap'], used.map(t => [taskLink(t), esc(t.title), 'v' + t.source.templateVersion, chip(t.stage, STAGE_TONE[t.stage])])) : '<p>Belum pernah diterapkan.</p>') + link('hrd-library', '‹ Library');
   }
-  return card('Library · versi aktif', table(['ID', 'Nama', 'Jenis', 'Workplace', 'Versi', 'Langkah', ''], tps.map(t => [t.id, esc(t.name), chip(t.kind, 'planned'), HR3.WS[t.ws].name, 'v' + t.version, t.steps.length || '—', link('hrd-library' + qs({ id: t.id }), 'Pratinjau')])));
+  return card('Library · versi aktif', table(['ID', 'Nama', 'Jenis', 'Workspace', 'Versi', 'Langkah', ''], tps.map(t => [t.id, esc(t.name), chip(t.kind, 'planned'), HR3.WS[t.ws].name, 'v' + t.version, t.steps.length || '—', link('hrd-library' + qs({ id: t.id }), 'Pratinjau')])));
 }
 
 /* ---------- NV06 My Tasks · NV07 My Day ---------- */
@@ -6731,7 +6737,7 @@ function detail(params) {
   const src = t.source ? (t.source.sensitive && def().payroll !== 'detail' ? `${esc(t.source.type)} · <i>tautan khusus Manager HRD</i>` : `${esc(t.source.type)} · ${t.source.route ? `<a href="#${t.source.route}">${esc(t.source.label)}</a>` : esc(t.source.label)} <span class="muted small">(${esc(t.source.id)})</span>`) : '—';
   const subs = f3().tasks.filter(x => x.parent === t.id);
   let body = '';
-  if (tab === 'preview') body = table(['Field', 'Nilai'], [['Task ID', t.id + ` · versi ${t.version}`], ['Workplace', HR3.WS[t.ws].name], ['Sumber', src], ['Finding ID', esc(t.finding || '—')], ['Cakupan', esc(scopeName(t.scope))], ['Tahap', chip(t.stage, STAGE_TONE[t.stage])], ['Prioritas', chip(t.prio, PRIO_TONE[t.prio])], ['PIC', t.pic ? esc(empName(t.pic)) : chip('Tanpa PIC', 'bad')], ['Reviewer', esc(empName(t.reviewer)) + (t.requireReview ? ' · wajib review' : '')], ['Kontributor', t.contributors.map(empName).map(esc).join(', ') || '—'], ['Tenggat', t.due || '—'], ['Jadwal sesi', t.sessionAt ? t.sessionAt + ' WITA' : '—'], ['Induk', t.parent ? link('hrd-task' + qs({ id: t.parent }), t.parent) : '—'], ['Blocker', t.blocker ? `${esc(t.blocker.reason)} · menunggu ${esc(empName(t.blocker.waiting))} · berikutnya: ${esc(t.blocker.next || '—')}` : '—']]) +
+  if (tab === 'preview') body = table(['Field', 'Nilai'], [['Task ID', t.id + ` · versi ${t.version}`], ['Workspace', HR3.WS[t.ws].name], ['Sumber', src], ['Finding ID', esc(t.finding || '—')], ['Cakupan', esc(scopeName(t.scope))], ['Tahap', chip(t.stage, STAGE_TONE[t.stage])], ['Prioritas', chip(t.prio, PRIO_TONE[t.prio])], ['PIC', t.pic ? esc(empName(t.pic)) : chip('Tanpa PIC', 'bad')], ['Reviewer', esc(empName(t.reviewer)) + (t.requireReview ? ' · wajib review' : '')], ['Kontributor', t.contributors.map(empName).map(esc).join(', ') || '—'], ['Tenggat', t.due || '—'], ['Jadwal sesi', t.sessionAt ? t.sessionAt + ' WITA' : '—'], ['Induk', t.parent ? link('hrd-task' + qs({ id: t.parent }), t.parent) : '—'], ['Blocker', t.blocker ? `${esc(t.blocker.reason)} · menunggu ${esc(empName(t.blocker.waiting))} · berikutnya: ${esc(t.blocker.next || '—')}` : '—']]) +
     (ro ? '' : `<div class="grid g2"><form class="workflow-form" data-submit="hr:task-move">${V}<input type="hidden" name="via" value="detail"><label>Pindahkan ke<select name="to">${HR3.STAGES.map(s => `<option ${s === t.stage ? 'selected' : ''}>${s}</option>`).join('')}</select></label><button class="btn">Pindahkan</button></form>
       <form class="workflow-form" data-submit="hr:task-assign">${V}<input type="hidden" name="field" value="pic"><label>PIC<select name="emp">${picOpts(t.pic)}</select></label><button class="btn ghost">Tetapkan PIC</button></form>
       <form class="workflow-form" data-submit="hr:task-assign">${V}<input type="hidden" name="field" value="reviewer"><label>Reviewer<select name="emp">${picOpts(t.reviewer)}</select></label><button class="btn ghost">Tetapkan reviewer</button></form>
@@ -6755,7 +6761,7 @@ const ti = items.find(i => i[0] === 'hrd-tasks'); if (ti) { ti[2] = 'F3-NV01'; t
 const ix = items.findIndex(i => i[0] === 'hrd-tasks');
 items.splice(ix + 1, 0, ['hrd-board', 'Board', 'F3-NV02', 'ready', '', 'sub'], ['hrd-calendar', 'Calendar', 'F3-NV03', 'ready', '', 'sub'], ['hrd-list', 'List', 'F3-NV04', 'ready', '', 'sub'], ['hrd-library', 'Library', 'F3-NV05', 'ready', '', 'sub'], ['hrd-mytasks', 'My Tasks', 'F3-NV06', 'ready', '', 'sub'], ['hrd-myday', 'My Day', 'F3-NV07', 'ready', '', 'sub'], ['hrd-task', 'Detail Kartu', 'F3-NV08', 'hidden']);
 Object.assign(H.PURPOSE, {
-  'hrd-tasks': 'Workplace HRD Operations atau Human Growth: beban per PIC, kartu tanpa PIC, lewat tenggat, blocker, review dan handoff lintas tim.',
+  'hrd-tasks': 'Workspace HRD Operations atau Human Growth: beban per PIC, kartu tanpa PIC, lewat tenggat, blocker, review dan handoff lintas tim.',
   'hrd-board': 'Tujuh kolom Ide → Selesai. Seret kartu atau pakai menu Pindahkan ke; validasi dan histori sama.',
   'hrd-calendar': 'Agenda interview, coaching, training dan tenggat. Waktu sesi dibedakan dari batas penyelesaian.',
   'hrd-list': 'Tabel tugas dengan filter tanpa PIC, terlambat, menunggu review dan terblokir.',
@@ -6764,8 +6770,8 @@ Object.assign(H.PURPOSE, {
   'hrd-myday': 'Fokus pribadi hari ini, agenda, hambatan dan pekerjaan terbawa.',
   'hrd-task': 'Preview, Files & Assets, Discussion, Tasks & Checklist serta Activity & History satu kartu.'
 });
-H.SCREENS.push(...[['F3-NV01', 'Workplace', 'hrd-tasks'], ['F3-NV02', 'Board', 'hrd-board'], ['F3-NV03', 'Calendar', 'hrd-calendar'], ['F3-NV04', 'List', 'hrd-list'], ['F3-NV05', 'Library', 'hrd-library'], ['F3-NV06', 'My Tasks', 'hrd-mytasks'], ['F3-NV07', 'My Day', 'hrd-myday'], ['F3-NV08', 'Detail Kartu', 'hrd-task?id=TSK-0001']].map(([c, t, r]) => [c, 'HRD · ' + t, 'HRD 3', r, 'ready', 'HRD, Human Growth, Supervisor']));
-register('hrd-tasks', guarded(workplace), () => 'Workplace');
+H.SCREENS.push(...[['F3-NV01', 'Workspace', 'hrd-tasks'], ['F3-NV02', 'Board', 'hrd-board'], ['F3-NV03', 'Calendar', 'hrd-calendar'], ['F3-NV04', 'List', 'hrd-list'], ['F3-NV05', 'Library', 'hrd-library'], ['F3-NV06', 'My Tasks', 'hrd-mytasks'], ['F3-NV07', 'My Day', 'hrd-myday'], ['F3-NV08', 'Detail Kartu', 'hrd-task?id=TSK-0001']].map(([c, t, r]) => [c, 'HRD · ' + t, 'HRD 3', r, 'ready', 'HRD, Human Growth, Supervisor']));
+register('hrd-tasks', guarded(workplace), () => 'Workspace');
 register('hrd-board', guarded(board), () => 'Board');
 register('hrd-calendar', guarded(calendar), () => 'Calendar');
 register('hrd-list', guarded(list), () => 'List');
