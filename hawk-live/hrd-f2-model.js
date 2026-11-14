@@ -139,14 +139,16 @@ const HR2 = (() => {
     if (dow(date) === sch.off) return { ...base, status: 'Libur' };
     const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
     if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
-    if (date === TODAY && k >= 18) return base; /* belum absen */
     const [s1, s2] = SHIFTS[sch.shift].map(mins);
+    /* HAWK Mobile (addendum 14 Nov 2026): kejadian presensi dari aplikasi digabung ke catatan resmi yang sama */
+    const mob = (r) => H.EXT.mobileAtt ? H.EXT.mobileAtt(hr, emp, date, r, s1) : r;
+    if (date === TODAY && k >= 18) return mob(base); /* belum absen */
     const late = k === 14 || k === 15 ? 5 + (n * 3 + k) % 25 : 0;
     let rec = { ...base, in: hhmm(s1 - 5 + late + (late ? 5 : 0)), out: date === TODAY ? null : hhmm(s2 + (k % 6 === 0 ? 60 : 0)), breakMin: 60, otMin: date !== TODAY && k % 6 === 0 ? 60 : 0, late, status: late ? 'Terlambat' : 'Hadir', evidence: `Selfie + lokasi outlet (sintetis)` };
     const ov = f2.overrides[id];
     if (ov) { rec = { ...rec, ...ov.after, corrected: ov }; const lt = Math.max(0, mins(rec.in) - s1); rec.late = lt; rec.status = lt ? 'Terlambat' : 'Hadir'; }
     rec.provisional = !ov && hr.queue.some(q => q.type === 'Koreksi presensi' && q.payload?.att === id && q.status === 'Menunggu Persetujuan');
-    return rec;
+    return mob(rec);
   }
   const attStatus = (hr, emp, date) => attendance(hr, emp, date).status;
   function summary(hr, emps, days = DAYS) {

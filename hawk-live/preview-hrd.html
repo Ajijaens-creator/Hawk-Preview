@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:58:01.880Z">
+<meta name="hawk-standalone" content="2026-11-14T02:33:00.098Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Portal HRD &amp; Human Growth</title>
 <style>
@@ -1638,8 +1638,72 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .nav .nav-items .nvc { display: none; }
 .nav .nav-items a { gap: 0; }
 
+/* ---------- HAWK Mobile preview M1 (hrd-mobile.js): bingkai ponsel, lima menu, lembar presensi ---------- */
+.mob-wrap { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 18px; align-items: start; }
+.mob-phone { width: 390px; max-width: 100%; height: 800px; border-radius: 38px; background: var(--black); padding: 10px; box-shadow: 0 18px 50px rgba(0,0,0,.25); }
+.mob-screen { position: relative; height: 100%; border-radius: 30px; overflow: hidden; background: var(--canvas); display: flex; flex-direction: column; font-size: 14px; }
+.mob-head { display: flex; align-items: center; gap: 10px; padding: 14px 14px 12px; background: var(--charcoal); color: #f4efe3; }
+.mob-head b { display: block; font-size: 14.5px; } .mob-head small { display: block; color: var(--champagne); font-size: 11.5px; }
+.mob-av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--gold-grad); color: var(--black); font-weight: 800; font-size: 13px; flex: none; }
+.mob-clock { margin-left: auto; font-size: 11.5px; color: #cfc8b6; white-space: nowrap; }
+.mob-main { flex: 1; overflow-y: auto; padding: 12px; display: grid; gap: 10px; align-content: start; }
+.mob-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
+.mob-card h3 { margin: 0 0 8px; font-size: 14.5px; } .mob-card h4 { margin: 10px 0 4px; font-size: 13px; }
+.mob-att.big { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+.mob-att-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+.mob-att-top b { display: block; font-size: 16px; margin: 2px 0; } .mob-att-top small { display: block; color: var(--muted); font-size: 11.5px; }
+.mob-times { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin: 10px 0 0; } .mob-times b { color: var(--ink); }
+.mob-actions { display: grid; gap: 8px; margin-top: 12px; }
+.mob-btn { min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 700; padding: 8px 14px; cursor: pointer; }
+.mob-btn.primary { background: var(--charcoal); color: #f6efdc; border-color: var(--charcoal); }
+.mob-btn.primary:hover { border-color: var(--gold); }
+.mob-btn.ghost { background: transparent; }
+.mob-btn.sm { min-height: 34px; padding: 4px 10px; font-size: 12.5px; }
+.mob-btn.link { border: 0; background: none; min-height: 32px; padding: 2px 0; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.mob-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid var(--line); color: inherit; text-decoration: none; }
+.mob-row:first-of-type { border-top: 0; } .mob-row.col { flex-wrap: wrap; }
+.mob-row span:first-child { min-width: 0; } .mob-row b { display: block; font-size: 13.5px; } .mob-row small { display: block; color: var(--muted); font-size: 11.5px; }
+.mob-inline { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-end; }
+.mob-alert { border-radius: 12px; padding: 9px 11px; font-size: 12.5px; margin: 0; background: var(--warn-bg); color: var(--warn); }
+.mob-alert.ok { background: var(--ok-bg); color: var(--ok); } .mob-alert.bad { background: var(--bad-bg); color: var(--bad); }
+.mob-nav { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 4px 4px 10px; }
+.mob-nav a { display: grid; justify-items: center; gap: 2px; padding: 6px 0; font-size: 10.5px; font-weight: 650; color: var(--muted); text-decoration: none; border-radius: 12px; }
+.mob-nav a.on { color: var(--ink); } .mob-nav a.on svg { color: var(--gold); }
+.mob-nav a.att { color: var(--ink); } .mob-nav a.att svg { background: var(--charcoal); color: var(--champagne); border-radius: 50%; padding: 6px; width: 34px; height: 34px; margin-top: -14px; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+.mob-seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
+.mob-seg a { text-align: center; padding: 8px 0; border-radius: 9px; font-size: 12.5px; font-weight: 700; color: var(--muted); text-decoration: none; }
+.mob-seg a.on { background: var(--charcoal); color: #f6efdc; }
+.mob-quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.mob-quick a { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; font-size: 12.5px; font-weight: 650; color: var(--ink); text-decoration: none; text-align: center; }
+.mob-kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; } .mob-kpi span { text-align: center; font-size: 10.5px; color: var(--muted); } .mob-kpi b { display: block; font-size: 18px; color: var(--ink); }
+.mob-pill { display: inline-block; border: 1px solid var(--line); border-radius: 99px; padding: 3px 9px; font-size: 11.5px; margin: 2px 0; }
+.mob-proof { border-top: 1px solid var(--line); padding-top: 4px; } .mob-proof:first-of-type { border-top: 0; } .mob-proof ul { margin: 2px 0 4px 16px; padding: 0; }
+.mob-form { display: grid; gap: 8px; margin-top: 8px; } .mob-form.row { grid-template-columns: 1fr auto auto; align-items: end; }
+.mob-form label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+.mob-form input, .mob-form select { min-height: 40px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 9px; font: inherit; color: var(--ink); background: var(--surface); }
+.mob-check { display: flex; gap: 8px; align-items: center; font-size: 13px; padding: 6px 0; }
+.mob-check input { width: 20px; height: 20px; }
+.mob-msg { background: var(--canvas); border-radius: 12px; padding: 7px 10px; margin: 6px 0; max-width: 88%; } .mob-msg.me { margin-left: auto; background: #f3ead2; }
+.mob-msg p { margin: 2px 0; font-size: 13px; } .mob-msg small { color: var(--muted); font-size: 11px; }
+.mob-back { font-size: 13px; font-weight: 700; color: var(--ink); text-decoration: none; }
+.mob-sheet { position: absolute; inset: 0; background: rgba(11,11,11,.55); display: flex; align-items: flex-end; z-index: 5; }
+.mob-sheet-in { background: var(--surface); width: 100%; max-height: 88%; overflow-y: auto; border-radius: 22px 22px 0 0; padding: 16px 14px 18px; display: grid; gap: 10px; }
+.mob-sheet-in h3 { margin: 0; font-size: 16px; } .mob-sheet-in ul { margin: 0 0 0 16px; padding: 0; }
+.mob-cam { height: 210px; border-radius: 16px; background: radial-gradient(circle at 50% 42%, #3b3b3b, var(--black)); display: grid; place-items: center; align-content: center; gap: 10px; color: #d8d1bf; }
+.mob-face { width: 120px; height: 150px; border: 3px dashed var(--champagne); border-radius: 50%; }
+.mob-dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 0; font-size: 12.5px; } .mob-dl dt { color: var(--muted); } .mob-dl dd { margin: 0; font-weight: 600; }
+.mob-result { margin: 0; }
+.mob-sim { display: grid; gap: 10px; } .mob-sim label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); } .mob-sim select, .mob-sim input { min-height: 36px; border: 1px solid var(--line); border-radius: 9px; padding: 5px 8px; font: inherit; background: var(--surface); color: var(--ink); }
+.mob-sim-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mob-sim h3 { margin: 6px 0 0; font-size: 14px; }
+.mob-status { width: 100%; border-collapse: collapse; font-size: 12px; } .mob-status td { border-top: 1px solid var(--line); padding: 6px 4px; vertical-align: top; } .mob-status td:first-child { font-weight: 650; width: 45%; }
+@media (max-width: 900px) { .mob-wrap { grid-template-columns: 1fr; } .mob-phone { width: 100%; height: 760px; border-radius: 28px; padding: 6px; } .mob-screen { border-radius: 22px; } }
+@media (max-width: 480px) { .mob-phone { height: calc(100vh - 140px); min-height: 620px; padding: 0; background: none; box-shadow: none; } .mob-screen { border-radius: 16px; border: 1px solid var(--line); } }
+.status-chip.warn { background: var(--warn-bg); color: var(--warn); font-weight: 700; }
+.mob-sim, .mob-sim label { min-width: 0; } .mob-sim select, .mob-sim input { width: 100%; max-width: 100%; } .mob-wrap > * { min-width: 0; }
+
 </style>
-  </head>
+      </head>
 <body data-portal="HRD">
 <a class="skip" href="#view">Lewati ke konten</a>
 <div class="app">
@@ -3419,14 +3483,16 @@ const HR2 = (() => {
     if (dow(date) === sch.off) return { ...base, status: 'Libur' };
     const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
     if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
-    if (date === TODAY && k >= 18) return base; /* belum absen */
     const [s1, s2] = SHIFTS[sch.shift].map(mins);
+    /* HAWK Mobile (addendum 14 Nov 2026): kejadian presensi dari aplikasi digabung ke catatan resmi yang sama */
+    const mob = (r) => H.EXT.mobileAtt ? H.EXT.mobileAtt(hr, emp, date, r, s1) : r;
+    if (date === TODAY && k >= 18) return mob(base); /* belum absen */
     const late = k === 14 || k === 15 ? 5 + (n * 3 + k) % 25 : 0;
     let rec = { ...base, in: hhmm(s1 - 5 + late + (late ? 5 : 0)), out: date === TODAY ? null : hhmm(s2 + (k % 6 === 0 ? 60 : 0)), breakMin: 60, otMin: date !== TODAY && k % 6 === 0 ? 60 : 0, late, status: late ? 'Terlambat' : 'Hadir', evidence: `Selfie + lokasi outlet (sintetis)` };
     const ov = f2.overrides[id];
     if (ov) { rec = { ...rec, ...ov.after, corrected: ov }; const lt = Math.max(0, mins(rec.in) - s1); rec.late = lt; rec.status = lt ? 'Terlambat' : 'Hadir'; }
     rec.provisional = !ov && hr.queue.some(q => q.type === 'Koreksi presensi' && q.payload?.att === id && q.status === 'Menunggu Persetujuan');
-    return rec;
+    return mob(rec);
   }
   const attStatus = (hr, emp, date) => attendance(hr, emp, date).status;
   function summary(hr, emps, days = DAYS) {
@@ -3709,7 +3775,9 @@ const HR3 = (() => {
     const me = hr.roleEmp[role];
     const ev = (t, kind, before, after, reason) => { f3.events.push({ id: `EVT-${++f3.seq.evt}`, task: t.id, by, at: now(), kind, before, after, reason: reason || null, demo: t.demo }); t.version++; };
     const get = (id) => { const t = f3.tasks.find(x => x.id === id); if (!t) throw new Error('Kartu tidak ditemukan.'); if (!scopeOk(hr, role, t)) throw new Error(`Akses ditolak: kartu ${id} di luar cakupan ${H.roleDef(role).label}.`); return t; };
-    const writer = () => { if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
+    /* PIC/kontributor kartu boleh memindahkan & mencentang kartunya sendiri (HAWK Mobile, addendum 14 Nov 2026) */
+    const own = (id) => { const t = f3.tasks.find(x => x.id === id); return !!(t && me && [t.pic, ...t.contributors].includes(me)); };
+    const writer = (id) => { if (id && own(id)) return; if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
     const ver = (t) => { if (input.version !== undefined && input.version !== '' && Number(input.version) !== t.version) throw new Error(`Konflik: kartu ${t.id} sudah diubah orang lain (versi ${t.version}). Status terbaru dimuat; ulangi perubahan Anda.`); };
     switch (action) {
       case 'task-create': {
@@ -3728,7 +3796,7 @@ const HR3 = (() => {
         return t.id;
       }
       case 'task-move': {
-        writer(); const t = get(input.id); ver(t);
+        writer(input.id); const t = get(input.id); ver(t);
         const to = input.to; if (!STAGES.includes(to)) throw new Error('Tahap tidak dikenal.');
         if (to === t.stage) return t.id;
         if (['Workplan', 'Priority', 'Dikerjakan', 'Review'].includes(to) && (!t.pic || !t.due)) throw new Error(`Tetapkan PIC dan tenggat sebelum memindahkan ${t.id} ke ${to}.`);
@@ -3773,7 +3841,7 @@ const HR3 = (() => {
         return t.id;
       }
       case 'task-check': {
-        writer(); const t = get(input.id);
+        writer(input.text ? null : input.id); const t = get(input.id);
         if (input.text) { const c = { id: 'C' + (t.checklist.length + 1), text: String(input.text).trim(), done: false, pic: input.pic || null }; t.checklist.push(c); ev(t, 'Checklist ditambah', null, c.text); return t.id; }
         const c = t.checklist.find(x => x.id === input.item); if (!c) throw new Error('Butir checklist tidak ditemukan.');
         c.done = !c.done; ev(t, c.done ? 'Checklist selesai' : 'Checklist dibuka', c.text, c.done ? 'selesai' : 'terbuka');
@@ -8286,6 +8354,522 @@ document.addEventListener('DOMContentLoaded', () => {
   sync();
 });
 H.HRD_ACCOUNTS = { TEAM, FLOW, current, choose, nameOf };
+})();
+
+;
+/* HAWK Mobile · model M1 (NB Addendum 14 Nov 2026: HAWK Mobile, POS Spa & Presensi) — DATA DEMO / SIMULASI R&D.
+   Satu aplikasi untuk semua peran: Beranda, Pekerjaan, Presensi, Inbox, Saya. Presensi memakai catatan resmi F2 yang sama
+   (H.EXT.mobileAtt), tugas memakai Task ID F3 yang sama, approval memakai hr.queue + aksi 'decide' F2.
+   Wajah (liveness + 1:1), lokasi, jaringan dan jam HP adalah SIMULASI berlabel: tidak ada kamera, GPS, biometrik
+   atau server nyata. Status jujur per fitur ada di STATUS. Deterministik, tanpa jaringan. */
+const HRM = (() => {
+  const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
+  const H2 = (typeof HR2 !== 'undefined') ? HR2 : require('./hrd-f2-model.js');
+  const H3 = (typeof HR3 !== 'undefined') ? HR3 : require('./hrd-f3-model.js');
+  const TODAY = H.TODAY;
+  /* akun demo mobile (Employee ID dari fixture 158; tidak menambah headcount) */
+  const ACCOUNTS = [
+    { id: 'ayu-indra', emp: 'EMP-0008', role: 'therapist', job: 'Spa Therapist', kind: 'therapist' },
+    { id: 'ayu-astiti', emp: 'EMP-0028', role: 'therapist', job: 'Spa Reception', kind: 'reception' },
+    { id: 'gede-ari', emp: 'EMP-0002', role: 'therapist', job: 'Spa Attendant', kind: 'attendant', label: 'Skenario peran berlabel: fixture mencatat Therapist, formasi Attendant belum disetujui' },
+    { id: 'mila', emp: 'EMP-0153', role: 'outlet-spv', job: 'Spa Supervisor', kind: 'supervisor' },
+    { id: 'made', emp: 'EMP-0142', role: 'hrd', job: 'Manager HRD', kind: 'hrd' },
+    { id: 'ayu', emp: 'EMP-0143', role: 'hrd-ops', job: 'Admin HRD', kind: 'hrd' }
+  ];
+  const acc = (id) => ACCOUNTS.find(a => a.id === id);
+  const accOfEmp = (emp) => ACCOUNTS.find(a => a.emp === emp);
+  /* aturan berversi (asumsi R&D, dikalibrasi di lokasi nyata sebelum pilot) */
+  const RULES = { version: 'PRS-RUL v1 (asumsi R&D)', radius: H2.RADIUS, maxAgeMin: 2, maxAccuracyM: 100, skewMin: 5, lateGraceMin: 0 };
+  const SIM = {
+    face: { ok: 'Wajah cocok', mismatch: 'Wajah tidak cocok', photo: 'Foto/layar (liveness gagal)', old: 'Bukti sesi lama', none: 'Wajah tidak terbaca' },
+    loc: { ok: 'Di outlet (±25 m)', outside: 'Di luar radius (420 m)', stale: 'Lokasi lama (9 menit)', approx: 'Lokasi approximate (±900 m)', denied: 'Izin lokasi ditolak' },
+    net: { online: 'Online', offline: 'Offline' },
+    clock: { ok: 'Jam HP sesuai', skew: 'Jam HP maju 17 menit' }
+  };
+  const STATUS = [
+    ['Lima menu, peran, Beranda, Pekerjaan, Inbox, Saya', 'Visual HTML + simulasi data dummy'],
+    ['Presensi wajah/lokasi/jam & pengecualian', 'Simulasi berlabel (tanpa kamera, GPS, liveness atau face matching nyata)'],
+    ['Catatan presensi → F2, Supervisor, HRD', 'Simulasi: satu catatan di penyimpanan browser (bukan layanan server)'],
+    ['Aplikasi Android/iPhone terpasang', 'Belum: butuh build native (rekomendasi Flutter), signing & distribusi'],
+    ['Verifikasi wajah 1:1 + liveness', 'Belum: butuh SDK/penyedia teruji, tata kelola biometrik'],
+    ['Notifikasi push, penyimpanan aman, sinkronisasi server', 'Belum: butuh layanan server HAWK'],
+    ['Uji perangkat nyata', 'Belum dilakukan']
+  ];
+  const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3, 5);
+  const hhmm = (m) => `${String(Math.floor(((m % 1440) + 1440) % 1440 / 60)).padStart(2, '0')}:${String(((m % 60) + 60) % 60).padStart(2, '0')}`;
+
+  /* ---------- seed ---------- */
+  const T = (o) => ({ demo: true, contributors: [], checklist: [], discussion: [], assets: [], blocker: null, parent: null, reviewer: null, requireReview: false, sessionAt: null, version: 1, finding: null, prio: 'Sedang', scope: 'OUT-UBD', ws: 'OPS', ...o });
+  function seedTasks(hr) {
+    const f3 = H3.ensure(hr);
+    if (f3.tasks.some(t => t.id === 'TSK-0201')) return;
+    f3.tasks.push(
+      T({ id: 'TSK-0201', title: 'Siapkan Ruang 3 untuk tamu 10:00 (hot stone)', stage: 'Dikerjakan', pic: 'EMP-0002', due: TODAY, prio: 'Tinggi', source: { type: 'Booking', id: 'BK-1113-014', label: 'Booking BK-1113-014 · 10:00 · Ruang 3', route: 'hrd-mobile' }, checklist: [{ id: 'C1', text: 'Linen bersih & handuk hangat', done: true }, { id: 'C2', text: 'Batu hot stone 50–55°C', done: false }, { id: 'C3', text: 'Aromaterapi & suhu ruang 26°C', done: false }] }),
+      T({ id: 'TSK-0202', title: 'Persiapan treatment Balinese 90 menit · BK-1113-014', stage: 'Priority', pic: 'EMP-0008', due: TODAY, source: { type: 'Booking', id: 'BK-1113-014', label: 'Booking BK-1113-014', route: 'hrd-mobile' }, checklist: [{ id: 'C1', text: 'Baca catatan layanan tamu (alergi: tidak ada)', done: false }, { id: 'C2', text: 'Cek minyak pijat & aromaterapi', done: false }] }),
+      T({ id: 'TSK-0203', title: 'Serah terima shift Pagi → Sore (reception)', stage: 'Workplan', pic: 'EMP-0028', due: TODAY, checklist: [{ id: 'C1', text: 'Rekap reservasi sore', done: false }, { id: 'C2', text: 'Kas kecil & struk POS (simulasi)', done: false }] }),
+      T({ id: 'TSK-0204', title: 'AC Ruang 2 meneteskan air', stage: 'Issue', pic: 'EMP-0002', due: null, prio: 'Tinggi' }),
+      T({ id: 'TSK-0205', title: 'Coaching teknik hot stone · Ayu Indra', stage: 'Workplan', ws: 'HG', pic: 'EMP-0008', contributors: ['EMP-0153'], due: '2026-11-18', sessionAt: '2026-11-18 14:00' })
+    );
+    f3.focus.push({ emp: 'EMP-0008', task: 'TSK-0202', date: TODAY }, { emp: 'EMP-0002', task: 'TSK-0201', date: TODAY }, { emp: 'EMP-0028', task: 'TSK-0203', date: TODAY }, { emp: 'EMP-0153', task: 'TSK-0201', date: TODAY });
+  }
+  function seed(hr) {
+    const ubud = hr.people.filter(p => (H.placementOn(hr, p.id) || {}).location === 'OUT-UBD').map(p => p.id);
+    const hrd = ['EMP-0142', 'EMP-0143', 'EMP-0144', 'EMP-0145'];
+    return {
+      seeded: true, clock: '08:52', punches: [], consent: {}, ops: { svc: {}, guests: {}, rooms: { R1: 'Siap', R2: 'Perlu perbaikan', R3: 'Dibersihkan', R4: 'Siap', R5: 'Perlu linen' } }, seq: { prs: 1, msg: 100, req: 1 },
+      chats: [
+        { id: 'ANN', name: 'Pengumuman JAENS', kind: 'Pengumuman', members: 'all', post: ['EMP-0142', 'EMP-0143'] },
+        { id: 'GRP-UBD', name: 'Tim Spa Ubud', kind: 'Grup outlet', members: [...ubud, 'EMP-0153', 'EMP-0151'] },
+        { id: 'GRP-HRD', name: 'Tim HRD', kind: 'Grup divisi', members: hrd },
+        { id: 'DM-0008-0153', name: null, kind: 'Pribadi', members: ['EMP-0008', 'EMP-0153'] }
+      ],
+      msgs: [
+        { id: 'MSG-001', conv: 'ANN', from: 'EMP-0142', at: '2026-11-12 16:00', text: 'Mulai Senin presensi memakai HAWK Mobile (uji R&D). Bila kamera/GPS bermasalah, pakai tombol "Ajukan presensi dengan pemeriksaan".', status: 'Terkirim' },
+        { id: 'MSG-002', conv: 'GRP-UBD', from: 'EMP-0153', at: `${TODAY} 07:45`, text: 'Pagi tim. Tamu VIP 10:00 di Ruang 3 (hot stone). @Gede Ari tolong cek suhu batu.', status: 'Terkirim' },
+        { id: 'MSG-003', conv: 'GRP-UBD', from: 'EMP-0002', at: `${TODAY} 07:52`, text: 'Siap Bu. AC Ruang 2 netes lagi, mohon dicek teknisi.', status: 'Terkirim' },
+        { id: 'MSG-004', conv: 'DM-0008-0153', from: 'EMP-0153', at: `${TODAY} 07:30`, text: 'Ayu, hari ini kamu pegang tamu BK-1113-014 jam 10:00 ya.', status: 'Terkirim' },
+        { id: 'MSG-005', conv: 'GRP-HRD', from: 'EMP-0145', at: `${TODAY} 08:10`, text: '3 kandidat therapist Ubud konfirmasi interview Senin 10:00.', status: 'Terkirim' }
+      ]
+    };
+  }
+  function ensure(hr) {
+    if (!hr.mob || !hr.mob.seeded) hr.mob = seed(hr);
+    seedTasks(hr);
+    if (H3.WS && !H3.WS.OPS) H3.WS.OPS = { id: 'OPS', name: 'Operasional Spa', lead: 'EMP-0153' };
+    return hr.mob;
+  }
+
+  /* ---------- presensi ---------- */
+  const reqOf = (hr, p) => p.reqId ? hr.queue.find(q => q.id === p.reqId) : null;
+  /* status tampil: Terverifikasi | Menunggu sinkronisasi | Perlu pemeriksaan | Ditolak (dari keputusan reviewer) */
+  function pStatus(hr, p) {
+    if (p.status === 'Menunggu sinkronisasi') return 'Menunggu sinkronisasi';
+    const q = reqOf(hr, p);
+    if (q && q.status === 'Disetujui') return 'Terverifikasi';
+    if (q && q.status === 'Ditolak') return 'Ditolak';
+    return p.status;
+  }
+  const punchesOf = (hr, emp, date = TODAY) => ensure(hr).punches.filter(p => p.emp === emp && p.date === date);
+  const timeOf = (p) => p.serverAt || p.deviceAt;
+  /* digabung ke catatan F2 (satu catatan untuk karyawan, Supervisor dan HRD) */
+  function mobileAtt(hr, emp, date, rec, s1) {
+    if (!hr.mob) return rec;
+    const ps = hr.mob.punches.filter(p => p.emp === emp && p.date === date && pStatus(hr, p) !== 'Ditolak');
+    if (!ps.length) return rec;
+    const r = { ...rec }, pin = ps.find(p => p.kind === 'in'), pout = [...ps].reverse().find(p => p.kind === 'out');
+    const ok = (p) => pStatus(hr, p) === 'Terverifikasi';
+    if (pin) { r.in = timeOf(pin); r.late = Math.max(0, mins(r.in) - s1 - RULES.lateGraceMin); r.evidence = `HAWK Mobile · ${pin.id} · wajah 1:1 + lokasi (simulasi)`; r.status = ok(pin) ? (r.late ? 'Terlambat' : 'Hadir') : 'Perlu Pemeriksaan'; }
+    if (pout) r.out = timeOf(pout);
+    let br = 0, open = null; ps.forEach(p => { if (p.kind === 'break') open = mins(timeOf(p)); if (p.kind === 'resume' && open !== null) { br += mins(timeOf(p)) - open; open = null; } });
+    if (br) r.breakMin = br;
+    r.provisional = r.provisional || ps.some(p => !ok(p));
+    r.mobile = ps.map(p => ({ id: p.id, kind: p.kind, status: pStatus(hr, p) }));
+    return r;
+  }
+  /* siklus kerja: Belum masuk → Bekerja ↔ Istirahat → Selesai kerja */
+  function phase(hr, emp) {
+    const a = H2.attendance(hr, emp, TODAY), ps = punchesOf(hr, emp).filter(p => pStatus(hr, p) !== 'Ditolak');
+    const last = ps[ps.length - 1], pending = ps.some(p => pStatus(hr, p) !== 'Terverifikasi');
+    let ph = 'Belum masuk';
+    if (a.out) ph = 'Selesai kerja'; else if (a.in) ph = last && last.kind === 'break' ? 'Istirahat' : 'Bekerja';
+    if (['Libur', 'Cuti', 'Sakit'].includes(a.status)) ph = a.status;
+    return { phase: ph, pending, att: a, shift: a.shift, hours: H2.SHIFTS[a.shift] || null };
+  }
+  const NEXT = { 'Belum masuk': ['in'], Bekerja: ['break', 'out'], Istirahat: ['resume'], 'Selesai kerja': [] };
+  const KIND = { in: 'Check-in kerja', out: 'Check-out kerja', break: 'Mulai istirahat', resume: 'Selesai istirahat' };
+  function siteOf(hr, emp) { const pl = H.placementOn(hr, emp); const id = pl && H2.SITES[pl.location] ? pl.location : 'LOC-HQ'; return { id, ...H2.SITES[id] }; }
+  /* hasil pemeriksaan simulasi: alasan dicatat, tidak ada kesimpulan kecurangan dari satu sinyal, tidak ada penolakan otomatis */
+  function evaluate(sim) {
+    const reasons = [], face = sim.face || 'ok', loc = sim.loc || 'ok';
+    const check = { liveness: 'Lolos (simulasi)', match: 'Cocok 1:1 (simulasi)', location: null, accuracy: 18, ageMin: 0, dist: 25 };
+    if (face === 'mismatch') { check.match = 'Tidak cocok (simulasi)'; reasons.push('Wajah tidak cocok dengan profil Employee ID ini'); }
+    if (face === 'photo') { check.liveness = 'Gagal: indikasi foto/layar (simulasi)'; check.match = 'Tidak dinilai'; reasons.push('Liveness gagal: kemungkinan foto atau layar'); }
+    if (face === 'old') { check.liveness = 'Ditolak: bukti dari sesi lama'; check.match = 'Tidak dinilai'; reasons.push('Bukti wajah bukan dari sesi presensi ini'); }
+    if (face === 'none') { check.liveness = 'Wajah tidak terbaca'; check.match = 'Tidak dinilai'; reasons.push('Wajah tidak terbaca kamera'); }
+    if (loc === 'outside') { check.dist = 420; reasons.push(`Di luar radius ${RULES.radius} m (420 m dari titik kerja)`); }
+    if (loc === 'stale') { check.ageMin = 9; reasons.push(`Titik lokasi berumur 9 menit (maks ${RULES.maxAgeMin} menit)`); }
+    if (loc === 'approx') { check.accuracy = 900; check.dist = null; reasons.push(`Akurasi lokasi ±900 m (batas ${RULES.maxAccuracyM} m); radius tidak diperbesar otomatis`); }
+    if (loc === 'denied') { check.accuracy = null; check.dist = null; check.ageMin = null; reasons.push('Izin lokasi ditolak di perangkat'); }
+    if (sim.clock === 'skew') reasons.push('Jam HP berbeda 17 menit dari waktu server; waktu server yang dipakai');
+    check.location = check.dist === null ? 'Tidak tersedia' : `${check.dist} m dari titik kerja · akurasi ±${check.accuracy} m · umur ${check.ageMin} mnt`;
+    return { reasons, check };
+  }
+
+  /* ---------- aksi ---------- */
+  function update(state, hr, action, input, ctx) {
+    if (!/^m-/.test(action)) return undefined;
+    const m = ensure(hr), { audit } = ctx;
+    const a = acc(input.account); if (!a) throw new Error('Akun HAWK Mobile tidak dikenal.');
+    if (a.role !== ctx.role) throw new Error('Akses ditolak: sesi tidak cocok dengan role akun.');
+    const me = a.emp, name = (hr.people.find(p => p.id === me) || {}).name || me, by = `${name} (${a.job})`;
+    /* aksi F2/F3 yang ada dijalankan sebagai akun ini (identitas = Employee ID akun) */
+    const asMe = (act, inp) => { const keep = hr.roleEmp[a.role]; hr.roleEmp[a.role] = me; try { return H.EXT.update(state, hr, act, inp, { ...ctx, by }); } finally { hr.roleEmp[a.role] = keep; } };
+    const newReq = (type, payload, note) => {
+      const pol = hr.settings.approval.find(x => x.id === 'APR-ATT');
+      const q = { id: 'REQ-M' + String(m.seq.req++).padStart(3, '0'), emp: me, type, date: TODAY, note, status: 'Menunggu Persetujuan', policy: pol.id, created: `${TODAY} ${m.clock}`, stage: 0, stages: pol.chain.map(label => ({ label, decision: null, by: null, at: null, reason: null })), payload, demo: true, via: 'HAWK Mobile' };
+      hr.queue.unshift(q); audit(hr, by, 'Pengajuan dibuat', `${q.id} · ${type} · ${me} (HAWK Mobile)`, { object: 'Pengajuan', ref: q.id, before: '—', after: 'Menunggu Persetujuan' });
+      return q;
+    };
+    switch (action) {
+      case 'm-clock': {
+        if (!/^\d{2}:\d{2}$/.test(input.time || '')) throw new Error('Jam demo HH:MM.');
+        m.clock = input.time; return m.clock;
+      }
+      case 'm-consent': { m.consent[me] = `${TODAY} ${m.clock}`; return 'Pemberitahuan kamera & lokasi diterima'; }
+      case 'm-punch': {
+        const kind = input.kind; if (!KIND[kind]) throw new Error('Jenis aksi presensi tidak dikenal.');
+        const req = String(input.req || ''); if (!req) throw new Error('Permintaan tanpa ID sesi.');
+        const dup = m.punches.find(p => p.req === req); if (dup) return dup.id; /* tombol ganda / ulang setelah putus = satu kejadian */
+        const ph = phase(hr, me);
+        if (!NEXT[ph.phase] || !NEXT[ph.phase].includes(kind)) {
+          if (kind === 'out' && ph.phase === 'Belum masuk') throw new Error('Check-out tanpa check-in: ajukan koreksi presensi.');
+          throw new Error(`${KIND[kind]} tidak tersedia saat status "${ph.phase}".`);
+        }
+        if (!m.consent[me]) throw new Error('Baca dan setujui pemberitahuan kamera & lokasi dulu, atau pakai jalur pemeriksaan.');
+        const site = siteOf(hr, me), id = `PRS-${TODAY.replace(/-/g, '')}-${me.slice(4)}-${String(m.seq.prs++).padStart(2, '0')}`;
+        const deviceAt = input.clock === 'skew' ? hhmm(mins(m.clock) + 17) : m.clock;
+        const base = { id, req, emp: me, att: H2.attId(me, TODAY), date: TODAY, kind, site: site.id, shift: ph.shift, deviceAt, captureAt: m.clock, zone: 'WITA', rules: RULES.version, sim: { face: input.face || 'ok', loc: input.loc || 'ok', net: input.net || 'online', clock: input.clock || 'ok' } };
+        if (input.net === 'offline') {
+          Object.assign(base, { serverAt: null, status: 'Menunggu sinkronisasi', reasons: ['Disimpan aman di perangkat saat offline; liveness belum dijalankan (belum diverifikasi)'], check: null });
+          m.punches.push(base); return id;
+        }
+        const ev = evaluate(input);
+        Object.assign(base, { serverAt: m.clock, status: ev.reasons.length ? 'Perlu pemeriksaan' : 'Terverifikasi', reasons: ev.reasons, check: ev.check });
+        m.punches.push(base);
+        if (ev.reasons.length) base.reqId = newReq('Pemeriksaan presensi', { att: base.att, punch: id, kind, time: base.serverAt, reasons: ev.reasons }, `${KIND[kind]} ${base.serverAt} · ${ev.reasons[0]}`).id;
+        audit(hr, by, KIND[kind], `${id} · ${base.status} · ${H.locName(site.id) || site.name}`, { object: 'Presensi', ref: base.att, before: ph.phase, after: base.status });
+        return id;
+      }
+      case 'm-sync': {
+        const pend = m.punches.filter(p => p.emp === me && p.status === 'Menunggu sinkronisasi');
+        if (input.net === 'offline') throw new Error('Masih offline. Pengajuan tetap tersimpan di antrean perangkat.');
+        pend.forEach(p => {
+          p.status = 'Perlu pemeriksaan'; p.serverAt = null; p.receivedAt = m.clock; p.synced = true;
+          p.reasons = ['Dikirim saat offline: waktu kejadian dari HP belum dapat dipercaya (waktu unggah bukan waktu kedatangan)', 'Liveness tidak dijalankan saat offline'];
+          p.reqId = newReq('Pemeriksaan presensi', { att: p.att, punch: p.id, kind: p.kind, time: p.deviceAt, reasons: p.reasons }, `${KIND[p.kind]} ${p.deviceAt} (offline) · perlu pemeriksaan`).id;
+        });
+        return pend.length ? `${pend.length} kejadian tersinkron, menunggu pemeriksaan` : 'Tidak ada antrean';
+      }
+      case 'm-exception': {
+        const kind = input.kind || 'in';
+        if (String(input.reason || '').trim().length < 5) throw new Error('Tulis alasan minimal 5 karakter.');
+        const ph = phase(hr, me);
+        if (!NEXT[ph.phase] || !NEXT[ph.phase].includes(kind)) throw new Error(`${KIND[kind]} tidak tersedia saat status "${ph.phase}".`);
+        const req = String(input.req || ''); const dup = req && m.punches.find(p => p.req === req); if (dup) return dup.id;
+        const id = `PRS-${TODAY.replace(/-/g, '')}-${me.slice(4)}-${String(m.seq.prs++).padStart(2, '0')}`;
+        const p = { id, req: req || id, emp: me, att: H2.attId(me, TODAY), date: TODAY, kind, site: siteOf(hr, me).id, shift: ph.shift, deviceAt: m.clock, captureAt: m.clock, serverAt: m.clock, zone: 'WITA', rules: RULES.version, status: 'Perlu pemeriksaan', reasons: [`Diajukan dengan pemeriksaan: ${String(input.reason).trim()}`], check: null, manual: true };
+        m.punches.push(p);
+        p.reqId = newReq('Pemeriksaan presensi', { att: p.att, punch: id, kind, time: m.clock, reasons: p.reasons }, `${KIND[kind]} ${m.clock} · ${String(input.reason).trim()}`).id;
+        return id;
+      }
+      case 'm-decide': return asMe('decide', { id: input.id, decision: input.decision, reason: input.reason });
+      case 'm-leave': return asMe('leave-request', { emp: me, cat: input.cat, from: input.from, to: input.to, reason: input.reason });
+      case 'm-correct': return asMe('att-correct', { emp: me, date: input.date, in: input.in, out: input.out, reason: input.reason });
+      case 'm-task-move': return asMe('task-move', { id: input.id, to: input.to, via: 'HAWK Mobile' });
+      case 'm-task-check': return asMe('task-check', { id: input.id, item: input.item });
+      case 'm-chat-send': {
+        const c = m.chats.find(x => x.id === input.conv); if (!c || !canSee(c, me)) throw new Error('Percakapan tidak tersedia untuk akun ini.');
+        if (c.post && !c.post.includes(me)) throw new Error('Hanya admin pengumuman yang dapat mengirim di kanal ini.');
+        const text = String(input.text || '').trim(); if (!text) throw new Error('Pesan kosong.');
+        const msg = { id: 'MSG-' + m.seq.msg++, conv: c.id, from: me, at: `${TODAY} ${m.clock}`, text, status: input.net === 'offline' ? 'Mengantre' : 'Terkirim' };
+        m.msgs.push(msg); return msg.id;
+      }
+      case 'm-chat-flush': { const q = m.msgs.filter(x => x.from === me && x.status === 'Mengantre'); q.forEach(x => { x.status = 'Terkirim'; }); return `${q.length} pesan terkirim`; }
+      case 'm-chat-task': {
+        const msg = m.msgs.find(x => x.id === input.msg); if (!msg) throw new Error('Pesan tidak ditemukan.');
+        const c = m.chats.find(x => x.id === msg.conv); if (!canSee(c, me)) throw new Error('Akses ditolak.');
+        const id = asMe('task-create', { ws: c.id === 'GRP-HRD' ? 'HRD' : 'OPS', stage: 'Issue', title: msg.text.slice(0, 70), scope: c.id === 'GRP-UBD' ? 'OUT-UBD' : 'LOC-HQ', sourceId: msg.id, sourceType: 'Chat', sourceLabel: `Chat ${c.name || 'pribadi'} · ${msg.id}` });
+        msg.task = id; return id;
+      }
+      case 'm-ops': {
+        const ph = phase(hr, me);
+        if (input.op === 'svc-start' || input.op === 'svc-done') {
+          if (a.kind !== 'therapist') throw new Error('Hanya therapist yang ditugaskan.');
+          if (ph.phase !== 'Bekerja') throw new Error('Mulai treatment hanya saat status Bekerja (sudah check-in kerja).');
+          const s = m.ops.svc[input.ref] || {}; if (input.op === 'svc-start') { if (s.start) return input.ref; s.start = m.clock; } else { if (!s.start) throw new Error('Mulai treatment dulu.'); s.done = s.done || m.clock; }
+          m.ops.svc[input.ref] = s; return `SVC-${input.ref.slice(3)} ${input.op === 'svc-start' ? 'mulai' : 'selesai'} ${m.clock}`;
+        }
+        if (input.op === 'guest-in' || input.op === 'pos-close') {
+          if (a.kind !== 'reception') throw new Error('Aksi reception: akun ini tidak punya izin.');
+          const g = m.ops.guests[input.ref] || {};
+          if (input.op === 'guest-in') g.in = g.in || m.clock; else { if (!(m.ops.svc[input.ref] || {}).done) throw new Error('Treatment belum selesai di catatan therapist.'); g.paid = g.paid || `${m.clock} · POS simulasi`; }
+          m.ops.guests[input.ref] = g; return input.op === 'guest-in' ? `Check-in tamu ${input.ref}` : `Transaksi POS ${input.ref} ditutup (simulasi)`;
+        }
+        if (input.op === 'room') {
+          if (!['attendant', 'supervisor'].includes(a.kind)) throw new Error('Kesiapan ruangan: akun ini tidak punya izin.');
+          if (!m.ops.rooms[input.ref]) throw new Error('Ruangan tidak dikenal.');
+          m.ops.rooms[input.ref] = input.to; return `${input.ref}: ${input.to}`;
+        }
+        throw new Error('Aksi operasional tidak dikenal.');
+      }
+      case 'm-reset': {
+        if (!['hrd', 'hrd-ops', 'outlet-spv'].includes(a.role) && !input.any) throw new Error('Reset data mobile hanya dari simulator.');
+        hr.queue = hr.queue.filter(q => q.via !== 'HAWK Mobile');
+        const f3 = H3.ensure(hr); f3.tasks = f3.tasks.filter(t => !/^TSK-02\d\d$/.test(t.id) && !(t.source && /^MSG-/.test(t.source.id || ''))); f3.focus = f3.focus.filter(f => !/^TSK-02\d\d$/.test(f.task));
+        delete hr.mob; ensure(hr); return 'Data HAWK Mobile dikembalikan';
+      }
+    }
+    return undefined;
+  }
+  const canSee = (c, me) => c.members === 'all' || c.members.includes(me);
+  const chatsOf = (hr, me) => ensure(hr).chats.filter(c => canSee(c, me));
+
+  const prev = { update: H.EXT.update, ensure: H.EXT.ensure };
+  H.EXT.update = (state, hr, action, input, ctx) => { const r = update(state, hr, action, input, ctx); return r !== undefined ? r : prev.update ? prev.update(state, hr, action, input, ctx) : undefined; };
+  H.EXT.ensure = (hr) => { prev.ensure?.(hr); ensure(hr); };
+  H.EXT.mobileAtt = mobileAtt;
+  return { ACCOUNTS, acc, accOfEmp, RULES, SIM, STATUS, KIND, NEXT, ensure, phase, punchesOf, pStatus, siteOf, evaluate, chatsOf, canSee };
+})();
+if (typeof module !== 'undefined') module.exports = HRM;
+
+;
+/* HAWK Mobile · preview M1 (NB Addendum 14 Nov 2026) — VISUAL HTML + SIMULASI R&D, bukan aplikasi Android/iOS terpasang.
+   Lima menu: Beranda, Pekerjaan, Presensi, Inbox (Chat · Notifikasi · Approval), Saya. Isi mengikuti peran akun.
+   Presensi: pemberitahuan → lokasi → kamera (liveness + 1:1) → hasil, dengan state Terverifikasi / Menunggu sinkronisasi /
+   Perlu pemeriksaan, jalur "Ajukan presensi dengan pemeriksaan", offline + sinkronisasi, dan idempotensi per sesi.
+   Kondisi kamera/lokasi/jaringan/jam HP diatur di panel Simulator R&D. Model: hrd-mobile-model.js (HRM). */
+(() => {
+const H = window.HL;
+const { esc, qs } = H;
+const KEY = 'hawk-integrated-demo-v1', UIKEY = 'hawk-mobile-ui-v1';
+const hr = () => { const h = HR.ensure(H.state); HR.EXT.ensure?.(h); return h; };
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const TONE = { Terverifikasi: 'ready', 'Menunggu sinkronisasi': 'sandbox', 'Perlu pemeriksaan': 'warn', Ditolak: 'bad', Bekerja: 'ready', Istirahat: 'sandbox', 'Selesai kerja': 'ready', 'Belum masuk': '', Hadir: 'ready', Terlambat: 'warn', 'Perlu Pemeriksaan': 'warn', Disetujui: 'ready', 'Menunggu Persetujuan': 'sandbox' };
+const tone = (s) => TONE[s] || '';
+const ini = (n) => String(n).split(/\s+/).filter(w => /^[A-Za-z]/.test(w)).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const nameOf = (emp) => (hr().people.find(p => p.id === emp) || {}).name || emp;
+let ui = { face: 'ok', loc: 'ok', net: 'online', clock: 'ok', flow: null, inbox: 'chat', conv: null, msg: null, err: null, ok: null };
+try { Object.assign(ui, JSON.parse(localStorage.getItem(UIKEY) || '{}'), { flow: null, err: null, ok: null }); } catch (e) { /* abaikan */ }
+const saveUi = () => { try { const { flow, err, ok, ...keep } = ui; localStorage.setItem(UIKEY, JSON.stringify(keep)); } catch (e) { /* abaikan */ } };
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(H.state)); } catch (e) { /* abaikan */ } };
+const cur = (params) => HRM.acc(params.as) || HRM.ACCOUNTS[0];
+const go = (patch) => { const { id, params } = H.parseHash(); H.go(id, { ...params, ...patch }); };
+
+function act(a, action, input = {}) {
+  try {
+    const r = HR.update(H.state, action, { role: a.role, account: a.id, by: `${nameOf(a.emp)} (${a.job})`, ...input });
+    persist(); ui.err = null; ui.ok = typeof r === 'string' ? r : 'Tersimpan'; return r;
+  } catch (e) { ui.err = e.message; ui.ok = null; return null; }
+}
+
+/* ---------- bagian layar ---------- */
+const TABS = [['home', 'Beranda', 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z'], ['work', 'Pekerjaan', 'M4 7h16v13H4zM9 7V4h6v3'], ['att', 'Presensi', 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 5v5l3 3'], ['inbox', 'Inbox', 'M4 5h16v11H8l-4 4z'], ['me', 'Saya', 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9a8 8 0 0 1 16 0']];
+const icon = (d) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+const btn = (label, data, cls = '') => `<button type="button" class="mob-btn ${cls}" ${Object.entries(data).map(([k, v]) => `data-${k}="${esc(v)}"`).join(' ')}>${label}</button>`;
+const sect = (title, body, extra = '') => `<section class="mob-card">${title ? `<h3>${title}${extra}</h3>` : ''}${body}</section>`;
+const msgBar = () => (ui.err ? `<p class="mob-alert bad" role="alert">${esc(ui.err)}</p>` : '') + (ui.ok ? `<p class="mob-alert ok" role="status">${esc(ui.ok)}</p>` : '');
+
+function header(a) {
+  const h = hr(), pl = HR.placementOn(h, a.emp), loc = pl ? HR.locName(pl.location) : '—';
+  return `<header class="mob-head"><span class="mob-av" aria-hidden="true">${ini(nameOf(a.emp))}</span><span><b>${esc(nameOf(a.emp))}</b><small>${esc(a.job)} · ${esc(loc)}</small></span><span class="mob-clock" title="Jam demo (WITA)">${esc(h.mob.clock)} WITA</span></header>`;
+}
+function attCard(a, big = true) {
+  const h = hr(), p = HRM.phase(h, a.emp), site = HRM.siteOf(h, a.emp), nx = HRM.NEXT[p.phase] || [];
+  const ps = HRM.punchesOf(h, a.emp), pend = ps.filter(x => HRM.pStatus(h, x) === 'Menunggu sinkronisasi').length;
+  return `<section class="mob-card mob-att${big ? ' big' : ''}"><div class="mob-att-top"><span><small>Shift hari ini · Jumat 13 Nov</small><b>${esc(p.shift)}${p.hours ? ` · ${p.hours.join('–')}` : ''}</b><small>${esc(site.name)}</small></span>${chip(p.phase + (p.pending && !['Belum masuk'].includes(p.phase) ? ' · belum final' : ''), p.pending ? 'warn' : tone(p.phase))}</div>
+    ${p.att.in ? `<p class="mob-times"><span>Masuk <b>${esc(p.att.in)}</b></span><span>Keluar <b>${esc(p.att.out || '—')}</b></span><span>Istirahat <b>${p.att.breakMin || 0} mnt</b></span></p>` : ''}
+    ${pend ? `<p class="mob-alert warn">${pend} kejadian menunggu sinkronisasi · belum diverifikasi ${btn('Sinkronkan', { m: 'sync' }, 'sm ghost')}</p>` : ''}
+    <div class="mob-actions">${nx.map((k, i) => btn(HRM.KIND[k], { m: 'flow', kind: k }, i ? 'ghost' : 'primary')).join('')}${!nx.length ? `<p class="muted small">Tidak ada aksi presensi untuk status ini.</p>` : ''}</div>
+    ${nx.length ? `<p class="small">${btn('Ajukan presensi dengan pemeriksaan', { m: 'flow', kind: nx[0], manual: 1 }, 'link')}</p>` : ''}</section>`;
+}
+
+function home(a) {
+  const h = hr(), my = HR3.visible(h, a.role).filter(t => t.pic === a.emp && t.stage !== 'Selesai'), focus = HR3.focusOf(h, a.emp);
+  const ann = h.mob.msgs.filter(m => m.conv === 'ANN').slice(-1)[0];
+  const mine = h.queue.filter(q => q.emp === a.emp).slice(0, 3);
+  const appr = h.queue.filter(q => HR2.canDecide(h, a.role, q));
+  return attCard(a) +
+    sect('My Day', (focus.length ? focus : my).slice(0, 3).map(t => `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, tab: 'work', task: t.id })}"><span><b>${esc(t.title)}</b><small>${t.id} · ${esc(t.stage)}${t.due ? ' · tenggat ' + t.due.slice(5) : ''}</small></span>›</a>`).join('') || '<p class="muted small">Belum ada tugas hari ini.</p>') +
+    (appr.length ? sect('Perlu keputusan Anda', `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, tab: 'inbox', sub: 'approval' })}"><span><b>${appr.length} pengajuan</b><small>${esc(appr[0].type)} · ${esc(nameOf(appr[0].emp))}</small></span>›</a>`) : '') +
+    (ann ? sect('Pengumuman', `<p class="small">${esc(ann.text)}</p><p class="tiny muted">${esc(nameOf(ann.from))} · ${esc(ann.at)}</p>`) : '') +
+    sect('Pengajuan saya', mine.length ? mine.map(q => `<div class="mob-row"><span><b>${esc(q.type)}</b><small>${q.id} · ${esc(q.note || '')}</small></span>${chip(q.status, tone(q.status))}</div>`).join('') : '<p class="muted small">Tidak ada pengajuan.</p>') +
+    `<nav class="mob-quick" aria-label="Pintasan">${[['Kalender', 'work'], ['Timeline', 'inbox'], ['Direktori tim', 'me'], ['Perusahaan', 'me']].map(([l, t]) => `<a href="#hrd-mobile${qs({ as: a.id, tab: t })}">${l}</a>`).join('')}</nav>`;
+}
+
+/* ---------- Pekerjaan ---------- */
+const BOOK = [['BK-1113-014', '10:00', 'Balinese Massage 90 mnt', 'R3', 'EMP-0008', 'Tamu VIP (nama samaran)'], ['BK-1113-019', '13:30', 'Hot Stone 60 mnt', 'R1', 'EMP-0008', 'Tamu walk-in'], ['BK-1113-022', '15:00', 'Four Hands 90 mnt', 'R4', 'EMP-0010', 'Tamu hotel partner']];
+function spaOps(a) {
+  const h = hr(), o = h.mob.ops;
+  if (a.kind === 'therapist') return sect('Treatment saya · Spa Ubud', BOOK.filter(b => b[4] === a.emp).map(([id, t, svc, room, , g]) => { const s = o.svc[id] || {}; return `<div class="mob-row col"><span><b>${t} · ${esc(svc)}</b><small>${id} · Ruang ${room.slice(1)} · ${esc(g)}</small></span><span class="mob-inline">${s.done ? chip(`Selesai ${s.done}`, 'ready') : s.start ? chip(`Berjalan sejak ${s.start}`, 'sandbox') : chip('Belum mulai')}${!s.start ? btn('Mulai treatment', { m: 'ops', op: 'svc-start', ref: id }, 'sm') : !s.done ? btn('Selesai treatment', { m: 'ops', op: 'svc-done', ref: id }, 'sm') : ''}</span></div>`; }).join('') + '<p class="tiny muted">Mulai treatment ≠ check-in kerja ≠ check-in tamu. Penyelesaian treatment bukan bukti pembayaran; status bayar dari POS. UI-ONLY SIMULATION.</p>');
+  if (a.kind === 'reception') return sect('Reservasi hari ini · Spa Ubud', BOOK.map(([id, t, svc, room, th, g]) => { const gs = o.guests[id] || {}, s = o.svc[id] || {}; return `<div class="mob-row col"><span><b>${t} · ${esc(g)}</b><small>${id} · ${esc(svc)} · Ruang ${room.slice(1)} · ${esc(nameOf(th))}</small></span><span class="mob-inline">${gs.in ? chip(`Tamu tiba ${gs.in}`, 'ready') : btn('Check-in tamu', { m: 'ops', op: 'guest-in', ref: id }, 'sm')}${gs.paid ? chip('POS ditutup', 'ready') : gs.in ? btn('Tutup transaksi POS', { m: 'ops', op: 'pos-close', ref: id }, 'sm ghost') : ''}${s.done ? '' : gs.in ? chip('Treatment belum selesai') : ''}</span></div>`; }).join('') + '<p class="tiny muted">Refund, diskon dan perubahan transaksi mengikuti izin & approval POS yang berlaku. Semua pembayaran simulasi.</p>');
+  if (a.kind === 'attendant') return sect('Kesiapan ruangan', Object.entries(o.rooms).map(([r, st]) => `<div class="mob-row"><span><b>Ruang ${r.slice(1)}</b><small>${esc(st)}</small></span><span class="mob-inline">${['Siap', 'Dibersihkan', 'Perlu linen'].filter(x => x !== st).map(x => btn(x, { m: 'ops', op: 'room', ref: r, to: x }, 'sm ghost')).join('')}</span></div>`).join('') + (a.label ? `<p class="tiny muted">${esc(a.label)}</p>` : ''));
+  if (a.kind === 'supervisor') {
+    const team = h.people.filter(p => (HR.placementOn(h, p.id) || {}).location === 'OUT-UBD').map(p => ({ p, at: HR2.attendance(h, p.id, HR.TODAY) }));
+    const c = (f) => team.filter(f).length;
+    return sect('Kontrol shift · Spa Ubud', `<div class="mob-kpi"><span><b>${c(x => ['Hadir', 'Terlambat'].includes(x.at.status))}</b>hadir</span><span><b>${c(x => x.at.status === 'Terlambat')}</b>terlambat</span><span><b>${c(x => x.at.status === 'Perlu Pemeriksaan')}</b>perlu periksa</span><span><b>${c(x => x.at.status === 'Belum Ada Status')}</b>belum masuk</span></div>` +
+      team.filter(x => x.at.status !== 'Libur').slice(0, 8).map(x => `<div class="mob-row"><span><b>${esc(x.p.name)}</b><small>${esc(HR.pos(HR.placementOn(h, x.p.id).position).name)} · ${esc(x.at.shift)}${x.at.in ? ' · masuk ' + x.at.in : ''}</small></span>${chip(x.at.status, tone(x.at.status))}</div>`).join('') + `<p class="tiny muted">Dari catatan presensi F2 yang sama dengan HRD. ${team.length} orang Spa Ubud.</p>`) +
+      sect('Ruangan', Object.entries(o.rooms).map(([r, st]) => `<span class="mob-pill">${r.slice(1)}: ${esc(st)}</span>`).join(' '));
+  }
+  const q = h.queue.filter(x => x.status === 'Menunggu Persetujuan');
+  return sect('Antrean layanan HRD', `<p class="small">${q.length} pengajuan menunggu · ${HR3.visible(h, a.role).filter(t => t.stage === 'Review').length} kartu di Review</p><p class="tiny muted">Penyusunan kompleks, olah data, konfigurasi dan laporan mendalam tetap di portal desktop HRD.</p>`);
+}
+function taskDetail(a, id) {
+  const h = hr(), t = HR3.visible(h, a.role).find(x => x.id === id) || (HR3.ensure(h).tasks.find(x => x.id === id && [x.pic, ...x.contributors].includes(a.emp)));
+  if (!t) return sect('Kartu tidak tersedia', '<p class="small">Kartu di luar cakupan akun ini.</p>');
+  const own = [t.pic, ...t.contributors].includes(a.emp) || ['hrd', 'hrd-ops', 'outlet-spv'].includes(a.role);
+  return `<p><a class="mob-back" href="#hrd-mobile${qs({ as: a.id, tab: 'work' })}">‹ Pekerjaan</a></p>` + sect(esc(t.title), `<p class="small">${t.id} · ${esc((HR3.WS[t.ws] || {}).name || t.ws)} · PIC ${esc(t.pic ? nameOf(t.pic) : '—')}${t.due ? ' · tenggat ' + t.due : ''}</p><p>${chip(t.stage, t.stage === 'Selesai' ? 'ready' : 'sandbox')}</p>
+    ${t.source ? `<p class="tiny muted">Sumber: ${esc(t.source.label)}</p>` : ''}
+    ${t.checklist.length ? `<h4>Tasks & Checklist</h4>${t.checklist.map(c => `<label class="mob-check"><input type="checkbox" data-m="check" data-id="${t.id}" data-item="${c.id}" ${c.done ? 'checked' : ''} ${own ? '' : 'disabled'}> ${esc(c.text)}</label>`).join('')}` : ''}
+    ${own ? `<form class="mob-form" data-mform="move"><input type="hidden" name="id" value="${t.id}"><label>Pindahkan ke<select name="to">${HR3.STAGES.filter(s => s !== t.stage).map(s => `<option>${s}</option>`).join('')}</select></label><button class="mob-btn primary">Pindahkan</button></form>` : '<p class="tiny muted">Hanya PIC/kontributor yang memindahkan kartu ini.</p>'}
+    <h4>Activity & History</h4>${(HR3.ensure(h).events || []).filter(e => e.task === t.id).slice(-4).reverse().map(e => `<p class="tiny">${esc(e.at)} · ${esc(e.by)} · ${esc(e.kind)}${e.after ? ' → ' + esc(e.after) : ''}</p>`).join('') || '<p class="tiny muted">Belum ada aktivitas.</p>'}`);
+}
+function work(a, params) {
+  if (params.task) return taskDetail(a, params.task);
+  const h = hr(), mine = HR3.visible(h, a.role).filter(t => t.pic === a.emp || t.contributors.includes(a.emp)), list = mine.length ? mine : [];
+  const extra = HR3.ensure(h).tasks.filter(t => [t.pic, ...t.contributors].includes(a.emp) && !list.includes(t));
+  const all = [...list, ...extra];
+  return spaOps(a) + sect('My Tasks', all.length ? all.map(t => `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, tab: 'work', task: t.id })}"><span><b>${esc(t.title)}</b><small>${t.id} · ${esc(t.stage)}${t.checklist.length ? ` · ${t.checklist.filter(c => c.done).length}/${t.checklist.length}` : ''}</small></span>›</a>`).join('') : '<p class="muted small">Tidak ada tugas.</p>') +
+    sect('Kalender kerja', HR3.agenda(h, a.role).concat(all.filter(t => t.sessionAt).map(t => ({ date: t.sessionAt.slice(0, 10), time: t.sessionAt.slice(11), title: t.title, kind: 'Sesi' }))).filter((x, i, arr) => arr.findIndex(y => y.title === x.title && y.date === x.date) === i).sort((x, y) => (x.date + x.time).localeCompare(y.date + y.time)).slice(0, 4).map(e => `<p class="small">${e.date.slice(5)} ${e.time} · ${esc(e.kind)} · ${esc(e.title)}</p>`).join('') || '<p class="muted small">Tidak ada agenda.</p>') +
+    sect('SOP', '<p class="small">SOP kebersihan ruang treatment v3 · SOP hot stone v2 (baca saja)</p>');
+}
+
+/* ---------- Presensi ---------- */
+function attTab(a) {
+  const h = hr(), ps = HRM.punchesOf(h, a.emp).slice().reverse();
+  const hist = HR2.DAYS.slice().reverse().map(d => ({ d, r: HR2.attendance(h, a.emp, d) }));
+  return attCard(a, false) +
+    sect('Bukti presensi hari ini', ps.length ? ps.map(p => { const st = HRM.pStatus(h, p); return `<div class="mob-proof"><div class="mob-row"><span><b>${esc(HRM.KIND[p.kind])} · ${esc(p.serverAt || p.deviceAt)} ${p.zone}</b><small>${p.id} · ${esc(HR.locName(p.site) || p.site)} · shift ${esc(p.shift)}</small></span>${chip(st, tone(st))}</div>${p.reasons && p.reasons.length ? `<ul class="tiny">${p.reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}<p class="tiny muted">Waktu server ${esc(p.serverAt || '—')} · waktu ambil ${esc(p.captureAt)} · waktu HP ${esc(p.deviceAt)}${p.receivedAt ? ' · diterima ' + esc(p.receivedAt) : ''}${p.reqId ? ' · ' + p.reqId : ''}</p></div>`; }).join('') : '<p class="muted small">Belum ada kejadian presensi dari HAWK Mobile hari ini.</p>') +
+    sect('Histori 7 hari', hist.map(({ d, r }) => `<div class="mob-row"><span><b>${HR2.DOW[HR2.dow(d)]} ${d.slice(8)}/${d.slice(5, 7)}</b><small>${esc(r.shift)}${r.in ? ` · ${r.in}–${r.out || '…'}` : ''}${r.corrected ? ' · dikoreksi' : ''}</small></span><span class="mob-inline">${chip(r.status, tone(r.status))}${d < HR.TODAY && r.status !== 'Libur' ? btn('Koreksi', { m: 'correct', date: d }, 'sm link') : ''}</span></div>`).join('') +
+      (ui.correct ? `<form class="mob-form" data-mform="correct"><input type="hidden" name="date" value="${esc(ui.correct)}"><p class="small"><b>Ajukan koreksi ${esc(ui.correct)}</b></p><label>Jam masuk<input name="in" placeholder="09:00" required></label><label>Jam keluar<input name="out" placeholder="17:00"></label><label>Alasan<input name="reason" required minlength="5"></label><button class="mob-btn primary">Kirim koreksi</button></form>` : '')) +
+    `<p class="tiny muted">Aturan ${esc(HRM.RULES.version)}: radius ${HRM.RULES.radius} m, umur lokasi ≤ ${HRM.RULES.maxAgeMin} menit, akurasi ≤ ${HRM.RULES.maxAccuracyM} m. Tidak ada keputusan absen, sanksi atau potongan otomatis dari pemeriksaan teknis.</p>`;
+}
+
+/* ---------- alur presensi (lembar) ---------- */
+function flowSheet(a) {
+  const f = ui.flow; if (!f) return '';
+  const h = hr(), site = HRM.siteOf(h, a.emp), ph = HRM.phase(h, a.emp), consent = h.mob.consent[a.emp];
+  let body = '';
+  if (f.step === 'result') {
+    const p = h.mob.punches.find(x => x.id === f.result), st = p ? HRM.pStatus(h, p) : null;
+    body = p ? `<h3>${esc(HRM.KIND[p.kind])}</h3><p class="mob-result ${tone(st)}">${chip(st, tone(st))}</p><dl class="mob-dl"><dt>Tanggal/jam</dt><dd>Jumat 13 Nov 2026 · ${esc(p.serverAt || p.deviceAt)} WITA${p.serverAt ? '' : ' (waktu HP, belum dipercaya)'}</dd><dt>Outlet</dt><dd>${esc(site.name)}</dd><dt>Shift</dt><dd>${esc(p.shift)}</dd><dt>ID presensi</dt><dd>${p.id}</dd>${p.check ? `<dt>Wajah</dt><dd>${esc(p.check.liveness)} · ${esc(p.check.match)}</dd><dt>Lokasi</dt><dd>${esc(p.check.location)}</dd>` : ''}${p.reqId ? `<dt>Pemeriksaan</dt><dd>${p.reqId} → Supervisor</dd>` : ''}</dl>${p.reasons && p.reasons.length ? `<ul class="small">${p.reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}<p class="tiny muted">Simulasi R&D: tidak ada kamera, GPS atau pencocokan wajah nyata.</p>` + btn('Selesai', { m: 'flow-close' }, 'primary') : '';
+  } else if (!consent && !f.manual) {
+    body = `<h3>Sebelum presensi pertama</h3><ul class="small"><li><b>Kamera depan</b> mengambil wajah langsung untuk liveness dan pencocokan 1:1 dengan profil Employee ID Anda. Foto galeri tidak dipakai.</li><li><b>Lokasi</b> diambil hanya saat Anda menekan aksi presensi, bukan sepanjang hari.</li><li>Bukti disimpan terbatas untuk pemeriksa yang berwenang sesuai masa simpan yang ditetapkan HRD.</li><li>Bila kamera/lokasi tidak bisa dipakai, ada jalur <b>Ajukan presensi dengan pemeriksaan</b>.</li></ul><p class="tiny muted">R&D: pendaftaran wajah & hasil pemeriksaan adalah simulasi berlabel.</p>` + btn('Saya mengerti, lanjutkan', { m: 'consent' }, 'primary') + btn('Pakai jalur pemeriksaan', { m: 'flow-manual' }, 'ghost');
+  } else if (f.manual) {
+    body = `<h3>Ajukan presensi dengan pemeriksaan</h3><p class="small">${esc(HRM.KIND[f.kind])} · ${esc(site.name)} · shift ${esc(ph.shift)} · ${esc(h.mob.clock)} WITA</p><form class="mob-form" data-mform="exception"><input type="hidden" name="kind" value="${f.kind}"><label>Alasan<select name="why"><option>GPS tidak akurat</option><option>Izin lokasi ditolak</option><option>Kamera rusak</option><option>Wajah tidak terbaca</option><option>Kebutuhan aksesibilitas</option></select></label><label>Keterangan<input name="reason" required minlength="5" placeholder="mis. kamera HP retak"></label><button class="mob-btn primary">Kirim untuk diperiksa Supervisor</button></form><p class="tiny muted">Status akan "Perlu pemeriksaan", bukan hadir terverifikasi, sampai Supervisor/HRD memutuskan.</p>` + btn('Batal', { m: 'flow-close' }, 'ghost');
+  } else if (f.step === 'loc') {
+    const ev = HRM.evaluate({ face: 'ok', loc: ui.loc });
+    body = `<h3>1 · Lokasi saat ini</h3><p class="small">Mencocokkan dengan titik kerja <b>${esc(site.name)}</b> (radius ${HRM.RULES.radius} m).</p><p class="mob-alert ${ui.loc === 'ok' ? 'ok' : 'warn'}">${esc(HRM.SIM.loc[ui.loc])}<br><span class="tiny">${esc(ev.check.location)}</span></p>${ui.loc === 'denied' ? '<p class="small">Izin lokasi ditolak. Anda tetap bisa lanjut (akan diperiksa) atau pakai jalur pemeriksaan.</p>' : ''}` + btn('Lanjut: kamera', { m: 'flow-step', step: 'cam' }, 'primary') + btn('Ajukan dengan pemeriksaan', { m: 'flow-manual' }, 'ghost');
+  } else if (f.step === 'cam') {
+    body = `<h3>2 · Verifikasi wajah</h3><div class="mob-cam" aria-label="Pratinjau kamera depan (simulasi)"><span class="mob-face"></span><small>Kamera depan (simulasi) · kedipkan mata lalu tahan</small></div><p class="small">Kondisi simulasi: <b>${esc(HRM.SIM.face[ui.face])}</b> · jaringan ${esc(HRM.SIM.net[ui.net])} · ${esc(HRM.SIM.clock[ui.clock])}</p>` + btn(`Ambil wajah & kirim ${HRM.KIND[f.kind].toLowerCase()}`, { m: 'punch' }, 'primary') + btn('Ajukan dengan pemeriksaan', { m: 'flow-manual' }, 'ghost');
+  }
+  return `<div class="mob-sheet" role="dialog" aria-modal="true" aria-label="Presensi"><div class="mob-sheet-in">${msgBar()}${body}</div></div>`;
+}
+
+/* ---------- Inbox ---------- */
+function inbox(a, params) {
+  const h = hr(), sub = params.sub || 'chat';
+  const tabs = `<nav class="mob-seg" aria-label="Inbox">${[['chat', 'Chat'], ['notif', 'Notifikasi'], ['approval', 'Approval']].map(([k, l]) => `<a href="#hrd-mobile${qs({ as: a.id, tab: 'inbox', sub: k })}" class="${k === sub ? 'on' : ''}" ${k === sub ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+  let body = '';
+  if (sub === 'chat') {
+    const cs = HRM.chatsOf(h, a.emp);
+    if (params.conv) {
+      const c = cs.find(x => x.id === params.conv);
+      if (!c) body = sect('', '<p class="small">Percakapan tidak tersedia.</p>');
+      else {
+        const can = ['hrd', 'hrd-ops', 'outlet-spv', 'hg-lead', 'ops-manager'].includes(a.role);
+        const title = c.name || nameOf(c.members.find(x => x !== a.emp));
+        body = `<p><a class="mob-back" href="#hrd-mobile${qs({ as: a.id, tab: 'inbox' })}">‹ Chat</a></p>` + sect(esc(title), h.mob.msgs.filter(m => m.conv === c.id).map(m => `<div class="mob-msg ${m.from === a.emp ? 'me' : ''}"><small>${esc(nameOf(m.from))} · ${esc(m.at.slice(11))}</small><p>${esc(m.text)}</p><small>${m.status === 'Mengantre' ? chip('Mengantre', 'sandbox') : m.from === a.emp ? 'Terkirim' : ''}${m.task ? ` · <a href="#hrd-mobile${qs({ as: a.id, tab: 'work', task: m.task })}">${m.task}</a>` : can && m.from !== a.emp ? ' ' + btn('Jadikan tugas', { m: 'chat-task', msg: m.id }, 'sm link') : ''}</small></div>`).join('') +
+          (c.post && !c.post.includes(a.emp) ? '<p class="tiny muted">Kanal pengumuman: hanya admin yang mengirim.</p>' : `<form class="mob-form row" data-mform="send"><input type="hidden" name="conv" value="${c.id}"><label class="sr" for="mtxt">Pesan</label><input id="mtxt" name="text" placeholder="Tulis pesan…" required><button class="mob-btn primary">Kirim</button></form>`) + '<p class="tiny muted">Persetujuan resmi lewat tab Approval, bukan balasan "setuju" di chat.</p>');
+      }
+    } else body = sect('', cs.map(c => { const last = h.mob.msgs.filter(m => m.conv === c.id).slice(-1)[0]; return `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, tab: 'inbox', conv: c.id })}"><span><b>${esc(c.name || nameOf(c.members.find(x => x !== a.emp)))}</b><small>${esc(c.kind)}${last ? ' · ' + esc(last.text.slice(0, 40)) : ''}</small></span>›</a>`; }).join(''));
+  } else if (sub === 'notif') {
+    const items = [];
+    h.queue.filter(q => q.emp === a.emp && q.status !== 'Menunggu Persetujuan').slice(0, 4).forEach(q => items.push([`${q.type}: ${q.status}`, q.id, { tab: 'att' }]));
+    HRM.punchesOf(h, a.emp).filter(p => HRM.pStatus(h, p) !== 'Terverifikasi').forEach(p => items.push([`Presensi ${HRM.pStatus(h, p).toLowerCase()}`, p.id, { tab: 'att' }]));
+    h.queue.filter(q => HR2.canDecide(h, a.role, q)).slice(0, 4).forEach(q => items.push([`Pengajuan baru perlu keputusan`, q.id, { tab: 'inbox', sub: 'approval' }]));
+    HR3.ensure(h).tasks.filter(t => t.pic === a.emp && t.stage !== 'Selesai').slice(0, 3).forEach(t => items.push(['Tugas ditugaskan ke Anda', t.id, { tab: 'work', task: t.id }]));
+    body = sect('', items.length ? items.map(([t, ref, to]) => `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, ...to })}"><span><b>${esc(t)}</b><small>${esc(ref)}</small></span>›</a>`).join('') : '<p class="muted small">Tidak ada notifikasi.</p>') + '<p class="tiny muted">Di layar terkunci notifikasi sensitif tampil netral ("Ada pembaruan HAWK"). Push nyata: belum (butuh aplikasi terpasang).</p>';
+  } else {
+    const mine = h.queue.filter(q => HR2.canDecide(h, a.role, q));
+    const own = h.queue.filter(q => q.emp === a.emp).slice(0, 5);
+    body = (mine.length ? sect(`Perlu keputusan · ${mine.length}`, mine.map(q => `<div class="mob-proof"><div class="mob-row"><span><b>${esc(q.type)} · ${esc(nameOf(q.emp))}</b><small>${q.id} · ${esc(q.note || '')}</small></span>${chip(q.stages[q.stage].label, 'sandbox')}</div>${q.payload && q.payload.reasons ? `<ul class="tiny">${q.payload.reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}<form class="mob-form row" data-mform="decide"><input type="hidden" name="id" value="${q.id}"><label class="sr" for="rs-${q.id}">Alasan</label><input id="rs-${q.id}" name="reason" placeholder="Alasan (wajib bila tolak)"><button class="mob-btn primary" name="decision" value="approve">Setujui</button><button class="mob-btn ghost" name="decision" value="reject">Tolak</button></form></div>`).join('')) : '') +
+      sect('Status pengajuan saya', own.length ? own.map(q => `<div class="mob-row"><span><b>${esc(q.type)}</b><small>${q.id}${q.stages && q.stages[q.stage] ? ' · ' + esc(q.stages[q.stage].label) : ''}</small></span>${chip(q.status, tone(q.status))}</div>`).join('') : '<p class="muted small">Tidak ada.</p>');
+  }
+  return tabs + body;
+}
+
+/* ---------- Saya ---------- */
+function me(a) {
+  const h = hr(), p = h.people.find(x => x.id === a.emp), pl = HR.placementOn(h, a.emp), bal = HR2.balance(h, a.emp);
+  return sect('Profil', `<dl class="mob-dl"><dt>Nama</dt><dd>${esc(p.name)} (nama samaran)</dd><dt>Employee ID</dt><dd>${a.emp}</dd><dt>Jabatan</dt><dd>${esc(a.job)}</dd><dt>Penempatan</dt><dd>${esc(HR.locName(pl.location))} · sejak ${pl.from}</dd><dt>Kanal kerja</dt><dd>Chat HAWK</dd></dl>${a.label ? `<p class="tiny muted">${esc(a.label)}</p>` : ''}`) +
+    sect('Saldo cuti & izin', bal.filter(b => b.quota !== null).map(b => `<div class="mob-row"><span><b>${esc(b.name)}</b><small>terpakai ${b.used} · menunggu ${b.pending}</small></span><b>${b.left} hari</b></div>`).join('') +
+      `<form class="mob-form" data-mform="leave"><label>Jenis<select name="cat">${bal.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select></label><label>Tanggal<input type="date" name="from" value="2026-11-20" required></label><label>Alasan<input name="reason" placeholder="opsional"></label><button class="mob-btn primary">Ajukan</button></form>`) +
+    sect('Gaji & slip', a.role === 'hrd' ? `<p class="small">Payroll, slip dan nominal hanya di portal desktop untuk Manager HRD. <a href="#hrd-payroll">Buka Payroll (desktop)</a></p>` : '<p class="small">Tidak tersedia di akun ini. Payroll, slip dan nominal gaji khusus Manager HRD.</p><p class="tiny muted">Therapist melihat jumlah layanan, jam treatment dan hasil kerja pribadi di Pekerjaan.</p>') +
+    sect('Lainnya', ['Dokumen yang diizinkan (kontrak, SK penempatan)', 'Pelatihan & coaching', 'Direktori tim (nama, jabatan, outlet)', 'Bantuan & FAQ', 'Pengaturan perangkat: kamera, lokasi, notifikasi, sesi', 'Face ID/biometrik perangkat: hanya membuka sesi aplikasi, bukan bukti presensi'].map(x => `<p class="small">• ${esc(x)}</p>`).join(''));
+}
+
+/* ---------- halaman ---------- */
+function sim(a) {
+  const h = hr(), sel = (k, map) => `<label>${{ face: 'Wajah', loc: 'Lokasi', net: 'Jaringan', clock: 'Jam HP' }[k]}<select data-msim="${k}">${Object.entries(map).map(([v, l]) => `<option value="${v}" ${ui[k] === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
+  return `<aside class="card mob-sim" aria-label="Simulator R&D"><p class="eyebrow">Simulator R&D · bukan bagian aplikasi</p>
+    <label>Akun HAWK Mobile<select data-mas>${HRM.ACCOUNTS.map(x => `<option value="${x.id}" ${x.id === a.id ? 'selected' : ''}>${esc(nameOf(x.emp))} · ${esc(x.job)}</option>`).join('')}</select></label>
+    <div class="mob-sim-grid">${sel('face', HRM.SIM.face)}${sel('loc', HRM.SIM.loc)}${sel('net', HRM.SIM.net)}${sel('clock', HRM.SIM.clock)}</div>
+    <form class="mob-form row" data-mform="clock"><label>Jam demo (WITA)<input name="time" value="${esc(h.mob.clock)}" pattern="\\d{2}:\\d{2}"></label><button class="btn ghost sm">Set</button></form>
+    <p class="row">${btn('Reset data HAWK Mobile', { m: 'reset' }, 'ghost sm')} <a class="btn ghost sm" href="#hrd-presence">Lihat di Presensi F2</a> <a class="btn ghost sm" href="#hrd-tracking">Peta lokasi</a></p>
+    <h3>Status implementasi</h3><table class="mob-status"><tbody>${HRM.STATUS.map(([f, s]) => `<tr><td>${esc(f)}</td><td>${esc(s)}</td></tr>`).join('')}</tbody></table>
+    <p class="tiny muted">Rekomendasi klien: Flutter (Android/iOS) + layanan server HAWK bersama. Distribusi: Google Play internal/closed testing, TestFlight, lalu jalur tetap. Lihat docs/hawk-live/HAWK-MOBILE-M1.md.</p></aside>`;
+}
+function page(params) {
+  const a = cur(params), tab = params.tab || 'home';
+  hr();
+  const screen = tab === 'work' ? work(a, params) : tab === 'att' ? attTab(a) : tab === 'inbox' ? inbox(a, params) : tab === 'me' ? me(a) : home(a);
+  const nav = `<nav class="mob-nav" aria-label="Menu utama">${TABS.map(([k, l, d]) => `<a href="#hrd-mobile${qs({ as: a.id, tab: k })}" class="${k === tab ? 'on' : ''}${k === 'att' ? ' att' : ''}" ${k === tab ? 'aria-current="page"' : ''}>${icon(d)}<span>${l}</span></a>`).join('')}</nav>`;
+  const out = `<section class="mob-wrap"><div class="mob-phone" data-account="${a.id}"><div class="mob-screen">${header(a)}<main class="mob-main">${ui.flow ? '' : msgBar()}${screen}</main>${nav}${flowSheet(a)}</div></div>${sim(a)}</section>`;
+  if (!ui.flow) { ui.err = null; ui.ok = null; }
+  return `<p class="eyebrow">HAWK Mobile · M1 alur mobile R&D · visual HTML + simulasi</p><h1>HAWK Mobile (preview)</h1><p class="muted">Satu aplikasi untuk semua peran: Beranda, Pekerjaan, Presensi, Inbox, Saya. Data, identitas dan aturan sama dengan desktop. Bukan aplikasi Android/iOS terpasang.</p>` + out;
+}
+const fn = (params) => page(params);
+H.REGISTRY['hrd-mobile'] = fn; fn.title = () => 'HAWK Mobile';
+const items = H.PORTALS.HRD.items, it = items.findIndex(i => i[0] === 'hrd-tracking');
+if (!items.some(i => i[0] === 'hrd-mobile')) items.splice(it + 1, 0, ['hrd-mobile', 'HAWK Mobile', 'M1', 'ready']);
+H.SCREENS.push(['M1', 'HRD · HAWK Mobile (Beranda, Pekerjaan, Presensi, Inbox, Saya)', 'HRD M1', 'hrd-mobile', 'ready', 'Semua peran (simulasi)']);
+H.PURPOSE['hrd-mobile'] = 'Preview HAWK Mobile M1: lima menu sesuai peran, presensi wajah/lokasi/jam simulasi dengan pengecualian, tugas F3, chat dan approval.';
+
+/* ---------- interaksi ---------- */
+const rerender = () => { saveUi(); H.render(); };
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-m]'); if (!b || !b.closest('.mob-wrap')) return;
+  const { params } = H.parseHash(), a = cur(params), d = b.dataset;
+  if (d.m === 'check') return; /* ditangani change */
+  e.preventDefault();
+  const reqId = () => `MSES-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+  switch (d.m) {
+    case 'flow': ui.flow = { kind: d.kind, step: 'loc', manual: !!d.manual, req: reqId() }; ui.err = null; break;
+    case 'flow-step': ui.flow.step = d.step; ui.err = null; break;
+    case 'flow-manual': ui.flow.manual = true; ui.err = null; break;
+    case 'flow-close': ui.flow = null; break;
+    case 'consent': act(a, 'm-consent'); ui.ok = null; break;
+    case 'punch': { const r = act(a, 'm-punch', { kind: ui.flow.kind, req: ui.flow.req, face: ui.face, loc: ui.loc, net: ui.net, clock: ui.clock }); if (r) { ui.flow.step = 'result'; ui.flow.result = r; ui.ok = null; } break; }
+    case 'sync': act(a, 'm-sync', { net: ui.net }); act(a, 'm-chat-flush'); break;
+    case 'ops': act(a, 'm-ops', { op: d.op, ref: d.ref, to: d.to }); break;
+    case 'chat-task': { const r = act(a, 'm-chat-task', { msg: d.msg }); if (r) ui.ok = `Tugas ${r} dibuat dari pesan`; break; }
+    case 'correct': ui.correct = d.date; break;
+    case 'reset': HR.update(H.state, 'm-reset', { role: a.role, account: a.id, any: true }); persist(); ui.flow = null; ui.ok = 'Data HAWK Mobile dikembalikan ke awal'; break;
+  }
+  rerender();
+});
+document.addEventListener('change', (e) => {
+  const t = e.target; if (!t.closest || !t.closest('.mob-wrap')) return;
+  const { id, params } = H.parseHash();
+  if (t.matches('[data-mas]')) { ui.flow = null; ui.correct = null; saveUi(); H.go(id, { as: t.value, tab: params.tab || 'home' }); return; }
+  if (t.matches('[data-msim]')) { ui[t.dataset.msim] = t.value; rerender(); return; }
+  if (t.matches('[data-m="check"]')) { act(cur(params), 'm-task-check', { id: t.dataset.id, item: t.dataset.item }); rerender(); }
+});
+document.addEventListener('submit', (e) => {
+  const f = e.target; if (!f.matches('[data-mform]') || !f.closest('.mob-wrap')) return;
+  e.preventDefault(); e.stopPropagation();
+  const { params } = H.parseHash(), a = cur(params), v = Object.fromEntries(new FormData(f)), sub = e.submitter;
+  switch (f.dataset.mform) {
+    case 'move': act(a, 'm-task-move', v); break;
+    case 'send': act(a, 'm-chat-send', { conv: v.conv, text: v.text, net: ui.net }); break;
+    case 'decide': act(a, 'm-decide', { id: v.id, decision: sub ? sub.value : 'approve', reason: v.reason }); break;
+    case 'leave': act(a, 'm-leave', { cat: v.cat, from: v.from, to: v.from, reason: v.reason }); break;
+    case 'correct': if (act(a, 'm-correct', v)) ui.correct = null; break;
+    case 'clock': act(HRM.ACCOUNTS[4], 'm-clock', { time: v.time }); break;
+    case 'exception': { const r = act(a, 'm-exception', { kind: v.kind, reason: `${v.why}: ${v.reason}`, req: ui.flow && ui.flow.req }); if (r) { ui.flow = { ...ui.flow, manual: false, step: 'result', result: r }; ui.ok = null; } break; }
+  }
+  rerender();
+}, true);
 })();
 
 ;

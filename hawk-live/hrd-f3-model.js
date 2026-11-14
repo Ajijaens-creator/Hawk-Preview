@@ -77,7 +77,9 @@ const HR3 = (() => {
     const me = hr.roleEmp[role];
     const ev = (t, kind, before, after, reason) => { f3.events.push({ id: `EVT-${++f3.seq.evt}`, task: t.id, by, at: now(), kind, before, after, reason: reason || null, demo: t.demo }); t.version++; };
     const get = (id) => { const t = f3.tasks.find(x => x.id === id); if (!t) throw new Error('Kartu tidak ditemukan.'); if (!scopeOk(hr, role, t)) throw new Error(`Akses ditolak: kartu ${id} di luar cakupan ${H.roleDef(role).label}.`); return t; };
-    const writer = () => { if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
+    /* PIC/kontributor kartu boleh memindahkan & mencentang kartunya sendiri (HAWK Mobile, addendum 14 Nov 2026) */
+    const own = (id) => { const t = f3.tasks.find(x => x.id === id); return !!(t && me && [t.pic, ...t.contributors].includes(me)); };
+    const writer = (id) => { if (id && own(id)) return; if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
     const ver = (t) => { if (input.version !== undefined && input.version !== '' && Number(input.version) !== t.version) throw new Error(`Konflik: kartu ${t.id} sudah diubah orang lain (versi ${t.version}). Status terbaru dimuat; ulangi perubahan Anda.`); };
     switch (action) {
       case 'task-create': {
@@ -96,7 +98,7 @@ const HR3 = (() => {
         return t.id;
       }
       case 'task-move': {
-        writer(); const t = get(input.id); ver(t);
+        writer(input.id); const t = get(input.id); ver(t);
         const to = input.to; if (!STAGES.includes(to)) throw new Error('Tahap tidak dikenal.');
         if (to === t.stage) return t.id;
         if (['Workplan', 'Priority', 'Dikerjakan', 'Review'].includes(to) && (!t.pic || !t.due)) throw new Error(`Tetapkan PIC dan tenggat sebelum memindahkan ${t.id} ke ${to}.`);
@@ -141,7 +143,7 @@ const HR3 = (() => {
         return t.id;
       }
       case 'task-check': {
-        writer(); const t = get(input.id);
+        writer(input.text ? null : input.id); const t = get(input.id);
         if (input.text) { const c = { id: 'C' + (t.checklist.length + 1), text: String(input.text).trim(), done: false, pic: input.pic || null }; t.checklist.push(c); ev(t, 'Checklist ditambah', null, c.text); return t.id; }
         const c = t.checklist.find(x => x.id === input.item); if (!c) throw new Error('Butir checklist tidak ditemukan.');
         c.done = !c.done; ev(t, c.done ? 'Checklist selesai' : 'Checklist dibuka', c.text, c.done ? 'selesai' : 'terbuka');

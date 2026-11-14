@@ -9,6 +9,7 @@ Paket rancangan untuk review visual dan penulisan master prompt Cloud Developer 
 - [Pemetaan SER, Race Vegen dan e-Deck](../hrd-rnd/KINERJA-REFERENSI.md)
 - [Pola AJi Creator OS yang terdokumentasi](../HAWK-PERFORMANCE-BRIEF.md)
 - [HAWK Brand & UI Guidelines](../HAWK-BRAND-GUIDELINES.md)
+- [Addendum aplikasi mobile, POS spa dan presensi wajah/lokasi/jam](ADDENDUM-MOBILE-APP-DAN-PRESENSI.md)
 
 ## Model keseluruhan
 
@@ -37,6 +38,8 @@ Paket rancangan untuk review visual dan penulisan master prompt Cloud Developer 
 [NB Fase 8 · Delapan NV](F8-AMBIDEX-REPORTING-DAN-REFLECTION.md)
 
 Delapan NB fase mencakup **77 NV utama**, dengan jumlah berturut-turut 8, 12, 8, 12, 8, 9, 12 dan 8. Tab, dialog dan halaman e-Deck mengikuti NV induknya. Status implementasi dan bukti verifikasi dilaporkan per fase.
+
+Keputusan mobile 14 November 2026: satu aplikasi terpasang Android/iPhone dengan **Beranda, Pekerjaan, Presensi, Inbox dan Saya**, sesuai peran. Prioritas mencakup presensi wajah, lokasi, jadwal, tugas, chat dan POS operasional spa. Pekerjaan kompleks divisi tetap di desktop. [Addendum mobile](ADDENDUM-MOBILE-APP-DAN-PRESENSI.md) memperluas F1–F8 tanpa mengganti penomoran 77 NV. Jalur pengujian native dan verifikasi nyata terpisah dari preview HTML dummy.
 
 
 

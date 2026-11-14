@@ -29,6 +29,8 @@ Pertahankan shell HAWK dan urutan GajiHub. Direktori, Detail dan Impor berada di
 
 ## Data dan aturan lintas layar
 
+Presensi karyawan melalui aplikasi Android/iPhone mengikuti [addendum mobile](ADDENDUM-MOBILE-APP-DAN-PRESENSI.md): verifikasi wajah 1:1 dan liveness, lokasi saat aksi, waktu server, shift yang berlaku, sinkronisasi serta koreksi. F2 tetap menjadi sumber catatan resmi dan antrean pemeriksaan. Kamera, wajah dan lokasi pada prototype memakai simulasi berlabel.
+
 - **Identitas dan histori.** Gunakan Employee ID, Assignment ID, Shift ID, Attendance ID, Request ID, Visit ID, Client ID dan Import Batch ID yang stabil. Simpan tanggal efektif dan tanggal pencatatan. Filter dan tautan memakai ID.
 - **Jadwal dan presensi.** Kaitkan log ke penempatan serta jadwal yang berlaku saat pekerjaan berlangsung. Simpan waktu dengan zona yang konsisten dan tampilkan WITA. Log awal dan hasil koreksi dapat ditelusuri melalui audit. Jam kerja yang belum diverifikasi tampil sebagai data sementara pada downstream.
 - **Approval dan saldo.** Satu Request ID dibaca dari modul asal dan inbox. Keputusan menyimpan aktor, tahap, alasan, waktu dan bukti. Pembaruan status, audit serta ledger cuti dijalankan secara konsisten dan tahan retry.

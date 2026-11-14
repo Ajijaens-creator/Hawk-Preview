@@ -30,7 +30,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-home'); await shot('F1-NV01-beranda');
   ok('NV01 total 158 pada cakupan perusahaan', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '158');
   const sideTop = (await p.locator('#nav .nav-mod.active .nav-items a:not(.nav-child) > span:nth-child(2)').allInnerTexts()).map(s => s.split('\n')[0].trim());
-  ok('Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah', sideTop.join('|') === 'Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ', sideTop.join('|'));
+  ok('Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah', sideTop.join('|') === 'Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|HAWK Mobile|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ', sideTop.join('|'));
   await p.selectOption('#filters [name=outlet]', 'OUT-UBD'); await p.waitForTimeout(200);
   ok('NV01 filter Spa Ubud = 30 orang', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '30');
   await p.click('.kpis .kpi >> nth=0'); await p.waitForTimeout(200);

@@ -29,7 +29,8 @@ const picOpts = (cur) => `<option value="">— tanpa PIC —</option>` + ['EMP-0
 /* filter bersama Board / List: tetap terbawa saat membuka kartu */
 function filterTasks(params) {
   const q = (params.q || '').toLowerCase();
-  return HR3.visible(hr(), role()).filter(t => (!params.ws || t.ws === params.ws) && (!params.outlet || t.scope === params.outlet) && (!params.pic || (params.pic === 'none' ? !t.pic : t.pic === params.pic)) && (!params.prio || t.prio === params.prio) && (!params.stage || t.stage === params.stage) &&
+  /* kartu Operasional Spa (HAWK Mobile) tidak memenuhi papan HRD/HG; tampil bila difilter ws=OPS atau untuk Supervisor/OM */
+  return HR3.visible(hr(), role()).filter(t => (!params.ws ? (t.ws !== 'OPS' || ['outlet-spv', 'ops-manager'].includes(role())) : t.ws === params.ws) && (!params.outlet || t.scope === params.outlet) && (!params.pic || (params.pic === 'none' ? !t.pic : t.pic === params.pic)) && (!params.prio || t.prio === params.prio) && (!params.stage || t.stage === params.stage) &&
     (!params.only || (params.only === 'nopic' && !t.pic) || (params.only === 'overdue' && HR3.overdue(t)) || (params.only === 'review' && t.stage === 'Review') || (params.only === 'blocked' && t.blocker)) && (!q || `${t.id} ${t.title}`.toLowerCase().includes(q)));
 }
 function filterForm(params, route, extra = '') {

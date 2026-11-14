@@ -1,0 +1,206 @@
+{
+ "pass": 40,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Lima menu: Beranda, Pekerjaan, Presensi, Inbox, Saya",
+   "ok": true,
+   "info": "Beranda|Pekerjaan|Presensi|Inbox|Saya"
+  },
+  {
+   "name": "Beranda: nama, peran, outlet, shift hari ini, status Belum masuk, aksi Check-in kerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pemberitahuan kamera & lokasi sebelum presensi pertama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Bukti hasil: jenis, jam WITA, outlet, shift, status Terverifikasi, ID presensi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Catatan F2 yang sama: Hadir 08:52, bukti HAWK Mobile",
+   "ok": true,
+   "info": "[\"Hadir\",\"08:52\"]"
+  },
+  {
+   "name": "Status karyawan: Bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Mila melihat Ayu Indra hadir 08:52 di Kontrol shift",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Istirahat 45 menit tercatat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Check-in kedua ditolak saat Bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Check-out ditekan dua kali (ID sesi sama) → satu kejadian resmi",
+   "ok": true,
+   "info": "PRS-20261113-0008-04 1"
+  },
+  {
+   "name": "Check-out menyambung shift yang sama (08:52–17:05)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Audit tidak berlipat (4 aksi = 4 audit)",
+   "ok": true,
+   "info": "4"
+  },
+  {
+   "name": "Wajah tidak cocok, foto/layar, sesi lama, jam HP berubah, di luar radius, lokasi lama, approximate, izin ditolak → Perlu pemeriksaan + alasan + antrean Supervisor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Offline: \"Menunggu sinkronisasi\", tidak ditandai hadir terverifikasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sinkron saat masih offline ditolak, antrean tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setelah tersambung: satu kejadian, waktu unggah ≠ waktu datang, perlu pemeriksaan, satu pengajuan",
+   "ok": true,
+   "info": "[1,\"Perlu pemeriksaan\",\"09:40\",\"08:52\",1]"
+  },
+  {
+   "name": "Inbox Approval Supervisor: pemeriksaan presensi Ayu Indra",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Disetujui → Terverifikasi, F2 Hadir 08:52 (tanpa ganda)",
+   "ok": true,
+   "info": "[\"Terverifikasi\",\"Hadir\"]"
+  },
+  {
+   "name": "Keputusan tidak diulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tolak tanpa alasan ditolak; ditolak → nilai sebelumnya (belum masuk), alasan terlihat pemohon",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Check-out tanpa check-in diarahkan ke koreksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ajukan presensi dengan pemeriksaan → Perlu pemeriksaan + REQ ke Supervisor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koreksi presensi kemarin masuk antrean F2 (Koreksi presensi)",
+   "ok": true,
+   "info": "REQ-2611-010"
+  },
+  {
+   "name": "Attendant pindahkan TSK-0201 ke Review dari mobile → F3 (Task ID sama, pelaku tercatat)",
+   "ok": true,
+   "info": "{\"id\":\"EVT-1001\",\"task\":\"TSK-0201\",\"by\":\"Gede Ari (Spa Attendant)\",\"at\":\"2026-11-13 02:37\",\"kind\":\"Pindah tahap\",\"before\":\"Dikerjakan\",\"after\":\"Review\",\"reason\":\"via HAWK Mobile\",\"demo\":true}"
+  },
+  {
+   "name": "Therapist tidak bisa memindahkan kartu orang lain",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Chat therapist: Pengumuman, Tim Spa Ubud, pribadi dengan Mila; tanpa Tim HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kirim ke grup di luar keanggotaan ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pesan offline berstatus Mengantre lalu Terkirim",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor \"Jadikan tugas\" dari chat → satu Task ID (tanpa duplikasi)",
+   "ok": true,
+   "info": "TSK-1001 TSK-1001"
+  },
+  {
+   "name": "Therapist tidak bisa menjadikan tugas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mulai treatment ditolak sebelum check-in kerja (hadir ≠ treatment)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Check-in tamu → mulai/selesai treatment → POS ditutup reception; therapist tidak bisa POS",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Saya (therapist): tanpa gaji/slip, \"khusus Manager HRD\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Saya (Manager HRD): tautan Payroll desktop",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Saya (Admin HRD Ayu): tanpa akses gaji",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Role/sesi tidak cocok dengan akun → ditolak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pekerjaan sesuai peran: Treatment saya / Reservasi hari ini / Kesiapan ruangan / Kontrol shift",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Reset data HAWK Mobile: kejadian & pengajuan mobile hilang, 158 orang dan kartu F3 lain utuh",
+   "ok": true,
+   "info": "[{\"n\":158,\"f3\":13},{\"n\":158,\"f3\":13,\"p\":0,\"q\":0}]"
+  },
+  {
+   "name": "Layar 390 px tanpa geser horizontal",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
