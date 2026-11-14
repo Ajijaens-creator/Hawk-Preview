@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:22:42.248Z">
+<meta name="hawk-standalone" content="2026-11-14T01:36:34.827Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1623,6 +1623,16 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .geo-legend i.t-outd{background:#7a7a7a}.geo-legend i.t-late{background:#d4881c}.geo-legend i.t-outside{background:#c0392b}.geo-legend i.ring{background:rgba(229,198,106,.3);border:1.5px solid #C99A2E}
 .geo-map .leaflet-control-layers{font-size:12px}
 @media (max-width:900px){.geo-wrap{grid-template-columns:1fr}.geo-map{height:440px}.geo-side{max-height:320px}}
+/* kategori sidebar buka/tutup (Aji 14 Nov 2026) */
+.nav-grp-kids { display: none; }
+.nav-grp.open > .nav-grp-kids, .nav-sec.open > .nav-grp-kids { display: block; }
+.nav-grp-row { display: flex; align-items: center; }
+.nav-grp-row > a { flex: 1; min-width: 0; }
+.nav-tog { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: none; color: #8a8478; cursor: pointer; }
+.nav-tog:hover, .nav-sec-btn:hover { color: #fff; background: #151515; }
+.nav-chev { transition: transform .15s ease; }
+.nav-grp.open > .nav-grp-row .nav-chev, .nav-sec.open > .nav-sec-btn .nav-chev { transform: rotate(90deg); }
+.nav-sec-btn { display: flex; width: calc(100% - 20px); align-items: center; justify-content: space-between; border: 0; background: none; cursor: pointer; padding: 6px 0; border-radius: 6px; text-align: left; font: inherit; }
 
 </style>
 </head>

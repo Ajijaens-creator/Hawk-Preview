@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:22:42.231Z">
+<meta name="hawk-standalone" content="2026-11-14T01:36:34.813Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Sales</title>
 <style>
@@ -1623,6 +1623,16 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .geo-legend i.t-outd{background:#7a7a7a}.geo-legend i.t-late{background:#d4881c}.geo-legend i.t-outside{background:#c0392b}.geo-legend i.ring{background:rgba(229,198,106,.3);border:1.5px solid #C99A2E}
 .geo-map .leaflet-control-layers{font-size:12px}
 @media (max-width:900px){.geo-wrap{grid-template-columns:1fr}.geo-map{height:440px}.geo-side{max-height:320px}}
+/* kategori sidebar buka/tutup (Aji 14 Nov 2026) */
+.nav-grp-kids { display: none; }
+.nav-grp.open > .nav-grp-kids, .nav-sec.open > .nav-grp-kids { display: block; }
+.nav-grp-row { display: flex; align-items: center; }
+.nav-grp-row > a { flex: 1; min-width: 0; }
+.nav-tog { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: none; color: #8a8478; cursor: pointer; }
+.nav-tog:hover, .nav-sec-btn:hover { color: #fff; background: #151515; }
+.nav-chev { transition: transform .15s ease; }
+.nav-grp.open > .nav-grp-row .nav-chev, .nav-sec.open > .nav-sec-btn .nav-chev { transform: rotate(90deg); }
+.nav-sec-btn { display: flex; width: calc(100% - 20px); align-items: center; justify-content: space-between; border: 0; background: none; cursor: pointer; padding: 6px 0; border-radius: 6px; text-align: left; font: inherit; }
 
 </style>
   </head>
@@ -5610,6 +5620,7 @@ function titleOf(id) {
 }
 const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S', HRD: 'H' };
 const navOpen = new Set();
+const navToggle = new Map(); /* kategori sidebar yang dibuka/ditutup pengguna (sesi ini) */
 const HL_DX_INFO = (route) => { const lab = window.HL && HL.DXLAB && HL.DXLAB.LABS[route]; if (lab) return `Test Lab · ${lab.team.length} role · ${lab.scenarios.length} skenario`; return EXT(route) ? 'Test Lab · 3 role · 6 skenario' : 'Test Lab'; };
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
@@ -5626,12 +5637,33 @@ function renderNav(id, portal) {
     const its = PORTALS[portal].items.filter(i => !ARCHIVED(i));
     const dx = its.find(isDxItem);
     const rest = its.filter(i => !isDxItem(i) && !(i[0] === '-' && i[1] === 'Demo'));
-    nav.innerHTML = (dx && !/[?&]embed=1/.test(location.search) ? dxCard(dx) : '') + `<div class="nav-mod open active nav-flat"><div class="nav-items">${rest.map(navLink).join('')}</div></div>`;
+    /* Aji 14 Nov 2026: setiap kategori bisa dibuka/ditutup (accordion). Kategori = item induk + sub-itemnya ('sub'),
+       atau judul seksi ('-') + item di bawahnya. Kategori yang memuat halaman aktif terbuka otomatis. */
+    const has = (list) => list.some(i => cur(i[0]));
+    const isOpen = (key, list) => navToggle.has(key) ? navToggle.get(key) : has(list);
+    const chev = '<svg class="nav-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+    const list = (arr) => { let h = ''; for (let k = 0; k < arr.length; k++) {
+      const it = arr[k], kids = [];
+      while (!it[5] && arr[k + 1] && arr[k + 1][5]) kids.push(arr[++k]);
+      if (!kids.length) { h += navLink(it); continue; }
+      const key = 'grp:' + it[0], open = isOpen(key, [it, ...kids]);
+      h += `<div class="nav-grp${open ? ' open' : ''}"><div class="nav-grp-row">${navLink(it)}<button type="button" class="nav-tog" data-grp="${esc(key)}" aria-expanded="${open}" aria-label="Buka/tutup ${esc(it[1])}">${chev}</button></div><div class="nav-grp-kids">${kids.map(navLink).join('')}</div></div>`;
+    } return h; };
+    let body = '';
+    for (let k = 0; k < rest.length; k++) {
+      if (rest[k][0] !== '-') { const top = []; while (k < rest.length && rest[k][0] !== '-') top.push(rest[k++]); k--; body += list(top); continue; }
+      const head = rest[k], kids = []; while (rest[k + 1] && rest[k + 1][0] !== '-') kids.push(rest[++k]);
+      const key = 'sec:' + head[1], open = isOpen(key, kids);
+      body += `<div class="nav-sec${open ? ' open' : ''}"><button type="button" class="nav-sub nav-sec-btn" data-grp="${esc(key)}" aria-expanded="${open}"><span>${head[1]}</span>${chev}</button><div class="nav-grp-kids">${list(kids)}</div></div>`;
+    }
+    nav.innerHTML = (dx && !/[?&]embed=1/.test(location.search) ? dxCard(dx) : '') + `<div class="nav-mod open active nav-flat"><div class="nav-items">${body}</div></div>`;
     return;
   }
   nav.innerHTML = `<div class="nav-mod open active"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
 }
 nav.addEventListener('click', (e) => {
+  const g = e.target.closest('button[data-grp]');
+  if (g) { const box = g.closest('.nav-grp, .nav-sec'), open = !box.classList.contains('open'); box.classList.toggle('open', open); g.setAttribute('aria-expanded', String(open)); navToggle.set(g.dataset.grp, open); return; }
   const b = e.target.closest('button[data-mod]');
   if (!b) return;
   const mod = b.parentElement, open = !mod.classList.contains('open');
