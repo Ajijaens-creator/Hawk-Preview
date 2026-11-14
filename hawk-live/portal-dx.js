@@ -54,7 +54,7 @@ const OPS = [
   CTX.dewa
 ];
 register({
-  portal: 'Operational', route: 'ops-dx', page: 'operational.html', code: 'DX-OPS', after: 'pos', publicRole: 'ops-manager',
+  portal: 'Operational', route: 'ops-dx', mobile: ['therapist', 'reception', 'supervisor'], page: 'operational.html', code: 'DX-OPS', after: 'pos', publicRole: 'ops-manager',
   title: 'Demo Experience Center Operational', eyebrow: 'HAWK × JAENS · DX-OPS · GUIDED DEMO',
   intro: 'Belajar alur kerja outlet dengan menekan tombol asli aplikasi HAWK. Login sebagai Operational Manager, Supervisor atau Therapist, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
   purpose: 'Persona tim Operational menjalankan alur outlet (check-in, treatment, pembayaran, pembatalan, refund); booking dari Sales hanya muncul sebagai konteks otomatis.',
@@ -89,7 +89,7 @@ const COM = [
   CTX.asri, CTX.dewa, CTX.mila
 ];
 register({
-  portal: 'Commercial', route: 'commercial-dx', page: 'commercial.html', code: 'DX-COM', after: 'commercial', publicRole: 'commercial-manager',
+  portal: 'Commercial', route: 'commercial-dx', mobile: ['office'], page: 'commercial.html', code: 'DX-COM', after: 'commercial', publicRole: 'commercial-manager',
   title: 'Demo Experience Center Commercial', eyebrow: 'HAWK × JAENS · DX-COM · GUIDED DEMO',
   intro: 'Belajar alur kerja Brand, Marketing & Communications dengan menekan tombol asli aplikasi HAWK. Login sebagai Commercial Manager, Rani, Bayu atau Wulan, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
   purpose: 'Persona tim Commercial menjalankan campaign, konten dan brand; Finance (MRF) dan Sales/Operational (lead → booking) hanya muncul sebagai konteks otomatis.',
@@ -140,7 +140,7 @@ const SAL = [
   CTX.mila, CTX.asri, CTX.driver
 ];
 register({
-  portal: 'Sales', route: 'sales-dx', page: 'sales.html', code: 'DX-SLS', after: 'sales-home', publicRole: 'b2b-staff',
+  portal: 'Sales', route: 'sales-dx', mobile: ['reception'], page: 'sales.html', code: 'DX-SLS', after: 'sales-home', publicRole: 'b2b-staff',
   title: 'Demo Experience Center Sales', eyebrow: 'HAWK × JAENS · DX-SLS · GUIDED DEMO',
   intro: 'Belajar alur kerja Sales, reservasi dan kemitraan dengan menekan tombol asli aplikasi HAWK. Login sebagai Sales Manager, Dewa (Reservasi B2C) atau Sales B2B, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
   purpose: 'Persona tim Sales menjalankan lead, booking, pipeline B2B dan partner referral; outlet (POS) dan Finance (komisi) hanya muncul sebagai konteks otomatis.',
