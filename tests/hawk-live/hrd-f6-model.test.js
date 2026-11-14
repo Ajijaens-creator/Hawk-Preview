@@ -26,7 +26,7 @@ ok('Nol terverifikasi dibedakan dari kosong (dihitung, cakupan 100%)', x41.comps
 const ub = HR6.therapists(hr(), 'OUT-UBD'), team = HR6.teamScore(hr(), 'OUT-UBD'), avg = HR6.avgX(hr(), ub);
 ok('Skor tim (utility outlet ÷ target) terpisah dari rata-rata XScore personal', near(team.actual, 5512 / 5200) && team.ach === 1 && avg.avg !== null && !near(avg.avg, team.ach * 100));
 ok('November provisional memakai jam POS F5 Minggu 46', HR6.xscore(hr(), 'EMP-0001', '2611').comps[0].actual > 0 && HR6.xscore(hr(), 'EMP-0001', '2611').status !== 'Final');
-ok('Profil kompetensi EMP-0007 (mutasi Ubud → Santi) menyimpan histori outlet lama', HR6.competencies(hr(), 'EMP-0007')[0].history.some(h => h.outlet === 'OUT-UBD') && HR.placementOn(hr(), 'EMP-0007').location === 'OUT-SHT');
+ok('Profil kompetensi EMP-0007 (mutasi Ubud → Shanti) menyimpan histori outlet lama', HR6.competencies(hr(), 'EMP-0007')[0].history.some(h => h.outlet === 'OUT-UBD') && HR.placementOn(hr(), 'EMP-0007').location === 'OUT-SHT');
 ok('9-Box: bukti XScore belum lengkap → Belum Dinilai', HR6.nineOf(hr(), 'EMP-0004').label === 'Belum Dinilai' && /Bukti/.test(HR6.nineOf(hr(), 'EMP-0004').why));
 const all = HR6.therapists(hr()).map(p => HR6.nineOf(hr(), p.id));
 ok('9-Box memuat Stars dan Belum Dinilai', all.some(n => n.label === 'Stars') && all.some(n => n.label === 'Belum Dinilai'));
@@ -40,7 +40,7 @@ ok('Perpindahan 9-Box mencatat alasan, periode, reviewer dan kotak asal', b1.lab
 ok('Belum final sebelum validasi Supervisor & HG', !b1.final);
 U('outlet-spv', 'nine-validate', { emp }); U('hg-lead', 'nine-validate', { emp });
 ok('Final setelah Supervisor dan HG memvalidasi', HR6.nineOf(hr(), emp).final);
-ok('Supervisor Ubud tidak bisa memvalidasi therapist Santi', throws(() => U('outlet-spv', 'nine-validate', { emp: HR6.therapists(hr(), 'OUT-SHT').find(p => HR6.nineOf(hr(), p.id).box).id }), /cakupan/));
+ok('Supervisor Ubud tidak bisa memvalidasi therapist Shanti', throws(() => U('outlet-spv', 'nine-validate', { emp: HR6.therapists(hr(), 'OUT-SHT').find(p => HR6.nineOf(hr(), p.id).box).id }), /cakupan/));
 ok('Belum Dinilai tidak bisa divalidasi', throws(() => U('hg-lead', 'nine-validate', { emp: 'EMP-0004' }), /Belum Dinilai/));
 const plan = U('hg-lead', 'plan-create', { emp, comp: 'COMP-HYG', from: 'ninebox' });
 const P = hr().f6.plans.find(p => p.id === plan);

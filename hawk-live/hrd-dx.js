@@ -48,9 +48,9 @@ const SC = [
     { who: 'made', title: 'Setujui penempatan Spa Ubud & akun ESS', route: () => 'hrd-rec-place', run: (U, c) => U('place-approve', { id: c.app, accRole: 'ess' }) },
     { who: 'hg', title: 'Buat coaching 30 hari untuk therapist baru', route: (c) => c.coach ? `hrd-task?id=${c.coach}` : 'hrd-tasks', run: (U, c) => { c.coach = U('weekly-action', { ws: 'HG', title: `Coaching 30 hari ${empName(c.emp)}`, pic: 'EMP-0144', due: '2026-12-16', sourceId: `ONB-${c.emp}` }); return c.coach; } }
   ] },
-  { id: 'reception', name: 'Receptionist Spa Bhisma shift Sore', why: 'Celah antrean check-in sore di Bhisma: OM mengajukan 1 receptionist, HRD menyetujui dan lowongan dibuka.', steps: [
-    { who: 'eni', title: 'Lihat celah reception Bhisma 17–21', route: () => 'hrd-mp-reception?outlet=OUT-BSM', run: view() },
-    { who: 'eni', title: 'Ajukan 1 receptionist shift Sore Bhisma', route: () => 'hrd-recruit', run: (U, c) => { c.req = U('req-create', { position: 'POS-RCP', outlet: 'OUT-BSM', count: '1', shift: 'Sore', skills: 'Check-in, bahasa Inggris' }); return c.req; } },
+  { id: 'reception', name: 'Receptionist Spa Bisma shift Sore', why: 'Celah antrean check-in sore di Bisma: OM mengajukan 1 receptionist, HRD menyetujui dan lowongan dibuka.', steps: [
+    { who: 'eni', title: 'Lihat celah reception Bisma 17–21', route: () => 'hrd-mp-reception?outlet=OUT-BSM', run: view() },
+    { who: 'eni', title: 'Ajukan 1 receptionist shift Sore Bisma', route: () => 'hrd-recruit', run: (U, c) => { c.req = U('req-create', { position: 'POS-RCP', outlet: 'OUT-BSM', count: '1', shift: 'Sore', skills: 'Check-in, bahasa Inggris' }); return c.req; } },
     { who: 'eni', title: 'Setujui sebagai Operational Manager', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
     { who: 'made', title: 'Setujui sebagai Manager HRD', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
     { who: 'harja', title: 'Publikasikan lowongan Receptionist', route: () => 'hrd-rec-jobs', run: (U, c) => { c.vac = U('vac-publish', { req: c.req }); return c.vac; } }
@@ -73,7 +73,7 @@ const SC = [
   { id: 'reflection', name: 'Monthly Reflection → STRACON', why: 'Temuan kapasitas Ubud dibahas di Reflection, diputuskan di STRACON, dijalankan sebagai Workplan dan dipresentasikan di e-Deck.', steps: [
     { who: 'eni', title: 'Baca Monthly Reflection November', route: () => 'hrd-race-reflection', run: view() },
     { who: 'made', title: 'Tandai utility Ubud sebagai Issue', route: (c) => c.task ? `hrd-task?id=${c.task}` : 'hrd-race-reflection', run: (U, c) => { c.task = U('rfl-mark', { key: 'UTIL-OUT-UBD', period: '2611', stage: 'Issue' }); return c.task; } },
-    { who: 'made', title: 'Catat keputusan kapasitas di STRACON', route: (c) => c.dec ? `hrd-race-stracon?id=${c.dec}` : 'hrd-race-stracon', run: (U, c) => { c.dec = U('dec-create', { title: 'Tambah 2 therapist Spa Ubud', finding: 'FND-UTIL-UBD-2611', task: c.task, alternatives: 'Lembur terjadwal|Bantuan Santi|Rekrut 2 therapist', chosen: 'Rekrut 2 therapist', reason: 'Utility di atas 100% dan lembur berulang', owner: 'EMP-0142', due: '2026-11-30', ckey: 'UTIL-OUT-UBD', cop: '<=', cvalue: '100', cperiod: '2612' }); return c.dec; } },
+    { who: 'made', title: 'Catat keputusan kapasitas di STRACON', route: (c) => c.dec ? `hrd-race-stracon?id=${c.dec}` : 'hrd-race-stracon', run: (U, c) => { c.dec = U('dec-create', { title: 'Tambah 2 therapist Spa Ubud', finding: 'FND-UTIL-UBD-2611', task: c.task, alternatives: 'Lembur terjadwal|Bantuan Shanti|Rekrut 2 therapist', chosen: 'Rekrut 2 therapist', reason: 'Utility di atas 100% dan lembur berulang', owner: 'EMP-0142', due: '2026-11-30', ckey: 'UTIL-OUT-UBD', cop: '<=', cvalue: '100', cperiod: '2612' }); return c.dec; } },
     { who: 'made', title: 'Jadikan keputusan Workplan', route: (c) => c.wp ? `hrd-task?id=${c.wp}` : 'hrd-race-stracon', run: (U, c) => { c.wp = U('dec-workplan', { id: c.dec }); return c.wp; } },
     { who: 'owner', title: 'Owner membuka e-Deck halaman Utility', route: () => 'hrd-race-deck?page=1', run: view() }
   ] }
@@ -94,7 +94,7 @@ function teamRows() {
 }
 function extra() {
   const cur = curPersona();
-  return card('Persona demo', `<section class="grid g4 keep2">${PERSONAS.map(p => `<article class="card dx-persona${cur && cur.id === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}${TEAM.includes(p.id) ? '' : ' · konteks alur'}</div><h3>${esc(pName(p))}</h3><p class="muted small">${esc(p.does)}</p></article>`).join('')}</section><p class="muted small">Login role di Test Lab hanya untuk tim HRD. Persona divisi lain menjalankan langkahnya otomatis bila memang bagian alur HRD. Supervisor Tina (Santi), Dewik (Triloka) dan Wahyudi (Bhisma) tercatat di struktur; role demo Supervisor saat ini berlingkup Spa Ubud.</p>`) +
+  return card('Persona demo', `<section class="grid g4 keep2">${PERSONAS.map(p => `<article class="card dx-persona${cur && cur.id === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}${TEAM.includes(p.id) ? '' : ' · konteks alur'}</div><h3>${esc(pName(p))}</h3><p class="muted small">${esc(p.does)}</p></article>`).join('')}</section><p class="muted small">Login role di Test Lab hanya untuk tim HRD. Persona divisi lain menjalankan langkahnya otomatis bila memang bagian alur HRD. Supervisor Tina (Shanti), Dewik (Triloka) dan Wahyudi (Bisma) tercatat di struktur; role demo Supervisor saat ini berlingkup Spa Ubud.</p>`) +
     card('Kinerja tim HRD', table(['Anggota', 'Peran', 'Kartu selesai', 'Tenggat', 'Hambatan', 'Aksi tercatat (audit)', ''], teamRows()) + '<p class="muted small">Dibaca dari Planner F3 dan audit portal HRD. Kinerja divisi lain ada di Demo Center portalnya masing-masing.</p>');
 }
 

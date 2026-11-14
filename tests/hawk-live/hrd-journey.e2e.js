@@ -53,13 +53,13 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-race-reflection'); await shot('J13-F8-reflection');
   const tr = await p.locator('#view tr:has-text("Utility Spa Ubud")').innerText();
   ok('13 Reflection Ubud membuka kartu Workplan yang sama', tr.includes(ids.workplan));
-  ok('13b Peringatan Santi < 70% bertaut TSK-0002', /Di bawah 70%/.test(await text()) && (await p.locator('#view tr:has-text("Utility Spa Santi")').innerText()).includes('TSK-0002'));
+  ok('13b Peringatan Shanti < 70% bertaut TSK-0002', /Di bawah 70%/.test(await text()) && (await p.locator('#view tr:has-text("Utility Spa Shanti")').innerText()).includes('TSK-0002'));
   await go('hrd-task?id=' + ids.follow); await shot('J14-F3-tindak-lanjut');
   ok('14 Tindak lanjut coaching 30 hari (HG)', /Coaching 30 hari/.test(await text()));
   await go('hrd-mp-utility?outlet=OUT-SHT'); await shot('J15-F5-santi');
-  ok('15 Santi: peringatan utility rendah di F5', /Di bawah 70%|di bawah ambang/i.test(await text()));
+  ok('15 Shanti: peringatan utility rendah di F5', /Di bawah 70%|di bawah ambang/i.test(await text()));
   await go('hrd-home'); await shot('J16-F1-beranda');
-  ok('16 Beranda F1 tetap konsisten (Ubud >100%, Santi <70%)', /Ubud/.test(await text()) && /Santi/.test(await text()));
+  ok('16 Beranda F1 tetap konsisten (Ubud >100%, Shanti <70%)', /Ubud/.test(await text()) && /Shanti/.test(await text()));
   ok('Tanpa error console', errors.length === 0, errors.slice(0, 3).join(' | '));
   await browser.close();
   fs.writeFileSync(path.join(__dirname, 'hrd-journey-results.json'), JSON.stringify({ pass: out.filter(o => o.ok).length, fail, ids, out }, null, 1));

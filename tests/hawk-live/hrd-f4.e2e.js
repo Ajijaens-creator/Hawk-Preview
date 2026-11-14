@@ -43,7 +43,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV01 publik: lowongan Therapist Spa Ubud terlihat tanpa login', (await p.locator(`a[href*="${vac}"]`).count()) === 1);
   ok('Draf & internal tidak muncul di landing publik', !(await p.locator('#view').innerText()).includes('Content Creator'));
   await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
-  ok('Filter outlet Bhisma hanya menampilkan Receptionist', (await p.locator('.hr-vac').count()) === 1 && /Receptionist/.test(await p.locator('.hr-vac').innerText()));
+  ok('Filter outlet Bisma hanya menampilkan Receptionist', (await p.locator('.hr-vac').count()) === 1 && /Receptionist/.test(await p.locator('.hr-vac').innerText()));
   await p.goto(BASE + `karier.html#job=${vac}&ch=IG`); await p.waitForTimeout(200); await shot('F4-NV02-detail-publik');
   ok('NV02 tautan kanal IG membuka lowongan yang sama + kode kanal', /Therapist · Spa Ubud/.test(await p.locator('#view').innerText()) && /kanal IG/.test(await p.locator('#view').innerText()));
   await p.goto(BASE + 'karier.html#job=VAC-2610-009'); await p.waitForTimeout(150);

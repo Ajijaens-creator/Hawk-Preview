@@ -29,7 +29,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV01: label simulasi formula XScore', /formula XScore: simulasi/.test(t1));
   await p.selectOption('#filters [name=outlet]', 'OUT-UBD'); await p.waitForTimeout(150);
   await act('#view a.kpi:has-text("Rata-rata XScore")');
-  ok('Klik kartu XScore → daftar dengan cakupan outlet yang sama', p.url().includes('hrd-xscore') && p.url().includes('outlet=OUT-UBD') && !/Spa Santi/.test((await p.locator('#view tbody').innerText())));
+  ok('Klik kartu XScore → daftar dengan cakupan outlet yang sama', p.url().includes('hrd-xscore') && p.url().includes('outlet=OUT-UBD') && !/Spa Shanti/.test((await p.locator('#view tbody').innerText())));
   await act('#view a:has-text("EMP-0001")');
   const t5 = await text(); await shot('F6-NV05-xscore-emp0001');
   ok('NV05: scorecard target, aktual, bobot, kontribusi, bukti, status Final', /Utility\s+85%/.test(t5) && /50%/.test(t5) && /EVD-POS-2610-0001/.test(t5) && /Final/.test(t5));
@@ -128,10 +128,10 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
 
   /* Jalur 4: peran, cakupan, ditolak, mobile */
   await setRole('outlet-spv'); await go('hrd-xscore');
-  ok('Supervisor Ubud hanya melihat therapist Spa Ubud', !/Spa Santi|Spa Triloka|Spa Bhisma/.test(await p.locator('#view tbody').innerText()));
+  ok('Supervisor Ubud hanya melihat therapist Spa Ubud', !/Spa Shanti|Spa Triloka|Spa Bisma/.test(await p.locator('#view tbody').innerText()));
   await go('hrd-xscore?emp=EMP-0026');
   await go(`hrd-people-perf?emp=${(await S()).placements.find(x => x.location === 'OUT-SHT' && x.position === 'POS-THR' && !x.to).emp}`);
-  ok('Supervisor Ubud → profil therapist Santi = Akses ditolak', (await p.locator('.hr-denied').count()) === 1);
+  ok('Supervisor Ubud → profil therapist Shanti = Akses ditolak', (await p.locator('.hr-denied').count()) === 1);
   await setRole('owner'); await go('hrd-xscore?emp=EMP-0001');
   ok('Owner tidak diberi skor personal', (await p.locator('.hr-denied').count()) === 1);
   await setRole('finance-manager'); await go('hrd-kpi');

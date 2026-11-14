@@ -18,7 +18,7 @@ DATA DEMO / SIMULASI. Menu **Tugas** menjadi ruang kerja HRD Operations dan Huma
 - Satu objek kartu (Task ID) dibaca Workplace, Board, Calendar, List, My Tasks, My Day dan Detail. Perubahan langsung terlihat di semua tampilan.
 - Board: drag-and-drop HTML5 dan menu "Pindahkan ke" memakai aksi dan validasi yang sama (Workplan ke atas butuh PIC dan tenggat; Selesai butuh checklist lengkap dan, bila wajib, keputusan reviewer). Setiap perpindahan tercatat: aktor, waktu WITA, asal, tujuan, "via drag/menu".
 - Ganti PIC/reviewer, tenggat, jadwal sesi, diskusi, bukti, checklist dan blocker adalah event terpisah di Activity & History. Versi kartu mendeteksi konflik dua perubahan.
-- Temuan → kartu: Workplace menampilkan temuan utility (Ubud 106%, Santi 66%) dengan tombol "Tandai sebagai Issue/Ide". Penandaan ulang untuk sumber+temuan yang sama membuka kartu yang sudah ada.
+- Temuan → kartu: Workplace menampilkan temuan utility (Ubud 106%, Shanti 66%) dengan tombol "Tandai sebagai Issue/Ide". Penandaan ulang untuk sumber+temuan yang sama membuka kartu yang sudah ada.
 - Library: template versi aktif (Onboarding administratif v2, Verifikasi kompetensi v1, Respons utility v1, SOP kebersihan v3). Terapkan → 1 kartu induk + subtugas HRD/HG/Supervisor dengan tenggat relatif; versi baru berlaku pada penerapan berikutnya.
 - My Day: menambah/melepas fokus tidak mengubah tenggat, PIC atau status. Penugasan ulang melepas fokus PIC lama.
 - Akses: Staf HRD hanya workplace HRD (plus kartu di mana ia PIC/reviewer/kontributor), HG Lead hanya HG, Supervisor Ubud kartu Ubud dan kartu atas namanya, kartu bersumber payroll hanya Manager HRD, Finance Manager ditolak.

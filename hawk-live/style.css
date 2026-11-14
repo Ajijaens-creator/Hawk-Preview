@@ -373,3 +373,46 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .nav .nav-dx { margin: 4px 0 12px; padding: 14px 12px; }
 .nav .nav-dx small { font-size: 11px; }
 .nav .nav-dx b { display: block; font-size: 15px; }
+/* HRD F2-NV09 Pelacakan Lokasi · peta (hrd-geo.js, Leaflet) */
+.geo-filter{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.geo-filter select{max-width:100%}
+.geo-chips{display:flex;flex-wrap:wrap;gap:6px}
+.geo-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:stretch}
+.geo-map{height:560px;border-radius:14px;overflow:hidden;border:1px solid var(--line,#e3e0d7);background:#e8eef2;z-index:0}
+.geo-side{border:1px solid var(--line,#e3e0d7);border-radius:14px;display:flex;flex-direction:column;max-height:560px;min-width:0;background:#fff}
+.geo-side-head{padding:10px 12px;border-bottom:1px solid var(--line,#e3e0d7);display:flex;flex-direction:column}
+.geo-list{list-style:none;margin:0;padding:6px;overflow:auto}
+.geo-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:6px;cursor:pointer;min-height:44px}
+.geo-row:hover,.geo-row.on{background:#fff7e3;border-color:#f0d78a}
+.geo-who{min-width:0}.geo-who b,.geo-who small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.geo-who small{color:#6b6b6b;font-size:11px}
+.geo-time{font-size:12px;font-weight:700;text-align:right;display:grid;grid-template-columns:auto auto;gap:0 4px}.geo-time small{color:#888;font-weight:400}
+.geo-av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:800;color:#fff;background:#1e8e4e;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.t-outd .geo-av{background:#7a7a7a}.t-late .geo-av{background:#d4881c}.t-outside .geo-av{background:#c0392b}
+.geo-emp{background:none;border:0}
+.geo-emp .geo-emp-lbl{display:none;position:absolute;left:30px;top:4px;white-space:nowrap;background:#fff;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.geo-near .geo-emp .geo-emp-lbl,.geo-emp.t-outside .geo-emp-lbl{display:block}
+.geo-site{background:none;border:0}
+.geo-pin{position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;border:2px solid #b31412;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.geo-pin::after{content:'';position:absolute;left:7px;top:7px;width:8px;height:8px;border-radius:50%;background:#7c0a07}
+.geo-site-lbl{position:absolute;left:30px;top:-2px;white-space:nowrap;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;font-size:12.5px;color:#b31412;line-height:1.2}
+.geo-site-lbl b{display:block}.geo-site-lbl small{color:#3c3c3c;font-weight:600}.geo-site-lbl em{color:#c0392b;font-style:normal}
+.geo-pop b{display:block;font-size:14px}.geo-pop small{color:#666}.geo-pop table{margin:6px 0;font-size:12px;border-collapse:collapse}.geo-pop td{padding:2px 8px 2px 0;vertical-align:top}
+.geo-warn{margin:4px 0 0;padding:6px 8px;border-radius:8px;background:#fde8e6;color:#8e1f1f;font-size:12px}.geo-ok{margin:4px 0 0;padding:4px 8px;border-radius:8px;background:#e6f5ec;color:#145c33;font-size:12px}
+.geo-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;margin:8px 0}.geo-legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:#1e8e4e}
+.geo-legend i.t-outd{background:#7a7a7a}.geo-legend i.t-late{background:#d4881c}.geo-legend i.t-outside{background:#c0392b}.geo-legend i.ring{background:rgba(229,198,106,.3);border:1.5px solid #C99A2E}
+.geo-map .leaflet-control-layers{font-size:12px}
+@media (max-width:900px){.geo-wrap{grid-template-columns:1fr}.geo-map{height:440px}.geo-side{max-height:320px}}
+/* kategori sidebar buka/tutup (Aji 14 Nov 2026) */
+.nav-grp-kids { display: none; }
+.nav-grp.open > .nav-grp-kids, .nav-sec.open > .nav-grp-kids { display: block; }
+.nav-grp-row { display: flex; align-items: center; }
+.nav-grp-row > a { flex: 1; min-width: 0; }
+.nav-tog { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: none; color: #8a8478; cursor: pointer; }
+.nav-tog:hover, .nav-sec-btn:hover { color: #fff; background: #151515; }
+.nav-chev { transition: transform .15s ease; }
+.nav-grp.open > .nav-grp-row .nav-chev, .nav-sec.open > .nav-sec-btn .nav-chev { transform: rotate(90deg); }
+.nav-sec-btn { display: flex; width: calc(100% - 20px); align-items: center; justify-content: space-between; border: 0; background: none; cursor: pointer; padding: 6px 0; border-radius: 6px; text-align: left; font: inherit; }
+/* Aji 14 Nov 2026: kode NV tidak tampil di sidebar akun demo (nama menu saja). Kode tetap di data (PORTALS, atribut data-nv)
+   dan di docs/hawk-live/NV-MAP.md untuk melacak fitur → NV → fase. */
+.nav .nav-items .nvc { display: none; }
+.nav .nav-items a { gap: 0; }

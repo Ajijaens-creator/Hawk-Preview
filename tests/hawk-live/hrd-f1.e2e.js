@@ -48,7 +48,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   /* NV03 */
   await go('hrd-roster'); await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
   await p.selectOption('#filters [name=position]', 'POS-RCP'); await p.waitForTimeout(150);
-  ok('NV03 Spa Bhisma + Receptionist = 5 orang', (await p.locator('.active-filters').innerText()).startsWith('5 orang'));
+  ok('NV03 Spa Bisma + Receptionist = 5 orang', (await p.locator('.active-filters').innerText()).startsWith('5 orang'));
   const first = p.locator('.tbl tbody tr').first(); const id = await first.locator('td').first().innerText();
   await first.locator('td a').first().click(); await p.waitForTimeout(150); await shot('F1-NV03-detail');
   ok('Klik nama membuka penempatan dengan ID yang sama', (await p.locator('.hr-profile h2').innerText()).includes(id), id);
@@ -58,7 +58,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.click('.hr-empty [data-action=filter-reset]'); await p.waitForTimeout(150);
   ok('Reset filter kembali ke 158', (await p.locator('.active-filters').innerText()).startsWith('158 orang'));
   await go('hrd-roster?emp=EMP-0007');
-  ok('Histori penempatan EMP-0007 (Ubud → Santi)', /Spa Ubud[\s\S]*2026-09-30/.test(await text()) && /Spa Santi/.test(await text()));
+  ok('Histori penempatan EMP-0007 (Ubud → Shanti)', /Spa Ubud[\s\S]*2026-09-30/.test(await text()) && /Spa Shanti/.test(await text()));
   ok('Manager HRD melihat THP di profil', (await text()).includes('Take-home pay contoh'));
 
   /* NV04 → NV07: ganti peran, akses ditolak */

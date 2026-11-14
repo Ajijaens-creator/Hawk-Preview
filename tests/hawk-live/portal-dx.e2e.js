@@ -74,6 +74,18 @@ const CHECK = {
     ok(`${L.portal}: Simulator ${L.sim} layar`, (await p.locator('.dx-sim iframe').count()) === L.sim);
     await p.click('[data-dxl="tab"][data-tab="lab"]');
   }
+  /* kategori sidebar buka/tutup (accordion), kategori halaman aktif terbuka otomatis */
+  await p.goto(BASE + 'hrd.html#hrd-leave'); await p.waitForTimeout(800);
+  const grp = p.locator('#nav .nav-grp:has(a[href="#hrd-leave"])');
+  ok('Sidebar: kategori halaman aktif (Kehadiran) terbuka otomatis, kategori lain tertutup', (await grp.getAttribute('class')).includes('open') && (await p.locator('#nav .nav-grp.open, #nav .nav-sec.open').count()) === 1);
+  const visN = () => p.evaluate(() => [...document.querySelectorAll('#nav .nav-items a')].filter(a => a.offsetParent).length);
+  const n0 = await visN(); await grp.locator('[data-grp]').click(); const n1 = await visN(); await grp.locator('[data-grp]').click(); const n2 = await visN();
+  ok('Sidebar: tombol kategori menutup lalu membuka sub-menu', n1 < n0 && n2 === n0, `${n0} → ${n1} → ${n2}`);
+  ok('Sidebar: kode NV tidak tampil (nama menu saja), kode tetap di data-nv', !/\b(F\d-NV\d+|NV-\d+)\b/.test(await p.locator('#nav').innerText()) && (await p.locator('#nav a[data-nv="F2-NV06"]').count()) === 1);
+  await p.goto(BASE + 'commercial.html#commercial'); await p.waitForTimeout(600);
+  const sec = p.locator('#nav .nav-sec'); const sv = () => sec.locator('a').first().isVisible();
+  const a0 = await sv(); await sec.locator('.nav-sec-btn').click(); const a1 = await sv();
+  ok('Sidebar Commercial: seksi Kinerja Tim tertutup lalu terbuka saat diklik', !a0 && a1);
   await p.goto(BASE + 'finance.html#bridge'); await p.waitForTimeout(500);
   ok('Finance tidak berubah: menu Finance tetap ke modul lengkap NV-47', await p.evaluate(() => HL.PORTALS.Finance.items[0][0] === '/?as=U-FIN#/nv/47' && !HL.PORTALS.Finance.items.some(i => /-dx$/.test(i[0]))));
   await p.goto(BASE + 'hrd.html#hrd-dx'); await p.waitForTimeout(1000);

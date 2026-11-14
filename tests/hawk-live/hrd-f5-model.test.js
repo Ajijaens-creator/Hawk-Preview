@@ -14,18 +14,18 @@ const near = (a, b) => Math.abs(a - b) < 1e-6;
 
 const ubP = HR5.outletUtil(hr(), 'OUT-UBD', 'W46', 'Pagi');
 ok('Ubud Pagi: 216 jam treatment ÷ 200 jam reguler = 108%', near(ubP.done, 216) && ubP.cap === 200 && near(ubP.u, 1.08), `${ubP.done}/${ubP.cap}`);
-ok('Kelebihan 16 jam = lembur 10 jam + bantuan Santi 6 jam', near(ubP.done - ubP.cap, 16) && near(ubP.ot, 10) && near(ubP.help, 6));
+ok('Kelebihan 16 jam = lembur 10 jam + bantuan Shanti 6 jam', near(ubP.done - ubP.cap, 16) && near(ubP.ot, 10) && near(ubP.help, 6));
 const ub = HR5.outletUtil(hr(), 'OUT-UBD');
 ok('Total Ubud = jumlah pembilang ÷ jumlah penyebut (414/390)', near(ub.done, 414) && ub.cap === 390 && near(ub.u, 414 / 390));
 ok('Total bukan rata-rata persentase shift', !near(ub.u, (1.08 + 198 / 190) / 2));
 const sh = HR5.outletUtil(hr(), 'OUT-SHT');
-ok('Santi 258/390 = 66% → Di bawah 70%', near(sh.u, 258 / 390) && HR5.status(sh.u)[0] === 'Di bawah 70%');
-ok('Ambang tepat 70% = Pantau (Santi Pagi 140/200)', HR5.status(HR5.outletUtil(hr(), 'OUT-SHT', 'W46', 'Pagi').u)[0] === 'Pantau');
+ok('Shanti 258/390 = 66% → Di bawah 70%', near(sh.u, 258 / 390) && HR5.status(sh.u)[0] === 'Di bawah 70%');
+ok('Ambang tepat 70% = Pantau (Shanti Pagi 140/200)', HR5.status(HR5.outletUtil(hr(), 'OUT-SHT', 'W46', 'Pagi').u)[0] === 'Pantau');
 ok('Ambang tepat 100% = Pantau, di atas 100% = Di atas kapasitas', HR5.status(1)[0] === 'Pantau' && HR5.status(1.0001)[0] === 'Di atas kapasitas');
 ok('Data tidak tersedia → Belum tersedia', HR5.status(null)[0] === 'Belum tersedia');
 ok('Oktober = angka Beranda F1 (Ubud 5512/5200)', near(HR5.outletUtil(hr(), 'OUT-UBD', '2610').u, 5512 / 5200) && near(HR.EXT.utility(hr(), 'OUT-SHT').u, 0.66));
 const ms = HR5.shiftMembers(hr(), 'OUT-UBD', 'Pagi');
-ok('Anggota shift Ubud Pagi termasuk therapist bantuan dari Santi', ms.some(m => m.home === 'OUT-SHT') && ms.filter(m => m.home === 'OUT-UBD').length > 5);
+ok('Anggota shift Ubud Pagi termasuk therapist bantuan dari Shanti', ms.some(m => m.home === 'OUT-SHT') && ms.filter(m => m.home === 'OUT-UBD').length > 5);
 ok('Jam anggota shift = pembilang shift', near(ms.reduce((a, m) => a + m.hours, 0), 216));
 const L = HR5.lines(hr());
 ok('Setiap baris punya Transaction ID & Service Line ID unik', L.every(l => l.tx && l.line) && new Set(L.map(l => l.line)).size === L.length, `${L.length} baris`);
@@ -69,8 +69,8 @@ U('hrd', 'sim-approve', { id: bant });
 ok('Handoff hanya untuk skenario formasi', throws(() => U('hrd', 'mp-handoff', { id: bant }), /formasi/));
 const santi = U('hrd', 'sim-save', { outlet: 'OUT-SHT', option: 'shift', hours: '12' });
 const ts = U('hrd', 'sim-mark', { id: santi, stage: 'Issue' });
-ok('Santi < 70%: Issue investigasi tercatat dengan sumber utility', hr().f3.tasks.find(t => t.id === ts).source.id === 'UTIL-OUT-SHT-2611' && /di bawah ambang 70%/.test(hr().f3.tasks.find(t => t.id === ts).title));
-ok('Reception: kurang coverage hanya Ubud & Bhisma Sore 17–21', ['OUT-UBD', 'OUT-BSM'].every(o => HR5.recGaps(o).length === 1 && HR5.recGaps(o)[0].block === '17–21') && ['OUT-SHT', 'OUT-TRL'].every(o => HR5.recGaps(o).length === 0));
+ok('Shanti < 70%: Issue investigasi tercatat dengan sumber utility', hr().f3.tasks.find(t => t.id === ts).source.id === 'UTIL-OUT-SHT-2611' && /di bawah ambang 70%/.test(hr().f3.tasks.find(t => t.id === ts).title));
+ok('Reception: kurang coverage hanya Ubud & Bisma Sore 17–21', ['OUT-UBD', 'OUT-BSM'].every(o => HR5.recGaps(o).length === 1 && HR5.recGaps(o)[0].block === '17–21') && ['OUT-SHT', 'OUT-TRL'].every(o => HR5.recGaps(o).length === 0));
 ok('Divisi Production ditandai data belum lengkap', HR5.DIVISIONS.find(d => d.id === 'DIV-PRD').complete === false);
 
 /* hapus dummy & mulai kembali */

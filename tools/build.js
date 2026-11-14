@@ -13,7 +13,7 @@ const crypto = require('crypto');
 const root = path.join(__dirname, '..');
 const dist = path.join(root, 'dist');
 const DOMAIN = process.env.PREVIEW_DOMAIN || 'preview.hawk.jaens.id';
-const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'";
+const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://server.arcgisonline.com; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'";
 module.exports = { CSP };
 if (require.main === module) build();
 

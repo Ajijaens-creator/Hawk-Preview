@@ -81,7 +81,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-race-reflection'); await shot('F8-NV05-reflection');
   t = await text();
   ok('NV05: utility Ubud sama dengan F5 dan "Di atas kapasitas"', !!f5 && t.includes(f5[1] + '%') && /Di atas kapasitas/.test(t), f5 && f5[1]);
-  ok('Santi < 70% sudah bertaut ke temuan F5 (TSK-0002)', /Utility Spa Santi[\s\S]*?TSK-0002/.test(t));
+  ok('Shanti < 70% sudah bertaut ke temuan F5 (TSK-0002)', /Utility Spa Shanti[\s\S]*?TSK-0002/.test(t));
   await act('#view tr:has-text("Utility Spa Ubud") [data-stage="Issue"]');
   const issue = (p.url().match(/TSK-\d+/) || [])[0];
   ok('Ubud → Issue F3 dengan Finding ID', !!issue && /FND-UTIL-UBD-2611/.test(await text()), issue);
@@ -90,7 +90,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await act('#view tr:has-text("Utility Spa Ubud") a:has-text("Catat keputusan")');
   const df = p.locator('form[data-submit="hr:dec-create"]');
   ok('Form keputusan terisi kartu & temuan dari Reflection', (await df.locator('[name=task]').inputValue()) === issue && (await df.locator('[name=finding]').inputValue()) === 'FND-UTIL-UBD-2611');
-  await df.locator('[name=title]').fill('Tambah 2 therapist Spa Ubud'); await df.locator('[name=alternatives]').fill('Lembur terjadwal|Bantuan Santi|Rekrut 2 therapist'); await df.locator('[name=chosen]').fill('Rekrut 2 therapist');
+  await df.locator('[name=title]').fill('Tambah 2 therapist Spa Ubud'); await df.locator('[name=alternatives]').fill('Lembur terjadwal|Bantuan Shanti|Rekrut 2 therapist'); await df.locator('[name=chosen]').fill('Rekrut 2 therapist');
   await df.locator('[name=reason]').fill('Utility di atas 100% dan lembur berulang'); await df.locator('[name=due]').fill('2026-11-30'); await df.locator('[name=cvalue]').fill('100'); await df.locator('[name=cperiod]').selectOption('2611'); await df.locator('button').click(); await p.waitForTimeout(250);
   const dec = (p.url().match(/DEC-2611-\d+/) || [])[0];
   ok('Decision ID tercatat dengan kriteria evaluasi', !!dec && /UTIL-OUT-UBD <= 100/.test(await text()), dec);
@@ -101,7 +101,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-race-stracon?id=' + dec); await act('[data-action="hr:dec-evaluate"]');
   ok('Evaluasi: hasil dibandingkan kriteria saat keputusan', /belum tercapai/.test(await text()));
   await go('hrd-race-stracon?id=DEC-2610-001');
-  ok('Keputusan Oktober (Santi) terbuka dengan kriteria & hasil November', /UTIL-OUT-SHT >= 70/.test(await text()) && /Belum tercapai/.test(await text()));
+  ok('Keputusan Oktober (Shanti) terbuka dengan kriteria & hasil November', /UTIL-OUT-SHT >= 70/.test(await text()) && /Belum tercapai/.test(await text()));
 
   /* Jalur 4: NV07 → NV08 */
   for (let i = 0; i < 8; i++) { await go(`hrd-race-deck?period=2611&page=${i}`); if (i < 2 || i === 7) await shot(`F8-NV07-deck-${i + 1}`); }
@@ -139,7 +139,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('Owner membuka snapshot: biaya tetap disembunyikan', /Terbatas · Manager HRD/.test(await text()));
   await setRole('outlet-spv'); await go('hrd-race-reflection');
   t = await text();
-  ok('Supervisor Ubud: hanya utility outletnya', /Utility Spa Ubud/.test(t) && !/Utility Spa Santi/.test(t));
+  ok('Supervisor Ubud: hanya utility outletnya', /Utility Spa Ubud/.test(t) && !/Utility Spa Shanti/.test(t));
   await setRole('therapist'); await go('hrd-race');
   ok('Therapist → Race = Akses ditolak', (await p.locator('.hr-denied').count()) === 1);
   await go('hrd-race-deck');

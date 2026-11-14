@@ -16,9 +16,9 @@ const HR = (() => {
   /* id outlet sama dengan SER (ser-data.js) supaya POS, jadwal dan KPI memakai outlet yang sama */
   const OUTLETS = [
     { id: 'OUT-UBD', entity: 'ENT-SPA', name: 'Spa Ubud', ser: 'Jaens Spa Center', code: 'UBD' },
-    { id: 'OUT-SHT', entity: 'ENT-SPA', name: 'Spa Santi', ser: 'Jaens Spa Shanti', code: 'SHT' },
+    { id: 'OUT-SHT', entity: 'ENT-SPA', name: 'Spa Shanti', ser: 'Jaens Spa Shanti', code: 'SHT' },
     { id: 'OUT-TRL', entity: 'ENT-SPA', name: 'Spa Triloka', ser: 'Jaens Spa Triloka', code: 'TRL' },
-    { id: 'OUT-BSM', entity: 'ENT-SPA', name: 'Spa Bhisma', ser: 'Jaens Spa Bisma', code: 'BSM' }
+    { id: 'OUT-BSM', entity: 'ENT-SPA', name: 'Spa Bisma', ser: 'Jaens Spa Bisma', code: 'BSM' }
   ];
   const HQ = { id: 'LOC-HQ', entity: 'ENT-HQ', name: 'Office Ubud', code: 'HQ' };
   const DIVISIONS = [
@@ -210,8 +210,8 @@ const HR = (() => {
   const SEED_AUDIT = (r) => [
     { id: 'AUD-0004', at: '2026-11-10 09:12', by: 'Made Gunarsa (Manager HRD)', object: 'Payroll', ref: 'SLIP-GRP-SPA', action: 'Komponen payroll', detail: 'Tunjangan transport grup slip Spa diperbarui', before: 'Rp 300.000', after: 'Rp 350.000', effective: '2026-11-26', sensitive: true, demo: true },
     { id: 'AUD-0003', at: '2026-11-12 16:40', by: 'Made Gunarsa (Manager HRD)', object: 'Akses', ref: 'EMP-0143', action: 'Perubahan akses', detail: 'Peran akun EMP-0143 diubah', before: 'Karyawan (ESS)', after: 'Staf HRD', demo: true },
-    { id: 'AUD-0002', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0037', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Santi → Spa Ubud', before: 'Spa Santi · Therapist', after: 'Spa Ubud · Therapist · efektif 2026-10-01', demo: true },
-    { id: 'AUD-0001', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0007', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Ubud → Spa Santi', before: 'Spa Ubud · Therapist', after: 'Spa Santi · Therapist · efektif 2026-10-01', demo: true }
+    { id: 'AUD-0002', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0037', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Shanti → Spa Ubud', before: 'Spa Shanti · Therapist', after: 'Spa Ubud · Therapist · efektif 2026-10-01', demo: true },
+    { id: 'AUD-0001', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0007', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Ubud → Spa Shanti', before: 'Spa Ubud · Therapist', after: 'Spa Shanti · Therapist · efektif 2026-10-01', demo: true }
   ];
   function fresh() {
     const r = roster();

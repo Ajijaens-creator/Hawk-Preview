@@ -25,7 +25,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   /* Jalur 1: NV03 → NV04 → NV05 → NV08 */
   await go('hrd-pay-commission'); await shot('F7-NV03-komisi');
   const t3 = await text();
-  ok('NV03: komisi Spa Ubud per therapist, termasuk bantuan dari Santi', /Per therapist · Spa Ubud/.test(t3) && /Bantuan\s+Spa Santi/.test(t3));
+  ok('NV03: komisi Spa Ubud per therapist, termasuk bantuan dari Shanti', /Per therapist · Spa Ubud/.test(t3) && /Bantuan\s+Spa Shanti/.test(t3));
   await act('#view a.kpi:has-text("Four Hands")');
   ok('Four Hands: jumlah semua bagian = total transaksi', /Pembagian Four Hands/.test(await text()) && /Total \d+ transaksi = Rp/.test(await text()));
   await go('hrd-pay-commission?outlet=OUT-UBD&emp=EMP-0002');

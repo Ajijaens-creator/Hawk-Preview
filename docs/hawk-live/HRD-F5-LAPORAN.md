@@ -17,15 +17,15 @@ DATA DEMO / SIMULASI. File: `hawk-live/hrd-f5-model.js` (global `HR5`) dan `hawk
 ## Angka demo (Minggu 46, 7–13 Nov 2026, provisional)
 | Outlet | Pagi | Sore | Total | Status |
 |---|---|---|---|---|
-| Spa Ubud | 216/200 = 108% | 198/190 | 414/390 = 106,2% | Di atas kapasitas (lembur 10 jam + bantuan Santi 6 jam, 23 booking gagal) |
-| Spa Santi | 140/200 = 70% (Pantau) | 118/190 | 258/390 = 66,2% | Di bawah 70% (14 batal) |
+| Spa Ubud | 216/200 = 108% | 198/190 | 414/390 = 106,2% | Di atas kapasitas (lembur 10 jam + bantuan Shanti 6 jam, 23 booking gagal) |
+| Spa Shanti | 140/200 = 70% (Pantau) | 118/190 | 258/390 = 66,2% | Di bawah 70% (14 batal) |
 | Spa Triloka | 172/200 | 156/190 | 84,1% | Sehat |
-| Spa Bhisma | 158/200 | 146/190 | 77,9% | Sehat |
+| Spa Bisma | 158/200 | 146/190 | 77,9% | Sehat |
 
 Oktober 2026 (ditutup) memakai angka Beranda F1: 25 therapist × 8 jam × 26 hari = 5200 jam penyebut.
 
 ## Alur yang teruji
-Dashboard → klik Spa Ubud → Kapasitas → klik shift Pagi (anggota + 2 therapist bantuan dari Spa Santi) → Utility (216 ÷ 200 = 108%, kelebihan 16 jam = lembur 10 + bantuan 6) → klik pembilang → baris POS (Transaction ID, Service Line ID, Four Hands dua baris) → refund (utility tetap) → koreksi durasi (pembilang turun, audit sebelum/sesudah) → replay batch (0 baris baru) → Simulasi 3 opsi → simpan skenario formasi → Tandai Issue (kartu F3 yang sama dengan tombol di Utility/Beranda) → Staf HRD tidak bisa menyetujui → Manager HRD setuju → Handoff ke F4 (retry tidak menggandakan) → permintaan F4 membawa sumber, Task ID, outlet, formasi, tanggal butuh → progres posisi terbuka 2. Santi: temuan TSK-0002 yang sudah ada ditampilkan (tanpa kartu ganda), naik ke Issue di Planner, status sama tampil di Utility. Reception: hanya Ubud & Bhisma Sore 17–21 kurang coverage. Divisi: Production "data belum lengkap", PC & Commercial "headcount belum ditetapkan".
+Dashboard → klik Spa Ubud → Kapasitas → klik shift Pagi (anggota + 2 therapist bantuan dari Spa Shanti) → Utility (216 ÷ 200 = 108%, kelebihan 16 jam = lembur 10 + bantuan 6) → klik pembilang → baris POS (Transaction ID, Service Line ID, Four Hands dua baris) → refund (utility tetap) → koreksi durasi (pembilang turun, audit sebelum/sesudah) → replay batch (0 baris baru) → Simulasi 3 opsi → simpan skenario formasi → Tandai Issue (kartu F3 yang sama dengan tombol di Utility/Beranda) → Staf HRD tidak bisa menyetujui → Manager HRD setuju → Handoff ke F4 (retry tidak menggandakan) → permintaan F4 membawa sumber, Task ID, outlet, formasi, tanggal butuh → progres posisi terbuka 2. Shanti: temuan TSK-0002 yang sudah ada ditampilkan (tanpa kartu ganda), naik ke Issue di Planner, status sama tampil di Utility. Reception: hanya Ubud & Bisma Sore 17–21 kurang coverage. Divisi: Production "data belum lengkap", PC & Commercial "headcount belum ditetapkan".
 
 ## Uji
 - `node tests/hawk-live/hrd-f5-model.test.js`: 34/34.

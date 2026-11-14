@@ -1,0 +1,96 @@
+{
+ "pass": 18,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Leaflet dimuat dari vendor, peta siap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Koordinat 4 Spa + Head Office dari Google Maps",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5 pin titik kerja dengan nama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Lingkaran radius 150 m per titik kerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kontrol zoom +/−, skala, Peta/Satelit",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Ringkasan check-in / masih di lokasi / check-out / di luar radius",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Zoom in bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Di zoom jauh hanya pin titik kerja + karyawan di luar radius",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Klik nama → peta mendekat, titik karyawan tampil dengan nama & jam",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Popup: nama, check-in & check-out dengan jam dan jarak",
+   "ok": true,
+   "info": "Kadek Pradnya C Staf Accounting · Head Office JAENS Check-in\t 08:25 · 17 m dari titik Check-out\t 17:30 · 17 m dari titik"
+  },
+  {
+   "name": "Laporan di luar radius: 7 kejadian 12–13 Nov",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Laporan memuat jarak, melebihi radius, keterangan, tindak lanjut",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Lihat di peta → popup peringatan di luar radius",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanggal 13 Nov: belum ada check-out (hari ini)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Filter lokasi Spa Center Ubud",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Supervisor Ubud hanya melihat tim Spa Center Ubud (dan dirinya)",
+   "ok": true,
+   "info": "25"
+  },
+  {
+   "name": "Mobile 390 px tanpa geser horizontal",
+   "ok": true,
+   "info": "390"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
