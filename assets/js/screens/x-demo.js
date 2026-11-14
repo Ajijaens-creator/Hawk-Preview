@@ -17,6 +17,7 @@
     Object.assign(L, JSON.parse(localStorage.getItem('hawk-dx-ui') || '{}'), { cells: {}, max: null, msg: null, lastRun: null });
   } catch (e) {}
   const saveUi = () => {
+    if (/[?&]team=/.test(location.hash || '')) return; // mode fokus tim tidak menimpa pilihan Demo Center umum
     try {
       localStorage.setItem('hawk-dx-ui', JSON.stringify({ mode: L.mode, sc: L.sc, labDevice: L.labDevice }));
     } catch (e) {}
@@ -85,6 +86,35 @@
 
   /* ---------------- tutor helpers ---------------- */
   const cur = () => DX.current(st());
+  /* Fokus tim (Aji 13 Nov 2026): #/dx?team=finance = Demo Experience khusus portal Finance. Hanya skenario yang punya
+     langkah Finance; langkah tim lain dalam alur yang sama dijalankan otomatis sebagai konteks (operasi yang sama
+     dengan tombol aslinya). Tanpa ?team= perilaku #/dx tidak berubah. */
+  const TEAMS = { finance: { key: 'finance', uid: 'U-FIN', uids: ['U-FIN', 'U-GAS', 'U-TAX'], label: 'Finance', nv: 47 } };
+  const inTeam = (t, uid) => (t.uids || [t.uid]).includes(uid);
+  const team = () => {
+    const m = /[?&]team=([a-z]+)/.exec(location.hash || '');
+    return (m && TEAMS[m[1]]) || null;
+  };
+  const scenarios = () => {
+    const t = team();
+    return t ? DX.SCENARIOS.filter((x) => x.steps.some((y) => inTeam(t, y.as))) : DX.SCENARIOS;
+  };
+  /* jalankan langkah tim lain sampai giliran tim fokus (atau skenario selesai) */
+  function skipToTeam() {
+    const t = team();
+    if (!t) return [];
+    const ran = [];
+    for (let guard = 0; guard < 60; guard++) {
+      const c = cur();
+      if (!c || c.done || inTeam(t, c.step.as)) break;
+      const step = c.step;
+      const r = DX.runStep(HAWK.store, HAWK.api);
+      if (!r.ok) break;
+      ran.push(`${step.n}. ${step.title} (${roleLabel(step.as)})`);
+    }
+    return ran;
+  }
+  const teamNote = (ran) => (ran.length ? ` Langkah tim lain dalam alur dijalankan otomatis: ${ran.join('; ')}.` : '');
   const viewStep = () => {
     const c = cur();
     if (!c) return null;
@@ -147,7 +177,8 @@
     saveUi();
     const r = DX.start(HAWK.store, HAWK.api, id);
     const bad = r.trail.filter((t) => !t.ok);
-    L.msg = bad.length ? { kind: 'bad', text: 'Setup skenario gagal: ' + bad.map((b) => b.op + ' ' + b.error.message).join('; ') } : { kind: 'ok', text: `Skenario ${id} dimulai pada data demo yang baru di-reset (semua layar ikut berubah).` };
+    const ran = bad.length ? [] : skipToTeam();
+    L.msg = bad.length ? { kind: 'bad', text: 'Setup skenario gagal: ' + bad.map((b) => b.op + ' ' + b.error.message).join('; ') } : { kind: 'ok', text: `Skenario ${id} dimulai pada data demo yang baru di-reset (semua layar ikut berubah).${teamNote(ran)}` };
     await reloadAll();
     panels();
     focusStep(cur() && cur().step);
@@ -157,8 +188,9 @@
     if (!c || c.done) return;
     const step = c.step;
     const r = DX.runStep(HAWK.store, HAWK.api);
+    const ran = r.ok ? skipToTeam() : [];
     L.lastRun = { step: step.id, ok: r.ok, trail: (r.trail || []).map((t) => `${t.op} (${userName(t.user)}) ${t.ok ? '✓' : '✕ ' + t.error.message}`) };
-    L.msg = r.ok ? { kind: 'ok', text: `${step.n}. ${step.title} — selesai lewat operasi yang sama dengan tombol aslinya.` } : { kind: 'bad', text: `Langkah gagal: ${r.error.message}` };
+    L.msg = r.ok ? { kind: 'ok', text: `${step.n}. ${step.title} — selesai lewat operasi yang sama dengan tombol aslinya.${teamNote(ran)}` } : { kind: 'bad', text: `Langkah gagal: ${r.error.message}` };
     L.view = null;
     refreshFrames();
     panels();
@@ -210,7 +242,7 @@
   /* ---------------- rendering ---------------- */
   function tutor() {
     const c = cur();
-    const opts = DX.SCENARIOS.map((x) => `<option value="${x.id}" ${x.id === (c ? c.sc.id : L.sc) ? 'selected' : ''}>${esc(x.short)} (${x.steps.length})</option>`).join('');
+    const opts = scenarios().map((x) => `<option value="${x.id}" ${x.id === (c ? c.sc.id : L.sc) ? 'selected' : ''}>${esc(x.short)} (${x.steps.length})</option>`).join('');
     if (!c)
       return `<div class="dx-tutor-head"><div class="eyebrow">HAWK SMART TUTOR</div><h3>Demo Journey Center</h3><p>Pilih skenario lalu tekan Mulai. Data demo di-reset agar ceritanya utuh.</p></div>
       <div class="dx-tutor-body"><label class="tiny b">Pilih skenario</label><select class="inp" id="dx-sc">${opts}</select><button class="btn gold block" id="dx-start" data-dx="start" style="margin-top:10px">${ui.icon('play', 14)} Mulai skenario</button>${msgBox()}</div>`;
@@ -279,7 +311,7 @@
     const el = $('#dx-labhead');
     if (!el) return;
     const uid = L.labUser || 'U-STF';
-    const all = DX.ROLE5.map((r) => r.user).concat(Object.keys(DX.SUPPORT));
+    const all = team() ? team().uids : DX.ROLE5.map((r) => r.user).concat(Object.keys(DX.SUPPORT));
     el.innerHTML = `<span class="tiny b">Login role (DEMO):</span>${all.map((u) => `<button class="chip ${u === uid ? 'on' : ''}" data-dx="as" data-u="${u}">${esc(roleLabel(u).replace(' (peran pendukung)', ''))}</button>`).join('')}
       <span class="dx-sep"></span>${Object.entries(DX.DEVICES).map(([k, d]) => `<button class="chip ${($('.dx-cell[data-cell="lab"]') || {}).dataset && $('.dx-cell[data-cell="lab"]').dataset.device === k ? 'on' : ''}" data-dx="labdev" data-d="${k}">${d.label}</button>`).join('')}`;
   }
@@ -295,6 +327,28 @@
   }
 
   function render() {
+    const t = team();
+    if (t) {
+      L.mode = 'lab';
+      if (!scenarios().some((x) => x.id === L.sc)) L.sc = scenarios()[0].id;
+      const c = cur();
+      if (!c || c.done || !scenarios().some((x) => x.id === c.sc.id) || !inTeam(t, L.labUser)) L.labUser = t.uid;
+      const n = scenarios().length;
+      return `<div data-dx-root data-team="${t.key}" class="dx">
+      <div class="dx-hero"><div><div class="eyebrow">HAWK × JAENS · DEMO EXPERIENCE · PORTAL ${esc(t.label.toUpperCase())}</div><h1>Demo Experience Center · ${esc(t.label)}</h1>
+        <p>Fokus pada pekerjaan tim ${esc(t.label)} saja. Hanya ${n} skenario yang punya langkah ${esc(t.label)}; langkah tim lain yang langsung berkaitan dengan alur dijalankan otomatis sebagai konteks, jadi Anda hanya menekan tombol ${esc(t.label)}. Tidak terhubung ke HAWK produksi.</p></div>
+        <div class="dx-hero-r"><span class="badge demo">DEMO / NO LIVE API</span><span class="dx-pill">${t.uids.length} role tim ${esc(t.label)} · ${n} skenario</span><span class="dx-pill" id="dx-hero-prog"></span></div></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><span class="tiny muted" style="align-self:center">Layar di bawah adalah aplikasi HAWK yang sebenarnya (bukan gambar) dengan hak akses role tim ${esc(t.label)}; pindah role dan layar Desktop / iPad / Mobile di bawah. <a href="#/dx">Demo Center lintas divisi ›</a></span></div>
+      <div class="dx-main">
+        <div class="dx-stage">
+          <div class="dx-lab-wrap"><div class="dx-labhead row" id="dx-labhead"></div>${cellHtml('lab', '', 'Test Lab', L.labDevice || 'desktop', 'lab')}</div>
+          <div class="dx-sim hide">${DX.ROLE5.map((r) => cellHtml(r.key, r.user, `${r.label} · ${userName(r.user)}`, r.device)).join('')}${cellHtml('support', '', 'Peran pendukung', 'desktop', 'hide')}</div>
+          <div id="dx-feedbox"></div>
+        </div>
+        <aside class="dx-tutor" id="dx-tutor"></aside>
+      </div>
+    </div>`;
+    }
     return `<div data-dx-root class="dx">
       <div class="dx-hero"><div><div class="eyebrow">HAWK × JAENS · DX-HAWK-01 · GUIDED DEVELOPER DEMO</div><h1>Demo Experience Center</h1>
         <p>Belajar alur kerja lengkap dengan menekan tombol asli aplikasi HAWK. Lima role, tujuh skenario (termasuk 7P), satu data sandbox bersama. Tidak terhubung ke HAWK produksi.</p></div>
@@ -332,7 +386,7 @@
     if (L.mode === 'sim') await loadSim();
     const c = cur();
     if (c && !c.done) focusStep(c.step);
-    else if (L.mode === 'lab') openIn($('.dx-cell[data-cell="lab"] iframe'), L.labUser || 'U-STF', 24).then(() => fit($('.dx-cell[data-cell="lab"]')));
+    else if (L.mode === 'lab') openIn($('.dx-cell[data-cell="lab"] iframe'), L.labUser || 'U-STF', team() && L.labUser === team().uid ? team().nv : 24).then(() => fit($('.dx-cell[data-cell="lab"]')));
   }
   function onChange(e) {
     const el = e.target;
@@ -441,7 +495,8 @@
     const before = cur() && cur().step && cur().step.id;
     const done = DX.detect(HAWK.store, HAWK.api);
     if (done) {
-      L.msg = { kind: 'ok', text: `${done} terdeteksi selesai dari tombol asli di layar.` };
+      const ran = skipToTeam();
+      L.msg = { kind: 'ok', text: `${done} terdeteksi selesai dari tombol asli di layar.${teamNote(ran)}` };
       L.view = null;
     }
     panels();
@@ -473,7 +528,7 @@
     if (!c) return '';
     const items = c.items.filter(([nv]) => HAWK.canSee(ctx.role, nv) && nv !== ctx.nv);
     if (!items.length) return '';
-    return `<div class="card rs-card ${ctx.role === 'STAFF' ? 'rs-staff' : ''}" data-role-shortcuts="${ctx.role}"><div class="row between" style="gap:8px"><h3 style="margin:0">${esc(c.title)}</h3><a class="small" href="#/dx">${ui.icon('play', 14)} Demo Center</a></div>${c.note ? `<p class="tiny muted" style="margin:4px 0 10px">${esc(c.note)}</p>` : ''}
+    return `<div class="card rs-card ${ctx.role === 'STAFF' ? 'rs-staff' : ''}" data-role-shortcuts="${ctx.role}"><div class="row between" style="gap:8px"><h3 style="margin:0">${esc(c.title)}</h3><a class="small" href="#/dx${ctx.role === 'FINANCE' ? '?team=finance' : ''}">${ui.icon('play', 14)} Demo Center${ctx.role === 'FINANCE' ? ' Finance' : ''}</a></div>${c.note ? `<p class="tiny muted" style="margin:4px 0 10px">${esc(c.note)}</p>` : ''}
       <div class="rs-grid">${items.map(([nv, ic, t]) => `<button class="rs-item" data-nav="${nv}"><span class="rs-ic">${ui.icon(ic, 20)}</span><span>${esc(t)}<small>NV-${String(nv).padStart(2, '0')}</small></span></button>`).join('')}</div></div>`;
   }
   const wrap = (nv, pred) => {
