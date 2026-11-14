@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-13T16:40:13.032Z">
+<meta name="hawk-standalone" content="2026-11-14T00:34:39.397Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Finance</title>
 <style>
@@ -1578,6 +1578,22 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hr-acts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:170px}
 .trail{margin:0;padding-left:1.2em;display:grid;gap:6px}
 .workflow-form select{max-width:100%}
+/* Demo Experience Center template (dx-lab.js) — layout di hawk.css (.dx-*), di sini hanya penyesuaian hawk-live */
+.dx-persona h3{margin:4px 0}.dx-persona.on{outline:2px solid var(--gold,#C99A2E)}.dx-persona{min-width:0}
+#dxlab-stage{display:flex;flex-direction:column;gap:12px;margin-top:12px;min-width:0}
+#dxlab-stage[hidden],#dxlab-stage .dxl-pane[hidden]{display:none}
+.dxl-tabs{gap:8px;flex-wrap:wrap;align-items:center}
+#dxlab-stage .dx-labhead .chip{white-space:normal;text-align:left}
+#dxlab-stage .dx-tutor .stack{display:flex;flex-direction:column}
+#dxlab-stage .dx-tutor .btn.block{width:100%;justify-content:center;white-space:normal}
+#dxlab-stage .dx-li{width:100%}
+.dx-embed .demo-banner{display:none}
+@media (max-width:720px){.dx-hero{flex-direction:column;align-items:flex-start}.dx-hero-r{align-items:flex-start}.dx-sim{grid-template-columns:1fr}}
+/* sidebar mandiri per modul (Aji 14 Nov 2026): tanpa header divisi, daftar menu langsung di bawah kartu Demo Experience Center */
+.nav-flat .nav-items { display: block; margin-left: 0; padding-left: 0; border-left: 0; }
+.nav .nav-dx { margin: 4px 0 12px; padding: 14px 12px; }
+.nav .nav-dx small { font-size: 11px; }
+.nav .nav-dx b { display: block; font-size: 15px; }
 
 </style>
 </head>
@@ -2838,7 +2854,7 @@ const HR = (() => {
     ['POS-AOM', 'Assistant Operational Manager', 'DIV-OPS', 'manager', 6400000], ['POS-OPS', 'Staf Operations', 'DIV-OPS', 'staff', 3600000],
     ['POS-FM', 'Finance Manager', 'DIV-FA', 'manager', 7000000], ['POS-ACC', 'Staf Accounting', 'DIV-FA', 'staff', 3800000], ['POS-FIN', 'Staf Finance', 'DIV-FA', 'staff', 3600000],
     ['POS-MM', 'Marketing Manager', 'DIV-MKT', 'manager', 7000000], ['POS-CRT', 'Content Creator', 'DIV-MKT', 'staff', 3600000], ['POS-SOC', 'Social Media Admin', 'DIV-MKT', 'staff', 3400000], ['POS-FV', 'Foto & Video', 'DIV-MKT', 'staff', 3600000],
-    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Staf HRD Operations', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Recruiter', 'DIV-HRD', 'staff', 3700000],
+    ['POS-HRM', 'Manager HRD', 'DIV-HRD', 'manager', 7100000], ['POS-HRO', 'Admin HRD', 'DIV-HRD', 'staff', 3800000], ['POS-HGL', 'Human Growth Lead', 'DIV-HRD', 'supervisor', 5400000], ['POS-REC', 'Koordinator Rekrutmen', 'DIV-HRD', 'staff', 3700000],
     ['POS-PDM', 'Production Lead', 'DIV-PRD', 'supervisor', 5000000], ['POS-PDS', 'Staf Production', 'DIV-PRD', 'staff', 3200000]
   ].map(([id, name, division, level, thp]) => ({ id, name, division, level, thp }));
   const pos = (id) => POSITIONS.find(p => p.id === id);
@@ -2848,7 +2864,7 @@ const HR = (() => {
   const GIVEN = ['Ari', 'Sari', 'Dewi', 'Wulan', 'Indra', 'Yasa', 'Mahendra', 'Ratna', 'Sinta', 'Lestari', 'Dian', 'Rai', 'Suastini', 'Adnyani', 'Pradnya', 'Widya', 'Purnami', 'Juliani', 'Astiti', 'Arsana', 'Budiasa', 'Candra', 'Darmayanti', 'Eka'];
   /* akun demo yang sudah dipakai di HAWK (lihat memori project) dipertahankan namanya */
   const NAMED = {
-    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa']
+    'POS-OM': ['Eni Restini'], 'POS-AOM': ['Tika'], 'POS-SPV': ['Mila', 'Tina', 'Dewik', 'Wahyudi'], 'POS-FM': ['Asri'], 'POS-HRM': ['Made Gunarsa'], 'POS-HRO': ['Ayu'], 'POS-REC': ['Harja']
   };
 
   /* roster: 4 spa × (25 Therapist + 5 Receptionist) + Office 12 F&A, 9 Marketing, 4 HRD, 5 Production, 8 Operations = 158 */
@@ -3808,7 +3824,7 @@ const HR4 = (() => {
       A('APP-2611-0005', 'CAN-0003', 'VAC-2611-002', 'Lamaran Masuk', { frontdesk: '', volume: '', pos: '', lang: 'Indonesia, Inggris', shiftReady: 'Pagi/Sore', situational: 'Cek jadwal lalu tawarkan alternatif.', startReady: '2026-12-01' }, { channel: 'WEB', at: '2026-11-11 08:00' }),
       A('APP-2611-0006', 'CAN-0005', 'VAC-2611-001', 'Ditolak', { ...thrOk, years: '0', cert: '', sessions: '2' }, { channel: 'WA' })
     ];
-    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Wayan Wulan D (Recruiter)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
+    apps[5].history.push({ at: '2026-11-11 10:00', by: 'Harja (Koordinator Rekrutmen)', from: 'Screening', to: 'Ditolak', reason: 'Belum memenuhi pengalaman minimum' });
     return { seeded: true, reqs, candidates, apps, seq: { req: 10, vac: 10, app: 100, cand: 100, iv: 100, offer: 100, ctr: 100, evt: 1000 } };
   }
   function ensure(hr) {
@@ -3816,7 +3832,7 @@ const HR4 = (() => {
     if (!hr.f4 || !hr.f4.seeded) {
       const keep = hr.f4; hr.f4 = seed(hr);
       hr.f4.apps.forEach(a => { if (['Shortlist', 'Interview', 'Screening'].includes(a.stage) || a.stage === 'Ditolak') runScreen(hr, a, 'Seed fixture'); });
-      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Wayan Wulan D (Recruiter)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
+      const a3 = hr.f4.apps.find(a => a.id === 'APP-2611-0003'); if (a3) a3.interview = { id: 'IV-2611-0001', eventId: 'GCAL-EVT-0001', slot: '2026-11-16 10:00', interviewers: ['EMP-0145', 'EMP-0153'], status: 'Dikonfirmasi', sync: 'OK', meet: 'https://meet.example.invalid/abc-defg-hij', history: [{ at: '2026-11-12 09:00', by: 'Harja (Koordinator Rekrutmen)', slot: '2026-11-16 10:00', note: 'Dijadwalkan' }] };
       hr.f4.apps.forEach(a => { if (!a.screening) a.screening = { status: 'Menunggu', version: 1, runs: 0 }; });
       if (keep) for (const k of ['reqs', 'candidates', 'apps']) hr.f4[k].push(...(keep[k] || []));
     }
@@ -5024,7 +5040,7 @@ const HR8 = (() => {
   }
   const activeRace = (hr) => { const r = ensure(hr).races[0]; return { race: r, ver: [...r.versions].reverse().find(v => v.status === 'Aktif'), draft: r.versions.find(v => v.status === 'Draf') }; };
   const canSee = (role) => ['owner', 'hrd', 'hrd-ops', 'hg-lead', 'ops-manager', 'outlet-spv'].includes(role);
-  const evaluate = (hr, d) => { const c = d.criteria; if (!c) return null; const row = reflection(hr, c.period, 'hrd').find(r => r.key === c.key); if (!row || row.actual === null) return { actual: null, met: null }; const met = c.op === '>=' ? row.actual >= c.value : row.actual <= c.value; return { actual: row.actual, met, label: row.label }; };
+  const evaluate = (hr, d) => { const c = d.criteria; if (!c) return null; if (!['2610', '2611'].includes(String(c.period))) return { actual: null, met: null, pending: `Data ${c.period} belum tersedia` }; const row = reflection(hr, c.period, 'hrd').find(r => r.key === c.key); if (!row || row.actual === null) return { actual: null, met: null }; const met = c.op === '>=' ? row.actual >= c.value : row.actual <= c.value; return { actual: row.actual, met, label: row.label }; };
 
   function update(state, hr, action, input, ctx) {
     const f8 = ensure(hr), { audit, by, role } = ctx;
@@ -5138,12 +5154,20 @@ if (typeof module !== 'undefined') module.exports = HR8;
 const ERP = 'https://preview.hawk.jaens.id/';
 /* [route, title, screen code, status] · status: ready | sandbox | planned | hidden */
 const PORTALS = {
-  Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
+  /* Finance = modul Finance lengkap di app HAWK 60 NV (Modul H NV-47..52, ruang kerja Finance, Demo Experience Center).
+     Rute berawalan '/' membuka app 60 NV (as=U-FIN = role demo Finance Manager Asri). Halaman sandbox lama
+     (budget, mrf, commission) DIARSIPKAN: status 'archived', tidak tampil di menu Finance, tetap bisa dibuka dari
+     Preview › Arsip Finance dan dari tautan Commercial/Sales/HRD yang sudah ada. */
+  Finance: { desc: 'Modul Finance lengkap HAWK: dashboard, AI capture, 3-way matching, hutang, GL, alokasi, budget 7P + Demo Center', items: [
+    ['/?as=U-FIN#/nv/47', 'Finance Control Dashboard', 'NV-47', 'ready'], ['/?as=U-FIN#/nv/48', 'AI Invoice & Receipt Capture', 'NV-48', 'ready'], ['/?as=U-FIN#/nv/49', 'PO–Receipt–Invoice Three-Way Matching', 'NV-49', 'ready'], ['/?as=U-FIN#/nv/50', 'Accounts Payable & Payment Control', 'NV-50', 'ready'], ['/?as=U-FIN#/nv/51', 'GL Posting, Accounting & Exception Review', 'NV-51', 'ready'], ['/?as=U-FIN#/nv/52', 'Cost Allocation & Inter-BU Reconciliation', 'NV-52', 'ready'],
+    ['-', 'Budget & referensi'], ['/?as=U-FIN#/nv/15', 'Budget tahunan', 'NV-15', 'ready'], ['/?as=U-FIN#/nv/16', '7P overview', 'NV-16', 'ready'], ['/?as=U-FIN#/nv/22', 'Revisi & reforecast', 'NV-22', 'ready'], ['/?as=U-FIN#/nv/23', 'Budget vs actual', 'NV-23', 'ready'], ['/?as=U-FIN#/nv/07', 'Shared Office', 'NV-07', 'ready'], ['/?as=U-FIN#/nv/36', 'Referensi PO', 'NV-36', 'ready'], ['/?as=U-FIN#/nv/40', 'Referensi stok', 'NV-40', 'ready'], ['/?as=U-FIN#/nv/53', 'Referensi aset', 'NV-53', 'ready'], ['/?as=U-FIN#/nv/56', 'Kapitalisasi', 'NV-56', 'ready'], ['/?as=U-FIN#/nv/61', 'Control Tower', 'NV-61', 'ready'],
+    ['-', 'Demo'], ['/?as=U-FIN#/dx?team=finance', 'Demo Experience Finance', 'DX', 'ready'],
+    ['budget', 'Budget 7P (arsip)', '', 'archived'], ['mrf', 'Purchasing & MRF (arsip)', '', 'archived'], ['commission', 'Komisi & Rekonsiliasi (arsip)', 'F5-02', 'archived']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
   Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['budget-2027', 'Master Budget 2027', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
-const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
+const HOME = { Finance: '/?as=U-FIN#/nv/47', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
 const SCREENS = [
   ['F1-01', 'Pemilih Portal', 1, 'picker', 'ready', 'Semua role'], ['F1-02', 'Commercial Executive Summary', 1, 'commercial', 'ready', 'Commercial Manager, Owner'], ['F1-03', 'Drill-down Executive Summary', 1, 'commercial-drill?metric=revenue', 'ready', 'Commercial Manager, Owner'], ['F1-04', 'Beranda Sales', 1, 'sales-home', 'ready', 'Sales Manager, Owner, staf'],
   ['F2-01', 'Brand & Communications', 2, 'brand', 'ready', 'Commercial Manager, Brand Designer'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'ready', 'Commercial Manager, Digital'], ['F2-03', 'Campaign Detail', 2, 'campaign-detail?id=CMP-001', 'ready', 'Commercial Manager, PIC campaign'], ['F2-04', 'Content Studio', 2, 'studio', 'ready', 'Content Lead, Creator, Editor, Reviewer'], ['F2-05', 'Digital Marketing', 2, 'digital', 'ready', 'Digital Marketing, Commercial Manager'], ['F2-06', 'Social Media', 2, 'social', 'ready', 'Social Media, Content Lead'], ['F2-07', 'Media & KOL', 2, 'kol', 'ready', 'Commercial Manager, PIC partner'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'ready', 'Commercial Manager, Finance'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'ready', 'Commercial Manager, Finance'], ['F2-10', 'AI Mentor', 2, 'mentor', 'ready', 'Commercial Manager'],
@@ -5153,7 +5177,10 @@ const SCREENS = [
   ['F6-01', 'Daily Race', 6, 'sales-team', 'sandbox'], ['F6-02', 'Weekly Race', 6, '', 'planned'], ['F6-03', 'Monthly Reflection & STRACON', 6, '', 'planned'], ['F6-04', 'Kinerja & KPI Overview', 6, 'sales-kpi', 'planned'], ['F6-05', 'XScore & People Performance', 6, '', 'planned'], ['F6-06', 'KPI Library & Kontrak', 6, '', 'planned'], ['F6-07', 'Status Tim', 6, 'sales-status', 'planned'],
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution?view=journey&q=LEAD-001', 'ready', 'Semua role']
 ];
-const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
+const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia', archived: 'Diarsipkan' };
+const EXT = (r) => typeof r === 'string' && r[0] === '/';
+const homeHref = (g) => EXT(HOME[g]) ? HOME[g] : '#' + HOME[g];
+const ARCHIVED = (i) => i[3] === 'hidden' || i[3] === 'archived';
 const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B'], ['finance-manager', 'Finance Manager'], ['hrd', 'HRD (People Cost)']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
@@ -5234,7 +5261,7 @@ const teams = scope => {
     '<div class="grid">' + card('Kinerja & KPI', `<p>Completion demo <b>${dec(100 * tasks.filter(t => t.status === 'done').length / tasks.length)}%</b></p><p>XScore dan kontrak KPI masuk tahap pengembangan lanjutan.</p>`) + card('Status Tim', '<p>Status sesi demo · Tidak diketahui</p><p>Jadwal demo · Dalam shift</p>') + '</div>';
 };
 function bridge() {
-  return '<div class="flow">' + Object.entries(PORTALS).map(([group, p]) => `<a class="card" href="#${HOME[group]}"><h2>${group}</h2><small>${p.items.filter(i => i[0] !== '-' && i[3] !== 'hidden').length} ruang demo</small></a>`).join('') + '</div>' +
+  return '<div class="flow">' + Object.entries(PORTALS).map(([group, p]) => `<a class="card" href="${homeHref(group)}"><h2>${group}</h2><small>${p.items.filter(i => i[0] !== '-' && !ARCHIVED(i)).length} ruang demo</small></a>`).join('') + '</div>' +
     card('Skenario uji lintas portal', '<ol><li>Ajukan MRF di Commercial Budget. Setujui dan catat realisasi di Finance.</li><li>Buka lead Instagram/WhatsApp di Sales. Alihkan ke staf atau langsung booking.</li><li>Check-in, selesaikan, lalu bayar di Operational & POS. Cek revenue dan atribusi di Executive Summary (Giant Spa Ubud · Agustus 2026).</li><li>Aktifkan driver setelah perjanjian. Buat booking driver, selesaikan di POS, lalu catat komisi di Finance.</li></ol><div class="actions">' + link('screens', 'Buka peta semua layar') + button('reset', 'Reset demo') + '</div>');
 }
 function sandboxScreen(id) {
@@ -5267,6 +5294,7 @@ function sandboxScreen(id) {
 const erpLinks = (items) => `<p class="erp-links">Modul resmi di HAWK ERP preview (rute terverifikasi): ${items.map(([nv, label]) => `<a href="${ERP}#/nv/${nv}" target="_blank" rel="noopener">${label} ↗</a>`).join(' · ')}</p>`;
 const phaseBanner = (code, status) => {
   const s = SCREENS.find(x => x[0] === code);
+  if (status === 'archived') return `<div class="phase-banner"><b>Diarsipkan</b> Halaman sandbox Finance lama ini tidak lagi tampil di menu Finance. Portal Finance sekarang memakai <a href="/?as=U-FIN#/nv/47">modul Finance lengkap HAWK (NV-47)</a>. Data dan interaksi di bawah tetap berjalan untuk alur Commercial, Sales, dan HRD.</div>`;
   if (!s || status === 'ready' || status === 'hidden') return '';
   return `<div class="phase-banner"><b>${code} · ${status === 'planned' ? 'Belum dibuat' : 'Versi sandbox'}</b> Layar lengkap dijadwalkan pada Fase ${s[2]}. ${status === 'planned' ? 'Belum ada interaksi di layar ini.' : 'Interaksi sandbox di bawah sudah tersambung ke model lintas portal.'}</div>`;
 };
@@ -5515,14 +5543,26 @@ function titleOf(id) {
 }
 const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S', HRD: 'H' };
 const navOpen = new Set();
+const HL_DX_INFO = (route) => { const lab = window.HL && HL.DXLAB && HL.DXLAB.LABS[route]; if (lab) return `Test Lab · ${lab.team.length} role · ${lab.scenarios.length} skenario`; return EXT(route) ? 'Test Lab · 3 role · 6 skenario' : 'Test Lab'; };
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
-  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
-  nav.innerHTML = Object.entries(PORTALS).map(([name, p]) => {
-    const open = navOpen.has(name);
-    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => i[3] !== 'hidden').map(navLink).join('')}</div></div>`;
-  }).join('') + `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
+  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : EXT(route) ? `<a href="${route}" class="nav-ext"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
+  /* Aji 13 Nov 2026: sidebar hanya menampilkan menu portal yang sedang aktif. Pindah divisi lewat popup logo HAWK
+     (pemilih portal). Tanpa portal aktif (Peta alur / Peta layar) hanya grup Preview yang tampil. */
+  const inPortal = !!portal;
+  /* Aji 14 Nov 2026: sidebar mandiri per modul. Tidak ada nama/menu divisi (pindah divisi hanya lewat popup logo HAWK).
+     Demo Experience Center tampil sebagai kartu besar paling atas (standar app HAWK 60 NV). Halaman arsip tidak tampil. */
+  const isDxItem = (i) => /^DX/.test(i[2] || '');
+  const dxCard = (i) => { const lab = HL_DX_INFO(i[0]); const href = EXT(i[0]) ? i[0] : '#' + i[0]; return `<a class="nav-dx${cur(i[0]) ? ' cur' : ''}" href="${href}" ${cur(i[0]) ? 'aria-current="page"' : ''}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg><span><b>Demo Experience Center</b><small>${lab}</small></span></a>`; };
+  if (inPortal) {
+    const its = PORTALS[portal].items.filter(i => !ARCHIVED(i));
+    const dx = its.find(isDxItem);
+    const rest = its.filter(i => !isDxItem(i) && !(i[0] === '-' && i[1] === 'Demo'));
+    nav.innerHTML = (dx && !/[?&]embed=1/.test(location.search) ? dxCard(dx) : '') + `<div class="nav-mod open active nav-flat"><div class="nav-items">${rest.map(navLink).join('')}</div></div>`;
+    return;
+  }
+  nav.innerHTML = `<div class="nav-mod open active"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
 }
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-mod]');
@@ -5585,7 +5625,7 @@ picker.addEventListener('close', () => { if (parseHash().id === 'picker') histor
 picker.addEventListener('click', (e) => {
   if (e.target === picker) { picker.close(); return; }
   const opt = e.target.closest('.option[data-portal]');
-  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); location.hash = HOME[opt.dataset.portal]; }
+  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); if (EXT(HOME[opt.dataset.portal])) location.href = HOME[opt.dataset.portal]; else location.hash = HOME[opt.dataset.portal]; }
 });
 document.querySelectorAll('[data-open-picker]').forEach(b => b.addEventListener('click', () => openPicker(b)));
 $('#menu').addEventListener('click', () => { const open = !shell.classList.contains('nav-open'); setNav(open); if (open) (nav.querySelector('a.cur') || nav.querySelector('button'))?.focus(); });
@@ -5629,6 +5669,7 @@ window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt,
 document.addEventListener('DOMContentLoaded', () => {
   HOOKS.boot?.forEach(fn => fn());
   fillRoles();
+  if (!location.hash && document.body.dataset.portal && EXT(HOME[document.body.dataset.portal])) { location.replace(HOME[document.body.dataset.portal]); return; }
   if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
   render();
 });
@@ -7568,6 +7609,370 @@ register('hrd-report-center', guard(reportCenter), (p) => p.id || 'Pusat Laporan
 })();
 
 ;
+/* HAWK ERP · Demo Experience Center template for hawk-live portals (model: Finance DX-HAWK-01, assets/js/screens/x-demo.js).
+   DATA DEMO / SIMULASI. One portal = one lab, focused on that team only (Aji 2026-11-14):
+   - Option 1 Scenario Test Lab: one REAL app frame (<portal>.html?embed=1&role=…&persona=…#route), login-role pills for the
+     portal's own team, Desktop / iPad / Mobile, Smart Tutor (scenario, progress, run/open step, back/next, restart).
+   - Option 2 Simulator: several real frames (team members, each on its own device) sharing ONE sandbox (localStorage).
+   Steps owned by another division run automatically as context ("otomatis") – they never get a login pill.
+   Usage:  HL.DXLAB.define({ portal, route, page, title, eyebrow, intro, personas, team, scenarios, sim, update, extra })
+   step = { who, title, what?, route(ctx) → hash route, run(U, ctx, state) → string|id }  (U = (action, input) => update(...)) */
+(() => {
+'use strict';
+const H = window.HL;
+if (!H) return;
+const KEY = 'hawk-integrated-demo-v1', PREF = 'hawk-live-prefs-v1', UIKEY = 'hawk-live-dxlab-ui';
+const Q = new URLSearchParams(location.search);
+const EMBED = Q.get('embed') === '1';
+const DEVICES = { desktop: { w: 1280, h: 860, label: 'Desktop' }, ipad: { w: 834, h: 1112, label: 'iPad' }, mobile: { w: 390, h: 844, label: 'Mobile' } };
+const { esc } = H;
+const $ = (q, r) => (r || document).querySelector(q);
+const $$ = (q, r) => [...(r || document).querySelectorAll(q)];
+
+/* ---------- embed mode: the frame logs in as its own role and never writes the shared demo prefs ---------- */
+if (EMBED) {
+  document.documentElement.classList.add('dx-embed');
+  const orig = Storage.prototype.setItem;
+  Storage.prototype.setItem = function (k, v) { if (k === PREF) return undefined; return orig.call(this, k, v); };
+  if (Q.get('role')) { H.prefs.role = Q.get('role'); if (Q.get('portal')) H.prefs.portal = Q.get('portal'); }
+  H.prefs.persona = Q.get('persona') || null;
+}
+
+const LABS = {};
+/* embed: the frame's role chip shows the logged-in persona (name + title), like the Finance Demo Center */
+function personaChip() {
+  const id = H.prefs.persona; if (!id) return;
+  const lab = Object.values(LABS).find(l => l.portal === H.prefs.portal) || Object.values(LABS)[0]; const p = lab && lab.P(id);
+  if (!p || p.role !== H.prefs.role) return;
+  const n = document.getElementById('role-name'), av = document.getElementById('role-av'), sm = n && n.parentElement.querySelector('small');
+  const name = lab.name(p); if (n) n.textContent = name; if (sm) sm.textContent = p.title; if (av) av.textContent = name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+}
+let ui = { tab: 'lab', device: {}, as: {}, sc: {} };
+try { Object.assign(ui, JSON.parse(localStorage.getItem(UIKEY) || '{}')); } catch (e) { /* ignore */ }
+const saveUi = () => { try { localStorage.setItem(UIKEY, JSON.stringify(ui)); } catch (e) { /* ignore */ } };
+
+function define(cfg) {
+  const lab = { ...cfg, msg: null, view: null };
+  lab.P = (id) => cfg.personas.find(p => p.id === id);
+  lab.isTeam = (id) => cfg.team.includes(id);
+  lab.name = (p) => (cfg.nameOf ? cfg.nameOf(p) : p.name) || p.id;
+  lab.actor = (p) => `${lab.name(p)} (${p.title})`;
+  LABS[cfg.route] = lab;
+  H.REGISTRY[cfg.route] = (params) => placeholder(lab, params);
+  H.REGISTRY[cfg.route].title = () => cfg.title;
+  H.REGISTRY[cfg.route].purpose = () => cfg.purpose || '';
+  return lab;
+}
+
+/* ---------- run state: state.dxlab[portal] = { runs: { scId: { ctx, done:[i], log:[] } } } ---------- */
+const store = (lab) => { const s = H.state; s.dxlab = s.dxlab || {}; s.dxlab[lab.portal] = s.dxlab[lab.portal] || { runs: {} }; return s.dxlab[lab.portal]; };
+const runOf = (lab, id) => { const d = store(lab); d.runs[id] = d.runs[id] || { ctx: {}, done: [], log: [] }; return d.runs[id]; };
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(H.state)); } catch (e) { /* in-memory */ } };
+const scOf = (lab) => lab.scenarios.find(s => s.id === ui.sc[lab.portal]) || lab.scenarios[0];
+const nextIdx = (sc, r) => { for (let i = 0; i < sc.steps.length; i++) if (!r.done.includes(i)) return i; return sc.steps.length - 1; };
+const now = () => `${(window.HR && HR.TODAY) || ''} ${new Date().toTimeString().slice(0, 5)}`.trim();
+const routeTitle = (route) => { const id = String(route).split('?')[0]; const it = Object.values(H.PORTALS).flatMap(p => p.items || []).find(i => i[0] === id); const t = H.REGISTRY[id]?.title; return (it && `${it[2] ? it[2] + ' · ' : ''}${it[1]}`) || (typeof t === 'function' ? id : t) || id; };
+
+function runStep(lab, sc, i) {
+  const r = runOf(lab, sc.id), st = sc.steps[i], p = lab.P(st.who);
+  if (r.done.includes(i)) return { kind: 'ok', text: `Langkah ${i + 1} sudah selesai.` };
+  if (i > 0 && !r.done.includes(i - 1)) return { kind: 'warn', text: 'Jalankan langkah sebelumnya terlebih dahulu.' };
+  const by = lab.actor(p), role = p.role === 'public' ? (lab.publicRole || p.role) : p.role;
+  const U = (a, input) => lab.update(H.state, a, { by, role, ...input });
+  try {
+    const out = st.run(U, r.ctx, lab.stateOf ? lab.stateOf(H.state) : H.state);
+    r.done.push(i); r.log.push({ i, at: now(), by, result: typeof out === 'string' ? out : '' }); persist();
+    return { kind: 'ok', text: `Langkah ${i + 1} selesai oleh ${by}${typeof out === 'string' && out ? ' · ' + out : ''}` };
+  } catch (e) { persist(); return { kind: 'bad', text: `Langkah ${i + 1} gagal: ${e.message}` }; }
+}
+/* other divisions' steps that come before the next team step run by themselves, as context */
+function autoContext(lab, sc) {
+  const r = runOf(lab, sc.id), out = [];
+  for (let i = nextIdx(sc, r); i < sc.steps.length && !r.done.includes(i) && !lab.isTeam(sc.steps[i].who); i = nextIdx(sc, r)) {
+    const m = runStep(lab, sc, i); out.push(m); if (m.kind !== 'ok') break;
+  }
+  return out;
+}
+function restart(lab, sc) {
+  const fresh = HAWK.fresh(), s = H.state;
+  Object.keys(s).forEach(k => delete s[k]); Object.assign(s, fresh);
+  runOf(lab, sc.id); persist();
+}
+
+/* ---------- frames ---------- */
+const frameSrc = (lab, p, route) => `${location.pathname}?embed=1&portal=${encodeURIComponent(lab.portal)}&role=${encodeURIComponent(p.role === 'public' ? (lab.publicRole || 'hrd') : p.role)}${p.role === 'public' ? '' : '&persona=' + encodeURIComponent(p.id)}#${route}`;
+function openIn(lab, cell, p, route) {
+  const f = $('iframe', cell);
+  if (!f) return;
+  if (f.dataset.who === p.id && f.contentWindow && f.contentWindow.HL) { try { f.contentWindow.location.hash = route; return; } catch (e) { /* reload */ } }
+  f.dataset.who = p.id; f.src = frameSrc(lab, p, route);
+  const head = $('.dx-cell-role', cell); if (head) head.textContent = `${lab.name(p)} · ${p.title}`;
+}
+function fit(cell) {
+  const f = $('iframe', cell), box = $('.dx-screen', cell);
+  if (!f || !box) return;
+  const d = DEVICES[cell.dataset.device] || DEVICES.desktop, avail = box.clientWidth || 300, sc = Math.min(1, avail / d.w);
+  Object.assign(f.style, { width: d.w + 'px', height: d.h + 'px', transform: `scale(${sc})`, left: Math.max(0, Math.round((avail - d.w * sc) / 2)) + 'px' });
+  box.style.height = Math.round(d.h * sc) + 'px';
+}
+const fitAll = () => $$('#dxlab-stage .dx-cell').forEach(fit);
+const cellHtml = (key, label, device) => `<div class="dx-cell" data-cell="${key}" data-device="${device}"><div class="dx-cell-head"><span class="dx-cell-role">${esc(label)}</span>
+  <select class="dx-dev" data-dxl-dev="${key}" aria-label="Perangkat">${Object.entries(DEVICES).map(([k, d]) => `<option value="${k}" ${k === device ? 'selected' : ''}>${d.label}</option>`).join('')}</select>
+  <button type="button" class="dx-ib" data-dxl="home" data-cell="${key}" title="Beranda role" aria-label="Beranda role">⌂</button>
+  <button type="button" class="dx-ib" data-dxl="full" data-cell="${key}" title="Layar penuh" aria-label="Layar penuh">⛶</button></div>
+  <div class="dx-screen"><iframe title="${esc(label)} — aplikasi HAWK (DEMO)" loading="eager"></iframe></div></div>`;
+
+/* ---------- page ---------- */
+function placeholder(lab) {
+  return `<div data-dxlab-anchor="${esc(lab.route)}"></div>`;
+}
+function mount(lab) {
+  let stage = $('#dxlab-stage');
+  if (stage && stage.dataset.route === lab.route) { stage.hidden = false; paint(lab); return; }
+  if (stage) stage.remove();
+  stage = document.createElement('section');
+  stage.id = 'dxlab-stage'; stage.dataset.route = lab.route; stage.className = 'dxlab';
+  const team = lab.team.map(lab.P), sim = lab.sim || team.map(p => ({ who: p.id, device: p.device || 'desktop' }));
+  const counts = `${lab.scenarios.length} skenario · ${team.length} role tim`;
+  stage.innerHTML = `<div class="dx-hero"><div><div class="eyebrow">${esc(lab.eyebrow || 'HAWK × JAENS · GUIDED DEMO')}</div><h1>${esc(lab.title)}</h1><p>${esc(lab.intro || '')}</p></div>
+    <div class="dx-hero-r"><span class="dx-pill">DEMO / NO LIVE API</span><span class="dx-pill">${esc(counts)}</span><span class="dx-pill" id="dxl-hero-prog"></span></div></div>
+    <div class="row dxl-tabs"><button type="button" class="dx-tab" data-dxl="tab" data-tab="lab">Option 1 · Scenario Test Lab</button><button type="button" class="dx-tab" data-dxl="tab" data-tab="sim">Option 2 · Simulator ${sim.length} Layar</button>${lab.extra ? `<button type="button" class="dx-tab" data-dxl="tab" data-tab="extra">${esc(lab.extra.label)}</button>` : ''}
+      <span class="muted small">Setiap layar adalah aplikasi HAWK yang sebenarnya (bukan gambar) dengan hak akses role-nya.</span></div>
+    <div class="dx-main"><div class="dx-stage">
+      <div class="dxl-pane" data-pane="lab"><div class="dx-labhead row" id="dxl-labhead"></div>${cellHtml('lab', 'Test Lab', ui.device[lab.portal] || 'desktop')}</div>
+      <div class="dxl-pane dx-sim" data-pane="sim">${sim.map(s => { const p = lab.P(s.who); return cellHtml('sim-' + p.id, `${lab.name(p)} · ${p.title}`, s.device); }).join('')}</div>
+      <div class="dxl-pane" data-pane="extra"><div id="dxl-extra"></div></div>
+    </div><aside class="dx-tutor" id="dxl-tutor" aria-label="Smart Tutor"></aside></div>`;
+  const anchor = $(`[data-dxlab-anchor]`);
+  (anchor ? anchor.closest('main') || document.body : document.body).appendChild(stage);
+  lab.loaded = {};
+  paint(lab); showTab(lab, ui.tab, true);
+}
+function showTab(lab, tab, first) {
+  ui.tab = tab; saveUi();
+  $$('#dxlab-stage .dxl-pane').forEach(el => { el.hidden = el.dataset.pane !== tab; });
+  $$('#dxlab-stage .dx-tab').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  if (tab === 'lab' && !lab.loaded.lab) { lab.loaded.lab = 1; const p = lab.P(ui.as[lab.portal]) || lab.P(lab.team[0]); openIn(lab, $('.dx-cell[data-cell="lab"]'), p, p.home); }
+  if (tab === 'sim' && !lab.loaded.sim) { lab.loaded.sim = 1; $$('#dxlab-stage .dx-sim .dx-cell').forEach(c => { const p = lab.P(c.dataset.cell.slice(4)); openIn(lab, c, p, p.home); }); }
+  if (tab === 'extra') paint(lab);
+  requestAnimationFrame(fitAll);
+}
+function labHead(lab) {
+  const el = $('#dxl-labhead'); if (!el) return;
+  const cur = ui.as[lab.portal] || lab.team[0], dev = ($('.dx-cell[data-cell="lab"]') || {}).dataset?.device;
+  el.innerHTML = `<span class="tiny b">Login role (DEMO):</span>${lab.team.map(lab.P).map(p => `<button type="button" class="chip ${p.id === cur ? 'on' : ''}" data-dxl="as" data-p="${p.id}">${esc(lab.name(p))} · ${esc(p.title)}</button>`).join('')}
+    <span class="dx-sep"></span>${Object.entries(DEVICES).map(([k, d]) => `<button type="button" class="chip ${k === dev ? 'on' : ''}" data-dxl="dev" data-d="${k}">${d.label}</button>`).join('')}`;
+}
+function tutor(lab) {
+  const sc = scOf(lab), r = runOf(lab, sc.id), N = sc.steps.length, n = r.done.length;
+  const nxt = nextIdx(sc, r), i = lab.view === null || lab.view === undefined ? nxt : Math.max(0, Math.min(N - 1, lab.view));
+  const st = sc.steps[i], p = lab.P(st.who), done = r.done.includes(i), isCur = !done && i === nxt, team = lab.isTeam(st.who);
+  const lg = r.log.find(l => l.i === i);
+  const opts = lab.scenarios.map(s => `<option value="${s.id}" ${s.id === sc.id ? 'selected' : ''}>${esc(s.name)} (${s.steps.length})</option>`).join('');
+  return `<div class="dx-tutor-head"><div class="eyebrow">HAWK SMART TUTOR · ${esc(lab.portal)}</div><h3>${esc(sc.name)}</h3><p>${esc(sc.why || '')}</p></div>
+  <div class="dx-tutor-body">
+    <div class="row between" style="gap:8px"><select class="inp" id="dxl-sc" aria-label="Pilih skenario" style="flex:1;min-width:0">${opts}</select><button type="button" class="btn sm" data-dxl="restart" title="Reset data demo dan mulai skenario dari awal">↺ Mulai ulang</button></div>
+    <div class="row between" style="margin-top:12px"><b class="small">Progres</b><span class="badge gold">${n}/${N} langkah</span></div>
+    <div class="dx-prog"><i style="width:${Math.round((n / N) * 100)}%"></i></div>
+    <div class="dx-step ${isCur ? 'cur' : ''}" id="dxl-stepcard">
+      <div class="eyebrow">LANGKAH ${i + 1} DARI ${N}${team ? '' : ' · KONTEKS DIVISI LAIN'}</div>
+      <h4>${esc(st.title)}</h4>${st.what ? `<p class="small">${esc(st.what)}</p>` : ''}
+      <div class="dx-kv"><span>Peran</span><b>${esc(p.title)} — ${esc(lab.name(p))}${team ? '' : ' <span class="badge warn">otomatis</span>'}</b>
+        <span>Layar</span><b>${esc(routeTitle(st.route(r.ctx)))}</b>
+        <span>Status</span><b>${done ? `<span class="badge ok">Selesai</span> <span class="tiny muted">${esc(lg ? lg.at : '')}${lg && lg.result ? ' · ' + esc(lg.result) : ''}</span>` : isCur ? '<span class="badge gold">Giliran ini</span>' : '<span class="badge">Menunggu</span>'}</b></div>
+      <div class="stack" style="gap:8px;margin-top:10px">
+        <button type="button" class="btn ghost block" data-dxl="open" data-i="${i}">Buka layar sebagai ${esc(lab.name(p).split(' ')[0])}</button>
+        ${isCur ? `<button type="button" class="btn gold block" data-dxl="run" data-i="${i}">✓ ${team ? 'Jalankan langkah ini' : 'Lanjutkan (langkah otomatis)'}</button>` : ''}
+        ${isCur && team ? '<p class="tiny muted">Tombol ini menjalankan operasi yang sama dengan tombol asli di layar (cek role + audit atas nama persona).</p>' : ''}
+      </div>
+    </div>
+    ${lab.msg ? `<div class="dx-msg ${lab.msg.kind}" role="status">${esc(lab.msg.text)}</div>` : ''}
+    <div class="row" style="gap:8px;margin-top:10px"><button type="button" class="btn sm ghost" data-dxl="back" ${i === 0 ? 'disabled' : ''}>‹ Sebelumnya</button><button type="button" class="btn sm ghost" data-dxl="next" ${i >= N - 1 ? 'disabled' : ''}>Berikutnya ›</button></div>
+    <div class="dx-steps">${sc.steps.map((x, k) => { const d = r.done.includes(k), tp = lab.P(x.who); return `<button type="button" class="dx-li ${k === i ? 'on' : ''} ${d ? 'r-DONE' : ''}" data-dxl="goto" data-i="${k}"><span class="dx-n">${d ? '✓' : k + 1}</span><span><b>${esc(x.title)}</b><small>${esc(lab.name(tp))} · ${esc(tp.title)}${lab.isTeam(x.who) ? '' : ' · otomatis'}</small></span></button>`; }).join('')}</div>
+    <div class="dx-rules"><b>Aturan demo</b> Data sintetis. Login role = DEMO, bukan autentikasi. Lab ini hanya untuk tim ${esc(lab.portal)}; langkah divisi lain berjalan otomatis bila memang bagian alurnya. Mulai ulang mengembalikan data demo di browser ini, tidak menyentuh HAWK produksi.</div>
+  </div>`;
+}
+function paint(lab) {
+  const t = $('#dxl-tutor'); if (t) t.innerHTML = tutor(lab);
+  labHead(lab);
+  const sc = scOf(lab), r = runOf(lab, sc.id), hp = $('#dxl-hero-prog'); if (hp) hp.textContent = `${sc.id} · ${r.done.length}/${sc.steps.length}`;
+  const ex = $('#dxl-extra'); if (ex && lab.extra && ui.tab === 'extra') ex.innerHTML = lab.extra.html();
+}
+function targetCell(lab, who) {
+  if (ui.tab === 'sim') return $(`#dxlab-stage .dx-cell[data-cell="sim-${who}"]`) || null;
+  return $('#dxlab-stage .dx-cell[data-cell="lab"]');
+}
+function openStep(lab, i) {
+  const sc = scOf(lab), st = sc.steps[i], p = lab.P(st.who), cell = targetCell(lab, st.who) || (showTab(lab, 'lab'), $('#dxlab-stage .dx-cell[data-cell="lab"]'));
+  if (cell.dataset.cell === 'lab' && lab.isTeam(p.id)) ui.as[lab.portal] = p.id;
+  openIn(lab, cell, p, st.route(runOf(lab, sc.id).ctx)); saveUi();
+}
+
+/* ---------- events ---------- */
+const active = () => { const id = H.parseHash().id; return LABS[id] || null; };
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-dxl]'); if (!b || !b.closest('#dxlab-stage')) return;
+  const lab = LABS[$('#dxlab-stage').dataset.route]; if (!lab) return;
+  const sc = scOf(lab), a = b.dataset.dxl, i = Number(b.dataset.i);
+  if (a === 'tab') return showTab(lab, b.dataset.tab);
+  if (a === 'as') { const p = lab.P(b.dataset.p); ui.as[lab.portal] = p.id; saveUi(); openIn(lab, $('.dx-cell[data-cell="lab"]'), p, p.home); return paint(lab); }
+  if (a === 'dev') { const c = $('.dx-cell[data-cell="lab"]'); c.dataset.device = b.dataset.d; const sel = $('.dx-dev', c); if (sel) sel.value = b.dataset.d; ui.device[lab.portal] = b.dataset.d; saveUi(); fit(c); return paint(lab); }
+  if (a === 'home') { const c = $(`.dx-cell[data-cell="${b.dataset.cell}"]`), p = lab.P($('iframe', c).dataset.who); if (p) openIn(lab, c, p, p.home); return; }
+  if (a === 'full') { const c = $(`.dx-cell[data-cell="${b.dataset.cell}"]`); if (document.fullscreenElement) document.exitFullscreen(); else c.requestFullscreen?.().catch(() => {}); return; }
+  if (a === 'back' || a === 'next' || a === 'goto') { const r = runOf(lab, sc.id), base = lab.view ?? nextIdx(sc, r); lab.view = a === 'goto' ? i : base + (a === 'next' ? 1 : -1); lab.msg = null; return paint(lab); }
+  if (a === 'open') { openStep(lab, i); return; }
+  if (a === 'restart') { restart(lab, sc); lab.view = null; lab.msg = { kind: 'ok', text: 'Data demo dikembalikan ke awal. Skenario dimulai dari langkah 1.' }; const ctx = autoContext(lab, sc); if (ctx.length) lab.msg = ctx[ctx.length - 1]; openStep(lab, nextIdx(sc, runOf(lab, sc.id))); return paint(lab); }
+  if (a === 'run') {
+    lab.msg = runStep(lab, sc, i); lab.view = null;
+    if (lab.msg.kind === 'ok') { openStep(lab, i); const ctx = autoContext(lab, sc); if (ctx.length) lab.msg = { kind: ctx[ctx.length - 1].kind, text: lab.msg.text + ' · ' + ctx.map(c => c.text).join(' · ') }; }
+    return paint(lab);
+  }
+});
+document.addEventListener('change', (e) => {
+  const t = e.target; if (!t.closest || !t.closest('#dxlab-stage')) return;
+  const lab = LABS[$('#dxlab-stage').dataset.route]; if (!lab) return;
+  if (t.id === 'dxl-sc') { ui.sc[lab.portal] = t.value; saveUi(); lab.view = null; lab.msg = null; const sc = scOf(lab); const r = runOf(lab, sc.id); if (!r.done.length) { const ctx = autoContext(lab, sc); if (ctx.length) lab.msg = ctx[ctx.length - 1]; } openStep(lab, nextIdx(sc, runOf(lab, sc.id))); paint(lab); }
+  if (t.dataset.dxlDev) { const c = t.closest('.dx-cell'); c.dataset.device = t.value; if (c.dataset.cell === 'lab') { ui.device[lab.portal] = t.value; saveUi(); labHead(lab); } fit(c); }
+});
+/* the app re-renders #view on every change (also storage events from frames); the stage lives outside #view so frames survive */
+function sync() {
+  if (EMBED) return;
+  const lab = active(), stage = $('#dxlab-stage');
+  if (lab && $('[data-dxlab-anchor]')) mount(lab); else if (stage) stage.hidden = true;
+}
+if (EMBED) document.addEventListener('DOMContentLoaded', () => { const view = $('#view'); if (view) new MutationObserver(personaChip).observe(view, { childList: true }); personaChip(); });
+if (!EMBED) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const view = $('#view'); if (view) new MutationObserver(sync).observe(view, { childList: true });
+    sync();
+  });
+  window.addEventListener('resize', () => requestAnimationFrame(fitAll));
+  document.addEventListener('fullscreenchange', () => setTimeout(fitAll, 50));
+}
+H.DXLAB = { define, DEVICES, EMBED, LABS, runStep: (route, scId, i) => { const lab = LABS[route]; const sc = lab.scenarios.find(s => s.id === scId); const m = runStep(lab, sc, i); if (m.kind === 'ok') autoContext(lab, sc); if ($('#dxlab-stage')) paint(lab); return m; } };
+})();
+
+;
+/* HAWK ERP · Portal HRD · Demo Experience Center HRD (#hrd-dx) — DATA DEMO / SIMULASI.
+   Memakai template hawk-live/dx-lab.js (model Demo Center Finance): Test Lab dengan login role tim HRD (Made Gunarsa, Harja, Ayu,
+   Lead Human Growth), Desktop/iPad/Mobile, Smart Tutor, dan Simulator 4 layar. Langkah divisi lain (Operational, Supervisor,
+   Finance, Owner, kandidat) hanya muncul bila memang bagian alur HRD dan berjalan otomatis sebagai konteks. */
+(() => {
+const H = window.HL;
+const { esc, table, card, link } = H;
+const hr = () => { const h = HR.ensure(H.state); HR.EXT.ensure?.(h); return h; };
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const empName = (id) => id ? (hr().people.find(p => p.id === id)?.name || id) : '—';
+
+/* ---------- persona ---------- */
+const PERSONAS = [
+  { id: 'made', emp: 'EMP-0142', role: 'hrd', title: 'Manager HRD', home: 'hrd-home', does: 'Menyetujui permintaan tenaga, keputusan & penawaran, penempatan, payroll, Race dan STRACON.' },
+  { id: 'harja', emp: 'EMP-0145', role: 'hrd-ops', title: 'Koordinator Rekrutmen', home: 'hrd-rec-candidates', does: 'Publikasi lowongan, screening, shortlist dan jadwal interview.' },
+  { id: 'ayu', emp: 'EMP-0143', role: 'hrd-ops', title: 'Admin HRD', home: 'hrd-roster', does: 'Direktori, presensi, verifikasi dokumen, kontrak dan onboarding.' },
+  { id: 'hg', emp: 'EMP-0144', role: 'hg-lead', title: 'Lead Human Growth', home: 'hrd-training', does: 'Pelatihan, 9-Box, rencana pengembangan dan coaching.' },
+  { id: 'asri', emp: 'EMP-0121', role: 'finance-manager', title: 'Finance Manager', home: 'hrd-pay-handoff?period=2610', does: 'Menerima jurnal payroll agregat dan memantau biaya tenaga kerja.' },
+  { id: 'eni', emp: 'EMP-0151', role: 'ops-manager', title: 'Operational Manager', home: 'hrd-manpower', does: 'Memantau kapasitas 4 outlet, menyetujui kebutuhan tenaga dari Supervisor.' },
+  { id: 'mila', emp: 'EMP-0153', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'hrd-mp-utility?outlet=OUT-UBD', does: 'Mengajukan kebutuhan therapist/receptionist, menilai praktik, verifikasi pelatihan.' },
+  { id: 'ari', emp: 'EMP-0001', role: 'therapist', title: 'Therapist Spa Ubud (ESS)', home: 'hrd-myday', does: 'Melihat tugas, jadwal dan XScore miliknya sendiri.' },
+  { id: 'owner', emp: null, name: 'Owner', role: 'owner', title: 'Owner', home: 'hrd-race', does: 'Melihat agregat, Race Vegen dan e-Deck tanpa nominal personal.' },
+  { id: 'cand', emp: null, name: 'Kandidat (publik)', role: 'public', title: 'Pelamar via halaman karier', home: null, does: 'Melamar dan merespons penawaran lewat karier publik.' }
+];
+const P = (id) => PERSONAS.find(p => p.id === id);
+const pName = (p) => p.name || empName(p.emp);
+const actorOf = (p) => `${pName(p)} (${p.title})`;
+const curPersona = () => { const p = P(H.prefs.persona); return p && p.role === H.prefs.role ? p : null; };
+const prevActor = H.HOOKS.actor;
+H.HOOKS.actor = () => { const p = curPersona(); return p ? actorOf(p) : (prevActor ? prevActor() : 'Demo'); };
+
+/* ---------- skenario ---------- */
+const CAND = (n) => ({ name: `Ni Komang Demo ${n}`, email: `demo${n}@example.invalid`, phone: '0812-0' + n, consent: '1', docs: 'cv.pdf', techniques: 'Balinese, hot stone', years: '3', cert: 'LSP 2023', sessions: '6', lang: 'Inggris', shiftReady: 'Pagi', situational: 'tanya kenyamanan tamu', submitKey: `DX-${n}` });
+const view = (msg = 'dilihat') => () => msg;
+const SC = [
+  { id: 'rekrut', name: 'Kebutuhan → penempatan therapist Spa Ubud', why: 'Utility Ubud di atas 100%: Supervisor mengajukan kebutuhan, OM & HRD menyetujui, rekrutmen berjalan sampai penempatan dan coaching.', steps: [
+    { who: 'eni', title: 'Lihat utility Spa Ubud di atas kapasitas', route: () => 'hrd-mp-utility?outlet=OUT-UBD', run: view() },
+    { who: 'mila', title: 'Ajukan kebutuhan 2 therapist Spa Ubud', route: (c) => 'hrd-recruit', run: (U, c) => { c.req = U('req-create', { position: 'POS-THR', outlet: 'OUT-UBD', count: '2', shift: 'Pagi/Sore', skills: 'Balinese, hot stone' }); return c.req; } },
+    { who: 'eni', title: 'Setujui permintaan sebagai Operational Manager', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'made', title: 'Setujui permintaan sebagai Manager HRD', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'harja', title: 'Publikasikan lowongan dari formasi disetujui', route: (c) => 'hrd-rec-jobs', run: (U, c) => { c.vac = U('vac-publish', { req: c.req }); return c.vac; } },
+    { who: 'cand', title: 'Kandidat melamar lewat halaman karier', route: (c) => c.vac ? `hrd-career-job?id=${c.vac}` : 'hrd-rec-jobs', run: (U, c) => { c.n = c.n || (Date.now() % 100000); c.app = U('app-submit', { vac: c.vac, ...CAND(c.n) }); return c.app; } },
+    { who: 'harja', title: 'Screening, shortlist & jadwalkan interview praktik', route: (c) => `hrd-rec-candidates?id=${c.app}`, run: (U, c) => { U('screen-run', { id: c.app }); U('app-stage', { id: c.app, to: 'Shortlist' }); return U('iv-schedule', { id: c.app, slot: '2026-11-14 10:00', iv2: 'EMP-0153' }); } },
+    { who: 'mila', title: 'Nilai praktik kandidat (rubric)', route: (c) => `hrd-rec-interview?id=${c.app}`, run: (U, c) => U('iv-score', { id: c.app, s0: 4, s1: 4, s2: 5, s3: 4, note: 'Praktik hot stone rapi' }) },
+    { who: 'made', title: 'Putuskan Diterima & kirim penawaran (mulai 16 Nov)', route: (c) => `hrd-rec-offer?id=${c.app}`, run: (U, c) => { U('rec-decide', { id: c.app, value: 'Diterima', reason: 'Rubric praktik baik' }); return U('offer-send', { id: c.app, start: '2026-11-16' }); } },
+    { who: 'cand', title: 'Kandidat menerima penawaran', route: (c) => `hrd-rec-offer?id=${c.app}`, run: (U, c) => U('offer-respond', { id: c.app, answer: 'accept' }) },
+    { who: 'ayu', title: 'Verifikasi dokumen, tanda tangan kontrak & onboarding', route: (c) => `hrd-rec-onboard`, run: (U, c) => { U('doc-verify', { id: c.app, kind: 'KTP' }); U('doc-verify', { id: c.app, kind: 'Foto' }); c.emp = U('contract-sign', { id: c.app }); c.onb = U('onboard-create', { id: c.app }); return `${c.emp} · ${c.onb}`; } },
+    { who: 'made', title: 'Setujui penempatan Spa Ubud & akun ESS', route: () => 'hrd-rec-place', run: (U, c) => U('place-approve', { id: c.app, accRole: 'ess' }) },
+    { who: 'hg', title: 'Buat coaching 30 hari untuk therapist baru', route: (c) => c.coach ? `hrd-task?id=${c.coach}` : 'hrd-tasks', run: (U, c) => { c.coach = U('weekly-action', { ws: 'HG', title: `Coaching 30 hari ${empName(c.emp)}`, pic: 'EMP-0144', due: '2026-12-16', sourceId: `ONB-${c.emp}` }); return c.coach; } }
+  ] },
+  { id: 'reception', name: 'Receptionist Spa Bhisma shift Sore', why: 'Celah antrean check-in sore di Bhisma: OM mengajukan 1 receptionist, HRD menyetujui dan lowongan dibuka.', steps: [
+    { who: 'eni', title: 'Lihat celah reception Bhisma 17–21', route: () => 'hrd-mp-reception?outlet=OUT-BSM', run: view() },
+    { who: 'eni', title: 'Ajukan 1 receptionist shift Sore Bhisma', route: () => 'hrd-recruit', run: (U, c) => { c.req = U('req-create', { position: 'POS-RCP', outlet: 'OUT-BSM', count: '1', shift: 'Sore', skills: 'Check-in, bahasa Inggris' }); return c.req; } },
+    { who: 'eni', title: 'Setujui sebagai Operational Manager', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'made', title: 'Setujui sebagai Manager HRD', route: () => 'hrd-recruit', run: (U, c) => U('req-approve', { id: c.req }) },
+    { who: 'harja', title: 'Publikasikan lowongan Receptionist', route: () => 'hrd-rec-jobs', run: (U, c) => { c.vac = U('vac-publish', { req: c.req }); return c.vac; } }
+  ] },
+  { id: 'kinerja', name: 'Kinerja & pengembangan therapist', why: 'Supervisor memverifikasi praktik pelatihan, HG memindahkan 9-Box dengan alasan, keduanya memvalidasi, lalu rencana coaching dibuat.', steps: [
+    { who: 'mila', title: 'Verifikasi praktik Hot Stone peserta Ubud', route: () => 'hrd-training', run: (U, c, h) => { const prg = HR6.programs(h).find(p => p.id === 'PRG-HOT-2611'); const pt = prg && prg.participants.find(x => x.practice === 'Menunggu verifikasi' && x.attend === 'Hadir' && h.placements.some(pl => pl.emp === x.emp && pl.location === 'OUT-UBD' && !pl.to)); if (!pt) return 'Tidak ada peserta Ubud yang menunggu verifikasi'; c.trainee = pt.emp; return U('train-verify', { id: 'PRG-HOT-2611', emp: pt.emp }); } },
+    { who: 'ari', title: 'Therapist melihat XScore miliknya', route: () => 'hrd-kpi', run: view() },
+    { who: 'hg', title: 'Pindahkan Putu Ari ke Calon Bintang (alasan wajib)', route: () => 'hrd-ninebox', run: (U) => U('nine-move', { emp: 'EMP-0001', box: 'M-H', reason: 'Asesmen potensi Nov: siap mentor hot stone' }) },
+    { who: 'mila', title: 'Validasi 9-Box sebagai Supervisor', route: () => 'hrd-ninebox', run: (U) => U('nine-validate', { emp: 'EMP-0001' }) },
+    { who: 'hg', title: 'Validasi HG & buat rencana pengembangan', route: (c) => c.plan ? `hrd-dev?id=${c.plan}` : 'hrd-dev', run: (U, c) => { U('nine-validate', { emp: 'EMP-0001' }); c.plan = U('plan-create', { emp: 'EMP-0001', comp: 'COMP-HYG', from: 'ninebox' }); return c.plan; } }
+  ] },
+  { id: 'payroll', name: 'Payroll November → Finance', why: 'Komisi POS masuk payroll, Manager HRD mengunci batch, jurnal agregat diserahkan dan diterima Finance Manager.', steps: [
+    { who: 'made', title: 'Cek komisi POS per Service Line', route: () => 'hrd-pay-commission?outlet=OUT-UBD', run: view() },
+    { who: 'made', title: 'Generate draf payroll November', route: () => 'hrd-pay-process?period=2611', run: (U) => U('pay-generate', { period: '2611' }) },
+    { who: 'made', title: 'Review & kunci batch (snapshot)', route: () => 'hrd-pay-process?period=2611', run: (U) => { U('pay-review', { period: '2611' }); return U('pay-lock', { period: '2611' }); } },
+    { who: 'made', title: 'Kirim jurnal agregat ke Finance', route: () => 'hrd-pay-handoff?period=2611', run: (U) => U('fin-handoff', { period: '2611' }) },
+    { who: 'asri', title: 'Finance Manager menerima jurnal (selisih 0)', route: () => 'hrd-pay-handoff?period=2611', run: (U) => U('fin-ack', { period: '2611', variance: '0' }) },
+    { who: 'owner', title: 'Owner melihat rasio biaya tenaga kerja (agregat)', route: () => 'hrd-budget', run: view() }
+  ] },
+  { id: 'reflection', name: 'Monthly Reflection → STRACON', why: 'Temuan kapasitas Ubud dibahas di Reflection, diputuskan di STRACON, dijalankan sebagai Workplan dan dipresentasikan di e-Deck.', steps: [
+    { who: 'eni', title: 'Baca Monthly Reflection November', route: () => 'hrd-race-reflection', run: view() },
+    { who: 'made', title: 'Tandai utility Ubud sebagai Issue', route: (c) => c.task ? `hrd-task?id=${c.task}` : 'hrd-race-reflection', run: (U, c) => { c.task = U('rfl-mark', { key: 'UTIL-OUT-UBD', period: '2611', stage: 'Issue' }); return c.task; } },
+    { who: 'made', title: 'Catat keputusan kapasitas di STRACON', route: (c) => c.dec ? `hrd-race-stracon?id=${c.dec}` : 'hrd-race-stracon', run: (U, c) => { c.dec = U('dec-create', { title: 'Tambah 2 therapist Spa Ubud', finding: 'FND-UTIL-UBD-2611', task: c.task, alternatives: 'Lembur terjadwal|Bantuan Santi|Rekrut 2 therapist', chosen: 'Rekrut 2 therapist', reason: 'Utility di atas 100% dan lembur berulang', owner: 'EMP-0142', due: '2026-11-30', ckey: 'UTIL-OUT-UBD', cop: '<=', cvalue: '100', cperiod: '2612' }); return c.dec; } },
+    { who: 'made', title: 'Jadikan keputusan Workplan', route: (c) => c.wp ? `hrd-task?id=${c.wp}` : 'hrd-race-stracon', run: (U, c) => { c.wp = U('dec-workplan', { id: c.dec }); return c.wp; } },
+    { who: 'owner', title: 'Owner membuka e-Deck halaman Utility', route: () => 'hrd-race-deck?page=1', run: view() }
+  ] }
+];
+const prevExt = { ...HR.EXT };
+HR.EXT.purge = (h) => { prevExt.purge?.(h); if (H.state.dxlab) delete H.state.dxlab.HRD; };
+
+/* ---------- kinerja tim HRD (fokus portal HRD) ---------- */
+function teamRows() {
+  const h = hr(), ts = (h.f3?.tasks || []).filter(t => t.ws === 'HRD' || t.ws === 'HG');
+  const team = PERSONAS.filter(p => TEAM.includes(p.id));
+  return team.map(p => {
+    const mine = ts.filter(t => t.pic === p.emp), done = mine.filter(t => t.stage === 'Selesai').length;
+    const late = mine.filter(t => t.due && t.due < HR.TODAY && t.stage !== 'Selesai').length, blocked = mine.filter(t => t.blocker && t.stage !== 'Selesai').length;
+    const acts = h.audit.filter(a => a.by === actorOf(p)).length;
+    return [esc(pName(p)), esc(p.title), `${done}/${mine.length}`, late ? chip(`${late} terlambat`, 'bad') : chip('Tepat waktu', 'ready'), blocked ? chip(`${blocked} blocker`, 'bad') : '—', acts, link(`hrd-race-daily?emp=${p.emp}`, 'Daily Race')];
+  });
+}
+function extra() {
+  const cur = curPersona();
+  return card('Persona demo', `<section class="grid g4 keep2">${PERSONAS.map(p => `<article class="card dx-persona${cur && cur.id === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}${TEAM.includes(p.id) ? '' : ' · konteks alur'}</div><h3>${esc(pName(p))}</h3><p class="muted small">${esc(p.does)}</p></article>`).join('')}</section><p class="muted small">Login role di Test Lab hanya untuk tim HRD. Persona divisi lain menjalankan langkahnya otomatis bila memang bagian alur HRD. Supervisor Tina (Santi), Dewik (Triloka) dan Wahyudi (Bhisma) tercatat di struktur; role demo Supervisor saat ini berlingkup Spa Ubud.</p>`) +
+    card('Kinerja tim HRD', table(['Anggota', 'Peran', 'Kartu selesai', 'Tenggat', 'Hambatan', 'Aksi tercatat (audit)', ''], teamRows()) + '<p class="muted small">Dibaca dari Planner F3 dan audit portal HRD. Kinerja divisi lain ada di Demo Center portalnya masing-masing.</p>');
+}
+
+const TEAM = ['made', 'harja', 'ayu', 'hg'];
+H.DXLAB.define({
+  portal: 'HRD', route: 'hrd-dx', page: 'hrd.html', publicRole: 'hrd',
+  title: 'Demo Experience Center HRD', eyebrow: 'HAWK × JAENS · DX-HRD · GUIDED DEMO',
+  intro: 'Belajar alur kerja HRD dengan menekan tombol asli aplikasi HAWK. Login sebagai Made Gunarsa, Harja, Ayu atau Lead Human Growth, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim HRD menjalankan skenario portal HRD; divisi lain hanya pada langkah yang bersinggungan langsung dengan alur HRD (berjalan otomatis).',
+  personas: PERSONAS, team: TEAM, scenarios: SC, nameOf: pName,
+  sim: [{ who: 'made', device: 'desktop' }, { who: 'harja', device: 'desktop' }, { who: 'ayu', device: 'ipad' }, { who: 'hg', device: 'mobile' }],
+  update: (state, a, input) => HR.update(state, a, input), stateOf: () => hr(),
+  extra: { label: 'Persona & kinerja tim', html: extra }
+});
+
+const items = H.PORTALS.HRD.items;
+const ih = items.findIndex(i => i[0] === 'hrd-home');
+items.splice(ih + 1, 0, ['hrd-dx', 'Demo Experience Center', 'DX-HRD', 'ready', '', 'sub']);
+H.PURPOSE['hrd-dx'] = 'Persona tim HRD menjalankan skenario portal HRD; divisi lain hanya pada langkah yang bersinggungan langsung dengan alur HRD.';
+H.SCREENS.push(['DX-HRD', 'HRD · Demo Experience Center', 'HRD DX', 'hrd-dx', 'ready', 'Semua persona demo']);
+})();
+
+;
 /* HAWK ERP · Commercial workspace screens, Fase 2A (DATA DEMO / SIMULASI)
    F2-09 Commercial Budget · F2-02 Campaign Planner · F2-03 Campaign Detail · F2-04 Content Studio ·
    F2-01 Brand & Communications. Reads SER (POS/lead/budget fixture), HAWK sandbox (MRF) and CX
@@ -8233,6 +8638,190 @@ H.REGISTRY['budget-2027'] = Object.assign((params) => {
   }
   return `${notice}<div class="heading-row">${bar}</div>${head}${tabs}${body}`;
 }, { title: () => 'Master Marketing Budget 2027' });
+})();
+
+;
+/* HAWK ERP · Demo Experience Center untuk portal Operational, Commercial dan Sales — DATA DEMO / SIMULASI.
+   Memakai template hawk-live/dx-lab.js (model Demo Center Finance, sama dengan HRD #hrd-dx): Test Lab dengan login role tim
+   portal itu saja, Desktop / iPad / Mobile, Smart Tutor dan Simulator. Satu portal = satu lab, fokus pada timnya sendiri
+   (Aji 14 Nov 2026). Langkah divisi lain hanya muncul bila memang bagian alur dan berjalan otomatis sebagai konteks.
+   Model: HAWK.update (booking, lead, MRF, partner, pipeline) dan CX.update (campaign, konten, brand). Tidak ada API live. */
+(() => {
+'use strict';
+const H = window.HL;
+if (!H || !H.DXLAB) return;
+const { esc, card } = H;
+const hrName = (emp, fb) => { try { return (window.HR && HR.ensure(H.state).people.find(p => p.id === emp)?.name) || fb; } catch (e) { return fb; } };
+const view = (msg = 'dilihat') => () => msg;
+/* booking butuh slot HAWK kosong (3 slot demo: 11.00, 13.00, 15.00) */
+const freeSlot = (s) => { const f = s.slots.find(sl => !s.bookings.some(b => b.slot === sl && b.status !== 'cancelled')); if (!f) throw Error('Semua slot demo sudah terisi. Tekan Mulai ulang untuk mengembalikan data demo.'); return f; };
+const lastId = (rows) => rows[rows.length - 1].id;
+
+/* persona lintas divisi (hanya untuk langkah konteks yang memang bagian alur) */
+const CTX = {
+  dewa: { id: 'dewa', name: 'Dewa', role: 'reservation-staff', title: 'Staf Reservasi B2C', home: 'reservation', does: 'Menerima lead dan membuat booking (Sales).' },
+  mila: { id: 'mila', emp: 'EMP-0153', name: 'Mila', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'pos', does: 'Check-in, treatment dan pembayaran di outlet (Operational).' },
+  asri: { id: 'asri', name: 'Asri', role: 'finance-manager', title: 'Finance Manager', home: 'mrf', does: 'Menyetujui MRF, memposting realisasi dan membayar komisi (Finance).' },
+  driver: { id: 'driver', name: 'Driver Demo', role: 'public', title: 'Partner referral DRV-001', home: 'driver', does: 'Partner luar: menyetujui perjanjian dan mengirim tamu.' }
+};
+
+function personaTab(lab, scope) {
+  const cur = H.prefs.persona;
+  return () => card('Persona demo', `<section class="grid g4 keep2">${lab.personas.map(p => `<article class="card dx-persona${cur === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}${lab.team.includes(p.id) ? '' : ' · konteks alur'}</div><h3>${esc(lab.nameOf ? lab.nameOf(p) : p.name)}</h3><p class="muted small">${esc(p.does)}</p></article>`).join('')}</section><p class="muted small">Login role di Test Lab hanya untuk tim ${esc(scope)}. Persona divisi lain menjalankan langkahnya otomatis bila memang bagian alur ${esc(scope)}. Demo Center divisi lain ada di portalnya masing-masing.</p>`);
+}
+
+function register(cfg) {
+  const lab = { ...cfg };
+  const nm = (p) => (cfg.nameOf ? cfg.nameOf(p) : p.name) || p.id;
+  /* aksi CX dicatat atas nama anggota tim (MBR-…) agar histori campaign/konten menampilkan nama yang benar */
+  const memberOf = (by) => { const p = cfg.personas.find(x => by === `${nm(x)} (${x.title})`); return (p && p.member) || by; };
+  H.DXLAB.define({
+    ...cfg,
+    extra: { label: 'Persona tim', html: personaTab(cfg, cfg.portal) },
+    update: (state, a, input) => a.startsWith('cx:') ? CX.update(state, a.slice(3), { ...input, by: memberOf(input.by) }) : HAWK.update(state, a, input)
+  });
+  if (H.DXLAB.EMBED && H.prefs.portal === cfg.portal) { const p = cfg.personas.find(x => x.id === H.prefs.persona); if (p && p.member) H.prefs.member = p.member; }
+  /* sidebar portal merender item berkode DX-… sebagai kartu besar Demo Experience Center paling atas (seperti app HAWK 60 NV) */
+  const items = H.PORTALS[cfg.portal].items;
+  if (!items.some(i => i[0] === cfg.route)) items.push([cfg.route, 'Demo Experience Center', cfg.code, 'ready']);
+  H.PURPOSE[cfg.route] = cfg.purpose;
+  H.SCREENS.push([cfg.code, `${cfg.portal} · Demo Experience Center`, `${cfg.portal} DX`, cfg.route, 'ready', 'Tim ' + cfg.portal]);
+  return lab;
+}
+
+/* ================= Operational ================= */
+const OPS = [
+  { id: 'eni', emp: 'EMP-0151', name: 'Eni Restini', role: 'ops-manager', title: 'Operational Manager', home: 'pos', does: 'Memantau layanan 4 outlet, menyetujui refund dan pengecualian.' },
+  { id: 'mila', emp: 'EMP-0153', name: 'Mila', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'pos', does: 'Memimpin outlet: check-in tamu, pembatalan dan pembayaran di POS.' },
+  { id: 'ari', emp: 'EMP-0001', name: 'Putu Ari', role: 'therapist', title: 'Therapist Spa Ubud', home: 'pos', does: 'Menjalankan treatment dan menandai treatment selesai.' },
+  CTX.dewa
+];
+register({
+  portal: 'Operational', route: 'ops-dx', page: 'operational.html', code: 'DX-OPS', after: 'pos', publicRole: 'ops-manager',
+  title: 'Demo Experience Center Operational', eyebrow: 'HAWK × JAENS · DX-OPS · GUIDED DEMO',
+  intro: 'Belajar alur kerja outlet dengan menekan tombol asli aplikasi HAWK. Login sebagai Operational Manager, Supervisor atau Therapist, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim Operational menjalankan alur outlet (check-in, treatment, pembayaran, pembatalan, refund); booking dari Sales hanya muncul sebagai konteks otomatis.',
+  personas: OPS, team: ['eni', 'mila', 'ari'], nameOf: (p) => p.emp ? hrName(p.emp, p.name) : p.name,
+  sim: [{ who: 'eni', device: 'desktop' }, { who: 'mila', device: 'ipad' }, { who: 'ari', device: 'mobile' }],
+  scenarios: [
+    { id: 'day', name: 'Tamu datang → treatment → bayar', why: 'Booking dari Sales masuk ke outlet. Supervisor check-in, therapist menyelesaikan treatment, pembayaran tercatat di POS dan revenue masuk Executive Summary.', steps: [
+      { who: 'dewa', title: 'Booking Wellness Massage masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'mila', title: 'Check-in tamu di POS', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); return c.bk + ' · checked-in'; } },
+      { who: 'ari', title: 'Treatment selesai', route: () => 'pos', run: (U, c) => { U('complete', { id: c.bk }); return c.bk + ' · completed'; } },
+      { who: 'mila', title: 'Catat pembayaran di POS', route: () => 'pos', run: (U, c) => { U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'eni', title: 'Pantau transaksi outlet hari ini', route: () => 'pos', run: view() }
+    ] },
+    { id: 'refund', name: 'Pembatalan & refund', why: 'Tamu membatalkan sebelum datang (slot kembali tersedia). Tamu lain mengeluh setelah bayar: Operational Manager menyetujui refund.', steps: [
+      { who: 'dewa', title: 'Booking masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk1 = lastId(s.bookings); return c.bk1; } },
+      { who: 'mila', title: 'Batalkan booking (tamu tidak jadi datang)', route: () => 'pos', run: (U, c) => { U('cancel', { id: c.bk1 }); return c.bk1 + ' · cancelled, slot kembali'; } },
+      { who: 'dewa', title: 'Booking tamu berikutnya masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk2 = lastId(s.bookings); return c.bk2; } },
+      { who: 'mila', title: 'Check-in tamu', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk2 }); return c.bk2; } },
+      { who: 'ari', title: 'Treatment selesai', route: () => 'pos', run: (U, c) => { U('complete', { id: c.bk2 }); return c.bk2; } },
+      { who: 'mila', title: 'Catat pembayaran', route: () => 'pos', run: (U, c) => { U('pay', { id: c.bk2 }); return c.bk2 + ' · paid'; } },
+      { who: 'eni', title: 'Setujui refund keluhan tamu', route: () => 'pos', run: (U, c) => { U('refund', { id: c.bk2 }); return c.bk2 + ' · refunded'; } }
+    ] }
+  ]
+});
+
+/* ================= Commercial ================= */
+const COM = [
+  { id: 'cm', name: 'Commercial Manager', role: 'commercial-manager', title: 'Approval campaign & budget', home: 'commercial', does: 'Menyetujui campaign, membaca revenue, budget marketing dan ROMI.' },
+  { id: 'rani', name: 'Rani', member: 'MBR-C01', role: 'commercial-manager', title: 'Content Lead · reviewer', home: 'studio?view=board', does: 'Mereview dan menyetujui konten, menjaga brand tone.' },
+  { id: 'bayu', name: 'Bayu', member: 'MBR-C02', role: 'commercial-manager', title: 'Digital Marketing', home: 'campaign', does: 'Membuat campaign, mengajukan biaya, merencanakan konten, membaca atribusi.' },
+  { id: 'wulan', name: 'Wulan', member: 'MBR-C05', role: 'commercial-manager', title: 'Social Media Admin', home: 'social', does: 'Menjadwalkan dan menerbitkan konten, distribusi komunikasi.' },
+  CTX.asri, CTX.dewa, CTX.mila
+];
+register({
+  portal: 'Commercial', route: 'commercial-dx', page: 'commercial.html', code: 'DX-COM', after: 'commercial', publicRole: 'commercial-manager',
+  title: 'Demo Experience Center Commercial', eyebrow: 'HAWK × JAENS · DX-COM · GUIDED DEMO',
+  intro: 'Belajar alur kerja Brand, Marketing & Communications dengan menekan tombol asli aplikasi HAWK. Login sebagai Commercial Manager, Rani, Bayu atau Wulan, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim Commercial menjalankan campaign, konten dan brand; Finance (MRF) dan Sales/Operational (lead → booking) hanya muncul sebagai konteks otomatis.',
+  personas: COM, team: ['cm', 'rani', 'bayu', 'wulan'],
+  sim: [{ who: 'cm', device: 'desktop' }, { who: 'bayu', device: 'desktop' }, { who: 'rani', device: 'ipad' }, { who: 'wulan', device: 'mobile' }],
+  scenarios: [
+    { id: 'campaign', name: 'Campaign baru Shanti → Running', why: 'Bayu membuat campaign dari template, Commercial Manager menyetujui, biaya diajukan lewat MRF (Finance menyetujui otomatis), lalu campaign dijadwalkan dan berjalan.', steps: [
+      { who: 'bayu', title: 'Buat draft campaign dari template', route: () => 'campaign?view=templates', run: (U, c) => { c.cmp = U('cx:cmp-create', { template: 'TPL-01', name: 'Shanti Morning Ritual', outlet: 'OUT-SHT', utm: 'cmp_dx_shanti_' + (Date.now() % 100000), budget: '10000000', bookings: '30', pic: 'MBR-C02', start: '2026-09-01', end: '2026-09-30' }); return c.cmp; } },
+      { who: 'cm', title: 'Setujui campaign', route: (c) => `campaign-detail?id=${c.cmp}`, run: (U, c) => U('cx:cmp-approve', { id: c.cmp }) },
+      { who: 'bayu', title: 'Ajukan biaya iklan Rp2.000.000 (MRF)', route: () => 'commercial-budget?view=requests', run: (U, c, s) => { U('request', { amount: '2000000', campaign: c.cmp, pos: 'Promotion', note: 'Meta Ads Shanti Morning Ritual' }); c.mrf = lastId(s.requests); return c.mrf; } },
+      { who: 'asri', title: 'Finance menyetujui dan memposting MRF', route: () => 'commercial-budget?view=requests', run: (U, c) => { U('approve', { id: c.mrf }); U('post', { id: c.mrf }); return c.mrf + ' · posted'; } },
+      { who: 'bayu', title: 'Jadwalkan campaign', route: (c) => `campaign-detail?id=${c.cmp}`, run: (U, c) => U('cx:cmp-schedule', { id: c.cmp }) },
+      { who: 'bayu', title: 'Jalankan campaign', route: (c) => `campaign-detail?id=${c.cmp}`, run: (U, c) => U('cx:cmp-run', { id: c.cmp }) },
+      { who: 'cm', title: 'Cek realisasi Commercial Budget', route: () => 'commercial-budget', run: view() }
+    ] },
+    { id: 'content', name: 'Konten Reels → review → terbit', why: 'Konten direncanakan dari campaign, aset diajukan review, Rani menyetujui, Wulan menjadwalkan dan menerbitkan, lalu hasilnya dianalisis.', steps: [
+      { who: 'bayu', title: 'Buat konten dari brief CMP-002', route: () => 'campaign-detail?id=CMP-002', run: (U, c) => { c.cnt = U('cx:cnt-create', { title: 'Reels Morning Ritual Shanti', campaign: 'CMP-002', pillar: 'Wellness ritual', format: 'Reels', channel: 'Instagram', pic: 'MBR-C02', due: '2026-08-30' }); return c.cnt; } },
+      { who: 'bayu', title: 'Rencanakan & tetapkan creator/editor', route: (c) => `studio?view=board&content=${c.cnt}`, run: (U, c) => { U('cx:cnt-stage', { id: c.cnt, to: 'Planned' }); U('cx:cnt-assign', { id: c.cnt, role: 'creator', pic: 'MBR-C03' }); U('cx:cnt-assign', { id: c.cnt, role: 'editor', pic: 'MBR-C04' }); return 'Planned · creator Dita · editor Arya'; } },
+      { who: 'bayu', title: 'Produksi: unggah aset v1', route: (c) => `studio?view=board&content=${c.cnt}&ctab=assets`, run: (U, c) => { U('cx:cnt-stage', { id: c.cnt, to: 'Production' }); U('cx:cnt-asset', { id: c.cnt }); return 'Production · aset v1'; } },
+      { who: 'bayu', title: 'Ajukan review', route: (c) => `studio?view=board&content=${c.cnt}&ctab=review`, run: (U, c) => U('cx:cnt-submit', { id: c.cnt }) },
+      { who: 'rani', title: 'Review & approve konten', route: (c) => `studio?view=board&content=${c.cnt}&ctab=review`, run: (U, c) => U('cx:cnt-approve', { id: c.cnt, note: 'Sesuai brand tone' }) },
+      { who: 'wulan', title: 'Jadwalkan Instagram 30 Agu 18.00', route: (c) => `studio?view=board&content=${c.cnt}&ctab=publish`, run: (U, c) => { c.pub = U('cx:cnt-schedule', { id: c.cnt, platform: 'Instagram', at: '2026-08-30 18:00', account: '@jaensspa.shanti' }); return c.pub; } },
+      { who: 'wulan', title: 'Terbitkan di Instagram', route: (c) => `studio?view=board&content=${c.cnt}&ctab=publish`, run: (U, c) => U('cx:pub-publish', { id: c.pub }) },
+      { who: 'bayu', title: 'Catat analisis hasil', route: (c) => `studio?view=board&content=${c.cnt}&ctab=analytics`, run: (U, c) => U('cx:cnt-analyse', { id: c.cnt }) }
+    ] },
+    { id: 'brand', name: 'Brand & komunikasi', why: 'Rani menyetujui tone of voice Jaens Spa dan pesan Essence, Commercial Manager menyetujui banner Bisma, Wulan menandai terdistribusi.', steps: [
+      { who: 'cm', title: 'Buka progres brand per unit', route: () => 'brand', run: view() },
+      { who: 'rani', title: 'Setujui Tone of voice Jaens Spa', route: () => 'brand?view=foundation', run: (U) => U('cx:brand-approve', { id: 'BR-SPA', el: 'tone' }) },
+      { who: 'rani', title: 'Setujui pesan “Bahan alami” (Essence)', route: () => 'brand?view=messages', run: (U) => U('cx:msg-version', { id: 'MSG-003' }) },
+      { who: 'cm', title: 'Setujui standing banner Bisma', route: () => 'brand?view=calendar', run: (U) => U('cx:com-advance', { id: 'COM-004' }) },
+      { who: 'wulan', title: 'Tandai banner terdistribusi', route: () => 'brand?view=calendar', run: (U) => U('cx:com-advance', { id: 'COM-004' }) }
+    ] },
+    { id: 'lead', name: 'Campaign → lead → booking → atribusi', why: 'Konten Instagram menghasilkan lead WhatsApp. Sales membuat booking dan outlet menyelesaikan pembayaran (otomatis), lalu Commercial membaca atribusi dan Executive Summary.', steps: [
+      { who: 'wulan', title: 'Pantau Instagram → WhatsApp', route: () => 'social', run: view() },
+      { who: 'dewa', title: 'Sales: lead WhatsApp → booking', route: () => 'reservation', run: (U, c, s) => { U('lead', { channel: 'WhatsApp' }); c.lead = lastId(s.leads); U('book', { id: c.lead, slot: freeSlot(s) }); c.bk = lastId(s.bookings); return `${c.lead} → ${c.bk}`; } },
+      { who: 'mila', title: 'Outlet: check-in, treatment, bayar', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); U('complete', { id: c.bk }); U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'bayu', title: 'Baca jejak atribusi booking', route: () => 'attribution', run: view() },
+      { who: 'cm', title: 'Cek Executive Summary', route: () => 'commercial', run: view() }
+    ] }
+  ]
+});
+
+/* ================= Sales ================= */
+const SAL = [
+  { id: 'sm', name: 'Sales Manager', role: 'sales-manager', title: 'Pipeline & tim Sales', home: 'sales', does: 'Memantau booking, revenue per metode jual dan pipeline B2B; menyetujui negosiasi.' },
+  { id: 'dewa', name: 'Dewa', role: 'reservation-staff', title: 'Staf Reservasi B2C', home: 'reservation', does: 'Inbox lead, alih ke staf, Booking Desk dan pembatalan.' },
+  { id: 'b2b', name: 'Sales B2B', role: 'b2b-staff', title: 'Partner hotel/villa & driver', home: 'b2b', does: 'Pipeline hotel/villa dan aktivasi partner referral.' },
+  CTX.mila, CTX.asri, CTX.driver
+];
+register({
+  portal: 'Sales', route: 'sales-dx', page: 'sales.html', code: 'DX-SLS', after: 'sales-home', publicRole: 'b2b-staff',
+  title: 'Demo Experience Center Sales', eyebrow: 'HAWK × JAENS · DX-SLS · GUIDED DEMO',
+  intro: 'Belajar alur kerja Sales, reservasi dan kemitraan dengan menekan tombol asli aplikasi HAWK. Login sebagai Sales Manager, Dewa (Reservasi B2C) atau Sales B2B, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim Sales menjalankan lead, booking, pipeline B2B dan partner referral; outlet (POS) dan Finance (komisi) hanya muncul sebagai konteks otomatis.',
+  personas: SAL, team: ['sm', 'dewa', 'b2b'],
+  sim: [{ who: 'sm', device: 'desktop' }, { who: 'dewa', device: 'mobile' }, { who: 'b2b', device: 'ipad' }],
+  scenarios: [
+    { id: 'b2c', name: 'Lead WhatsApp → booking dibayar', why: 'Lead dari Instagram masuk lewat WhatsApp, Dewa membuat booking, outlet menyelesaikan pembayaran (otomatis), Sales Manager membaca hasilnya.', steps: [
+      { who: 'dewa', title: 'Tambah lead WhatsApp di Inbox reservasi', route: () => 'reservation', run: (U, c, s) => { U('lead', { channel: 'WhatsApp' }); c.lead = lastId(s.leads); return c.lead; } },
+      { who: 'dewa', title: 'Konfirmasi booking di Booking Desk', route: () => 'reservation', run: (U, c, s) => { U('book', { id: c.lead, slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'mila', title: 'Outlet: check-in, treatment, bayar', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); U('complete', { id: c.bk }); U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'sm', title: 'Cek revenue & jejak hasil Sales', route: () => 'sales', run: view() }
+    ] },
+    { id: 'handoff', name: 'Lead telepon → staf → batal', why: 'Lead telepon dialihkan ke staf, dibooking, lalu tamu membatalkan: slot kembali tersedia dan lead kembali ke staf untuk ditindaklanjuti.', steps: [
+      { who: 'dewa', title: 'Tambah lead Telepon', route: () => 'reservation', run: (U, c, s) => { U('lead', { channel: 'Telepon' }); c.lead = lastId(s.leads); return c.lead; } },
+      { who: 'dewa', title: 'Alihkan lead ke staf', route: () => 'reservation', run: (U, c) => { U('handoff', { id: c.lead }); return c.lead + ' · staff'; } },
+      { who: 'dewa', title: 'Booking untuk lead', route: () => 'reservation', run: (U, c, s) => { U('book', { id: c.lead, slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'dewa', title: 'Tamu membatalkan: batalkan booking', route: () => 'pos', run: (U, c) => { U('cancel', { id: c.bk }); return c.bk + ' · cancelled, lead kembali ke staf'; } },
+      { who: 'sm', title: 'Pantau lead terbuka', route: () => 'sales', run: view() }
+    ] },
+    { id: 'b2b', name: 'Pipeline hotel B2B → booking pertama', why: 'Sales B2B membawa Ubud Hotel Demo dari prospek sampai booking pertama; Sales Manager menyetujui tahap negosiasi.', steps: [
+      { who: 'b2b', title: 'Kualifikasi Ubud Hotel Demo', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Kirim proposal kemitraan', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'sm', title: 'Setujui masuk negosiasi', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Kontrak menang', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Aktifkan partner', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Catat booking pertama', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'sm', title: 'Baca pipeline di Sales Manager', route: () => 'sales', run: view() }
+    ] },
+    { id: 'driver', name: 'Driver referral → komisi', why: 'Partner driver menyetujui perjanjian, Sales B2B mengaktifkan, driver mengirim tamu; outlet dan Finance menyelesaikan transaksi dan komisi (otomatis).', steps: [
+      { who: 'driver', title: 'Driver menyetujui perjanjian demo', route: () => 'driver', run: (U) => { U('agreement'); return 'perjanjian disetujui'; } },
+      { who: 'b2b', title: 'Aktifkan partner DRV-001', route: () => 'driver', run: (U) => { U('activate'); return 'DRV-001 aktif'; } },
+      { who: 'driver', title: 'Driver mengirim tamu (booking referral)', route: () => 'driver', run: (U, c, s) => { U('book', { referral: 'yes', slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'mila', title: 'Outlet: check-in, treatment, bayar', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); U('complete', { id: c.bk }); U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'asri', title: 'Finance mencatat pembayaran komisi', route: () => 'commission', run: (U, c) => { U('payout', { id: c.bk }); return c.bk + ' · komisi dibayar'; } },
+      { who: 'sm', title: 'Cek komisi valid & booking referral', route: () => 'sales', run: view() }
+    ] }
+  ]
+});
 })();
 
 </script>

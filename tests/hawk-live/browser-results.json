@@ -1,5 +1,5 @@
 {
- "ranAt": "2026-11-13T16:40:23.751Z",
+ "ranAt": "2026-11-14T00:34:59.692Z",
  "base": "http://localhost:8811/hawk-live/",
  "pass": 45,
  "fail": 0,
@@ -185,9 +185,9 @@
    "info": ""
   },
   {
-   "name": "F7-01 peta berisi 41 kode layar empat portal + semua layar HRD",
+   "name": "F7-01 peta berisi 41 kode layar empat portal + semua layar HRD + 3 Demo Center portal",
    "ok": true,
-   "info": "118 = 41 + 77"
+   "info": "122 = 41 + 78 + 3"
   },
   {
    "name": "Entry commercial.html membuka Commercial",

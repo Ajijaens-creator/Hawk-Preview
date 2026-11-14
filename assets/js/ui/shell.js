@@ -42,6 +42,13 @@
   prefs.dev = prefs.dev !== undefined ? prefs.dev : true;
   prefs.tour = prefs.tour !== undefined ? prefs.tour : true;
   prefs.visited = prefs.visited || {};
+  /* Masuk dari Portal Finance HAWK 5 Portal: /?as=U-FIN#/nv/47 memilih role demo sekali, lalu parameter dibuang
+     dari URL agar refresh/ganti role berikutnya tidak tertimpa. Tanpa ?as= perilaku tidak berubah. Bukan login. */
+  if (!EMBED && /^U-[A-Z0-9]+$/.test(qs.get('as') || '')) {
+    prefs.user = qs.get('as');
+    savePrefs();
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+  }
   if (EMBED) {
     const embedPrefs = { user: /^U-[A-Z0-9]+$/.test(qs.get('as') || '') ? qs.get('as') : prefs.user, bu: 'ALL', branch: 'ALL', dev: false, tour: false, visited: {} };
     Object.keys(prefs).forEach((k) => delete prefs[k]);
@@ -496,7 +503,9 @@
       const u = user();
       renderSidebar(0, u);
       renderTopbar(u);
-      if (!$('#view').querySelector('[data-dx-root]')) {
+      const dxRoot = $('#view').querySelector('[data-dx-root]');
+      const dxTeam = (/[?&]team=([a-z]+)/.exec(location.hash) || [])[1] || '';
+      if (!dxRoot || (dxRoot.dataset.team || '') !== dxTeam) {
         $('#view').innerHTML = HAWK.dxCenter.render(makeCtx(0, {}));
         $('#view').dataset.nv = 'dx';
         HAWK.dxCenter.mount(makeCtx(0, {}));

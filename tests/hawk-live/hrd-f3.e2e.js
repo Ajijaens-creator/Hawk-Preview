@@ -85,7 +85,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   /* Jalur 3: NV08 → NV02 — diskusi, bukti, checklist, review */
   await setRole('hrd-ops'); await go('hrd-task?id=TSK-0003&tab=discussion');
   await p.fill('form[data-submit="hr:task-comment"] textarea', 'Draf kontrak sudah dikirim ke legal (sintetis)'); await p.click('form[data-submit="hr:task-comment"] button'); await p.waitForTimeout(150);
-  ok('Diskusi tersimpan dengan penulis & waktu', /Draf kontrak sudah dikirim/.test(await text()) && /Putu Dewi D/.test(await text()));
+  ok('Diskusi tersimpan dengan penulis & waktu', /Draf kontrak sudah dikirim/.test(await text()) && /Ayu/.test(await text()));
   await go('hrd-task?id=TSK-0003&tab=files');
   await p.fill('form[data-submit="hr:task-asset"] input[name=name]', 'kontrak-draf.pdf'); await p.click('form[data-submit="hr:task-asset"] button'); await p.waitForTimeout(150);
   ok('Bukti ditambahkan', /kontrak-draf\.pdf \(sintetis\)/.test(await text()));
