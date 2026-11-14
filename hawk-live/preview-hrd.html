@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:20:19.287Z">
+<meta name="hawk-standalone" content="2026-11-14T01:42:50.542Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Portal HRD &amp; Human Growth</title>
 <style>
@@ -1633,6 +1633,10 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .nav-chev { transition: transform .15s ease; }
 .nav-grp.open > .nav-grp-row .nav-chev, .nav-sec.open > .nav-sec-btn .nav-chev { transform: rotate(90deg); }
 .nav-sec-btn { display: flex; width: calc(100% - 20px); align-items: center; justify-content: space-between; border: 0; background: none; cursor: pointer; padding: 6px 0; border-radius: 6px; text-align: left; font: inherit; }
+/* Aji 14 Nov 2026: kode NV tidak tampil di sidebar akun demo (nama menu saja). Kode tetap di data (PORTALS, atribut data-nv)
+   dan di docs/hawk-live/NV-MAP.md untuk melacak fitur → NV → fase. */
+.nav .nav-items .nvc { display: none; }
+.nav .nav-items a { gap: 0; }
 
 </style>
 </head>
@@ -5625,7 +5629,7 @@ const HL_DX_INFO = (route) => { const lab = window.HL && HL.DXLAB && HL.DXLAB.LA
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
-  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : EXT(route) ? `<a href="${route}" class="nav-ext"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
+  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : EXT(route) ? `<a href="${route}" class="nav-ext" data-nv="${code || ''}"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" data-nv="${code || ''}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
   /* Aji 13 Nov 2026: sidebar hanya menampilkan menu portal yang sedang aktif. Pindah divisi lewat popup logo HAWK
      (pemilih portal). Tanpa portal aktif (Peta alur / Peta layar) hanya grup Preview yang tampil. */
   const inPortal = !!portal;
