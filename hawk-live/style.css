@@ -416,3 +416,10 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
    dan di docs/hawk-live/NV-MAP.md untuk melacak fitur → NV → fase. */
 .nav .nav-items .nvc { display: none; }
 .nav .nav-items a { gap: 0; }
+
+/* Tombol bahasa ID/EN (pojok kanan atas, standar terkunci) */
+.lang-tog { display: inline-flex; flex: none; background: #242424; border: 1px solid #3a3220; border-radius: 10px; padding: 3px; gap: 2px; }
+.lang-tog button { background: transparent; border: 0; color: #cfcfcf; font: inherit; font-size: 12px; font-weight: 700; letter-spacing: .04em; min-width: 34px; height: 30px; border-radius: 7px; cursor: pointer; }
+.lang-tog button:hover { color: #fff; }
+.lang-tog button.on { background: var(--gold-grad, #C99A2E); color: #111; }
+.lang-tog button:focus-visible { outline: 2px solid var(--champagne, #E5C66A); outline-offset: 1px; }
