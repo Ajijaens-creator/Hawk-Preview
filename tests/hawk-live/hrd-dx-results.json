@@ -1,51 +1,71 @@
 {
- "pass": 20,
+ "pass": 27,
  "fail": 0,
  "out": [
   {
-   "name": "Persona tampil: Made Gunarsa, Harja, Ayu, Asri, Eni Restini, Mila",
+   "name": "Login role hanya tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D",
+   "ok": true,
+   "info": "Made Gunarsa · Manager HRD | Harja · Koordinator Rekrutmen | Ayu · Admin HRD | Putu Dewi D · Lead Human Growth"
+  },
+  {
+   "name": "Divisi lain tidak punya tombol login (Eni, Mila, Asri)",
    "ok": true,
    "info": ""
   },
   {
-   "name": "5 skenario portal HRD",
+   "name": "Pilihan perangkat Desktop, iPad, Mobile",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Kinerja tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D",
+   "name": "Smart Tutor & 5 skenario",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Fokus portal HRD: tanpa panel divisi lain (Commercial, Production Essence)",
+   "name": "Login sebagai Harja → frame asli role Staf HRD",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Skenario rekrut: semua 13 langkah selesai",
+   "name": "Frame menampilkan nama persona (Harja)",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Skenario reception: semua 5 langkah selesai",
+   "name": "Mobile: frame 390 px",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Skenario kinerja: semua 5 langkah selesai",
+   "name": "iPad: frame 834 px",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Skenario payroll: semua 6 langkah selesai",
+   "name": "Skenario rekrut: semua 13 langkah selesai lewat Smart Tutor",
    "ok": true,
-   "info": ""
+   "info": "13/13"
   },
   {
-   "name": "Skenario reflection: semua 5 langkah selesai",
+   "name": "Skenario reception: semua 5 langkah selesai lewat Smart Tutor",
    "ok": true,
-   "info": ""
+   "info": "5/5"
+  },
+  {
+   "name": "Skenario kinerja: semua 5 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "5/5"
+  },
+  {
+   "name": "Skenario payroll: semua 6 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "6/6"
+  },
+  {
+   "name": "Skenario reflection: semua 5 langkah selesai lewat Smart Tutor",
+   "ok": true,
+   "info": "5/5"
   },
   {
    "name": "Rekrutmen: karyawan baru, penempatan Spa Ubud terjadwal",
@@ -53,7 +73,12 @@
    "info": ""
   },
   {
-   "name": "Audit mencatat persona (Harja, Ayu, Mila, Eni Restini)",
+   "name": "Audit atas nama persona (Harja, Ayu, Made)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Langkah divisi lain berjalan otomatis (Mila, Eni Restini, Asri)",
    "ok": true,
    "info": ""
   },
@@ -68,32 +93,42 @@
    "info": ""
   },
   {
-   "name": "Buka layar sebagai Harja → kandidat, role Staf HRD",
+   "name": "Frame berbagi sandbox yang sama (lowongan baru terlihat di frame)",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Masuk sebagai Asri → Handoff Finance (agregat)",
+   "name": "Render ulang halaman tidak memuat ulang frame",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Persona aktif ditampilkan",
+   "name": "Simulator 4 layar: Made, Harja, Ayu, Lead HG",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Tombol jalankan tidak muncul lagi untuk skenario selesai",
+   "name": "Simulator: perangkat berbeda (Desktop, iPad, Mobile)",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Mobile 390 px: hrd-dx",
+   "name": "Kinerja tim HRD: Made Gunarsa, Harja, Ayu, Putu Dewi D",
    "ok": true,
-   "info": "390"
+   "info": ""
   },
   {
-   "name": "Mobile 390 px: hrd-dx?sc=rekrut",
+   "name": "Fokus portal HRD: tanpa panel divisi lain",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Mulai ulang: data demo kembali ke awal, progres 0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Halaman Demo Center di layar 390 px",
    "ok": true,
    "info": "390"
   },
