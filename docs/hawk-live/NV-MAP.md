@@ -77,8 +77,37 @@ DATA DEMO / SIMULASI. Dibuat otomatis oleh `node tools/gen-nv-map.js` dari `HL.P
 
 | Seksi / induk | Menu | Kode NV | Fase | Status | Rute |
 |---|---|---|---|---|---|
-| — | Beranda | F1-NV01 | HRD 1 | Tersedia | `#hrd-home` |
-| Beranda | ↳ Demo Experience Center | DX-HRD | HRD DX | Tersedia | `#hrd-dx` |
+| Dashboard | Dashboard HRD | F1-NV01 | HRD 1 | Tersedia | `#hrd-home` |
+| Dashboard › Dashboard HRD | ↳ Demo Experience Center | DX-HRD | HRD DX | Tersedia | `#hrd-dx` |
+| Dashboard | Manpower Planning | F5-NV01 | HRD 5 | Tersedia | `#hrd-manpower` |
+| Dashboard › Manpower Planning | ↳ Kapasitas Outlet & Shift | F5-NV02 | HRD 5 | Tersedia | `#hrd-mp-capacity` |
+| Dashboard › Manpower Planning | ↳ Therapist Utility | F5-NV03 | HRD 5 | Tersedia | `#hrd-mp-utility` |
+| Dashboard › Manpower Planning | ↳ Coverage Reception | F5-NV04 | HRD 5 | Tersedia | `#hrd-mp-reception` |
+| Dashboard › Manpower Planning | ↳ Beban Kerja Office | F5-NV05 | HRD 5 | Tersedia | `#hrd-mp-division` |
+| Dashboard › Manpower Planning | ↳ Data Layanan POS | F5-NV06 | HRD 5 | Tersedia | `#hrd-mp-pos` |
+| Dashboard › Manpower Planning | ↳ Simulasi Kebutuhan | F5-NV07 | HRD 5 | Tersedia | `#hrd-mp-sim` |
+| Dashboard › Manpower Planning | ↳ Handoff Rekrutmen | F5-NV08 | HRD 5 | Tersedia | `#hrd-mp-handoff` |
+| Dashboard | 9-Box Talent | F6-NV07 | HRD 6 | Tersedia | `#hrd-ninebox` |
+| Dashboard | People Budgeting | F7-NV09 | HRD 7 | Tersedia | `#hrd-budget` |
+| Dashboard › People Budgeting | ↳ Rencana Anggaran | F7-NV10 | HRD 7 | Tersedia | `#hrd-bud-plan` |
+| Dashboard › People Budgeting | ↳ Simulasi Rekrutmen | F7-NV11 | HRD 7 | Tersedia | `#hrd-bud-sim` |
+| Dashboard › People Budgeting | ↳ Tren & Kurva S | F7-NV12 | HRD 7 | Tersedia | `#hrd-bud-trend` |
+| Dashboard | Kinerja & KPI | F6-NV01 | HRD 6 | Tersedia | `#hrd-kpi` |
+| Dashboard › Kinerja & KPI | ↳ Stakeholder Expectations | F6-NV02 | HRD 6 | Tersedia | `#hrd-ser` |
+| Dashboard › Kinerja & KPI | ↳ KPI Library | F6-NV03 | HRD 6 | Tersedia | `#hrd-kpi-lib` |
+| Dashboard › Kinerja & KPI | ↳ Kontrak KPI | F6-NV04 | HRD 6 | Tersedia | `#hrd-kpi-contract` |
+| Dashboard › Kinerja & KPI | ↳ XScore | F6-NV05 | HRD 6 | Tersedia | `#hrd-xscore` |
+| Dashboard › Kinerja & KPI | ↳ People Performance | F6-NV06 | HRD 6 | Tersedia | `#hrd-people-perf` |
+| Dashboard › Kinerja & KPI | ↳ Rencana Pengembangan | F6-NV08 | HRD 6 | Tersedia | `#hrd-dev` |
+| Dashboard › Kinerja & KPI | ↳ Pelatihan & Talent | F6-NV09 | HRD 6 | Tersedia | `#hrd-training` |
+| Dashboard | AmbideX & Race | F8-NV01 | HRD 8 | Tersedia | `#hrd-race` |
+| Dashboard › AmbideX & Race | ↳ Race Beacon | F8-NV02 | HRD 8 | Tersedia | `#hrd-race-beacon` |
+| Dashboard › AmbideX & Race | ↳ Daily Race | F8-NV03 | HRD 8 | Tersedia | `#hrd-race-daily` |
+| Dashboard › AmbideX & Race | ↳ Weekly Race | F8-NV04 | HRD 8 | Tersedia | `#hrd-race-weekly` |
+| Dashboard › AmbideX & Race | ↳ Monthly Reflection | F8-NV05 | HRD 8 | Tersedia | `#hrd-race-reflection` |
+| Dashboard › AmbideX & Race | ↳ STRACON | F8-NV06 | HRD 8 | Tersedia | `#hrd-race-stracon` |
+| Dashboard › AmbideX & Race | ↳ e-Deck Reflection | F8-NV07 | HRD 8 | Tersedia | `#hrd-race-deck` |
+| Dashboard › AmbideX & Race | ↳ Pusat Laporan & Bukti | F8-NV08 | HRD 8 | Tersedia | `#hrd-report-center` |
 | — | Karyawan | F2-NV01 | HRD 2 | Tersedia | `#hrd-roster` |
 | Karyawan | ↳ Impor Karyawan | F2-NV12 | HRD 2 | Tersedia | `#hrd-import` |
 | — | Tambah Karyawan | F2-NV01 | HRD 2 | Tersedia | `#hrd-employee-new` |
@@ -115,13 +144,13 @@ DATA DEMO / SIMULASI. Dibuat otomatis oleh `node tools/gen-nv-map.js` dari `HL.P
 | — | Timeline | F2-NV11 | HRD 2 | Tersedia | `#hrd-timeline` |
 | — | Klien | F2-NV10 | HRD 2 | Tersedia | `#hrd-clients` |
 | — | Laporan | F7-NV07 | HRD 7 | Tersedia | `#hrd-reports` |
-| — | Tugas | F3-NV01 | HRD 3 | Tersedia | `#hrd-tasks` |
-| Tugas | ↳ Board | F3-NV02 | HRD 3 | Tersedia | `#hrd-board` |
-| Tugas | ↳ Calendar | F3-NV03 | HRD 3 | Tersedia | `#hrd-calendar` |
-| Tugas | ↳ List | F3-NV04 | HRD 3 | Tersedia | `#hrd-list` |
-| Tugas | ↳ Library | F3-NV05 | HRD 3 | Tersedia | `#hrd-library` |
-| Tugas | ↳ My Tasks | F3-NV06 | HRD 3 | Tersedia | `#hrd-mytasks` |
-| Tugas | ↳ My Day | F3-NV07 | HRD 3 | Tersedia | `#hrd-myday` |
+| — | Workspace | F3-NV01 | HRD 3 | Tersedia | `#hrd-tasks` |
+| Workspace | ↳ Board | F3-NV02 | HRD 3 | Tersedia | `#hrd-board` |
+| Workspace | ↳ Calendar | F3-NV03 | HRD 3 | Tersedia | `#hrd-calendar` |
+| Workspace | ↳ List | F3-NV04 | HRD 3 | Tersedia | `#hrd-list` |
+| Workspace | ↳ Library | F3-NV05 | HRD 3 | Tersedia | `#hrd-library` |
+| Workspace | ↳ My Tasks | F3-NV06 | HRD 3 | Tersedia | `#hrd-mytasks` |
+| Workspace | ↳ My Day | F3-NV07 | HRD 3 | Tersedia | `#hrd-myday` |
 | — | Detail Kartu | F3-NV08 | HRD 3 | Tersedia | `#hrd-task` |
 | — | Pengaturan | F1 | — | Tersedia | `#hrd-settings` |
 | Pengaturan | ↳ Struktur Organisasi | F1-NV02 | HRD 1 | Tersedia | `#hrd-org` |
@@ -131,33 +160,4 @@ DATA DEMO / SIMULASI. Dibuat otomatis oleh `node tools/gen-nv-map.js` dari `HL.P
 | Pengaturan | ↳ Audit Aktivitas | F1-NV07 | HRD 1 | Tersedia | `#hrd-audit` |
 | Pengaturan | ↳ Kelola Data Demo R&D | F1-NV08 | HRD 1 | Tersedia | `#hrd-demo` |
 | — | FAQ | F1-NV06 | HRD 1 | Tersedia | `#hrd-faq` |
-| — | Kinerja & KPI | F6-NV01 | HRD 6 | Tersedia | `#hrd-kpi` |
-| Kinerja & KPI | ↳ Stakeholder Expectations | F6-NV02 | HRD 6 | Tersedia | `#hrd-ser` |
-| Kinerja & KPI | ↳ KPI Library | F6-NV03 | HRD 6 | Tersedia | `#hrd-kpi-lib` |
-| Kinerja & KPI | ↳ Kontrak KPI | F6-NV04 | HRD 6 | Tersedia | `#hrd-kpi-contract` |
-| Kinerja & KPI | ↳ XScore | F6-NV05 | HRD 6 | Tersedia | `#hrd-xscore` |
-| Kinerja & KPI | ↳ People Performance | F6-NV06 | HRD 6 | Tersedia | `#hrd-people-perf` |
-| Kinerja & KPI | ↳ Rencana Pengembangan | F6-NV08 | HRD 6 | Tersedia | `#hrd-dev` |
-| Kinerja & KPI | ↳ Pelatihan & Talent | F6-NV09 | HRD 6 | Tersedia | `#hrd-training` |
-| — | AmbideX & Race | F8-NV01 | HRD 8 | Tersedia | `#hrd-race` |
-| AmbideX & Race | ↳ Race Beacon | F8-NV02 | HRD 8 | Tersedia | `#hrd-race-beacon` |
-| AmbideX & Race | ↳ Daily Race | F8-NV03 | HRD 8 | Tersedia | `#hrd-race-daily` |
-| AmbideX & Race | ↳ Weekly Race | F8-NV04 | HRD 8 | Tersedia | `#hrd-race-weekly` |
-| AmbideX & Race | ↳ Monthly Reflection | F8-NV05 | HRD 8 | Tersedia | `#hrd-race-reflection` |
-| AmbideX & Race | ↳ STRACON | F8-NV06 | HRD 8 | Tersedia | `#hrd-race-stracon` |
-| AmbideX & Race | ↳ e-Deck Reflection | F8-NV07 | HRD 8 | Tersedia | `#hrd-race-deck` |
-| AmbideX & Race | ↳ Pusat Laporan & Bukti | F8-NV08 | HRD 8 | Tersedia | `#hrd-report-center` |
-| — | Manpower Planning | F5-NV01 | HRD 5 | Tersedia | `#hrd-manpower` |
-| Manpower Planning | ↳ Kapasitas Outlet & Shift | F5-NV02 | HRD 5 | Tersedia | `#hrd-mp-capacity` |
-| Manpower Planning | ↳ Therapist Utility | F5-NV03 | HRD 5 | Tersedia | `#hrd-mp-utility` |
-| Manpower Planning | ↳ Coverage Reception | F5-NV04 | HRD 5 | Tersedia | `#hrd-mp-reception` |
-| Manpower Planning | ↳ Beban Kerja Office | F5-NV05 | HRD 5 | Tersedia | `#hrd-mp-division` |
-| Manpower Planning | ↳ Data Layanan POS | F5-NV06 | HRD 5 | Tersedia | `#hrd-mp-pos` |
-| Manpower Planning | ↳ Simulasi Kebutuhan | F5-NV07 | HRD 5 | Tersedia | `#hrd-mp-sim` |
-| Manpower Planning | ↳ Handoff Rekrutmen | F5-NV08 | HRD 5 | Tersedia | `#hrd-mp-handoff` |
-| — | 9-Box Talent | F6-NV07 | HRD 6 | Tersedia | `#hrd-ninebox` |
-| — | People Budgeting | F7-NV09 | HRD 7 | Tersedia | `#hrd-budget` |
-| People Budgeting | ↳ Rencana Anggaran | F7-NV10 | HRD 7 | Tersedia | `#hrd-bud-plan` |
-| People Budgeting | ↳ Simulasi Rekrutmen | F7-NV11 | HRD 7 | Tersedia | `#hrd-bud-sim` |
-| People Budgeting | ↳ Tren & Kurva S | F7-NV12 | HRD 7 | Tersedia | `#hrd-bud-trend` |
 

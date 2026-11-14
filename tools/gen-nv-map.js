@@ -16,6 +16,7 @@ const BASE = process.env.BASE || 'http://localhost:8811/hawk-live/';
     let sec = '', parent = '';
     for (const [route, name, code, st, soon, sub] of items) {
       if (route === '-') { sec = name; continue; }
+      if (route === '-end') { sec = ''; continue; }
       if (!sub) parent = name;
       md += `| ${[sec, sub ? parent : ''].filter(Boolean).join(' › ') || '—'} | ${sub ? '↳ ' : ''}${name} | ${code || '—'} | ${route[0] === '/' ? 'App 60 NV' : phaseOf(code, soon)} | ${data.status[st] || st} | \`${route[0] === '/' ? route : '#' + route}\` |\n`;
     }
