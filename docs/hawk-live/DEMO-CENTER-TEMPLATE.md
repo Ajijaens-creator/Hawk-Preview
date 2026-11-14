@@ -30,4 +30,4 @@ Tambahkan rute ke menu portal, misalnya `H.PORTALS.HRD.items.splice(i, 0, ['hrd-
 
 ## Pemakai
 - HRD: `hawk-live/hrd-dx.js`. Tim Made Gunarsa, Harja, Ayu, Lead Human Growth; 5 skenario. Uji `tests/hawk-live/hrd-dx.e2e.js` 27/27.
-- Operational, Commercial, Sales: didaftarkan oleh thread portal masing-masing.
+- Operational (`#ops-dx`, tim Eni Restini, Mila, Putu Ari; 2 skenario), Commercial (`#commercial-dx`, tim Commercial Manager, Rani, Bayu, Wulan; 4 skenario), Sales (`#sales-dx`, tim Sales Manager, Dewa, Sales B2B; 4 skenario): `hawk-live/portal-dx.js`, menu grup "Demo" di akhir sidebar portal masing-masing. Uji `tests/hawk-live/portal-dx.e2e.js`.

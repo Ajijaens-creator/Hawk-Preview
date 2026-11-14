@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T00:00:59.912Z">
+<meta name="hawk-standalone" content="2026-11-14T00:19:34.896Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Finance</title>
 <style>
@@ -5149,12 +5149,20 @@ if (typeof module !== 'undefined') module.exports = HR8;
 const ERP = 'https://preview.hawk.jaens.id/';
 /* [route, title, screen code, status] · status: ready | sandbox | planned | hidden */
 const PORTALS = {
-  Finance: { desc: 'Budget 7P, Purchasing, approval dan rekonsiliasi', items: [['budget', 'Budget 7P', '', 'sandbox'], ['mrf', 'Purchasing & MRF', '', 'sandbox'], ['commission', 'Komisi & Rekonsiliasi', 'F5-02', 'sandbox']] },
+  /* Finance = modul Finance lengkap di app HAWK 60 NV (Modul H NV-47..52, ruang kerja Finance, Demo Experience Center).
+     Rute berawalan '/' membuka app 60 NV (as=U-FIN = role demo Finance Manager Asri). Halaman sandbox lama
+     (budget, mrf, commission) DIARSIPKAN: status 'archived', tidak tampil di menu Finance, tetap bisa dibuka dari
+     Preview › Arsip Finance dan dari tautan Commercial/Sales/HRD yang sudah ada. */
+  Finance: { desc: 'Modul Finance lengkap HAWK: dashboard, AI capture, 3-way matching, hutang, GL, alokasi, budget 7P + Demo Center', items: [
+    ['/?as=U-FIN#/nv/47', 'Finance Control Dashboard', 'NV-47', 'ready'], ['/?as=U-FIN#/nv/48', 'AI Invoice & Receipt Capture', 'NV-48', 'ready'], ['/?as=U-FIN#/nv/49', 'PO–Receipt–Invoice Three-Way Matching', 'NV-49', 'ready'], ['/?as=U-FIN#/nv/50', 'Accounts Payable & Payment Control', 'NV-50', 'ready'], ['/?as=U-FIN#/nv/51', 'GL Posting, Accounting & Exception Review', 'NV-51', 'ready'], ['/?as=U-FIN#/nv/52', 'Cost Allocation & Inter-BU Reconciliation', 'NV-52', 'ready'],
+    ['-', 'Budget & referensi'], ['/?as=U-FIN#/nv/15', 'Budget tahunan', 'NV-15', 'ready'], ['/?as=U-FIN#/nv/16', '7P overview', 'NV-16', 'ready'], ['/?as=U-FIN#/nv/22', 'Revisi & reforecast', 'NV-22', 'ready'], ['/?as=U-FIN#/nv/23', 'Budget vs actual', 'NV-23', 'ready'], ['/?as=U-FIN#/nv/07', 'Shared Office', 'NV-07', 'ready'], ['/?as=U-FIN#/nv/36', 'Referensi PO', 'NV-36', 'ready'], ['/?as=U-FIN#/nv/40', 'Referensi stok', 'NV-40', 'ready'], ['/?as=U-FIN#/nv/53', 'Referensi aset', 'NV-53', 'ready'], ['/?as=U-FIN#/nv/56', 'Kapitalisasi', 'NV-56', 'ready'], ['/?as=U-FIN#/nv/61', 'Control Tower', 'NV-61', 'ready'],
+    ['-', 'Demo'], ['/?as=U-FIN#/dx?team=finance', 'Demo Experience Finance', 'DX', 'ready'],
+    ['budget', 'Budget 7P (arsip)', '', 'archived'], ['mrf', 'Purchasing & MRF (arsip)', '', 'archived'], ['commission', 'Komisi & Rekonsiliasi (arsip)', 'F5-02', 'archived']] },
   Operational: { desc: 'Operasional outlet, terapis, ruangan dan POS', items: [['pos', 'Operational & POS', 'F4-07', 'sandbox'], ['inventory', 'Inventory', '', 'sandbox']] },
   Commercial: { desc: 'Brand, Marketing & Communications', items: [['commercial', 'Executive Summary', 'F1-02', 'ready'], ['commercial-drill', 'Drill-down Executive Summary', 'F1-03', 'hidden'], ['commercial-budget', 'Commercial Budget', 'F2-09', 'ready'], ['budget-2027', 'Master Budget 2027', 'F2-09', 'ready'], ['campaign', 'Campaign Planner', 'F2-02', 'ready'], ['campaign-detail', 'Campaign Detail', 'F2-03', 'hidden'], ['studio', 'Content Studio', 'F2-04', 'ready'], ['brand', 'Brand & Communications', 'F2-01', 'ready'], ['digital', 'Digital Marketing', 'F2-05', 'ready'], ['social', 'Social Media', 'F2-06', 'ready'], ['kol', 'Media Partner & KOL', 'F2-07', 'ready'], ['attribution', 'Audience & Attribution', 'F2-08', 'ready'], ['mentor', 'AI Marketing Mentor', 'F2-10', 'ready'], ['-', 'Kinerja Tim'], ['commercial-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['commercial-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['commercial-status', 'Status Tim', 'F6-07', 'planned']] },
   Sales: { desc: 'Sales, reservasi dan kemitraan', items: [['sales-home', 'Beranda Sales', 'F1-04', 'ready'], ['sales', 'Sales Manager', 'F3-02', 'sandbox'], ['owner', 'Owner Eagle Eye', 'F3-01', 'sandbox'], ['reservation', 'Sales B2C & Reservasi', 'F4-02', 'sandbox'], ['b2b', 'Sales B2B', 'F3-05', 'sandbox'], ['driver', 'Driver & Referral', 'F5-01', 'sandbox'], ['client', 'Client Portal', 'F4-04', 'sandbox'], ['-', 'Kinerja Tim'], ['sales-team', 'Ambidex & XRace', 'F6-01', 'sandbox'], ['sales-kpi', 'Kinerja & KPI', 'F6-04', 'planned'], ['sales-status', 'Status Tim', 'F6-07', 'planned']] }
 };
-const HOME = { Finance: 'budget', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
+const HOME = { Finance: '/?as=U-FIN#/nv/47', Operational: 'pos', Commercial: 'commercial', Sales: 'sales-home' };
 const SCREENS = [
   ['F1-01', 'Pemilih Portal', 1, 'picker', 'ready', 'Semua role'], ['F1-02', 'Commercial Executive Summary', 1, 'commercial', 'ready', 'Commercial Manager, Owner'], ['F1-03', 'Drill-down Executive Summary', 1, 'commercial-drill?metric=revenue', 'ready', 'Commercial Manager, Owner'], ['F1-04', 'Beranda Sales', 1, 'sales-home', 'ready', 'Sales Manager, Owner, staf'],
   ['F2-01', 'Brand & Communications', 2, 'brand', 'ready', 'Commercial Manager, Brand Designer'], ['F2-02', 'Campaign Planner', 2, 'campaign', 'ready', 'Commercial Manager, Digital'], ['F2-03', 'Campaign Detail', 2, 'campaign-detail?id=CMP-001', 'ready', 'Commercial Manager, PIC campaign'], ['F2-04', 'Content Studio', 2, 'studio', 'ready', 'Content Lead, Creator, Editor, Reviewer'], ['F2-05', 'Digital Marketing', 2, 'digital', 'ready', 'Digital Marketing, Commercial Manager'], ['F2-06', 'Social Media', 2, 'social', 'ready', 'Social Media, Content Lead'], ['F2-07', 'Media & KOL', 2, 'kol', 'ready', 'Commercial Manager, PIC partner'], ['F2-08', 'Audience & Attribution', 2, 'attribution', 'ready', 'Commercial Manager, Finance'], ['F2-09', 'Commercial Budget', 2, 'commercial-budget', 'ready', 'Commercial Manager, Finance'], ['F2-10', 'AI Mentor', 2, 'mentor', 'ready', 'Commercial Manager'],
@@ -5164,7 +5172,10 @@ const SCREENS = [
   ['F6-01', 'Daily Race', 6, 'sales-team', 'sandbox'], ['F6-02', 'Weekly Race', 6, '', 'planned'], ['F6-03', 'Monthly Reflection & STRACON', 6, '', 'planned'], ['F6-04', 'Kinerja & KPI Overview', 6, 'sales-kpi', 'planned'], ['F6-05', 'XScore & People Performance', 6, '', 'planned'], ['F6-06', 'KPI Library & Kontrak', 6, '', 'planned'], ['F6-07', 'Status Tim', 6, 'sales-status', 'planned'],
   ['F7-01', 'Peta Preview', 7, 'screens', 'ready', 'Semua role'], ['F7-02', 'Jejak Booking', 7, 'attribution?view=journey&q=LEAD-001', 'ready', 'Semua role']
 ];
-const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia' };
+const STATUS_LABEL = { ready: 'Tersedia', sandbox: 'Versi sandbox', planned: 'Belum dibuat', hidden: 'Tersedia', archived: 'Diarsipkan' };
+const EXT = (r) => typeof r === 'string' && r[0] === '/';
+const homeHref = (g) => EXT(HOME[g]) ? HOME[g] : '#' + HOME[g];
+const ARCHIVED = (i) => i[3] === 'hidden' || i[3] === 'archived';
 const ROLES = [['owner', 'Owner'], ['commercial-manager', 'Commercial Manager'], ['sales-manager', 'Sales Manager'], ['reservation-staff', 'Staf Reservasi B2C'], ['b2b-staff', 'Sales B2B'], ['finance-manager', 'Finance Manager'], ['hrd', 'HRD (People Cost)']];
 const PURPOSE = {
   commercial: 'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.',
@@ -5245,7 +5256,7 @@ const teams = scope => {
     '<div class="grid">' + card('Kinerja & KPI', `<p>Completion demo <b>${dec(100 * tasks.filter(t => t.status === 'done').length / tasks.length)}%</b></p><p>XScore dan kontrak KPI masuk tahap pengembangan lanjutan.</p>`) + card('Status Tim', '<p>Status sesi demo · Tidak diketahui</p><p>Jadwal demo · Dalam shift</p>') + '</div>';
 };
 function bridge() {
-  return '<div class="flow">' + Object.entries(PORTALS).map(([group, p]) => `<a class="card" href="#${HOME[group]}"><h2>${group}</h2><small>${p.items.filter(i => i[0] !== '-' && i[3] !== 'hidden').length} ruang demo</small></a>`).join('') + '</div>' +
+  return '<div class="flow">' + Object.entries(PORTALS).map(([group, p]) => `<a class="card" href="${homeHref(group)}"><h2>${group}</h2><small>${p.items.filter(i => i[0] !== '-' && !ARCHIVED(i)).length} ruang demo</small></a>`).join('') + '</div>' +
     card('Skenario uji lintas portal', '<ol><li>Ajukan MRF di Commercial Budget. Setujui dan catat realisasi di Finance.</li><li>Buka lead Instagram/WhatsApp di Sales. Alihkan ke staf atau langsung booking.</li><li>Check-in, selesaikan, lalu bayar di Operational & POS. Cek revenue dan atribusi di Executive Summary (Giant Spa Ubud · Agustus 2026).</li><li>Aktifkan driver setelah perjanjian. Buat booking driver, selesaikan di POS, lalu catat komisi di Finance.</li></ol><div class="actions">' + link('screens', 'Buka peta semua layar') + button('reset', 'Reset demo') + '</div>');
 }
 function sandboxScreen(id) {
@@ -5278,6 +5289,7 @@ function sandboxScreen(id) {
 const erpLinks = (items) => `<p class="erp-links">Modul resmi di HAWK ERP preview (rute terverifikasi): ${items.map(([nv, label]) => `<a href="${ERP}#/nv/${nv}" target="_blank" rel="noopener">${label} ↗</a>`).join(' · ')}</p>`;
 const phaseBanner = (code, status) => {
   const s = SCREENS.find(x => x[0] === code);
+  if (status === 'archived') return `<div class="phase-banner"><b>Diarsipkan</b> Halaman sandbox Finance lama ini tidak lagi tampil di menu Finance. Portal Finance sekarang memakai <a href="/?as=U-FIN#/nv/47">modul Finance lengkap HAWK (NV-47)</a>. Data dan interaksi di bawah tetap berjalan untuk alur Commercial, Sales, dan HRD.</div>`;
   if (!s || status === 'ready' || status === 'hidden') return '';
   return `<div class="phase-banner"><b>${code} · ${status === 'planned' ? 'Belum dibuat' : 'Versi sandbox'}</b> Layar lengkap dijadwalkan pada Fase ${s[2]}. ${status === 'planned' ? 'Belum ada interaksi di layar ini.' : 'Interaksi sandbox di bawah sudah tersambung ke model lintas portal.'}</div>`;
 };
@@ -5529,11 +5541,14 @@ const navOpen = new Set();
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
-  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
-  nav.innerHTML = Object.entries(PORTALS).map(([name, p]) => {
-    const open = navOpen.has(name);
-    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => i[3] !== 'hidden').map(navLink).join('')}</div></div>`;
-  }).join('') + `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
+  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : EXT(route) ? `<a href="${route}" class="nav-ext"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
+  /* Aji 13 Nov 2026: sidebar hanya menampilkan menu portal yang sedang aktif. Pindah divisi lewat popup logo HAWK
+     (pemilih portal). Tanpa portal aktif (Peta alur / Peta layar) hanya grup Preview yang tampil. */
+  const inPortal = !!portal;
+  nav.innerHTML = Object.entries(PORTALS).filter(([name]) => name === portal).map(([name, p]) => {
+    const open = true;
+    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => !ARCHIVED(i)).map(navLink).join('')}${p.items.some(i => i[3] === 'archived') ? `<p class="nav-sub">Arsip (lama)</p>${p.items.filter(i => i[3] === 'archived').map(navLink).join('')}` : ''}</div></div>`;
+  }).join('') + (inPortal ? '' : `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`);
 }
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-mod]');
@@ -5596,7 +5611,7 @@ picker.addEventListener('close', () => { if (parseHash().id === 'picker') histor
 picker.addEventListener('click', (e) => {
   if (e.target === picker) { picker.close(); return; }
   const opt = e.target.closest('.option[data-portal]');
-  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); location.hash = HOME[opt.dataset.portal]; }
+  if (opt) { prefs.portal = opt.dataset.portal; HOOKS.portalEnter?.[opt.dataset.portal]?.(); savePrefs(); picker.close(); if (EXT(HOME[opt.dataset.portal])) location.href = HOME[opt.dataset.portal]; else location.hash = HOME[opt.dataset.portal]; }
 });
 document.querySelectorAll('[data-open-picker]').forEach(b => b.addEventListener('click', () => openPicker(b)));
 $('#menu').addEventListener('click', () => { const open = !shell.classList.contains('nav-open'); setNav(open); if (open) (nav.querySelector('a.cur') || nav.querySelector('button'))?.focus(); });
@@ -5640,6 +5655,7 @@ window.HL = { get state() { return state; }, prefs, savePrefs, esc, num, rp, jt,
 document.addEventListener('DOMContentLoaded', () => {
   HOOKS.boot?.forEach(fn => fn());
   fillRoles();
+  if (!location.hash && document.body.dataset.portal && EXT(HOME[document.body.dataset.portal])) { location.replace(HOME[document.body.dataset.portal]); return; }
   if (!location.hash && document.body.dataset.portal) history.replaceState(null, '', '#' + HOME[document.body.dataset.portal]);
   render();
 });
@@ -8608,6 +8624,190 @@ H.REGISTRY['budget-2027'] = Object.assign((params) => {
   }
   return `${notice}<div class="heading-row">${bar}</div>${head}${tabs}${body}`;
 }, { title: () => 'Master Marketing Budget 2027' });
+})();
+
+;
+/* HAWK ERP · Demo Experience Center untuk portal Operational, Commercial dan Sales — DATA DEMO / SIMULASI.
+   Memakai template hawk-live/dx-lab.js (model Demo Center Finance, sama dengan HRD #hrd-dx): Test Lab dengan login role tim
+   portal itu saja, Desktop / iPad / Mobile, Smart Tutor dan Simulator. Satu portal = satu lab, fokus pada timnya sendiri
+   (Aji 14 Nov 2026). Langkah divisi lain hanya muncul bila memang bagian alur dan berjalan otomatis sebagai konteks.
+   Model: HAWK.update (booking, lead, MRF, partner, pipeline) dan CX.update (campaign, konten, brand). Tidak ada API live. */
+(() => {
+'use strict';
+const H = window.HL;
+if (!H || !H.DXLAB) return;
+const { esc, card } = H;
+const hrName = (emp, fb) => { try { return (window.HR && HR.ensure(H.state).people.find(p => p.id === emp)?.name) || fb; } catch (e) { return fb; } };
+const view = (msg = 'dilihat') => () => msg;
+/* booking butuh slot HAWK kosong (3 slot demo: 11.00, 13.00, 15.00) */
+const freeSlot = (s) => { const f = s.slots.find(sl => !s.bookings.some(b => b.slot === sl && b.status !== 'cancelled')); if (!f) throw Error('Semua slot demo sudah terisi. Tekan Mulai ulang untuk mengembalikan data demo.'); return f; };
+const lastId = (rows) => rows[rows.length - 1].id;
+
+/* persona lintas divisi (hanya untuk langkah konteks yang memang bagian alur) */
+const CTX = {
+  dewa: { id: 'dewa', name: 'Dewa', role: 'reservation-staff', title: 'Staf Reservasi B2C', home: 'reservation', does: 'Menerima lead dan membuat booking (Sales).' },
+  mila: { id: 'mila', emp: 'EMP-0153', name: 'Mila', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'pos', does: 'Check-in, treatment dan pembayaran di outlet (Operational).' },
+  asri: { id: 'asri', name: 'Asri', role: 'finance-manager', title: 'Finance Manager', home: 'mrf', does: 'Menyetujui MRF, memposting realisasi dan membayar komisi (Finance).' },
+  driver: { id: 'driver', name: 'Driver Demo', role: 'public', title: 'Partner referral DRV-001', home: 'driver', does: 'Partner luar: menyetujui perjanjian dan mengirim tamu.' }
+};
+
+function personaTab(lab, scope) {
+  const cur = H.prefs.persona;
+  return () => card('Persona demo', `<section class="grid g4 keep2">${lab.personas.map(p => `<article class="card dx-persona${cur === p.id ? ' on' : ''}"><div class="lbl">${esc(p.title)}${lab.team.includes(p.id) ? '' : ' · konteks alur'}</div><h3>${esc(lab.nameOf ? lab.nameOf(p) : p.name)}</h3><p class="muted small">${esc(p.does)}</p></article>`).join('')}</section><p class="muted small">Login role di Test Lab hanya untuk tim ${esc(scope)}. Persona divisi lain menjalankan langkahnya otomatis bila memang bagian alur ${esc(scope)}. Demo Center divisi lain ada di portalnya masing-masing.</p>`);
+}
+
+function register(cfg) {
+  const lab = { ...cfg };
+  const nm = (p) => (cfg.nameOf ? cfg.nameOf(p) : p.name) || p.id;
+  /* aksi CX dicatat atas nama anggota tim (MBR-…) agar histori campaign/konten menampilkan nama yang benar */
+  const memberOf = (by) => { const p = cfg.personas.find(x => by === `${nm(x)} (${x.title})`); return (p && p.member) || by; };
+  H.DXLAB.define({
+    ...cfg,
+    extra: { label: 'Persona tim', html: personaTab(cfg, cfg.portal) },
+    update: (state, a, input) => a.startsWith('cx:') ? CX.update(state, a.slice(3), { ...input, by: memberOf(input.by) }) : HAWK.update(state, a, input)
+  });
+  if (H.DXLAB.EMBED && H.prefs.portal === cfg.portal) { const p = cfg.personas.find(x => x.id === H.prefs.persona); if (p && p.member) H.prefs.member = p.member; }
+  /* seperti portal Finance: grup "Demo" di akhir menu portal itu sendiri (tidak ada menu ke divisi lain) */
+  const items = H.PORTALS[cfg.portal].items;
+  if (!items.some(i => i[0] === cfg.route)) items.push(['-', 'Demo'], [cfg.route, 'Demo Experience Center', cfg.code, 'ready']);
+  H.PURPOSE[cfg.route] = cfg.purpose;
+  H.SCREENS.push([cfg.code, `${cfg.portal} · Demo Experience Center`, `${cfg.portal} DX`, cfg.route, 'ready', 'Tim ' + cfg.portal]);
+  return lab;
+}
+
+/* ================= Operational ================= */
+const OPS = [
+  { id: 'eni', emp: 'EMP-0151', name: 'Eni Restini', role: 'ops-manager', title: 'Operational Manager', home: 'pos', does: 'Memantau layanan 4 outlet, menyetujui refund dan pengecualian.' },
+  { id: 'mila', emp: 'EMP-0153', name: 'Mila', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'pos', does: 'Memimpin outlet: check-in tamu, pembatalan dan pembayaran di POS.' },
+  { id: 'ari', emp: 'EMP-0001', name: 'Putu Ari', role: 'therapist', title: 'Therapist Spa Ubud', home: 'pos', does: 'Menjalankan treatment dan menandai treatment selesai.' },
+  CTX.dewa
+];
+register({
+  portal: 'Operational', route: 'ops-dx', page: 'operational.html', code: 'DX-OPS', after: 'pos', publicRole: 'ops-manager',
+  title: 'Demo Experience Center Operational', eyebrow: 'HAWK × JAENS · DX-OPS · GUIDED DEMO',
+  intro: 'Belajar alur kerja outlet dengan menekan tombol asli aplikasi HAWK. Login sebagai Operational Manager, Supervisor atau Therapist, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim Operational menjalankan alur outlet (check-in, treatment, pembayaran, pembatalan, refund); booking dari Sales hanya muncul sebagai konteks otomatis.',
+  personas: OPS, team: ['eni', 'mila', 'ari'], nameOf: (p) => p.emp ? hrName(p.emp, p.name) : p.name,
+  sim: [{ who: 'eni', device: 'desktop' }, { who: 'mila', device: 'ipad' }, { who: 'ari', device: 'mobile' }],
+  scenarios: [
+    { id: 'day', name: 'Tamu datang → treatment → bayar', why: 'Booking dari Sales masuk ke outlet. Supervisor check-in, therapist menyelesaikan treatment, pembayaran tercatat di POS dan revenue masuk Executive Summary.', steps: [
+      { who: 'dewa', title: 'Booking Wellness Massage masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'mila', title: 'Check-in tamu di POS', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); return c.bk + ' · checked-in'; } },
+      { who: 'ari', title: 'Treatment selesai', route: () => 'pos', run: (U, c) => { U('complete', { id: c.bk }); return c.bk + ' · completed'; } },
+      { who: 'mila', title: 'Catat pembayaran di POS', route: () => 'pos', run: (U, c) => { U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'eni', title: 'Pantau transaksi outlet hari ini', route: () => 'pos', run: view() }
+    ] },
+    { id: 'refund', name: 'Pembatalan & refund', why: 'Tamu membatalkan sebelum datang (slot kembali tersedia). Tamu lain mengeluh setelah bayar: Operational Manager menyetujui refund.', steps: [
+      { who: 'dewa', title: 'Booking masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk1 = lastId(s.bookings); return c.bk1; } },
+      { who: 'mila', title: 'Batalkan booking (tamu tidak jadi datang)', route: () => 'pos', run: (U, c) => { U('cancel', { id: c.bk1 }); return c.bk1 + ' · cancelled, slot kembali'; } },
+      { who: 'dewa', title: 'Booking tamu berikutnya masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk2 = lastId(s.bookings); return c.bk2; } },
+      { who: 'mila', title: 'Check-in tamu', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk2 }); return c.bk2; } },
+      { who: 'ari', title: 'Treatment selesai', route: () => 'pos', run: (U, c) => { U('complete', { id: c.bk2 }); return c.bk2; } },
+      { who: 'mila', title: 'Catat pembayaran', route: () => 'pos', run: (U, c) => { U('pay', { id: c.bk2 }); return c.bk2 + ' · paid'; } },
+      { who: 'eni', title: 'Setujui refund keluhan tamu', route: () => 'pos', run: (U, c) => { U('refund', { id: c.bk2 }); return c.bk2 + ' · refunded'; } }
+    ] }
+  ]
+});
+
+/* ================= Commercial ================= */
+const COM = [
+  { id: 'cm', name: 'Commercial Manager', role: 'commercial-manager', title: 'Approval campaign & budget', home: 'commercial', does: 'Menyetujui campaign, membaca revenue, budget marketing dan ROMI.' },
+  { id: 'rani', name: 'Rani', member: 'MBR-C01', role: 'commercial-manager', title: 'Content Lead · reviewer', home: 'studio?view=board', does: 'Mereview dan menyetujui konten, menjaga brand tone.' },
+  { id: 'bayu', name: 'Bayu', member: 'MBR-C02', role: 'commercial-manager', title: 'Digital Marketing', home: 'campaign', does: 'Membuat campaign, mengajukan biaya, merencanakan konten, membaca atribusi.' },
+  { id: 'wulan', name: 'Wulan', member: 'MBR-C05', role: 'commercial-manager', title: 'Social Media Admin', home: 'social', does: 'Menjadwalkan dan menerbitkan konten, distribusi komunikasi.' },
+  CTX.asri, CTX.dewa, CTX.mila
+];
+register({
+  portal: 'Commercial', route: 'commercial-dx', page: 'commercial.html', code: 'DX-COM', after: 'commercial', publicRole: 'commercial-manager',
+  title: 'Demo Experience Center Commercial', eyebrow: 'HAWK × JAENS · DX-COM · GUIDED DEMO',
+  intro: 'Belajar alur kerja Brand, Marketing & Communications dengan menekan tombol asli aplikasi HAWK. Login sebagai Commercial Manager, Rani, Bayu atau Wulan, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim Commercial menjalankan campaign, konten dan brand; Finance (MRF) dan Sales/Operational (lead → booking) hanya muncul sebagai konteks otomatis.',
+  personas: COM, team: ['cm', 'rani', 'bayu', 'wulan'],
+  sim: [{ who: 'cm', device: 'desktop' }, { who: 'bayu', device: 'desktop' }, { who: 'rani', device: 'ipad' }, { who: 'wulan', device: 'mobile' }],
+  scenarios: [
+    { id: 'campaign', name: 'Campaign baru Shanti → Running', why: 'Bayu membuat campaign dari template, Commercial Manager menyetujui, biaya diajukan lewat MRF (Finance menyetujui otomatis), lalu campaign dijadwalkan dan berjalan.', steps: [
+      { who: 'bayu', title: 'Buat draft campaign dari template', route: () => 'campaign?view=templates', run: (U, c) => { c.cmp = U('cx:cmp-create', { template: 'TPL-01', name: 'Shanti Morning Ritual', outlet: 'OUT-SHT', utm: 'cmp_dx_shanti_' + (Date.now() % 100000), budget: '10000000', bookings: '30', pic: 'MBR-C02', start: '2026-09-01', end: '2026-09-30' }); return c.cmp; } },
+      { who: 'cm', title: 'Setujui campaign', route: (c) => `campaign-detail?id=${c.cmp}`, run: (U, c) => U('cx:cmp-approve', { id: c.cmp }) },
+      { who: 'bayu', title: 'Ajukan biaya iklan Rp2.000.000 (MRF)', route: () => 'commercial-budget?view=requests', run: (U, c, s) => { U('request', { amount: '2000000', campaign: c.cmp, pos: 'Promotion', note: 'Meta Ads Shanti Morning Ritual' }); c.mrf = lastId(s.requests); return c.mrf; } },
+      { who: 'asri', title: 'Finance menyetujui dan memposting MRF', route: () => 'commercial-budget?view=requests', run: (U, c) => { U('approve', { id: c.mrf }); U('post', { id: c.mrf }); return c.mrf + ' · posted'; } },
+      { who: 'bayu', title: 'Jadwalkan campaign', route: (c) => `campaign-detail?id=${c.cmp}`, run: (U, c) => U('cx:cmp-schedule', { id: c.cmp }) },
+      { who: 'bayu', title: 'Jalankan campaign', route: (c) => `campaign-detail?id=${c.cmp}`, run: (U, c) => U('cx:cmp-run', { id: c.cmp }) },
+      { who: 'cm', title: 'Cek realisasi Commercial Budget', route: () => 'commercial-budget', run: view() }
+    ] },
+    { id: 'content', name: 'Konten Reels → review → terbit', why: 'Konten direncanakan dari campaign, aset diajukan review, Rani menyetujui, Wulan menjadwalkan dan menerbitkan, lalu hasilnya dianalisis.', steps: [
+      { who: 'bayu', title: 'Buat konten dari brief CMP-002', route: () => 'campaign-detail?id=CMP-002', run: (U, c) => { c.cnt = U('cx:cnt-create', { title: 'Reels Morning Ritual Shanti', campaign: 'CMP-002', pillar: 'Wellness ritual', format: 'Reels', channel: 'Instagram', pic: 'MBR-C02', due: '2026-08-30' }); return c.cnt; } },
+      { who: 'bayu', title: 'Rencanakan & tetapkan creator/editor', route: (c) => `studio?view=board&content=${c.cnt}`, run: (U, c) => { U('cx:cnt-stage', { id: c.cnt, to: 'Planned' }); U('cx:cnt-assign', { id: c.cnt, role: 'creator', pic: 'MBR-C03' }); U('cx:cnt-assign', { id: c.cnt, role: 'editor', pic: 'MBR-C04' }); return 'Planned · creator Dita · editor Arya'; } },
+      { who: 'bayu', title: 'Produksi: unggah aset v1', route: (c) => `studio?view=board&content=${c.cnt}&ctab=assets`, run: (U, c) => { U('cx:cnt-stage', { id: c.cnt, to: 'Production' }); U('cx:cnt-asset', { id: c.cnt }); return 'Production · aset v1'; } },
+      { who: 'bayu', title: 'Ajukan review', route: (c) => `studio?view=board&content=${c.cnt}&ctab=review`, run: (U, c) => U('cx:cnt-submit', { id: c.cnt }) },
+      { who: 'rani', title: 'Review & approve konten', route: (c) => `studio?view=board&content=${c.cnt}&ctab=review`, run: (U, c) => U('cx:cnt-approve', { id: c.cnt, note: 'Sesuai brand tone' }) },
+      { who: 'wulan', title: 'Jadwalkan Instagram 30 Agu 18.00', route: (c) => `studio?view=board&content=${c.cnt}&ctab=publish`, run: (U, c) => { c.pub = U('cx:cnt-schedule', { id: c.cnt, platform: 'Instagram', at: '2026-08-30 18:00', account: '@jaensspa.shanti' }); return c.pub; } },
+      { who: 'wulan', title: 'Terbitkan di Instagram', route: (c) => `studio?view=board&content=${c.cnt}&ctab=publish`, run: (U, c) => U('cx:pub-publish', { id: c.pub }) },
+      { who: 'bayu', title: 'Catat analisis hasil', route: (c) => `studio?view=board&content=${c.cnt}&ctab=analytics`, run: (U, c) => U('cx:cnt-analyse', { id: c.cnt }) }
+    ] },
+    { id: 'brand', name: 'Brand & komunikasi', why: 'Rani menyetujui tone of voice Jaens Spa dan pesan Essence, Commercial Manager menyetujui banner Bisma, Wulan menandai terdistribusi.', steps: [
+      { who: 'cm', title: 'Buka progres brand per unit', route: () => 'brand', run: view() },
+      { who: 'rani', title: 'Setujui Tone of voice Jaens Spa', route: () => 'brand?view=foundation', run: (U) => U('cx:brand-approve', { id: 'BR-SPA', el: 'tone' }) },
+      { who: 'rani', title: 'Setujui pesan “Bahan alami” (Essence)', route: () => 'brand?view=messages', run: (U) => U('cx:msg-version', { id: 'MSG-003' }) },
+      { who: 'cm', title: 'Setujui standing banner Bisma', route: () => 'brand?view=calendar', run: (U) => U('cx:com-advance', { id: 'COM-004' }) },
+      { who: 'wulan', title: 'Tandai banner terdistribusi', route: () => 'brand?view=calendar', run: (U) => U('cx:com-advance', { id: 'COM-004' }) }
+    ] },
+    { id: 'lead', name: 'Campaign → lead → booking → atribusi', why: 'Konten Instagram menghasilkan lead WhatsApp. Sales membuat booking dan outlet menyelesaikan pembayaran (otomatis), lalu Commercial membaca atribusi dan Executive Summary.', steps: [
+      { who: 'wulan', title: 'Pantau Instagram → WhatsApp', route: () => 'social', run: view() },
+      { who: 'dewa', title: 'Sales: lead WhatsApp → booking', route: () => 'reservation', run: (U, c, s) => { U('lead', { channel: 'WhatsApp' }); c.lead = lastId(s.leads); U('book', { id: c.lead, slot: freeSlot(s) }); c.bk = lastId(s.bookings); return `${c.lead} → ${c.bk}`; } },
+      { who: 'mila', title: 'Outlet: check-in, treatment, bayar', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); U('complete', { id: c.bk }); U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'bayu', title: 'Baca jejak atribusi booking', route: () => 'attribution', run: view() },
+      { who: 'cm', title: 'Cek Executive Summary', route: () => 'commercial', run: view() }
+    ] }
+  ]
+});
+
+/* ================= Sales ================= */
+const SAL = [
+  { id: 'sm', name: 'Sales Manager', role: 'sales-manager', title: 'Pipeline & tim Sales', home: 'sales', does: 'Memantau booking, revenue per metode jual dan pipeline B2B; menyetujui negosiasi.' },
+  { id: 'dewa', name: 'Dewa', role: 'reservation-staff', title: 'Staf Reservasi B2C', home: 'reservation', does: 'Inbox lead, alih ke staf, Booking Desk dan pembatalan.' },
+  { id: 'b2b', name: 'Sales B2B', role: 'b2b-staff', title: 'Partner hotel/villa & driver', home: 'b2b', does: 'Pipeline hotel/villa dan aktivasi partner referral.' },
+  CTX.mila, CTX.asri, CTX.driver
+];
+register({
+  portal: 'Sales', route: 'sales-dx', page: 'sales.html', code: 'DX-SLS', after: 'sales-home', publicRole: 'b2b-staff',
+  title: 'Demo Experience Center Sales', eyebrow: 'HAWK × JAENS · DX-SLS · GUIDED DEMO',
+  intro: 'Belajar alur kerja Sales, reservasi dan kemitraan dengan menekan tombol asli aplikasi HAWK. Login sebagai Sales Manager, Dewa (Reservasi B2C) atau Sales B2B, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  purpose: 'Persona tim Sales menjalankan lead, booking, pipeline B2B dan partner referral; outlet (POS) dan Finance (komisi) hanya muncul sebagai konteks otomatis.',
+  personas: SAL, team: ['sm', 'dewa', 'b2b'],
+  sim: [{ who: 'sm', device: 'desktop' }, { who: 'dewa', device: 'mobile' }, { who: 'b2b', device: 'ipad' }],
+  scenarios: [
+    { id: 'b2c', name: 'Lead WhatsApp → booking dibayar', why: 'Lead dari Instagram masuk lewat WhatsApp, Dewa membuat booking, outlet menyelesaikan pembayaran (otomatis), Sales Manager membaca hasilnya.', steps: [
+      { who: 'dewa', title: 'Tambah lead WhatsApp di Inbox reservasi', route: () => 'reservation', run: (U, c, s) => { U('lead', { channel: 'WhatsApp' }); c.lead = lastId(s.leads); return c.lead; } },
+      { who: 'dewa', title: 'Konfirmasi booking di Booking Desk', route: () => 'reservation', run: (U, c, s) => { U('book', { id: c.lead, slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'mila', title: 'Outlet: check-in, treatment, bayar', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); U('complete', { id: c.bk }); U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'sm', title: 'Cek revenue & jejak hasil Sales', route: () => 'sales', run: view() }
+    ] },
+    { id: 'handoff', name: 'Lead telepon → staf → batal', why: 'Lead telepon dialihkan ke staf, dibooking, lalu tamu membatalkan: slot kembali tersedia dan lead kembali ke staf untuk ditindaklanjuti.', steps: [
+      { who: 'dewa', title: 'Tambah lead Telepon', route: () => 'reservation', run: (U, c, s) => { U('lead', { channel: 'Telepon' }); c.lead = lastId(s.leads); return c.lead; } },
+      { who: 'dewa', title: 'Alihkan lead ke staf', route: () => 'reservation', run: (U, c) => { U('handoff', { id: c.lead }); return c.lead + ' · staff'; } },
+      { who: 'dewa', title: 'Booking untuk lead', route: () => 'reservation', run: (U, c, s) => { U('book', { id: c.lead, slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'dewa', title: 'Tamu membatalkan: batalkan booking', route: () => 'pos', run: (U, c) => { U('cancel', { id: c.bk }); return c.bk + ' · cancelled, lead kembali ke staf'; } },
+      { who: 'sm', title: 'Pantau lead terbuka', route: () => 'sales', run: view() }
+    ] },
+    { id: 'b2b', name: 'Pipeline hotel B2B → booking pertama', why: 'Sales B2B membawa Ubud Hotel Demo dari prospek sampai booking pertama; Sales Manager menyetujui tahap negosiasi.', steps: [
+      { who: 'b2b', title: 'Kualifikasi Ubud Hotel Demo', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Kirim proposal kemitraan', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'sm', title: 'Setujui masuk negosiasi', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Kontrak menang', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Aktifkan partner', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'b2b', title: 'Catat booking pertama', route: () => 'b2b', run: (U, c, s) => { U('pipeline'); return s.b2b.stage; } },
+      { who: 'sm', title: 'Baca pipeline di Sales Manager', route: () => 'sales', run: view() }
+    ] },
+    { id: 'driver', name: 'Driver referral → komisi', why: 'Partner driver menyetujui perjanjian, Sales B2B mengaktifkan, driver mengirim tamu; outlet dan Finance menyelesaikan transaksi dan komisi (otomatis).', steps: [
+      { who: 'driver', title: 'Driver menyetujui perjanjian demo', route: () => 'driver', run: (U) => { U('agreement'); return 'perjanjian disetujui'; } },
+      { who: 'b2b', title: 'Aktifkan partner DRV-001', route: () => 'driver', run: (U) => { U('activate'); return 'DRV-001 aktif'; } },
+      { who: 'driver', title: 'Driver mengirim tamu (booking referral)', route: () => 'driver', run: (U, c, s) => { U('book', { referral: 'yes', slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
+      { who: 'mila', title: 'Outlet: check-in, treatment, bayar', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); U('complete', { id: c.bk }); U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
+      { who: 'asri', title: 'Finance mencatat pembayaran komisi', route: () => 'commission', run: (U, c) => { U('payout', { id: c.bk }); return c.bk + ' · komisi dibayar'; } },
+      { who: 'sm', title: 'Cek komisi valid & booking referral', route: () => 'sales', run: view() }
+    ] }
+  ]
+});
 })();
 
 </script>
