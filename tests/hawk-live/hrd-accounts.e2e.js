@@ -24,7 +24,8 @@ const PAY = ['hrd-payroll', 'hrd-pay-process', 'hrd-pay-slip', 'hrd-pay-rules', 
   ok('Tanpa opsi generik "Manager HRD"/"Staf HRD"', !opts.includes('Manager HRD') && !opts.includes('Staf HRD'));
   ok('Default masuk sebagai Made Gunarsa (chip profil)', (await p.locator('#role-name').innerText()) === 'Made Gunarsa' && /Manager HRD/.test(await p.locator('.role-chip small').innerText()));
 
-  const as = async (id) => { await p.selectOption('#role', 'acct:' + id); await p.waitForTimeout(300); };
+  const VAL = { made: 'hrd', ayu: 'hrd-ops', hg: 'hg-lead' };
+  const as = async (id) => { await p.selectOption('#role', VAL[id] || 'acct:' + id); await p.waitForTimeout(300); };
   const view = async (route) => { await p.evaluate((r) => { location.hash = r; }, route); await p.waitForTimeout(250); return p.locator('#view').innerText(); };
   const rpRe = /Rp\s?\d/;
 
