@@ -39,7 +39,9 @@ const CHECK = {
     await p.goto(BASE + L.page + '#' + L.route); await p.reload(); await p.waitForTimeout(1200);
     await shot(`${L.route}-01-lab`);
     const nav = await p.locator('#nav').innerText();
-    ok(`${L.portal}: menu portal punya Demo Experience Center`, /Demo Experience Center/.test(nav) && (await p.locator(`#nav a[href="#${L.route}"]`).count()) === 1);
+    ok(`${L.portal}: sidebar tanpa nama/menu divisi`, !['Finance', 'Operational', 'Commercial', 'Sales', 'HRD'].some(n => new RegExp('^' + n + '$', 'm').test(nav)) && !(await p.locator('#nav button[data-mod]').count()));
+    ok(`${L.portal}: kartu besar Demo Experience Center paling atas`, await p.evaluate((r) => { const f = document.querySelector('#nav').firstElementChild; return f && f.classList.contains('nav-dx') && f.getAttribute('href') === '#' + r; }, L.route));
+    ok(`${L.portal}: menu portal punya Demo Experience Center`, (await p.locator(`#nav a[href="#${L.route}"]`).count()) === 1);
     const pills = await p.locator('#dxl-labhead [data-dxl="as"]').allInnerTexts();
     ok(`${L.portal}: login role hanya tim (${L.pills.join(', ')})`, pills.length === L.pills.length && L.pills.every(n => pills.some(x => x.includes(n))), pills.join(' | '));
     ok(`${L.portal}: divisi lain tanpa tombol login`, !pills.some(x => L.not.test(x)));

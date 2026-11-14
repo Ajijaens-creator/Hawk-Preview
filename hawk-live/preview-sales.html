@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T00:22:45.288Z">
+<meta name="hawk-standalone" content="2026-11-14T00:34:39.433Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Sales</title>
 <style>
@@ -1589,6 +1589,11 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 #dxlab-stage .dx-li{width:100%}
 .dx-embed .demo-banner{display:none}
 @media (max-width:720px){.dx-hero{flex-direction:column;align-items:flex-start}.dx-hero-r{align-items:flex-start}.dx-sim{grid-template-columns:1fr}}
+/* sidebar mandiri per modul (Aji 14 Nov 2026): tanpa header divisi, daftar menu langsung di bawah kartu Demo Experience Center */
+.nav-flat .nav-items { display: block; margin-left: 0; padding-left: 0; border-left: 0; }
+.nav .nav-dx { margin: 4px 0 12px; padding: 14px 12px; }
+.nav .nav-dx small { font-size: 11px; }
+.nav .nav-dx b { display: block; font-size: 15px; }
 
 </style>
 </head>
@@ -5538,6 +5543,7 @@ function titleOf(id) {
 }
 const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S', HRD: 'H' };
 const navOpen = new Set();
+const HL_DX_INFO = (route) => { const lab = window.HL && HL.DXLAB && HL.DXLAB.LABS[route]; if (lab) return `Test Lab · ${lab.team.length} role · ${lab.scenarios.length} skenario`; return EXT(route) ? 'Test Lab · 3 role · 6 skenario' : 'Test Lab'; };
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
@@ -5545,10 +5551,18 @@ function renderNav(id, portal) {
   /* Aji 13 Nov 2026: sidebar hanya menampilkan menu portal yang sedang aktif. Pindah divisi lewat popup logo HAWK
      (pemilih portal). Tanpa portal aktif (Peta alur / Peta layar) hanya grup Preview yang tampil. */
   const inPortal = !!portal;
-  nav.innerHTML = Object.entries(PORTALS).filter(([name]) => name === portal).map(([name, p]) => {
-    const open = true;
-    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => !ARCHIVED(i)).map(navLink).join('')}${p.items.some(i => i[3] === 'archived') ? `<p class="nav-sub">Arsip (lama)</p>${p.items.filter(i => i[3] === 'archived').map(navLink).join('')}` : ''}</div></div>`;
-  }).join('') + (inPortal ? '' : `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`);
+  /* Aji 14 Nov 2026: sidebar mandiri per modul. Tidak ada nama/menu divisi (pindah divisi hanya lewat popup logo HAWK).
+     Demo Experience Center tampil sebagai kartu besar paling atas (standar app HAWK 60 NV). Halaman arsip tidak tampil. */
+  const isDxItem = (i) => /^DX/.test(i[2] || '');
+  const dxCard = (i) => { const lab = HL_DX_INFO(i[0]); const href = EXT(i[0]) ? i[0] : '#' + i[0]; return `<a class="nav-dx${cur(i[0]) ? ' cur' : ''}" href="${href}" ${cur(i[0]) ? 'aria-current="page"' : ''}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg><span><b>Demo Experience Center</b><small>${lab}</small></span></a>`; };
+  if (inPortal) {
+    const its = PORTALS[portal].items.filter(i => !ARCHIVED(i));
+    const dx = its.find(isDxItem);
+    const rest = its.filter(i => !isDxItem(i) && !(i[0] === '-' && i[1] === 'Demo'));
+    nav.innerHTML = (dx && !/[?&]embed=1/.test(location.search) ? dxCard(dx) : '') + `<div class="nav-mod open active nav-flat"><div class="nav-items">${rest.map(navLink).join('')}</div></div>`;
+    return;
+  }
+  nav.innerHTML = `<div class="nav-mod open active"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
 }
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-mod]');
@@ -8667,9 +8681,9 @@ function register(cfg) {
     update: (state, a, input) => a.startsWith('cx:') ? CX.update(state, a.slice(3), { ...input, by: memberOf(input.by) }) : HAWK.update(state, a, input)
   });
   if (H.DXLAB.EMBED && H.prefs.portal === cfg.portal) { const p = cfg.personas.find(x => x.id === H.prefs.persona); if (p && p.member) H.prefs.member = p.member; }
-  /* seperti portal Finance: grup "Demo" di akhir menu portal itu sendiri (tidak ada menu ke divisi lain) */
+  /* sidebar portal merender item berkode DX-… sebagai kartu besar Demo Experience Center paling atas (seperti app HAWK 60 NV) */
   const items = H.PORTALS[cfg.portal].items;
-  if (!items.some(i => i[0] === cfg.route)) items.push(['-', 'Demo'], [cfg.route, 'Demo Experience Center', cfg.code, 'ready']);
+  if (!items.some(i => i[0] === cfg.route)) items.push([cfg.route, 'Demo Experience Center', cfg.code, 'ready']);
   H.PURPOSE[cfg.route] = cfg.purpose;
   H.SCREENS.push([cfg.code, `${cfg.portal} · Demo Experience Center`, `${cfg.portal} DX`, cfg.route, 'ready', 'Tim ' + cfg.portal]);
   return lab;

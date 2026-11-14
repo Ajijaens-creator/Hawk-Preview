@@ -395,6 +395,7 @@ function titleOf(id) {
 }
 const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S', HRD: 'H' };
 const navOpen = new Set();
+const HL_DX_INFO = (route) => { const lab = window.HL && HL.DXLAB && HL.DXLAB.LABS[route]; if (lab) return `Test Lab · ${lab.team.length} role · ${lab.scenarios.length} skenario`; return EXT(route) ? 'Test Lab · 3 role · 6 skenario' : 'Test Lab'; };
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
@@ -402,10 +403,18 @@ function renderNav(id, portal) {
   /* Aji 13 Nov 2026: sidebar hanya menampilkan menu portal yang sedang aktif. Pindah divisi lewat popup logo HAWK
      (pemilih portal). Tanpa portal aktif (Peta alur / Peta layar) hanya grup Preview yang tampil. */
   const inPortal = !!portal;
-  nav.innerHTML = Object.entries(PORTALS).filter(([name]) => name === portal).map(([name, p]) => {
-    const open = true;
-    return `<div class="nav-mod${name === portal ? ' active' : ''}${open ? ' open' : ''}"><button type="button" data-mod="${name}" aria-expanded="${open}"><span class="mod-letter">${LETTER[name]}</span><span>${name}</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items">${p.items.filter(i => !ARCHIVED(i)).map(navLink).join('')}${p.items.some(i => i[3] === 'archived') ? `<p class="nav-sub">Arsip (lama)</p>${p.items.filter(i => i[3] === 'archived').map(navLink).join('')}` : ''}</div></div>`;
-  }).join('') + (inPortal ? '' : `<div class="nav-mod open${portal ? '' : ' active'}"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`);
+  /* Aji 14 Nov 2026: sidebar mandiri per modul. Tidak ada nama/menu divisi (pindah divisi hanya lewat popup logo HAWK).
+     Demo Experience Center tampil sebagai kartu besar paling atas (standar app HAWK 60 NV). Halaman arsip tidak tampil. */
+  const isDxItem = (i) => /^DX/.test(i[2] || '');
+  const dxCard = (i) => { const lab = HL_DX_INFO(i[0]); const href = EXT(i[0]) ? i[0] : '#' + i[0]; return `<a class="nav-dx${cur(i[0]) ? ' cur' : ''}" href="${href}" ${cur(i[0]) ? 'aria-current="page"' : ''}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg><span><b>Demo Experience Center</b><small>${lab}</small></span></a>`; };
+  if (inPortal) {
+    const its = PORTALS[portal].items.filter(i => !ARCHIVED(i));
+    const dx = its.find(isDxItem);
+    const rest = its.filter(i => !isDxItem(i) && !(i[0] === '-' && i[1] === 'Demo'));
+    nav.innerHTML = (dx && !/[?&]embed=1/.test(location.search) ? dxCard(dx) : '') + `<div class="nav-mod open active nav-flat"><div class="nav-items">${rest.map(navLink).join('')}</div></div>`;
+    return;
+  }
+  nav.innerHTML = `<div class="nav-mod open active"><button type="button" data-mod="Preview" aria-expanded="true"><span class="mod-letter">P</span><span>Preview</span><span class="chev" aria-hidden="true">›</span></button><div class="nav-items"><a href="#bridge" ${id === 'bridge' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">—</span><span>Peta alur HAWK</span></a><a href="#screens" ${id === 'screens' ? 'class="cur" aria-current="page"' : ''}><span class="nvc">F7-01</span><span>Peta layar</span></a></div></div>`;
 }
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-mod]');

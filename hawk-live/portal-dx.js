@@ -38,9 +38,9 @@ function register(cfg) {
     update: (state, a, input) => a.startsWith('cx:') ? CX.update(state, a.slice(3), { ...input, by: memberOf(input.by) }) : HAWK.update(state, a, input)
   });
   if (H.DXLAB.EMBED && H.prefs.portal === cfg.portal) { const p = cfg.personas.find(x => x.id === H.prefs.persona); if (p && p.member) H.prefs.member = p.member; }
-  /* seperti portal Finance: grup "Demo" di akhir menu portal itu sendiri (tidak ada menu ke divisi lain) */
+  /* sidebar portal merender item berkode DX-… sebagai kartu besar Demo Experience Center paling atas (seperti app HAWK 60 NV) */
   const items = H.PORTALS[cfg.portal].items;
-  if (!items.some(i => i[0] === cfg.route)) items.push(['-', 'Demo'], [cfg.route, 'Demo Experience Center', cfg.code, 'ready']);
+  if (!items.some(i => i[0] === cfg.route)) items.push([cfg.route, 'Demo Experience Center', cfg.code, 'ready']);
   H.PURPOSE[cfg.route] = cfg.purpose;
   H.SCREENS.push([cfg.code, `${cfg.portal} · Demo Experience Center`, `${cfg.portal} DX`, cfg.route, 'ready', 'Tim ' + cfg.portal]);
   return lab;
