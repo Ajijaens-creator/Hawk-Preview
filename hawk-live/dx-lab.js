@@ -15,6 +15,10 @@ const Q = new URLSearchParams(location.search);
 const EMBED = Q.get('embed') === '1';
 const DEVICES = { desktop: { w: 1280, h: 860, label: 'Desktop' }, ipad: { w: 834, h: 1112, label: 'iPad' }, mobile: { w: 390, h: 844, label: 'Mobile' } };
 const { esc } = H;
+/* HAWK Mobile (NV dasar HRD, hawk-live/mobile.html): aplikasi karyawan, dibuka di tab Demo Center setiap portal dengan peran yang relevan */
+const MOBILE = { therapist: 'Spa Therapist', reception: 'Spa Reception', supervisor: 'Spa Supervisor', office: 'Staf Marketing' };
+const mobileRoles = (lab) => (lab.mobile || Object.keys(MOBILE)).filter(k => MOBILE[k]);
+const mobileSrc = (role) => `mobile.html?embed=1&role=${encodeURIComponent(role)}`;
 const $ = (q, r) => (r || document).querySelector(q);
 const $$ = (q, r) => [...(r || document).querySelectorAll(q)];
 
@@ -36,7 +40,7 @@ function personaChip() {
   const n = document.getElementById('role-name'), av = document.getElementById('role-av'), sm = n && n.parentElement.querySelector('small');
   const name = lab.name(p); if (n) n.textContent = name; if (sm) sm.textContent = p.title; if (av) av.textContent = name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 }
-let ui = { tab: 'lab', device: {}, as: {}, sc: {} };
+let ui = { tab: 'lab', device: {}, as: {}, sc: {}, mrole: {} };
 try { Object.assign(ui, JSON.parse(localStorage.getItem(UIKEY) || '{}')); } catch (e) { /* ignore */ }
 const saveUi = () => { try { localStorage.setItem(UIKEY, JSON.stringify(ui)); } catch (e) { /* ignore */ } };
 
@@ -125,11 +129,15 @@ function mount(lab) {
   const counts = `${lab.scenarios.length} skenario · ${team.length} role tim`;
   stage.innerHTML = `<div class="dx-hero"><div><div class="eyebrow">${esc(lab.eyebrow || 'HAWK × JAENS · GUIDED DEMO')}</div><h1>${esc(lab.title)}</h1><p>${esc(lab.intro || '')}</p></div>
     <div class="dx-hero-r"><span class="dx-pill">DEMO / NO LIVE API</span><span class="dx-pill">${esc(counts)}</span><span class="dx-pill" id="dxl-hero-prog"></span></div></div>
-    <div class="row dxl-tabs"><button type="button" class="dx-tab" data-dxl="tab" data-tab="lab">Option 1 · Scenario Test Lab</button><button type="button" class="dx-tab" data-dxl="tab" data-tab="sim">Option 2 · Simulator ${sim.length} Layar</button>${lab.extra ? `<button type="button" class="dx-tab" data-dxl="tab" data-tab="extra">${esc(lab.extra.label)}</button>` : ''}
+    <div class="row dxl-tabs"><button type="button" class="dx-tab" data-dxl="tab" data-tab="lab">Option 1 · Scenario Test Lab</button><button type="button" class="dx-tab" data-dxl="tab" data-tab="sim">Option 2 · Simulator ${sim.length} Layar</button><button type="button" class="dx-tab" data-dxl="tab" data-tab="mobile">HAWK Mobile</button>${lab.extra ? `<button type="button" class="dx-tab" data-dxl="tab" data-tab="extra">${esc(lab.extra.label)}</button>` : ''}
       <span class="muted small">Setiap layar adalah aplikasi HAWK yang sebenarnya (bukan gambar) dengan hak akses role-nya.</span></div>
     <div class="dx-main"><div class="dx-stage">
       <div class="dxl-pane" data-pane="lab"><div class="dx-labhead row" id="dxl-labhead"></div>${cellHtml('lab', 'Test Lab', ui.device[lab.portal] || 'desktop')}</div>
       <div class="dxl-pane dx-sim" data-pane="sim">${sim.map(s => { const p = lab.P(s.who); return cellHtml('sim-' + p.id, `${lab.name(p)} · ${p.title}`, s.device); }).join('')}</div>
+      <div class="dxl-pane" data-pane="mobile"><div class="dx-labhead row" id="dxl-mobilehead"></div><div class="dx-cell" data-cell="mobile" data-device="mobile"><div class="dx-cell-head"><span class="dx-cell-role" id="dxl-mobilerole">HAWK Mobile</span>
+        <a class="dx-ib" href="mobile.html" target="_blank" rel="noopener" title="Buka HAWK Mobile di tab baru" aria-label="Buka HAWK Mobile di tab baru">↗</a></div>
+        <div class="dx-screen"><iframe title="HAWK Mobile — aplikasi karyawan (DEMO)" loading="eager"></iframe></div></div>
+        <p class="muted small">Aplikasi karyawan HAWK Mobile (NV dasar HRD): beranda, pekerjaan, presensi, inbox dan profil. Kamera dan GPS disimulasikan; data presensi, chat dan pengajuan hanya tersimpan di browser ini.</p></div>
       <div class="dxl-pane" data-pane="extra"><div id="dxl-extra"></div></div>
     </div><aside class="dx-tutor" id="dxl-tutor" aria-label="Smart Tutor"></aside></div>`;
   const anchor = $(`[data-dxlab-anchor]`);
@@ -144,7 +152,16 @@ function showTab(lab, tab, first) {
   if (tab === 'lab' && !lab.loaded.lab) { lab.loaded.lab = 1; const p = lab.P(ui.as[lab.portal]) || lab.P(lab.team[0]); openIn(lab, $('.dx-cell[data-cell="lab"]'), p, p.home); }
   if (tab === 'sim' && !lab.loaded.sim) { lab.loaded.sim = 1; $$('#dxlab-stage .dx-sim .dx-cell').forEach(c => { const p = lab.P(c.dataset.cell.slice(4)); openIn(lab, c, p, p.home); }); }
   if (tab === 'extra') paint(lab);
+  if (tab === 'mobile') openMobile(lab, ui.mrole?.[lab.portal]);
   requestAnimationFrame(fitAll);
+}
+function openMobile(lab, role) {
+  const roles = mobileRoles(lab), cur = roles.includes(role) ? role : roles[0], cell = $('.dx-cell[data-cell="mobile"]'), f = cell && $('iframe', cell);
+  if (!f) return;
+  ui.mrole = ui.mrole || {}; ui.mrole[lab.portal] = cur; saveUi();
+  if (f.dataset.role !== cur) { f.dataset.role = cur; f.src = mobileSrc(cur); }
+  const r = $('#dxl-mobilerole'); if (r) r.textContent = `HAWK Mobile · ${MOBILE[cur]}`;
+  const h = $('#dxl-mobilehead'); if (h) h.innerHTML = `<span class="tiny b">Lihat sebagai (DEMO):</span>${roles.map(k => `<button type="button" class="chip ${k === cur ? 'on' : ''}" data-dxl="mrole" data-r="${k}">${esc(MOBILE[k])}</button>`).join('')}`;
 }
 function labHead(lab) {
   const el = $('#dxl-labhead'); if (!el) return;
@@ -204,6 +221,7 @@ document.addEventListener('click', (e) => {
   const lab = LABS[$('#dxlab-stage').dataset.route]; if (!lab) return;
   const sc = scOf(lab), a = b.dataset.dxl, i = Number(b.dataset.i);
   if (a === 'tab') return showTab(lab, b.dataset.tab);
+  if (a === 'mrole') { openMobile(lab, b.dataset.r); return requestAnimationFrame(fitAll); }
   if (a === 'as') { const p = lab.P(b.dataset.p); ui.as[lab.portal] = p.id; saveUi(); openIn(lab, $('.dx-cell[data-cell="lab"]'), p, p.home); return paint(lab); }
   if (a === 'dev') { const c = $('.dx-cell[data-cell="lab"]'); c.dataset.device = b.dataset.d; const sel = $('.dx-dev', c); if (sel) sel.value = b.dataset.d; ui.device[lab.portal] = b.dataset.d; saveUi(); fit(c); return paint(lab); }
   if (a === 'home') { const c = $(`.dx-cell[data-cell="${b.dataset.cell}"]`), p = lab.P($('iframe', c).dataset.who); if (p) openIn(lab, c, p, p.home); return; }
