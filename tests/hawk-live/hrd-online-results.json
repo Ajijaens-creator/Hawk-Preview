@@ -1,0 +1,86 @@
+{
+ "pass": 16,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Tanpa login: hanya ringkasan angka + form login, tanpa daftar nama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Password salah: pesan umum",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Login pertama: wajib ganti password, data belum tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Setelah ganti password: direktori online tampil (masih kosong)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Impor file ekspor fiktif: 30 baru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kartu dari server: 30 / Therapist 20 / Receptionist 10 / menunggu 30",
+   "ok": true,
+   "info": "[\"30\",\"20\",\"10\",\"30\"]"
+  },
+  {
+   "name": "Tabel 25 baris per halaman, ID berawalan nol",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Halaman 2 berisi 5 baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Cari nama: 1 hasil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Penempatan massal 2 karyawan + riwayat batch",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Batalkan batch: menunggu kembali 30",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Detail: NIK tersamar, nilai kosong = \"Belum tersedia pada sumber\", sumber file + SHA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Owner membuka data sensitif (tercatat)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tab Kontak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Keluar: kembali ke ringkasan + login, daftar hilang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

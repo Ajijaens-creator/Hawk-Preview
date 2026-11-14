@@ -34,7 +34,7 @@ ok('Pola tanpa nomor urut ditolak', throws(() => HR.update(st, 'numbering-set', 
 HR.update(st, 'account-role', { role: 'hrd', by: 'Uji', emp: 'EMP-0100', newrole: 'hrd-ops' });
 ok('Perubahan akses tercatat dengan aktor dan ID objek', hr.audit[0].object === 'Akses' && hr.audit[0].ref === 'EMP-0100' && hr.audit[0].by === 'Uji');
 ok('Staf HRD tidak bisa ubah role akun', throws(() => HR.update(st, 'account-role', { role: 'hrd-ops', emp: 'EMP-0101', newrole: 'hrd-ops' }), /Akses ditolak/));
-ok('Uji koneksi tanpa produksi: POS = Gagal (simulasi)', /Gagal/.test(HR.update(st, 'integration-test', { role: 'hrd', id: 'HAWK POS / transaksi outlet' })));
+ok('Uji koneksi tanpa produksi: POS = Gagal (simulasi)', /Gagal/.test(HR.update(st, 'integration-test', { role: 'hrd', id: 'JAENS ERP POS / transaksi outlet' })));
 /* dataset demo */
 ok('Hapus dummy butuh konfirmasi teks', throws(() => HR.update(st, 'dummy-delete', { role: 'hrd', confirm: 'ya' }), /HAPUS DUMMY/));
 ok('Staf HRD tidak bisa hapus dummy', throws(() => HR.update(st, 'dummy-delete', { role: 'hrd-ops', confirm: 'HAPUS DUMMY' }), /Akses ditolak/));

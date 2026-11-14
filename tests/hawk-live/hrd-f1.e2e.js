@@ -49,7 +49,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-roster?arsip=1'); await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
   await p.selectOption('#filters [name=position]', 'POS-RCP'); await p.waitForTimeout(150);
   ok('NV03 Spa Bisma + Receptionist = 5 orang', (await p.locator('.active-filters').innerText()).startsWith('5 orang'));
-  const first = p.locator('.tbl tbody tr').first(); const id = await first.locator('td').first().innerText();
+  const first = p.locator('.hr-arsip .tbl tbody tr').first(); const id = await first.locator('td').first().innerText();
   await first.locator('td a').first().click(); await p.waitForTimeout(150); await shot('F1-NV03-detail');
   ok('Klik nama membuka penempatan dengan ID yang sama', (await p.locator('.hr-profile h2').innerText()).includes(id), id);
   ok('Detail: outlet induk, jabatan, atasan, tanggal efektif', ['Outlet induk', 'Jabatan', 'Atasan', 'Penempatan efektif'].every(k => true) && /Atasan\s+Wahyudi/.test(await text()));

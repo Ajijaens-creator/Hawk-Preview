@@ -26,7 +26,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.selectOption('#filters [name=outlet]', 'OUT-UBD'); await p.waitForTimeout(150);
   await p.selectOption('#filters [name=position]', 'POS-THR'); await p.waitForTimeout(150);
   ok('NV01 filter Spa Ubud + Therapist = 25', (await p.locator('.active-filters').innerText()).startsWith('25 orang'));
-  await p.locator('.tbl tbody tr').first().locator('td a').first().click(); await p.waitForTimeout(150);
+  await p.locator('.hr-arsip .tbl tbody tr').first().locator('td a').first().click(); await p.waitForTimeout(150);
   ok('NV02 Detail Karyawan (kode F2-NV02) dari klik nama', (await p.locator('.nv-tag').innerText()) === 'F2-NV02' && (await p.locator('h1').innerText()) === 'Detail Karyawan');
   const emp = new URL(p.url()).hash.match(/emp=(EMP-\d+)/)[1];
   for (const t of ['Informasi Pribadi', 'Kontak', 'Dokumen', 'Akun ESS', 'Jadwal & Presensi']) { await p.click(`.hr-dtabs .tab:has-text("${t}")`); await p.waitForTimeout(100); }

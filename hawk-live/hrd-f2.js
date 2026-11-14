@@ -95,10 +95,11 @@ function realSummary(open) {
 }
 const rosterF2 = (params) => {
   if (params.emp) return baseRoster(params) + detailTabs(params);
+  if (params.real && H.HOOKS.realDetail) return H.HOOKS.realDetail(params);
   const open = arsipOn(params);
-  return realSummary(open) + (open ? `<section class="hr-arsip"><p class="demo-banner"><b>ARSIP DEMO · 158 orang sintetis.</b> Tidak termasuk headcount asli, tidak dipakai untuk payroll atau kinerja nyata.</p>${baseRoster(params)}</section>` : '');
+  return (H.HOOKS.realRoster ? H.HOOKS.realRoster(open, () => realSummary(open)) : realSummary(open)) + (open ? `<section class="hr-arsip"><p class="demo-banner"><b>ARSIP DEMO · 158 orang sintetis.</b> Tidak termasuk headcount asli, tidak dipakai untuk payroll atau kinerja nyata.</p>${baseRoster(params)}</section>` : '');
 };
-register('hrd-roster', rosterF2, (pr) => pr.emp ? 'Detail Karyawan' : 'Direktori Karyawan');
+register('hrd-roster', rosterF2, (pr) => pr.emp || pr.real ? 'Detail Karyawan' : 'Direktori Karyawan');
 rosterF2.code = (pr) => pr.emp ? 'F2-NV02' : 'F2-NV01';
 rosterF2.purpose = (pr) => pr.emp ? 'Profil, penempatan efektif dan histori, kontrak, dokumen, jadwal & presensi, serta akun ESS satu karyawan.' : null;
 register('hrd-employee-new', guard('people', () => ['hrd', 'hrd-ops'].includes(role()) ? card('Tambah karyawan', `<form class="workflow-form" data-submit="hr:employee-add" data-after="hrd-roster?emp={id}"><label>Nama<input name="name" required minlength="3"></label><label>Posisi<select name="position">${HR.POSITIONS.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label><label>Lokasi<select name="location">${[...HR.OUTLETS, HR.HQ].map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select></label><label>Shift<select name="shift"><option>Pagi</option><option>Sore</option><option>Kantor</option></select></label><label>Mulai<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 1)}"></label><label>Telepon<input name="phone"></label><button class="btn">Simpan</button><a class="btn ghost" href="#hrd-roster">Batal</a></form><p class="muted small">Nama yang sudah ada ditolak sebagai duplikat. Untuk banyak baris gunakan ${link('hrd-import', 'Impor Karyawan')}.</p>`) : denied('people')), () => 'Tambah Karyawan');
