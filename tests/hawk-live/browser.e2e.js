@@ -90,7 +90,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.selectOption('#role', 'owner'); await p.waitForTimeout(100);
   ok('F1-04 role switcher Owner mengarah ke Eagle Eye', (await text('.hero')).includes('Owner Eagle Eye'));
   await p.goto(BASE + 'index.html#screens'); await p.waitForTimeout(100);
-  { const n = await p.locator('.roadmap tbody tr').count(), hrdN = await p.evaluate(() => HL.SCREENS.filter(s => /^HRD/.test(s[2] || '')).length); ok('F7-01 peta berisi 41 kode layar empat portal + semua layar HRD', n === 41 + hrdN && hrdN >= 8, `${n} = 41 + ${hrdN}`); }
+  { const n = await p.locator('.roadmap tbody tr').count(), hrdN = await p.evaluate(() => HL.SCREENS.filter(s => /^HRD/.test(s[2] || '')).length), dxN = await p.evaluate(() => HL.SCREENS.filter(s => /^(Operational|Commercial|Sales) DX$/.test(s[2] || '')).length); ok('F7-01 peta berisi 41 kode layar empat portal + semua layar HRD + 3 Demo Center portal', n === 41 + hrdN + dxN && hrdN >= 8 && dxN === 3, `${n} = 41 + ${hrdN} + ${dxN}`); }
   await p.goto(BASE + 'commercial.html'); await p.waitForTimeout(150);
   ok('Entry commercial.html membuka Commercial', p.url().endsWith('#commercial'));
   await p.goto(BASE + 'sales.html'); await p.waitForTimeout(150);
