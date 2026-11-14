@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T02:41:21.805Z">
+<meta name="hawk-standalone" content="2026-11-14T05:00:49.669Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1701,6 +1701,51 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 @media (max-width: 480px) { .mob-phone { height: calc(100vh - 140px); min-height: 620px; padding: 0; background: none; box-shadow: none; } .mob-screen { border-radius: 16px; border: 1px solid var(--line); } }
 .status-chip.warn { background: var(--warn-bg); color: var(--warn); font-weight: 700; }
 .mob-sim, .mob-sim label { min-width: 0; } .mob-sim select, .mob-sim input { width: 100%; max-width: 100%; } .mob-wrap > * { min-width: 0; }
+/* ---------- JAENS Mobile · Glass Edition V02 (paket JAENS 14 Nov): suasana spa, kaca transparan, gold & forest ---------- */
+.mob-phone { background: #232b26; border: 1px solid #595b4d; box-shadow: 0 32px 85px rgba(0,0,0,.35), 0 0 0 4px #3a3d33; }
+.mob-screen.glass { background: #2a3029; color: #2d382d; isolation: isolate; }
+.mob-screen.glass::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("img/mobile/jaens-spa-bisma.webp") 54% center / cover no-repeat; }
+.mob-screen.glass::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(22,38,32,.86) 0%, rgba(27,40,32,.62) 26%, rgba(54,52,33,.34) 50%, rgba(69,58,35,.42) 72%, rgba(21,37,29,.72) 100%); }
+.glass .mob-head { display: grid; gap: 12px; background: linear-gradient(180deg, rgba(20,42,32,.35), transparent); color: #fff8e6; padding: 14px 16px 6px; }
+.glass .mob-brand { display: flex; align-items: center; gap: 8px; }
+.glass .mob-j { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-weight: 800; font-size: 17px; color: #2b210f; background: linear-gradient(135deg, #f3db9d, #ad7d36); box-shadow: inset 0 1px 0 #fff8, 0 4px 15px rgba(0,0,0,.2); }
+.glass .mob-word b { display: block; font-size: 14px; letter-spacing: .6px; line-height: 1; color: #fff9e8; } .glass .mob-word small { display: block; font-size: 8px; letter-spacing: 2.4px; color: #e4cea0; }
+.glass .mob-demo { font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #f3dfb3; border: 1px solid rgba(245,223,172,.4); background: rgba(214,186,129,.1); border-radius: 6px; padding: 2px 6px; }
+.glass .mob-clock { color: #f0e6cc; font-size: 11px; }
+.glass .mob-hello { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.glass .mob-hello > span:first-child, .glass .mob-hello.sm > span:last-child { min-width: 0; }
+.glass .mob-hello small { display: block; color: #ede8d5; font-size: 11px; }
+.glass .mob-hello .mob-date { font-size: 10.5px; margin-bottom: 4px; }
+.glass .mob-greet { display: block; font-size: 14px; color: #f0ead7; }
+.glass .mob-hello b { display: block; font-size: 31px; font-weight: 650; letter-spacing: -1px; line-height: 1.1; color: #fff9ed; }
+.glass .mob-hello.sm { justify-content: flex-start; } .glass .mob-hello.sm b { font-size: 15px; letter-spacing: 0; }
+.glass .mob-av { background: linear-gradient(135deg, #f3db9d, #ad7d36); color: #2b210f; }
+.glass .mob-av.photo { width: 60px; height: 60px; border-radius: 20px; padding: 0; overflow: hidden; border: 2px solid #fff7dc; box-shadow: 0 0 0 4px rgba(236,215,168,.16), 0 7px 24px rgba(17,38,28,.3); background: #ecd9ae; transform: rotate(3deg); }
+.glass .mob-hello.sm .mob-av.photo { width: 38px; height: 38px; border-radius: 12px; transform: none; }
+.glass .mob-av.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; display: block; }
+.glass .mob-main { padding: 8px 14px 14px; }
+.glass .mob-card { background: linear-gradient(135deg, rgba(255,254,246,.88), rgba(246,245,229,.76)); border: 1px solid rgba(255,253,241,.55); box-shadow: 0 12px 32px rgba(26,27,18,.1), inset 0 1px 0 rgba(255,255,255,.75); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: 19px; }
+.glass .mob-att.big { color: #fff7e5; border: 1px solid rgba(255,243,211,.3); box-shadow: inset 0 1px 0 rgba(255,249,222,.26), 0 16px 28px rgba(22,38,25,.15); background: linear-gradient(125deg, rgba(31,56,43,.82), rgba(42,59,44,.72) 44%, rgba(141,111,57,.56)); border-radius: 23px; }
+.glass .mob-att.big small, .glass .mob-att.big .mob-times { color: #e6e1c8; } .glass .mob-att.big .mob-times b, .glass .mob-att.big b { color: #fff7e5; }
+.glass .mob-att.big .mob-att-top b { font-size: 20px; letter-spacing: -.3px; }
+.glass .mob-att.big .mob-btn.link { color: #f3dfb3; }
+.glass .mob-btn.primary { background: linear-gradient(105deg, #fae9bc 0%, #ebcf8b 48%, #cda252 100%); border: 1px solid rgba(255,241,207,.65); color: #3a2d17; box-shadow: inset 0 1px 1px rgba(255,249,227,.85), 0 5px 14px rgba(59,43,11,.1); border-radius: 14px; min-height: 48px; }
+.glass .mob-btn:not(.primary):not(.link) { background: rgba(255,252,240,.82); border-color: rgba(255,245,213,.6); border-radius: 14px; }
+.glass .mob-att.big .mob-btn:not(.primary):not(.link) { background: rgba(255,248,231,.1); color: #fff4d9; border-color: rgba(255,244,214,.3); }
+.glass .mob-quick a { background: linear-gradient(135deg, rgba(250,255,241,.82), rgba(237,242,223,.66)); border-color: rgba(255,252,228,.65); border-radius: 18px; color: #324334; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.glass .mob-seg { background: rgba(255,249,226,.18); border-color: rgba(255,249,220,.3); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.glass .mob-seg a { color: #f4ecd7; } .glass .mob-seg a.on { background: linear-gradient(130deg, #fff5df, #dfd7bb); color: #5e4b28; }
+.glass .mob-back { color: #fff0bd; }
+.glass .mob-alert { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.glass .mob-nav { margin: 0 10px 10px; border-radius: 24px; border: 1px solid rgba(255,251,234,.68); background: linear-gradient(140deg, rgba(255,253,241,.92), rgba(231,235,221,.84)); backdrop-filter: blur(26px); -webkit-backdrop-filter: blur(26px); box-shadow: inset 0 1px 0 rgba(255,253,239,.8), 0 7px 25px rgba(12,40,28,.18); padding: 6px 4px 4px; }
+.glass .mob-nav a { color: #6f7c69; min-height: 52px; } .glass .mob-nav a svg { width: 34px; height: 28px; padding: 3px 6px; border-radius: 11px; }
+.glass .mob-nav a.on { color: #6b552e; } .glass .mob-nav a.on svg { color: #574322; background: linear-gradient(135deg, #fae5aa, #cbb477); }
+.glass .mob-nav a.att svg { width: 38px; height: 38px; padding: 7px; margin-top: -12px; border-radius: 13px; background: linear-gradient(135deg, #4d6852, #293e2d); color: #f8e4b2; border: 1px solid rgba(182,193,154,.42); }
+.glass .mob-nav a.att.on svg { background: linear-gradient(135deg, #f9dfa7, #c9a45e); color: #574322; }
+.glass .mob-sheet-in { background: linear-gradient(160deg, #fffdf4, #f4f1e2); }
+@media (max-width: 480px) { .mob-phone { border: 0; box-shadow: none; } }
+.mob-main { grid-template-columns: minmax(0, 1fr); } .mob-main > *, .mob-row > span:first-child { min-width: 0; } .mob-row .status-chip, .mob-inline .status-chip { white-space: normal; text-align: right; }
+.mob-form.row { grid-template-columns: minmax(0, 1fr) auto auto; } .mob-form input, .mob-form select { min-width: 0; width: 100%; } .mob-form.row .mob-btn { padding: 8px 11px; }
 
 </style>
 </head>
@@ -1846,7 +1891,7 @@ const HAWK = (() => {
 if (typeof module !== 'undefined') module.exports = HAWK;
 
 ;
-/* HAWK ERP · Portal HRD & Human Growth · model F1 (Fondasi dan Beranda) — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD & Human Growth · model F1 (Fondasi dan Beranda) — DATA DEMO / SIMULASI.
    Satu sumber untuk organisasi, 158 profil dummy, penempatan efektif, peran & cakupan, pengaturan,
    audit dan penghapusan dummy. Deterministik (tanpa Math.random). Tanpa jaringan, akun, atau API. */
 const HR = (() => {
@@ -2025,9 +2070,9 @@ const HR = (() => {
       ['TPL-PKWT', 'Kontrak PKWT', 'F4'], ['TPL-OFFER', 'Surat penawaran kerja', 'F4'], ['TPL-SP', 'Surat peringatan', 'F2'], ['TPL-ONB', 'Checklist onboarding HRD/HG', 'F4'], ['TPL-REF', 'Surat keterangan kerja', 'F2']
     ],
     integrations: [
-      ['HAWK Org & akun (Module B · NV-05–09)', 'TO VERIFY', 'Sumber struktur organisasi dan akun. Preview memakai fixture yang sama strukturnya.'],
-      ['HAWK POS / transaksi outlet', 'TO VERIFY', 'ID transaksi, outlet aktual, therapist dan refund untuk F5–F7.'],
-      ['HAWK Finance (jurnal & batch)', 'TO VERIFY', 'Finance menerima agregat payroll dan jurnal yang disetujui (F7).'],
+      ['JAENS ERP Org & akun (Module B · NV-05–09)', 'TO VERIFY', 'Sumber struktur organisasi dan akun. Preview memakai fixture yang sama strukturnya.'],
+      ['JAENS ERP POS / transaksi outlet', 'TO VERIFY', 'ID transaksi, outlet aktual, therapist dan refund untuk F5–F7.'],
+      ['JAENS ERP Finance (jurnal & batch)', 'TO VERIFY', 'Finance menerima agregat payroll dan jurnal yang disetujui (F7).'],
       ['GajiHub (referensi menu & payroll)', 'TO VERIFY', 'Inventaris menu dari referensi. Jalur data belum ditentukan.'],
       ['Google Calendar / Meet', 'NEW INTEGRATION REQUIRED', 'Jadwal interview F4. Preview memakai simulasi.'],
       ['Penyimpanan dokumen & tanda tangan', 'NEW INTEGRATION REQUIRED', 'Kontrak dan dokumen pribadi F2/F4.'],
@@ -2266,7 +2311,7 @@ const HR = (() => {
 if (typeof module !== 'undefined') module.exports = HR;
 
 ;
-/* HAWK ERP · Portal HRD · model F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
    Jadwal & shift efektif, presensi (log + koreksi), pengajuan bertingkat (satu Request ID dibaca modul asal
    dan inbox Approval), saldo cuti (ledger), klien, kunjungan, pelacakan lokasi, timeline dan impor karyawan.
    Memperluas HR (hrd-model.js) lewat HR.EXT. Deterministik, tanpa jaringan. */
@@ -2408,7 +2453,7 @@ const HR2 = (() => {
     const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
     if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
     const [s1, s2] = SHIFTS[sch.shift].map(mins);
-    /* HAWK Mobile (addendum 14 Nov 2026): kejadian presensi dari aplikasi digabung ke catatan resmi yang sama */
+    /* JAENS Mobile (addendum 14 Nov 2026): kejadian presensi dari aplikasi digabung ke catatan resmi yang sama */
     const mob = (r) => H.EXT.mobileAtt ? H.EXT.mobileAtt(hr, emp, date, r, s1) : r;
     if (date === TODAY && k >= 18) return mob(base); /* belum absen */
     const late = k === 14 || k === 15 ? 5 + (n * 3 + k) % 25 : 0;
@@ -2620,7 +2665,7 @@ const HR2 = (() => {
 if (typeof module !== 'undefined') module.exports = HR2;
 
 ;
-/* HAWK ERP · Portal HRD · model F3 Planner & Workplace — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F3 Planner & Workplace — DATA DEMO / SIMULASI.
    Satu objek kartu (Task ID) dibaca Workplace, Board, Calendar, List, My Tasks, My Day dan Detail Kartu.
    Setiap perubahan menyimpan event (aktor, waktu WITA, sebelum/sesudah). Versi kartu untuk deteksi konflik.
    Memperluas HR.EXT (dirantai setelah F2). Deterministik, tanpa jaringan. */
@@ -2637,7 +2682,7 @@ const HR3 = (() => {
 
   const TEMPLATES = () => [
     { id: 'TPL-ONB', name: 'Onboarding administratif therapist', kind: 'Checklist', ws: 'HRD', version: 2, active: true, review: true, history: [{ v: 1, at: '2026-08-01', note: 'Versi awal' }, { v: 2, at: '2026-10-15', note: 'Tambah akun POS & ESS sebelum hari pertama' }],
-      steps: [['Kontrak & dokumen identitas lengkap', 'Staf HRD', -3, 'HRD'], ['Akun HAWK, ESS & POS dibuat', 'Staf HRD', -1, 'HRD'], ['Orientasi SOP & keselamatan', 'Human Growth Lead', 0, 'HG'], ['Pendampingan treatment hari 1–3', 'Supervisor Outlet', 3, 'HG'], ['Verifikasi praktik oleh Supervisor', 'Supervisor Outlet', 7, 'HG'], ['Review akhir onboarding', 'Manager HRD', 10, 'HRD']] },
+      steps: [['Kontrak & dokumen identitas lengkap', 'Staf HRD', -3, 'HRD'], ['Akun JAENS, ESS & POS dibuat', 'Staf HRD', -1, 'HRD'], ['Orientasi SOP & keselamatan', 'Human Growth Lead', 0, 'HG'], ['Pendampingan treatment hari 1–3', 'Supervisor Outlet', 3, 'HG'], ['Verifikasi praktik oleh Supervisor', 'Supervisor Outlet', 7, 'HG'], ['Review akhir onboarding', 'Manager HRD', 10, 'HRD']] },
     { id: 'TPL-KOMP', name: 'Verifikasi kompetensi therapist', kind: 'Rubric', ws: 'HG', version: 1, active: true, review: true, history: [{ v: 1, at: '2026-09-01', note: 'Rubric 5 treatment inti' }],
       steps: [['Jadwalkan observasi praktik', 'Human Growth Lead', 0, 'HG'], ['Observasi Balinese massage & hot stone', 'Supervisor Outlet', 2, 'HG'], ['Isi rubric & bukti video (sintetis)', 'Human Growth Lead', 3, 'HG'], ['Rencana coaching bila skor < 3', 'Human Growth Lead', 5, 'HG']] },
     { id: 'SOP-HYG', name: 'SOP kebersihan ruang treatment', kind: 'SOP', ws: 'HG', version: 3, active: true, review: false, history: [{ v: 3, at: '2026-07-10', note: 'Revisi linen' }], steps: [] },
@@ -2699,7 +2744,7 @@ const HR3 = (() => {
     const me = hr.roleEmp[role];
     const ev = (t, kind, before, after, reason) => { f3.events.push({ id: `EVT-${++f3.seq.evt}`, task: t.id, by, at: now(), kind, before, after, reason: reason || null, demo: t.demo }); t.version++; };
     const get = (id) => { const t = f3.tasks.find(x => x.id === id); if (!t) throw new Error('Kartu tidak ditemukan.'); if (!scopeOk(hr, role, t)) throw new Error(`Akses ditolak: kartu ${id} di luar cakupan ${H.roleDef(role).label}.`); return t; };
-    /* PIC/kontributor kartu boleh memindahkan & mencentang kartunya sendiri (HAWK Mobile, addendum 14 Nov 2026) */
+    /* PIC/kontributor kartu boleh memindahkan & mencentang kartunya sendiri (JAENS Mobile, addendum 14 Nov 2026) */
     const own = (id) => { const t = f3.tasks.find(x => x.id === id); return !!(t && me && [t.pic, ...t.contributors].includes(me)); };
     const writer = (id) => { if (id && own(id)) return; if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
     const ver = (t) => { if (input.version !== undefined && input.version !== '' && Number(input.version) !== t.version) throw new Error(`Konflik: kartu ${t.id} sudah diubah orang lain (versi ${t.version}). Status terbaru dimuat; ulangi perubahan Anda.`); };
@@ -2844,7 +2889,7 @@ const HR3 = (() => {
 if (typeof module !== 'undefined') module.exports = HR3;
 
 ;
-/* HAWK ERP · Portal HRD · model F4 Rekrutmen sampai Penempatan — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F4 Rekrutmen sampai Penempatan — DATA DEMO / SIMULASI.
    Permintaan tenaga → lowongan (publik) → lamaran → screening (simulasi AI, bukti per kriteria) → klarifikasi (kartu F3) →
    shortlist → interview (Event ID stabil) → uji praktik (rubric per posisi) → keputusan → penawaran → kontrak & dokumen →
    konversi profil (Employee ID F2, mulai efektif) → onboarding (template F3) → penempatan & akun (role F1).
@@ -3113,7 +3158,7 @@ const HR4 = (() => {
 if (typeof module !== 'undefined') module.exports = HR4;
 
 ;
-/* HAWK ERP · Portal HRD · F4 halaman karier publik (NV01 Landing, NV02 Detail Lowongan, NV03 Formulir Lamaran).
+/* JAENS ERP · Portal HRD · F4 halaman karier publik (NV01 Landing, NV02 Detail Lowongan, NV03 Formulir Lamaran).
    Satu renderer dipakai dua tempat: karier.html (publik, tanpa login internal) dan pratinjau di dalam portal HRD.
    DATA DEMO / SIMULASI. Membaca hanya lowongan berstatus Dipublikasikan. */
 const HRCAREER = (() => {
@@ -3176,7 +3221,7 @@ const HRCAREER = (() => {
 if (typeof module !== 'undefined') module.exports = HRCAREER;
 
 ;
-/* HAWK ERP · Portal HRD · model F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
    Periode Okt 2026 (bulan tertutup, sama dengan Beranda F1) dan Minggu 46 (7–13 Nov, provisional, rincian POS per baris layanan).
    Utility = jam treatment selesai ÷ jam kapasitas reguler (jam). Agregasi = total pembilang ÷ total penyebut.
    Baris layanan POS dibangkitkan deterministik (tidak disimpan); yang disimpan hanya batch ingest, refund, koreksi, skenario dan handoff.
@@ -3260,7 +3305,7 @@ const HR5 = (() => {
   /* blok kurang coverage untuk peringatan dashboard */
   const recGaps = (o) => ['Pagi', 'Sore'].flatMap(sh => RECEPTION[o][sh].peak.filter(([b, st, c, w]) => recStatus(c, st, blockHours(b), w)[1] === 'bad').map(([b, st, c, w]) => ({ outlet: o, shift: sh, block: b, staff: st, checkins: c, wait: w })));
   const DIVISIONS = [
-    { id: 'DIV-FA', name: 'Finance & Accounting', metric: 'Rekonsiliasi bank & POS', unit: 'dokumen', load: 412, output: 365, backlog: 47, sla: '2 hari kerja', slaMet: 0.88, source: 'HAWK Finance (TO VERIFY)', updated: '2026-11-13 18:00', complete: true },
+    { id: 'DIV-FA', name: 'Finance & Accounting', metric: 'Rekonsiliasi bank & POS', unit: 'dokumen', load: 412, output: 365, backlog: 47, sla: '2 hari kerja', slaMet: 0.88, source: 'JAENS ERP Finance (TO VERIFY)', updated: '2026-11-13 18:00', complete: true },
     { id: 'DIV-MKT', name: 'Marketing', metric: 'Campaign & konten terbit', unit: 'konten', load: 64, output: 58, backlog: 6, sla: 'Sesuai kalender konten', slaMet: 0.91, source: 'Planner Marketing (simulasi)', updated: '2026-11-12 17:00', complete: true },
     { id: 'DIV-HRD', name: 'HRD & Human Growth', metric: 'Permintaan HRD (cuti, koreksi, rekrutmen)', unit: 'permintaan', load: null, output: null, backlog: null, sla: '1–3 hari', slaMet: null, source: 'Approval F2 + Rekrutmen F4 (live demo)', updated: null, complete: true, live: true },
     { id: 'DIV-PRD', name: 'Production', metric: 'Batch produk Essence', unit: 'batch', load: 30, output: 26, backlog: 4, sla: 'Rencana mingguan', slaMet: 0.87, source: 'Produksi Essence (TO VERIFY)', updated: '2026-11-10 16:00', complete: false },
@@ -3364,7 +3409,7 @@ const HR5 = (() => {
 if (typeof module !== 'undefined') module.exports = HR5;
 
 ;
-/* HAWK ERP · Portal HRD · model F6 Human Growth & Kinerja — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F6 Human Growth & Kinerja — DATA DEMO / SIMULASI.
    SER 15 ekspektasi (workbook 1.1. SER), KPI Library berversi, kontrak KPI (draf → persetujuan → aktif → ditutup → koreksi),
    XScore therapist (bobot demo Utility 50 / Produktivitas 30 / Learning 20 — formula resmi AJi Creator OS belum terverifikasi),
    kompetensi, 9-Box, rencana pengembangan (Workplan F3), pelatihan & verifikasi praktik, Quality of Hire, talent pipeline.
@@ -3382,7 +3427,7 @@ const HR6 = (() => {
     ['EXP-01', 'Executive Summary', 'Ratio Salary Jaens Enterprises', '%', 25, 23.5, 'Finance · biaya tenaga kerja ÷ revenue', 'max', 'MET-SALR', true],
     ['EXP-02', 'Executive Summary', 'Ratio Revenue per Employee', 'Rp', 23000000, 21000000, 'Finance + HG · revenue ÷ headcount', 'min', 'MET-RPE'],
     ['EXP-03', 'Executive Summary', 'Ratio Turnover Jaens Enterprises', '%', 2, 1.2, 'HG · karyawan keluar ÷ rata-rata headcount', 'max', 'MET-TURN'],
-    ['EXP-04', 'Collaboration Group', 'Development HAWK', '%', 100, 75, 'HG + tim HAWK · milestone', 'min', 'MET-MILE'],
+    ['EXP-04', 'Collaboration Group', 'Development JAENS', '%', 100, 75, 'HG + tim JAENS · milestone', 'min', 'MET-MILE'],
     ['EXP-05', 'Collaboration Group', 'Development LMS', '%', 100, 60, 'HG + Learning · milestone', 'min', 'MET-MILE'],
     ['EXP-06', 'Collaboration Group', 'Opening Holywings', '%', 100, null, 'HG + Operations · kesiapan pembukaan', 'min', 'MET-MILE'],
     ['EXP-07', 'Human Growth Expectations', 'Recruitment & Selection', '%', 100, 80, 'HG · pemenuhan permintaan SDM (F4)', 'min', 'MET-FILL'],
@@ -3691,7 +3736,7 @@ const HR6 = (() => {
 if (typeof module !== 'undefined') module.exports = HR6;
 
 ;
-/* HAWK ERP · Portal HRD · model F7 Payroll & People Budgeting — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F7 Payroll & People Budgeting — DATA DEMO / SIMULASI.
    Komponen diturunkan dari take-home pay dummy F1 (Oktober = kalibrasi: THP Oktober = THP roster).
    Komisi dari baris layanan POS F5 (Service Line ID), aturan berversi dengan periode efektif, batch payroll draf → review → kunci (snapshot),
    slip & status bayar (Siap Bayar ≠ Sudah Bayar), kasbon/reimburse dengan ledger, laporan 19 entri, handoff jurnal Finance (Batch ID stabil),
@@ -3974,7 +4019,7 @@ const HR7 = (() => {
 if (typeof module !== 'undefined') module.exports = HR7;
 
 ;
-/* HAWK ERP · Portal HRD · model F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
    Race Vegen (6 indikator, kontrak berversi), Race Beacon (5 kelompok, kontrak sendiri) & Success Factors, Daily/Weekly Race dari Planner F3,
    Monthly Reflection (rekonsiliasi F5–F7, temuan → F3), STRACON (keputusan → Workplan → evaluasi), e-Deck 8 halaman dengan snapshot berversi,
    Pusat Laporan & Jejak Bukti. Memperluas HR.EXT. Tanpa jaringan. */
@@ -3989,7 +4034,7 @@ const HR8 = (() => {
 
   /* ---------- metrik Race: sumber hidup F4–F7 bila ada, selain itu fixture workbook ---------- */
   const FIX = {
-    'Revenue per Employee': ['Rp', 23000000, 21000000, 'Finance + HG (simulasi)'], 'Development HAWK': ['%', 100, 75, 'Milestone HAWK'], 'Strategic Partnership HWC × Jaens Wellness': ['%', 100, 90, 'Milestone kemitraan'],
+    'Revenue per Employee': ['Rp', 23000000, 21000000, 'Finance + HG (simulasi)'], 'Development JAENS': ['%', 100, 75, 'Milestone JAENS'], 'Strategic Partnership HWC × Jaens Wellness': ['%', 100, 90, 'Milestone kemitraan'],
     'Turnover': ['%', 2, 1.2, 'Direktori F2 (pergerakan karyawan)', 'max'], 'Absenteeism': ['%', 85, null, 'Definisi denominator perlu dikonfirmasi'], 'Exit Interview': ['%', 100, 90, 'Log exit interview'], 'BPJS Compliance': ['Dok', 1, 1, 'Laporan BPJS F7'],
     'Uniform Request & Fulfillment': ['Hari', 7, 6, 'Permintaan seragam', 'max'], 'Recruitment Care Estate': ['%', 100, 70, 'Permintaan SDM Care Estate'], 'Recruitment HWC': ['%', 100, 60, 'Permintaan SDM HWC'], 'Share Loker': ['Dok', 6, 5, 'Kanal lowongan F4'],
     'Staff Database Update': ['Dok', 1, 1, 'Audit direktori F2'], 'Employee Loyalty': ['Dok', 1, 1, 'Survei'], 'Training & Learning Program': ['Dok', 1, 1, 'Program pelatihan F6'], 'Pelatihan therapist reguler': ['Jam', 138, 145, 'Log pelatihan F6'], 'Pelatihan therapist baru': ['Jam', 240, 190, 'Onboarding F4/F6'],
@@ -4018,7 +4063,7 @@ const HR8 = (() => {
   }
   const PILLARS = [
     ['IND-1', 'Financial Efficiency & Value Creation', 20, 'Executive Financial Performance', ['Rasio biaya tenaga kerja', 'Revenue per Employee', 'Therapist Utility']],
-    ['IND-2', 'Collaboration Group', 10, 'Collaboration Group', ['Development HAWK', 'Strategic Partnership HWC × Jaens Wellness']],
+    ['IND-2', 'Collaboration Group', 10, 'Collaboration Group', ['Development JAENS', 'Strategic Partnership HWC × Jaens Wellness']],
     ['IND-3', 'Stability & Risk Governance', 20, 'Risk Control & Compliance Assurance', ['Turnover', 'Absenteeism', 'Exit Interview', 'BPJS Compliance', 'Uniform Request & Fulfillment']],
     ['IND-4', 'Talent Flow, Talent Engine, Pipeline', 20, 'Talent Management & Workforce Readiness', ['Recruitment Jaens Spa', 'Recruitment Care Estate', 'Recruitment HWC', 'Share Loker', 'Talent Readiness', 'Staff Database Update', 'Employee Loyalty']],
     ['IND-5', 'Growth, Learning and Capability', 20, 'Learning & Capability Development', ['Training & Learning Program', 'Pelatihan therapist reguler', 'Pelatihan therapist baru', 'Progress Training', 'Onboarding']],
