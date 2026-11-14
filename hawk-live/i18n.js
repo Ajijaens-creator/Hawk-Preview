@@ -106,6 +106,12 @@
     [/^(\d+) mnt$/, (m, a) => `${a} min`],
     [/^(\d+) jam$/, (m, a) => `${a} hrs`],
     [/^Minggu (\d+) · (.+)$/, (m, a, b) => `Week ${a} · ${b}`],
+    [/^Layar lengkap dijadwalkan pada Fase (\d+)\.(.*)$/, (m, a, b) => `The full screen is scheduled for Phase ${a}.${b ? ' ' + (tr(b.trim()) || b.trim()) : ''}`],
+    [/^Role demo: (.+)\.$/, (m, a) => `Demo role: ${a}.`],
+    [/^Halo, (.+)!(.*)$/, (m, a, b) => `Hello, ${a}!${b}`],
+    [/^Test Lab · (\d+) layar · (\d+) skenario$/, (m, a, b) => `Test Lab · ${a} screens · ${b} scenarios`],
+    [/^(.+) · Pandu Saya (\d+) skenario$/, (m, a, b) => `${a} · Guide Me ${b} scenarios`],
+    [/^(Sedang berjalan|Antrean) \((\d+)\)$/, (m, a, b) => `${a === 'Antrean' ? 'Queue' : 'In progress'} (${b})`],
     [/^Pindahkan (\S+) ke$/, (m, a) => `Move ${a} to`],
     [/^Role baru (\S+)$/, (m, a) => `New role ${a}`],
     [/^Direktori · halaman (\d+) dari (\d+)$/, (m, a, b) => `Directory · page ${a} of ${b}`],
@@ -205,19 +211,31 @@
     paintToggle();
     window.dispatchEvent(new CustomEvent('hawk:lang', { detail: { lang } }));
   }
+  const CSS = '.lang-tog{display:inline-flex;flex:none;background:#242424;border:1px solid #3a3220;border-radius:10px;padding:3px;gap:2px}' +
+    '.lang-tog button{background:transparent;border:0;color:#cfcfcf;font:inherit;font-size:12px;font-weight:700;letter-spacing:.04em;min-width:34px;height:30px;border-radius:7px;cursor:pointer}' +
+    '.lang-tog button:hover{color:#fff}.lang-tog button.on{background:var(--gold-grad,#C99A2E);color:#111}' +
+    '.lang-tog button:focus-visible{outline:2px solid var(--champagne,#E5C66A);outline-offset:1px}' +
+    /* app 60 NV di ponsel: topbar sempit → satu tombol (bahasa aktif, ketuk untuk ganti), panduan walkthrough disembunyikan */
+    '@media (max-width:1024px){#topbar .lang-tog{padding:2px}#topbar .lang-tog button:not(.on){display:none}#topbar .lang-tog button{min-width:30px;height:30px}}@media (max-width:480px){#topbar #btn-tour{display:none}}';
   function mountToggle() {
-    const bar = document.querySelector('.topbar'); if (!bar || bar.querySelector('.lang-tog')) return;
+    if (!document.getElementById('hawk-lang-css')) { const st = document.createElement('style'); st.id = 'hawk-lang-css'; st.textContent = CSS; document.head.appendChild(st); }
+    const bar = document.querySelector('.topbar, #topbar'); if (!bar || bar.querySelector('.lang-tog')) return;
     const box = document.createElement('div');
-    box.className = 'lang-tog'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Bahasa'); box.dataset.noi18n = '';
+    box.className = 'lang-tog'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Bahasa / Language'); box.dataset.noi18n = '';
     box.innerHTML = '<button type="button" data-lang="id" title="Bahasa Indonesia">ID</button><button type="button" data-lang="en" title="English">EN</button>';
-    box.addEventListener('click', (e) => { const b = e.target.closest('[data-lang]'); if (b && b.dataset.lang !== lang) apply(b.dataset.lang, true); });
+    box.addEventListener('click', (e) => { const b = e.target.closest('[data-lang]'); if (!b) return; apply(b.dataset.lang !== lang ? b.dataset.lang : (lang === 'en' ? 'id' : 'en'), true); });
     const chip = bar.querySelector('.role-chip');
     bar.insertBefore(box, chip || null);
     paintToggle();
   }
+  /* topbar yang dirender ulang (app 60 NV) → pasang lagi tombolnya */
+  const watchBar = () => {
+    const bar = document.querySelector('.topbar, #topbar'); if (!bar) return;
+    new MutationObserver(() => { if (!bar.querySelector('.lang-tog')) mountToggle(); }).observe(bar, { childList: true });
+  };
   /* iframe Demo Center & tab lain ikut berganti */
   window.addEventListener('storage', (e) => { if (e.key === KEY) apply(e.newValue === 'en' ? 'en' : 'id', false); });
-  const boot = () => { mountToggle(); apply(lang, false); };
+  const boot = () => { mountToggle(); watchBar(); apply(lang, false); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   window.HAWK_I18N = { get lang() { return lang; }, set: (l) => apply(l, true), translate, DICT, PATTERNS };
 })();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:58:01.852Z">
+<meta name="hawk-standalone" content="2026-11-14T02:17:17.375Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Operational</title>
 <style>
@@ -9138,6 +9138,519 @@ register({
     ] }
   ]
 });
+})();
+
+;
+/* Kamus EN untuk isi layar hawk-live (frasa persis → English). Dimuat sebelum i18n.js.
+   Tambah baris baru di sini saat layar diterjemahkan lebih jauh; teks yang belum ada tetap Bahasa Indonesia. */
+window.HAWK_I18N_EN = Object.assign(window.HAWK_I18N_EN || {}, {
+  /* ===== deskripsi halaman (page-head) ===== */
+  'Persona tim Operational menjalankan alur outlet (check-in, treatment, pembayaran, pembatalan, refund); booking dari Sales hanya muncul sebagai konteks otomatis.': 'Operational team personas run the outlet flow (check-in, treatment, payment, cancellation, refund); bookings from Sales appear only as automatic context.',
+  'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.': 'Commercial Performance Overview, following the SER Commercial Monthly Report layout: revenue, target, customers, marketing budget, ROMI, channels, countries and cancellations by period and outlet.',
+  'Definisi metrik, pembanding, rincian outlet, dan transaksi POS pendukung.': 'Metric definitions, comparisons, outlet breakdown and supporting POS transactions.',
+  'Persona tim Commercial menjalankan campaign, konten dan brand; Finance (MRF) dan Sales/Operational (lead → booking) hanya muncul sebagai konteks otomatis.': 'Commercial team personas run campaigns, content and brand; Finance (MRF) and Sales/Operational (lead → booking) appear only as automatic context.',
+  'Revenue B2C, B2B, dan referral dari dataset yang sama, plus pintu masuk tiap ruang kerja Sales.': 'B2C, B2B and referral revenue from the same dataset, plus the entry point to each Sales workspace.',
+  'Persona tim Sales menjalankan lead, booking, pipeline B2B dan partner referral; outlet (POS) dan Finance (komisi) hanya muncul sebagai konteks otomatis.': 'Sales team personas run leads, bookings, the B2B pipeline and referral partners; the outlet (POS) and Finance (commission) appear only as automatic context.',
+  'Ringkasan roster, outlet, kehadiran dan antrean sesuai cakupan organisasi dan peran.': 'Summary of roster, outlets, attendance and queues within your organization scope and role.',
+  'Persona tim HRD menjalankan skenario portal HRD; divisi lain hanya pada langkah yang bersinggungan langsung dengan alur HRD (berjalan otomatis).': 'HRD team personas run the HRD portal scenarios; other divisions appear only in steps that directly touch the HRD flow (run automatically).',
+  'Direktori karyawan: cari nama/ID, filter outlet, divisi, posisi, shift dan status. Tab Informasi Pribadi, Kontak, Kepegawaian dan Login ESS.': 'Employee directory: search name/ID, filter by outlet, division, position, shift and status. Tabs for Personal Info, Contact, Employment and ESS Login.',
+  'Pilih file dummy, petakan kolom, pratinjau validasi, konfirmasi dan hasil per baris.': 'Choose a dummy file, map columns, preview validation, confirm and see per-row results.',
+  'Tambah satu karyawan dengan penempatan dan tanggal mulai.': 'Add one employee with placement and start date.',
+  'Presensi Harian dan Ringkasan: masuk/keluar, istirahat, lembur, keterlambatan dan bukti. Koreksi melalui approval.': 'Daily attendance and summary: in/out, breaks, overtime, lateness and evidence. Corrections go through approval.',
+  'Antrean koreksi presensi: bukti, nilai sebelum/sesudah, PIC, keputusan dan histori.': 'Attendance correction queue: evidence, before/after values, PIC, decision and history.',
+  'Jadwal tetap dan shift per orang/outlet, tanggal efektif, penugasan tambahan dengan cek konflik, dan riwayat.': 'Fixed schedules and shifts per person/outlet, effective dates, extra assignments with conflict checks, and history.',
+  'Saldo, kategori, pengajuan, kalender dan riwayat Izin & Cuti. Pengajuan masuk ke Approval dengan Request ID yang sama.': 'Leave balance, categories, requests, calendar and history. Requests go to Approval with the same Request ID.',
+  'Daftar dan detail kunjungan klien: petugas, lokasi, waktu masuk/keluar dan bukti.': 'Client visit list and detail: staff, location, in/out time and evidence.',
+  'Peta lokasi presensi seperti Google Maps: titik kerja 4 Spa + Head Office dengan radius 150 m, karyawan yang check-in/check-out lengkap dengan jam, dan laporan karyawan di luar radius. Data demo.': 'Attendance location map like Google Maps: work points for 4 Spas + Head Office with a 150 m radius, employees who checked in/out with times, and a report of employees outside the radius. Demo data.',
+  'Pipeline kandidat: lamaran, screening, shortlist dan undangan interview.': 'Candidate pipeline: applications, screening, shortlist and interview invitations.',
+  'Landing karier publik: lowongan aktif dengan filter divisi, posisi dan outlet. Halaman publik: karier.html.': 'Public careers landing: active openings filtered by division, position and outlet. Public page: karier.html.',
+  'Permintaan tenaga per outlet/divisi dengan persetujuan, lalu publikasi lowongan dengan tautan dan kanal.': 'Staffing requests per outlet/division with approval, then publishing openings with links and channels.',
+  'Daftar lowongan: status, versi kriteria, jumlah lamaran, tautan per kanal.': 'Openings list: status, criteria version, number of applications, link per channel.',
+  'Pipeline kandidat dan detail AI screening dengan bukti per kriteria.': 'Candidate pipeline and AI screening detail with evidence per criterion.',
+  'Slot WITA, pewawancara, konfirmasi, Event ID kalender dan riwayat jadwal.': 'WITA slots, interviewers, confirmation, calendar Event ID and schedule history.',
+  'Rubric interview & uji praktik per posisi dengan bukti dan catatan.': 'Interview & practical test rubric per position with evidence and notes.',
+  'Keputusan berbukti, penawaran, respons kandidat dan tanggal mulai.': 'Evidence-based decision, offer, candidate response and start date.',
+  'Versi kontrak, verifikasi KTP/foto, tanda tangan dan konversi ke Employee ID.': 'Contract version, ID card/photo verification, signature and conversion to Employee ID.',
+  'Paket onboarding HRD & HG sebagai kartu Planner F3.': 'HRD & HG onboarding package as F3 Planner cards.',
+  'Outlet, posisi, shift, atasan, tanggal efektif dan akun yang disetujui.': 'Approved outlet, position, shift, manager, effective date and account.',
+  'Tanggung jawab, kualifikasi, outlet, shift, tombol Lamar, tautan & kode kanal.': 'Responsibilities, qualifications, outlet, shift, Apply button, link & channel code.',
+  'Formulir per posisi (Therapist/Receptionist berbeda), tinjau sebelum kirim, konfirmasi. Retry tidak membuat lamaran ganda.': 'Form per position (Therapist/Receptionist differ), review before sending, confirmation. Retrying does not create duplicate applications.',
+  'Periode, grup slip, cakupan, jumlah karyawan, total komponen, kelengkapan sumber dan status proses.': 'Period, payslip group, scope, employee count, component totals, source completeness and process status.',
+  'Komponen & aturan berversi dengan periode efektif, contoh perhitungan dan template slip.': 'Versioned components & rules with effective periods, sample calculations and payslip template.',
+  'Komisi dari baris layanan POS: outlet aktual, pembagian Four Hands, refund, penyesuaian.': 'Commission from POS service lines: actual outlet, Four Hands split, refunds, adjustments.',
+  'Generate draf, sumber, anomali, review, persetujuan & kunci dengan snapshot dan riwayat.': 'Generate draft, sources, anomalies, review, approval & lock with snapshot and history.',
+  'Pendapatan, potongan, take-home pay, bukti, Siap Bayar vs Sudah Bayar dengan referensi bank.': 'Earnings, deductions, take-home pay, evidence, Ready to Pay vs Paid with bank reference.',
+  'Pemetaan COA, jurnal agregat per cost center, Batch ID stabil, status penerimaan Finance.': 'COA mapping, aggregated journal per cost center, stable Batch ID, Finance acceptance status.',
+  'Kasbon & reimburse: pengajuan, persetujuan, pencairan, cicilan, ledger saldo.': 'Cash advances & reimbursements: requests, approval, disbursement, installments, balance ledger.',
+  'Kasbon: pengajuan, pencairan, cicilan per periode dan saldo.': 'Cash advance: request, disbursement, installments per period and balance.',
+  'Reimburse: bukti, persetujuan, penyelesaian lewat payroll atau kanal lain.': 'Reimbursement: evidence, approval, settlement via payroll or another channel.',
+  'Antrean persetujuan lintas jenis pengajuan dengan PIC, tahapan, keputusan dan alasan.': 'Approval queue across request types with PIC, stages, decisions and reasons.',
+  'Pengumuman, agenda dan aktivitas HRD yang boleh dilihat, dengan tautan ke objek asal.': 'Announcements, agenda and HRD activity you may see, linked to the source object.',
+  'Direktori klien dummy, wilayah, status, kontak sesuai izin dan histori kunjungan.': 'Dummy client directory, region, status, permitted contacts and visit history.',
+  'Katalog 19 laporan Payroll, PPh 21/26, BPJS dan Coretax yang merekonsiliasi batch.': 'Catalog of 19 Payroll, PPh 21/26, BPJS and Coretax reports that reconcile the batch.',
+  'Workplace HRD Operations atau Human Growth: beban per PIC, kartu tanpa PIC, lewat tenggat, blocker, review dan handoff lintas tim.': 'HRD Operations or Human Growth workplace: load per PIC, cards without PIC, overdue, blockers, reviews and cross-team handoffs.',
+  'Tujuh kolom Ide → Selesai. Seret kartu atau pakai menu Pindahkan ke; validasi dan histori sama.': 'Seven columns from Idea → Done. Drag cards or use the Move to menu; same validation and history.',
+  'Agenda interview, coaching, training dan tenggat. Waktu sesi dibedakan dari batas penyelesaian.': 'Agenda of interviews, coaching, training and deadlines. Session times are kept separate from due dates.',
+  'Tabel tugas dengan filter tanpa PIC, terlambat, menunggu review dan terblokir.': 'Task table with filters for no PIC, overdue, awaiting review and blocked.',
+  'SOP, rubric, checklist dan template versi aktif. Terapkan template menjadi kartu dan subtugas tertaut.': 'SOPs, rubrics, checklists and templates (active version). Apply a template as a card with linked subtasks.',
+  'Tugas milik Anda, antrean review dan butir checklist atas nama Anda.': 'Your tasks, review queue and checklist items assigned to you.',
+  'Fokus pribadi hari ini, agenda, hambatan dan pekerjaan terbawa.': 'Your focus today, agenda, obstacles and carried-over work.',
+  'Preview, Files & Assets, Discussion, Tasks & Checklist serta Activity & History satu kartu.': 'Preview, Files & Assets, Discussion, Tasks & Checklist and Activity & History for one card.',
+  'Kategori pengaturan GajiHub dan layar F1 yang menanganinya.': 'GajiHub settings categories and the F1 screens that handle them.',
+  'Perusahaan → unit bisnis → outlet atau divisi → posisi. Setiap node menampilkan jumlah orang dan tautan roster.': 'Company → business unit → outlet or division → position. Each node shows headcount and a roster link.',
+  'Akun demo, role, cakupan, status dan matriks izin. Penolakan berlaku juga untuk tautan langsung.': 'Demo accounts, roles, scope, status and permission matrix. Denials also apply to direct links.',
+  'Identitas, kalender, kebijakan approval, penomoran dan template, dengan status dan riwayat penyimpanan.': 'Identity, calendar, approval policy, numbering and templates, with save status and history.',
+  'Notifikasi, integrasi, aturan Tugas dan FAQ. Status koneksi tampil tanpa menjalankan koneksi produksi.': 'Notifications, integrations, Task rules and FAQ. Connection status is shown without running production connections.',
+  'Aktivitas dengan filter waktu, pelaku, jenis aksi dan objek. Waktu pencatatan dalam WITA.': 'Activity filtered by time, actor, action type and object. Times recorded in WITA.',
+  'Ringkasan dataset demo, konfirmasi hapus, state kosong dan mulai kembali dari fixture.': 'Demo dataset summary, delete confirmation, empty state and restart from fixture.',
+  'Panduan singkat untuk pengguna HRD.': 'Quick guide for HRD users.',
+  'Performa tim terhadap target bersama, rata-rata XScore, cakupan bukti, kesiapan dan efektivitas pelatihan.': 'Team performance against shared targets, average XScore, evidence coverage, readiness and training effectiveness.',
+  '15 ekspektasi stakeholder (Executive Summary, Collaboration Group, Human Growth) dengan target, realisasi dan sumber.': '15 stakeholder expectations (Executive Summary, Collaboration Group, Human Growth) with target, actual and source.',
+  'Definisi KPI berversi: unit, arah, rumus, cakupan, frekuensi dan sumber. Perubahan membuat versi baru.': 'Versioned KPI definitions: unit, direction, formula, scope, frequency and source. Changes create a new version.',
+  'Kontrak tim & individu: bobot tepat 100%, persetujuan, aktivasi, penutupan dengan snapshot, koreksi tercatat.': 'Team & individual contracts: weights exactly 100%, approval, activation, closing with snapshot, recorded corrections.',
+  'Scorecard personal: target, aktual, bobot, kontribusi, bukti, cakupan, provisional/final.': 'Personal scorecard: target, actual, weight, contribution, evidence, scope, provisional/final.',
+  'Telusuri divisi → outlet → individu: pengalaman, kompetensi, aspirasi, hasil kerja, coaching, histori penempatan.': 'Drill division → outlet → individual: experience, competencies, aspirations, work results, coaching, placement history.',
+  'Gap kompetensi, target, mentor, aktivitas, bukti dan Workplan F3.': 'Competency gaps, targets, mentors, activities, evidence and F3 Workplan.',
+  'Onboarding keterampilan, pelatihan rutin, verifikasi praktik, Quality of Hire dan talent pipeline.': 'Skills onboarding, routine training, practical verification, Quality of Hire and talent pipeline.',
+  'Objective, enam indikator Vegen, Race Goal, key metrics, target, aktual, bukti, bobot dan versi kontrak.': 'Objective, six Vegen indicators, Race Goal, key metrics, target, actual, evidence, weight and contract version.',
+  'Beacon unit dengan induk Vegen, inisiatif, PIC, tenggat, Task ID dan review Success Factors.': 'Unit Beacon with parent Vegen, initiatives, PIC, deadlines, Task ID and Success Factors review.',
+  'Komitmen My Day, selesai vs terverifikasi, terlambat, terblokir dan pekerjaan tambahan.': 'My Day commitments, done vs verified, overdue, blocked and extra work.',
+  'Komitmen mingguan, kapasitas PIC, pekerjaan terbawa, hambatan dan tindakan berikutnya.': 'Weekly commitments, PIC capacity, carried-over work, obstacles and next actions.',
+  'Target/hasil SER, KPI, kapasitas, talenta dan biaya berizin; temuan menjadi kartu F3.': 'SER targets/results, KPIs, capacity, talent and permitted costs; findings become F3 cards.',
+  'Keputusan strategis, alternatif, alasan, pemilik, kriteria evaluasi, Workplan dan hasil.': 'Strategic decisions, alternatives, rationale, owner, evaluation criteria, Workplan and results.',
+  'Delapan halaman e-Deck dengan filter periode/scope, drill-down, snapshot berversi dan ekspor berizin.': 'Eight e-Deck pages with period/scope filters, drill-down, versioned snapshots and permitted exports.',
+  'Laporan & metrik sampai versi formula, perhitungan, bukti, pembaruan dan tindak lanjut.': 'Reports & metrics down to formula version, calculation, evidence, updates and follow-up.',
+  'Headcount, kapasitas dan utility per outlet, headcount Office per divisi, dan peringatan yang bisa ditelusuri.': 'Headcount, capacity and utility per outlet, Office headcount per division, and traceable alerts.',
+  'Kapasitas reguler dan treatment selesai per outlet × shift. Klik shift untuk anggota, termasuk bantuan outlet lain.': 'Regular capacity and completed treatments per outlet × shift. Click a shift for members, including help from other outlets.',
+  'Pembilang, penyebut dan transaksi di balik utility. Ambang 70% dan 100% dengan status Pantau.': 'Numerator, denominator and transactions behind utility. 70% and 100% thresholds with Watch status.',
+  'Reservasi, check-in, waktu tunggu dan coverage receptionist per blok jam.': 'Reservations, check-ins, waiting time and receptionist coverage per time block.',
+  'Beban kerja Office per divisi dengan ukuran, SLA, sumber dan kelengkapan data.': 'Office workload per division with measures, SLA, sources and data completeness.',
+  'Baris layanan POS dengan Transaction ID & Service Line ID, refund, koreksi dan replay batch tanpa duplikat.': 'POS service lines with Transaction ID & Service Line ID, refunds, corrections and duplicate-free batch replay.',
+  'Bandingkan opsi bantuan, geser shift dan tambah formasi; tandai temuan ke Planner; persetujuan Manager HRD.': 'Compare options: help, shift moves and added headcount; flag findings to Planner; HRD Manager approval.',
+  'Kirim kebutuhan disetujui ke Rekrutmen F4 dan pantau sampai penempatan; posisi terbuka turun saat penempatan aktif.': 'Send approved needs to F4 Recruitment and track until placement; open positions drop when placement is active.',
+  'Performa × potensi, termasuk Stars dan Belum Dinilai; alasan, bukti, reviewer dan histori.': 'Performance × potential, including Stars and Not Rated; rationale, evidence, reviewer and history.',
+  'Salary Ratio, Total People Cost Ratio, Revenue/Salary per Employee, pagu, forecast dan ruang anggaran.': 'Salary Ratio, Total People Cost Ratio, Revenue/Salary per Employee, ceiling, forecast and budget headroom.',
+  'Anggaran tahunan → kuartal → bulan dengan musim bisnis dan alokasi Office ke outlet (100%).': 'Annual budget → quarter → month with business seasonality and Office allocation to outlets (100%).',
+  'Simulasi tambah orang/bantuan/outlet baru: asumsi, tahun berjalan vs setahun penuh, Requisition ID F4.': 'Simulate adding people/help/new outlet: assumptions, current year vs full year, F4 Requisition ID.',
+  'Rasio bulanan, rencana, forecast, tahun lalu dan kurva S biaya kumulatif.': 'Monthly ratios, plan, forecast, last year and cumulative cost S-curve.',
+
+  /* ===== label layar ===== */
+  'Realisasi dan komitmen': 'Actual and commitments', 'Daftar pengajuan': 'Request list', 'Aksi Finance': 'Finance action', 'Pengajuan, approval dan realisasi': 'Requests, approval and actuals',
+  'Komisi per booking': 'Commission per booking', 'Booking → treatment → transaksi': 'Booking → treatment → transaction', 'Stok demo': 'Demo stock', 'Tersedia': 'Available',
+  'Rujukan': 'Reference', 'Kondisi data': 'Data state', 'Loading (simulasi)': 'Loading (simulation)', 'Error (simulasi)': 'Error (simulation)', 'Ringkasan Manager HRD': 'HRD Manager summary',
+  'Rincian ›': 'Details ›', 'Sumber 2026': '2026 source', '(revenue ÷ biaya marketing)': '(revenue ÷ marketing cost)', 'Temuan': 'Finding', 'Hipotesis': 'Hypothesis',
+  'Buat tindakan': 'Create action', 'Pelanggan unik': 'Unique customers', 'Periode pembanding': 'Comparison period', 'Definisi dan denominator': 'Definition and denominator',
+  'Rekonsiliasi per outlet': 'Reconciliation per outlet', 'Tamu': 'Guests', 'Refund dikecualikan': 'Refunds excluded', 'Transaksi POS dibayar': 'Paid POS transactions',
+  'Cari ID transaksi': 'Search transaction ID', 'Transaksi POS': 'POS transactions', 'Sumber akuisisi': 'Acquisition source', 'Pengajuan': 'Requests', 'Rekonsiliasi': 'Reconciliation',
+  'Per pos 7P': 'Per 7P line', 'Sisa per outlet': 'Remaining per outlet', 'Sisa tersedia': 'Remaining available', 'Sisa historis SER': 'SER historical remaining', 'Per campaign': 'Per campaign',
+  'Baris budget': 'Budget lines', 'Status campaign': 'Campaign status', 'Brand & materi cetak': 'Brand & print materials', 'Q1 · tiga bulanan': 'Q1 · quarterly', 'Q2 · tiga bulanan': 'Q2 · quarterly',
+  'Q3 · tiga bulanan': 'Q3 · quarterly', 'Q4 · tiga bulanan': 'Q4 · quarterly', 'Kategori': 'Category', 'Semua kategori': 'All categories', 'Unit/outlet': 'Unit/outlet', 'Semua unit': 'All units',
+  'Pusat / lintas outlet': 'Central / cross-outlet', 'Semua tim': 'All teams', 'Alokasi kategori': 'Category allocation', 'Efektivitas': 'Effectiveness',
+  'Tiga bulanan = jumlah tiga bulan': 'Quarterly = sum of three months', 'Kuartal': 'Quarter', 'Bulan 1 + 2 + 3': 'Month 1 + 2 + 3', 'Skenario envelope': 'Envelope scenario',
+  'Porsi Commercial (non-People)': 'Commercial share (non-People)', 'Target revenue 2027 (Rp)': '2027 revenue target (Rp)', 'Rasio (%)': 'Ratio (%)', 'Catatan versi': 'Version notes',
+  'Simpan asumsi (versi baru)': 'Save assumptions (new version)', 'Tree budget · 2027 · Tahunan': 'Budget tree · 2027 · Annual', 'Kategori › sub › detail': 'Category › sub › detail',
+  'Alokasi': 'Allocation', 'Terpakai': 'Used', 'Semua channel': 'All channels', 'Semua status': 'All statuses', 'Alasan pause': 'Pause reason', 'Retrospektif': 'Retrospective',
+  'Lanjutkan': 'Continue', 'Funnel campaign (Agustus 2026)': 'Campaign funnel (August 2026)', 'Creative & konten': 'Creative & content', 'PIC tahap': 'Stage PIC', 'PIC tahap:': 'Stage PIC:',
+  'Konten baru dari brief': 'New content from brief', 'Buat konten': 'Create content', 'Budget & pengajuan': 'Budget & requests', 'Tugas terkait (Daily Race)': 'Related tasks (Daily Race)',
+  'Histori status': 'Status history', 'Pilar': 'Pillar', 'Semua tahap': 'All stages', 'Dari nol': 'From scratch', 'Dari reference': 'From reference', 'Dari campaign': 'From campaign',
+  'Belum ditentukan': 'Not set', 'Perlu revisi': 'Needs revision', 'Semua brand': 'All brands', 'Aset': 'Assets', 'Kalender komunikasi': 'Communication calendar',
+  'Narasi progres': 'Progress narrative', 'Semua platform': 'All platforms', 'Semua campaign': 'All campaigns', 'Funnel paid · semua platform': 'Paid funnel · all platforms',
+  'Spend dan hasil per hari': 'Spend and results per day', 'Jadwal per akun': 'Schedule per account', 'Akun': 'Account', 'Produksi': 'Production', 'Publikasi': 'Publishing',
+  'Direktori': 'Directory', 'Pipeline Kolaborasi': 'Collaboration pipeline', 'Kalender Deliverables': 'Deliverables calendar', 'Direktori partner': 'Partner directory', 'Audiens': 'Audience',
+  'Kode': 'Code', 'Jejak booking (F7-02)': 'Booking trail (F7-02)', 'ID lead / booking / POS': 'Lead / booking / POS ID', 'Telusuri': 'Trace', 'Kanal kontak': 'Contact channel',
+  'Jalur konfirmasi': 'Confirmation path', 'Transaksi': 'Transactions', 'Porsi': 'Share', 'Brief Harian': 'Daily brief', 'Tanyakan Data': 'Ask the data', 'Usulan Eksperimen': 'Experiment proposals',
+  'Komunikasi': 'Communication', 'Terima → buat tugas': 'Accept → create task', 'Usulan baru': 'New proposal', 'Simpan versi': 'Save version', 'Alasan tolak': 'Rejection reason',
+  'Pekerjaan': 'Work', 'Verifikasi selesai': 'Verify done', 'Ruang Sales dan status pengerjaan': 'Sales workspaces and progress', 'Jejak hasil Sales': 'Sales results trail',
+  'Inbox reservasi': 'Reservation inbox', 'Sosial media': 'Social media', 'Tambah lead demo': 'Add demo lead', 'Alihkan ke staf': 'Assign to staff', 'Booking langsung': 'Direct booking',
+  'Kode KOL (opsional)': 'KOL code (optional)', 'Konfirmasi booking': 'Confirm booking', 'Setujui perjanjian demo': 'Accept demo agreement', 'Booking referral': 'Referral booking',
+  'Katalog & booking': 'Catalog & booking', 'Riwayat demo': 'Demo history', 'Ruang kerja Human Resources': 'Human Resources workspace', 'Unit bisnis': 'Business unit',
+  'Semua · JAENS Enterprises': 'All · JAENS Enterprises', 'Semua divisi': 'All divisions', 'Reset cakupan': 'Reset scope', 'orang': 'people', 'Pengajuan perlu ditinjau': 'Requests to review',
+  'Kehadiran hari ini': 'Attendance today', 'Statistik karyawan': 'Employee statistics', 'Usia': 'Age', 'Jenis kelamin': 'Gender', 'Agama': 'Religion', 'Pendidikan': 'Education',
+  'Status perkawinan': 'Marital status', 'Lama kerja': 'Tenure', 'Status kerja': 'Employment status', 'Ringkasan payroll': 'Payroll summary', 'Cari nama / ID': 'Search name / ID',
+  'Semua posisi': 'All positions', 'PKWTT (tetap)': 'PKWTT (permanent)', 'PKWT (kontrak)': 'PKWT (contract)', 'Informasi Pribadi': 'Personal Info', 'Kontak': 'Contact',
+  'Kepegawaian': 'Employment', 'Ekspor CSV (cakupan ini)': 'Export CSV (this scope)', 'Berlaku sejak': 'Effective since', 'THP contoh': 'Sample THP', 'Pilih file dummy': 'Choose dummy file',
+  'Tambah karyawan': 'Add employee', 'Mulai': 'Start', 'Harian': 'Daily', 'Istirahat': 'Break', 'Menunggu Persetujuan': 'Awaiting approval', 'Tahap aktif / PIC': 'Active stage / PIC',
+  'Bisa diputuskan': 'Can decide', 'Ubah shift tetap (tanggal efektif)': 'Change fixed shift (effective date)', 'Shift baru': 'New shift', 'Efektif mulai': 'Effective from',
+  'Penugasan tambahan': 'Extra assignment', 'Cek konflik & simpan': 'Check conflicts & save', 'Shift tetap': 'Fixed shift', 'Perubahan berikutnya': 'Next change', 'Saldo': 'Balance',
+  'Kalender': 'Calendar', 'Kebijakan': 'Policy', 'Kuota': 'Quota', 'Terpakai (disetujui)': 'Used (approved)', 'Tanpa kuota': 'No quota', 'Cuti Khusus': 'Special Leave', 'Izin': 'Permit',
+  'Cuti Tidak Dibayar': 'Unpaid Leave', 'Saldo dihitung dari ledger: hanya pengajuan yang disetujui mengurangi saldo. Penolakan tidak mengubah saldo.': 'Balance is computed from the ledger: only approved requests reduce it. Rejections do not change the balance.',
+  'Semua klien': 'All clients', 'Daftar kunjungan': 'Visit list', 'Petugas': 'Staff', 'Masuk–keluar': 'In–out', 'Kamis 12 Nov · masuk & keluar lengkap': 'Thu 12 Nov · full in & out',
+  'Jumat 13 Nov · hari ini (belum check-out)': 'Fri 13 Nov · today (not checked out)', 'Lokasi kerja': 'Work location', 'Kejadian': 'Incidents', 'Titik tercatat': 'Recorded point',
+  'Jarak dari titik kerja': 'Distance from work point', 'Melebihi radius': 'Beyond radius', 'Tindak lanjut': 'Follow-up', 'Riwayat lokasi': 'Location history', 'Konteks': 'Context',
+  'Validasi': 'Validation', 'Website karier': 'Careers website', 'QR di outlet': 'QR at outlet', 'Referensi karyawan': 'Employee referral', 'Lamaran Masuk': 'Applications in',
+  'Klarifikasi': 'Clarification', 'Uji Praktik': 'Practical test', 'Penawaran & Kontrak': 'Offer & Contract', 'Penempatan Aktif': 'Active placement', 'Mengundurkan diri': 'Withdrew',
+  'Dikirim': 'Sent', 'Tumbuh bersama JAENS': 'Grow with JAENS', 'Permintaan tenaga': 'Staffing request', 'Buat permintaan tenaga': 'Create staffing request', 'Pagi/Sore': 'Morning/Afternoon',
+  'Sumber kebutuhan': 'Need source', 'Tahap berikut': 'Next stage', 'Publikasikan': 'Publish', 'Versi kriteria': 'Criteria version', 'Tautan & kanal': 'Links & channels', 'Sinkron': 'Synced',
+  'Lowongan tidak ditemukan': 'Opening not found', 'Lowongan tidak menerima lamaran': 'Opening not accepting applications', 'Grup slip': 'Payslip group', 'Slip Gaji Karyawan': 'Employee payslip',
+  'Kelengkapan sumber': 'Source completeness', 'BPJS perusahaan': 'Company BPJS', 'Komponen': 'Component', 'Rumus (versi terakhir)': 'Formula (latest version)', 'Aturan': 'Rule',
+  'Per therapist · Spa Ubud': 'Per therapist · Spa Ubud', 'Outlet induk': 'Home outlet', 'Baris': 'Lines', 'Jam berkomisi': 'Commissionable hours', 'Rincian': 'Details',
+  'Generate draf': 'Generate draft', 'Impor (pratinjau)': 'Import (preview)', 'Status bayar': 'Payment status', 'Siap Bayar': 'Ready to pay', 'Sudah Bayar': 'Paid', 'Sebagian': 'Partial',
+  'Gagal': 'Failed', 'Belum siap': 'Not ready', 'Unduh massal slip (simulasi, Manager HRD)': 'Bulk download payslips (simulation, HRD Manager)', 'Belum ada snapshot terkunci': 'No locked snapshot yet',
+  'Cicilan (periode · nominal · dipakai di)': 'Installments (period · amount · used in)', 'Cicilan (bulan)': 'Installments (months)', 'Ajukan kasbon': 'Request cash advance',
+  'Penyelesaian': 'Settlement', 'Setujui (via payroll)': 'Approve (via payroll)', 'Selesai di kas kecil': 'Settled from petty cash', 'Ajukan reimburse': 'Request reimbursement',
+  'Semua jenis': 'All types', 'Tukar shift': 'Shift swap', 'Wilayah': 'Region', 'Kunjungan': 'Visits', 'Ekspor': 'Export', 'Beban per PIC': 'Load per PIC', 'Kartu aktif': 'Active cards',
+  'Temuan kapasitas (F5, sintetis)': 'Capacity findings (F5, synthetic)', 'Tandai sebagai Issue': 'Flag as Issue', 'Handoff lintas tim': 'Cross-team handoff', 'Semua workplace': 'All workplaces',
+  'Semua cakupan': 'All scopes', 'Semua outlet Spa': 'All Spa outlets', 'Semua prioritas': 'All priorities', 'Dikerjakan': 'In progress', 'Pindahkan': 'Move', 'Sesi & tenggat': 'Sessions & deadlines',
+  'Sesi': 'Session', 'Agenda berurutan': 'Agenda in order', 'Waktu': 'Time', 'Menunggu review': 'Awaiting review', 'Daftar tugas': 'Task list', 'Jenis sumber': 'Source type',
+  'Library · versi aktif': 'Library · active version', 'Langkah': 'Steps', 'Induk': 'Parent', 'Lepas dari My Day': 'Remove from My Day', 'Agenda hari ini & besok': 'Agenda today & tomorrow',
+  'Pekerjaan terbawa (lewat tenggat)': 'Carried-over work (overdue)', 'Kartu tidak ditemukan': 'Card not found', 'Pengaturan HRD · F1': 'HRD Settings · F1', 'Isi': 'Content',
+  'Akses Manager HRD': 'HRD Manager access', 'Akun role demo': 'Demo role accounts', 'Penempatan efektif': 'Effective placement', 'Uji': 'Test', 'Pakai': 'Use', 'Matriks izin': 'Permission matrix',
+  'Beranda HRD': 'HRD Home', 'Organisasi & penempatan': 'Organization & placement', 'Data orang sesuai cakupan': 'People data within scope', 'Lihat pengaturan': 'View settings',
+  'Ubah pengaturan': 'Change settings', 'Pengaturan payroll, layout slip & template export': 'Payroll settings, payslip layout & export template', 'Laporan payroll/PPH/BPJS/Coretax': 'Payroll/PPh/BPJS/Coretax reports',
+  'Lihat peran & akses': 'View roles & access', 'Ubah peran akun': 'Change account role', 'Rekonsiliasi dummy': 'Dummy reconciliation', 'Hapus dataset dummy': 'Delete dummy dataset',
+  'Self service (ESS) data sendiri': 'Self service (ESS) own data', 'Uji akses langsung': 'Test direct access', 'Hasil untuk Manager HRD': 'Result for HRD Manager', 'Semua role': 'All roles',
+  'Karyawan (ESS)': 'Employee (ESS)', 'Staf HRD': 'HRD Staff', 'Ubah role': 'Change role', 'Identitas': 'Identity', 'Kebijakan approval': 'Approval policy', 'Penomoran': 'Numbering',
+  'Katalog GajiHub': 'GajiHub catalog', 'Identitas perusahaan': 'Company identity', 'Notifikasi': 'Notifications', 'Integrasi': 'Integrations', 'Aturan Tugas': 'Task rules', 'Pemicu': 'Trigger',
+  'Nonaktifkan': 'Deactivate', 'Sejak tanggal': 'Since date', 'Pelaku': 'Actor', 'Semua pelaku': 'All actors', 'Jenis aksi': 'Action type', 'Semua aksi': 'All actions',
+  'Komponen payroll': 'Payroll components', 'Perubahan akses': 'Access changes', 'Objek': 'Object', 'Semua objek': 'All objects', 'Akses': 'Access', 'Pemeriksaan': 'Check',
+  'Kelola dataset': 'Manage dataset', 'Tambah 1 record non-demo (uji)': 'Add 1 non-demo record (test)', 'Kenapa saya hanya melihat sebagian karyawan?': 'Why do I only see some employees?',
+  'Siapa yang melihat nominal gaji?': 'Who can see salary amounts?', 'Apa beda take-home pay dan biaya tenaga kerja?': 'What is the difference between take-home pay and labor cost?',
+  'Bagaimana mencoba pembatasan akses?': 'How do I try access restrictions?', 'Performa tim per outlet': 'Team performance per outlet', 'Utility tim': 'Team utility', 'Skor tim': 'Team score',
+  'Rata-rata XScore': 'Average XScore', 'Bukti lengkap': 'Evidence complete', 'Talenta': 'Talent', 'Ekspektasi': 'Expectation', 'Satuan': 'Unit', 'Capaian': 'Achievement',
+  'Fungsi': 'Function', 'Arah': 'Direction', 'Frekuensi': 'Frequency', 'Bukti belum lengkap': 'Evidence incomplete', 'Produktivitas': 'Productivity',
+  'Telusuri divisi → outlet → individu': 'Drill division → outlet → individual', 'Kompetensi': 'Competency', 'Buat Workplan': 'Create Workplan', 'Program & verifikasi': 'Programs & verification',
+  'Peserta': 'Participants', 'Praktik': 'Practical', 'Diverifikasi': 'Verified', 'Lulus': 'Passed', 'Belum lulus': 'Not passed', 'Indikator Vegen': 'Vegen indicators', 'Sasaran unit': 'Unit objective',
+  'Indikator induk': 'Parent indicator', 'Inisiatif': 'Initiatives', 'Catat blocker / eskalasi': 'Log blocker / escalation', 'Catat blocker': 'Log blocker', 'Simpan sesi Daily': 'Save Daily session',
+  'Sesi Daily': 'Daily session', 'Komitmen mingguan': 'Weekly commitments', 'Pekerjaan terbawa': 'Carried-over work', 'Kapasitas PIC (kartu terbuka)': 'PIC capacity (open cards)',
+  'Kartu terbuka': 'Open cards', 'Beban': 'Load', 'Tindakan berikutnya': 'Next action', 'Pilih PIC': 'Choose PIC', 'Sumber (Task/Finding ID)': 'Source (Task/Finding ID)',
+  'Simpan review Weekly': 'Save Weekly review', 'Sesi Weekly': 'Weekly session', 'Waktu WITA': 'Time WITA', 'Status saat review → sekarang': 'Status at review → now', 'Kapasitas': 'Capacity',
+  'Selisih': 'Variance', 'Catatan reflection': 'Reflection notes', 'Penyebab selisih': 'Cause of variance', 'Pembelajaran': 'Learning', 'Evaluasi berikutnya': 'Next evaluation',
+  'Simpan catatan': 'Save notes', 'Keputusan strategis': 'Strategic decision', 'Kriteria': 'Criteria', 'Simpan snapshot sesi': 'Save session snapshot', 'Snapshot tersimpan': 'Snapshot saved',
+  'Grup (semua outlet)': 'Group (all outlets)', 'Versi formula': 'Formula version', 'Diperbarui': 'Updated', 'Perlu perhatian': 'Needs attention',
+  'Outlet Spa · therapist & receptionist': 'Spa outlets · therapists & receptionists', 'Kapasitas reguler': 'Regular capacity', 'Treatment selesai': 'Treatments completed',
+  'Lembur · bantuan': 'Overtime · help', 'Office · headcount per divisi': 'Office · headcount per division', 'Target roster': 'Roster target', 'Beban kerja': 'Workload', 'Pilih shift': 'Choose shift',
+  'Kapasitas Spa Ubud': 'Spa Ubud capacity', 'Bantuan antaroutlet': 'Inter-outlet help', 'Jejak perhitungan · Spa Ubud': 'Calculation trail · Spa Ubud', 'Perbandingan outlet': 'Outlet comparison',
+  'Reguler': 'Regular', 'Ringkasan per outlet · rata-rata per hari': 'Summary per outlet · daily average', 'Reservasi': 'Reservations', 'Rasio check-in': 'Check-in ratio',
+  'Tunggu rata-rata': 'Average wait', 'Coverage per blok jam': 'Coverage per time block', 'Blok': 'Block', 'Staf': 'Staff', 'Per staf/jam': 'Per staff/hour', 'Tunggu': 'Wait',
+  'Beban kerja per divisi': 'Workload per division', 'Ukuran kerja': 'Work measure', 'SLA tercapai': 'SLA met', 'Kelengkapan': 'Completeness', 'Sumber · update': 'Source · update',
+  'Layanan': 'Service', 'Bayar': 'Paid', 'Batch POS harian': 'Daily POS batch', 'Diterima': 'Accepted', 'Replay batch': 'Replay batch', 'Bandingkan opsi · Spa Ubud': 'Compare options · Spa Ubud',
+  'Opsi': 'Option', 'Asumsi utama': 'Key assumptions', 'Utility sebelum': 'Utility before', 'Utility sesudah': 'Utility after', 'Gap sebelum': 'Gap before', 'Gap sesudah': 'Gap after',
+  'Status sesudah': 'Status after', 'Simpan skenario': 'Save scenario', 'Tambah formasi therapist': 'Add therapist headcount', 'Geser shift': 'Move shift', 'Jumlah orang (formasi)': 'People (headcount)',
+  'Jam (bantuan/geser)': 'Hours (help/move)', 'Bantuan dari': 'Help from', 'Mulai efektif': 'Effective start', 'Progres permintaan tenaga': 'Staffing request progress', 'Penempatan aktif': 'Active placement',
+  'Definisi': 'Definition', 'Pembilang': 'Numerator', 'Penyebut': 'Denominator', 'Anggaran 2026 per bulan · Grup Spa': '2026 budget per month · Spa Group', 'Revenue rencana': 'Planned revenue',
+  'Pagu (25%)': 'Ceiling (25%)', 'Biaya aktual/forecast': 'Actual/forecast cost', 'Ruang': 'Headroom', 'Per kuartal': 'Per quarter', 'Rasio (total ÷ total)': 'Ratio (total ÷ total)',
+  'Alokasi biaya Office (divisi pendukung) ke outlet': 'Office cost allocation (support divisions) to outlets', 'Outlet penerima': 'Receiving outlet', 'Dasar alokasi (revenue Okt)': 'Allocation basis (Oct revenue)',
+  'Biaya Office dialokasikan / bulan': 'Office cost allocated / month', 'Simulasi baru': 'New simulation', 'Tambah Therapist': 'Add Therapist', 'Bantuan outlet': 'Outlet help', 'Hitung skenario': 'Calculate scenario',
+  'Outlet baru (rencana)': 'New outlet (plan)', 'Biaya pra-pembukaan': 'Pre-opening cost', 'Rasio biaya tenaga kerja bulanan': 'Monthly labor cost ratio', 'Kurva S biaya kumulatif': 'Cumulative cost S-curve',
+  'Kumulatif biaya': 'Cumulative cost', 'Kumulatif pagu': 'Cumulative ceiling', 'Ajukan koreksi': 'Request correction', 'Data sendiri': 'Own data', 'Belum Ada Status': 'No status yet',
+  'Provisional · bukti belum lengkap': 'Provisional · evidence incomplete', 'Tanpa campaign': 'No campaign', 'Kualitas data': 'Data quality', 'Ubah atau tolak': 'Edit or reject', 'Lihat di peta': 'View on map',
+  'Layar lengkap dijadwalkan pada Fase 6. Belum ada interaksi di layar ini.': 'The full screen is scheduled for Phase 6. No interaction on this screen yet.', 'Sesuai': 'Matches',
+  'Biaya langsung · komisi': 'Direct cost · commission', 'Refund · Keluhan layanan': 'Refund · Service complaint', 'Kenapa': 'Why', 'Saldo 2026': '2026 balance',
+  /* ===== judul halaman & banner ===== */
+  'Halaman sandbox Finance lama ini tidak lagi tampil di menu Finance. Portal Finance sekarang memakai modul Finance lengkap HAWK (NV-47). Data dan interaksi di bawah tetap berjalan untuk alur Commercial, Sales, dan HRD.': 'This old Finance sandbox page no longer appears in the Finance menu. The Finance portal now uses the full HAWK Finance module (NV-47). Data and interactions below still run for the Commercial, Sales and HRD flows.',
+  'Versi sandbox': 'Sandbox version', 'Executive Performance Summary': 'Executive Performance Summary', 'Rincian Executive Summary': 'Executive Summary details',
+  'Master Marketing Budget 2027': 'Master Marketing Budget 2027',
+  'Target revenue dan pagu 2027 resmi belum diberikan. Rp40 miliar × 6% adalah skenario. Angka workbook 2025 hanya preset berversi, tidak dijadikan aktual 2027.': 'Official 2027 revenue target and ceiling have not been provided. Rp40 billion × 6% is a scenario. 2025 workbook figures are versioned presets only, not 2027 actuals.',
+  'Aturan deterministik atas metric registry demo, bukan model AI. Mentor tidak mengubah budget, tidak menyetujui pembayaran dan tidak memposting transaksi.': 'Deterministic rules over the demo metric registry, not an AI model. The mentor does not change budgets, approve payments or post transactions.',
+  'Pemilih peran demo di sidebar adalah simulasi. Cloud mengambil identitas dan scope dari autentikasi server.': 'The demo role picker in the sidebar is a simulation. Cloud takes identity and scope from server authentication.',
+  'Workspace HRD Operations atau Human Growth: beban per PIC, kartu tanpa PIC, lewat tenggat, blocker, review dan handoff lintas tim.': 'HRD Operations or Human Growth workspace: load per PIC, cards without PIC, overdue, blockers, reviews and cross-team handoffs.',
+  'Beban Kerja Divisi Office': 'Office Division Workload', 'Simulasi Kebutuhan & Temuan': 'Demand Simulation & Findings', 'Rencana Anggaran & Alokasi Divisi': 'Budget Plan & Division Allocation',
+  'Simulasi Rekrutmen & Outlet Baru': 'Recruitment & New Outlet Simulation', 'Tren Bulanan & Kurva S': 'Monthly Trends & S-Curve', 'Kontrak KPI & Review Periode': 'KPI Contract & Period Review',
+  'Rencana Pengembangan & Coaching': 'Development Plan & Coaching', 'Pelatihan, Kesiapan & Talent Pipeline': 'Training, Readiness & Talent Pipeline', 'Race Beacon & Success Factors': 'Race Beacon & Success Factors',
+  'Pusat Laporan & Jejak Bukti': 'Reports & Evidence Trail Center', 'Direktori Karyawan': 'Employee Directory', 'Pipeline Kandidat': 'Candidate Pipeline', 'Landing Karier': 'Careers Landing',
+  'Permintaan Tenaga & Kelola Lowongan': 'Staffing Requests & Openings', 'Interview & Uji Praktik': 'Interview & Practical Test', 'Kontrak & Verifikasi Dokumen': 'Contract & Document Verification',
+  'Penempatan, Akun & Role': 'Placement, Account & Role', 'Komponen & Aturan Payroll': 'Payroll Components & Rules', 'Rekonsiliasi Komisi POS': 'POS Commission Reconciliation',
+  'Proses Payroll Periode': 'Period Payroll Run', 'Slip Gaji & Status Pembayaran': 'Payslips & Payment Status', 'Kasbon & Reimburse': 'Cash Advance & Reimbursement',
+  'Laporan Payroll, Pajak & BPJS': 'Payroll, Tax & BPJS Reports', 'Interaksi sandbox di bawah sudah tersambung ke model lintas portal.': 'The sandbox interactions below are already connected to the cross-portal model.',
+  'Pengaturan Sistem': 'System Settings',
+  /* ===== app Finance 60 NV (shell, sidebar, layar Finance & budget) ===== */
+  'Beranda & Tugas': 'Home & Tasks', 'Organisasi & Akses': 'Organization & Access', 'Gudang & Inventory': 'Warehouse & Inventory', 'Aset & Fasilitas': 'Assets & Facilities',
+  'v0.9 prototipe': 'v0.9 prototype', 'Kontrak developer': 'Developer contract', 'Adapter: Mock (simulasi)': 'Adapter: Mock (simulation)', 'Adapter: HAWK API (belum terhubung)': 'Adapter: HAWK API (not connected)',
+  'Kondisi: Normal': 'Condition: Normal', 'Kondisi: Lambat (tampilkan loading)': 'Condition: Slow (show loading)', 'Kondisi: Gagal koneksi (tampilkan error)': 'Condition: Connection failed (show error)',
+  'Semua cabang/divisi': 'All branches/divisions', 'Operasional Spa': 'Spa Operations', 'Produksi Essence': 'Essence Production', 'Penjualan Essence': 'Essence Sales', 'Komersil': 'Commercial',
+  'Ruang kerja Finance — semua fitur': 'Finance workspace — all features', '⏱ Dampak keuangan keterlambatan': '⏱ Financial impact of delays', 'Utang usaha terbuka': 'Open accounts payable',
+  'Dokumen menunggu': 'Documents pending', 'ekstraksi AI → matching → verifikasi': 'AI extraction → matching → verification', 'Saldo GRNI': 'GRNI balance', 'barang diterima belum ditagih': 'goods received not yet invoiced',
+  'Jurnal menunggu review': 'Journals awaiting review', 'diposting oleh engine HAWK': 'posted by the HAWK engine', 'Meja kerja Finance': 'Finance workbench', 'Antrean matching': 'Matching queue',
+  'Aging utang usaha': 'AP aging', 'Arus dokumen bulan ini': 'Document flow this month', 'Beban 7P JAENS Spa (YTD)': 'JAENS Spa 7P expense (YTD)', 'Informasi layar': 'Screen info',
+  'Tombol → aksi': 'Button → action', 'Tombol': 'Button', 'Operasi': 'Operation', 'Navigasi utama': 'Main navigation', 'Mode adapter': 'Adapter mode', 'Simulasi kondisi jaringan': 'Network condition simulation',
+  'Cabang / divisi': 'Branch / division', 'Cari MRF, PO, item, supplier, aset… (Enter)': 'Search MRF, PO, item, supplier, asset… (Enter)', 'Pencarian global': 'Global search', 'Tugas & Approval': 'Tasks & Approval',
+  'Panduan walkthrough Owner': 'Owner walkthrough guide', 'Panduan': 'Guide', 'Ganti role demo': 'Switch demo role', 'Sembunyikan': 'Hide', 'Scan Nota': 'Scan receipt', 'Review Hasil AI': 'Review AI result',
+  'Riwayat & Bukti': 'History & Evidence', 'Foto / unggah nota': 'Photo / upload receipt', 'Isi tanpa foto': 'Fill without photo', 'Tidak ada antrean': 'No queue', 'Sisa budget bulan ini': 'Budget left this month',
+  'Kontrol terpisah': 'Separate controls', 'Empat alur dokumen': 'Four document flows', 'Unggah / foto faktur': 'Upload / photo invoice', 'Ekstrak': 'Extract', 'Navigasi Smart Spend': 'Smart Spend navigation',
+  'Status integrasi HAWK': 'HAWK integration status', 'Ke AI capture (NV-48)': 'To AI capture (NV-48)', '💵 Konfirmasi pembayaran — Order Sederhana': '💵 Payment confirmation — Simple Order',
+  '⚙️ Pengaturan Order Otomatis (AR-13)': '⚙️ Automatic Order Settings (AR-13)', 'Nonaktif (semua lewat atasan)': 'Off (all via manager)', 'Draft (perlu approval)': 'Draft (needs approval)',
+  'Disetujui, belum dibayar': 'Approved, not paid', 'Dibayar (simulasi)': 'Paid (simulation)', 'Jatuh tempo ≤ 7 hari': 'Due ≤ 7 days', 'prioritas pembayaran': 'payment priority', 'Terbuka': 'Open',
+  'Tagihan': 'Invoices', 'Contoh: keputusan rapat Owner': 'E.g.: Owner meeting decision', 'jurnal': 'journals', 'Diposting': 'Posted', 'Eksepsi': 'Exceptions', 'perlu perhatian': 'needs attention',
+  'akun 2120': 'account 2120', 'Jurnal bersumber Smart Spend': 'Journals from Smart Spend', 'Jurnal': 'Journal', 'Alokasi ke JAENS Spa': 'Allocation to JAENS Spa', 'per bulan dari biaya HQ': 'per month from HQ cost',
+  'Alokasi ke JAENS Essence': 'Allocation to JAENS Essence', 'Biaya HQ dialokasikan': 'HQ cost allocated', 'per bulan · DEMO': 'per month · DEMO', 'Transfer antar-BU': 'Inter-BU transfers',
+  'Alokasi biaya kantor bersama (shared office)': 'Shared office cost allocation', 'Ubah formula (NV-07)': 'Change formula (NV-07)', 'Pool biaya': 'Cost pool', 'Dasar alokasi': 'Allocation basis',
+  'Biaya / bulan': 'Cost / month', 'Rekonsiliasi transfer antar-BU': 'Inter-BU transfer reconciliation', 'Dari → Ke': 'From → To', 'Rekonsiliasi GRNI per PO': 'GRNI reconciliation per PO', 'Ditagih': 'Invoiced',
+  'OPEX + CAPEX + Inventory + lainnya': 'OPEX + CAPEX + Inventory + other', 'Baseline disimpan': 'Baseline saved', 'KPI hasil — bukan pengeluaran': 'Outcome KPI — not spending', 'Baris perencanaan': 'Planning lines',
+  'baris belanja (non-profit)': 'spending lines (non-profit)', 'Tambah budget line': 'Add budget line', 'Semua unit (konsolidasi)': 'All units (consolidated)', 'Semua 7P': 'All 7P', 'Jenis dana': 'Fund type',
+  'Qty × harga': 'Qty × price', 'Lihat 7P allocation': 'View 7P allocation', 'Alur approval': 'Approval flow', 'Cari item, ID, SKU…': 'Search item, ID, SKU…', 'Alokasi per budget (FY & unit)': 'Allocation per budget (FY & unit)',
+  'Tahun fiskal': 'Fiscal year', 'FY2026 (berjalan, terkunci)': 'FY2026 (running, locked)', 'FY2027 (rencana — belum disetujui)': 'FY2027 (plan — not approved)', 'Setahun penuh': 'Full year',
+  'Kuartal 1': 'Quarter 1', 'Kuartal 2': 'Quarter 2', 'Kuartal 3': 'Quarter 3', 'Kuartal 4': 'Quarter 4', 'Manajemen BU (lintas outlet)': 'BU management (cross-outlet)',
+  'Essence — pusat produksi & penjualan': 'Essence — production & sales center', 'Kantor Pusat (HQ)': 'Head Office (HQ)', 'Manajemen Outlet': 'Outlet management', 'Manajemen Operasional Spa': 'Spa operations management',
+  'Produksi & Kemasan': 'Production & Packaging', 'Formulasi & QC': 'Formulation & QC', 'Penjualan Retail & Online': 'Retail & Online Sales', 'Distribusi': 'Distribution', 'Sales Korporat': 'Corporate Sales',
+  'Subkategori': 'Subcategory', 'Gaji & tunjangan': 'Salaries & allowances', 'Insentif & komisi': 'Incentives & commissions', 'BPJS & benefit': 'BPJS & benefits', 'BHP treatment': 'Treatment consumables',
+  'Amenities tamu': 'Guest amenities', 'Event & aktivasi': 'Events & activation', 'Materi promosi': 'Promotional materials', 'Administrasi & SOP': 'Administration & SOP', 'Sewa': 'Rent', 'Utilitas': 'Utilities',
+  'Kebersihan & laundry': 'Cleaning & laundry', 'Pemeliharaan peralatan': 'Equipment maintenance', 'Peralatan & aset baru': 'New equipment & assets', 'Pelatihan & sertifikasi': 'Training & certification',
+  'Bahan baku produksi': 'Production raw materials', 'Kemasan': 'Packaging', 'Riset & uji': 'Research & testing', 'Konsultan & audit': 'Consultants & audit', 'Perbaikan gedung': 'Building repairs',
+  'Organisasi → 7P': 'Organization → 7P', 'Tutup hierarki': 'Collapse hierarchy', 'Struktur · klik nama untuk fokus, ▸ untuk buka': 'Structure · click a name to focus, ▸ to expand', '% lingkup': '% of scope',
+  'Seluruh lingkup': 'Whole scope', 'Daftar budget line (NV-23)': 'Budget line list (NV-23)', 'Urutan hierarki': 'Hierarchy order', 'Cari item, subkategori, departemen…': 'Search item, subcategory, department…',
+  'Cari dalam hierarki': 'Search within hierarchy', 'Variance = actual − revised (negatif = di bawah budget / favourable untuk biaya). Varians forecast dilacak terpisah.': 'Variance = actual − revised (negative = under budget / favourable for costs). Forecast variance is tracked separately.',
+  'tidak pernah ditimpa': 'never overwritten', 'versi v2': 'version v2', 'aktual + max(komitmen, run-rate)': 'actual + max(commitment, run-rate)', 'Usulan revisi': 'Revision proposals', 'menunggu Owner': 'awaiting Owner',
+  'Revisi': 'Revisions', 'Perubahan': 'Change', 'Realokasi antar-7P': 'Reallocation between 7P', 'Dari 7P': 'From 7P', 'Nilai realokasi (Rp)': 'Reallocation amount (Rp)', 'Alasan revisi *': 'Revision reason *',
+  'Ajukan realokasi': 'Submit reallocation', 'Reforecast kuartalan per 7P': 'Quarterly reforecast per 7P', 'Register 7P (per budget)': '7P register (per budget)', 'Per budget line, transaksi & evidence': 'Per budget line, transactions & evidence',
+  'baseline disetujui': 'approved baseline', 'setelah revisi v2': 'after revision v2', 'pemakaian & beban terverifikasi': 'verified usage & expenses', 'MRF disetujui belum dipakai': 'approved MRF not yet used',
+  'estimasi akhir tahun': 'year-end estimate', 'Register varians 7P': '7P variance register', 'Utilisasi': 'Utilization', 'Formula alokasi kantor bersama': 'Shared office allocation formula', 'Simpan formula': 'Save formula',
+  'Review BU & kunci periode': 'BU review & period lock', 'Kunci periode 2026-11': 'Lock period 2026-11', 'Menunggu semua BU setuju': 'Waiting for all BUs to agree', 'Draft & approval': 'Draft & approval', 'Harga': 'Price',
+  'Semua gudang': 'All warehouses', 'Gudang JAENS Spa Shanti': 'JAENS Spa Shanti warehouse', 'Gudang JAENS Spa Center': 'JAENS Spa Center warehouse', 'Gudang JAENS Spa Triloka': 'JAENS Spa Triloka warehouse',
+  'Gudang JAENS Spa Bisma': 'JAENS Spa Bisma warehouse', 'Gudang Essence': 'Essence warehouse', 'Gudang Pusat HQ': 'HQ central warehouse', 'Semua item': 'All items', 'Saldo stok': 'Stock balance',
+  'Ledger pergerakan': 'Movement ledger', 'Gudang': 'Warehouse', 'Min / Maks': 'Min / Max', 'Aset terdaftar': 'Registered assets', 'Nilai perolehan': 'Acquisition value', 'Nilai buku': 'Book value',
+  'garis lurus': 'straight line', 'Servis jatuh tempo': 'Service due', 'preventif': 'preventive', 'Peralatan Treatment': 'Treatment equipment', 'Furnitur': 'Furniture', 'Perolehan': 'Acquisition',
+  'Umur pakai': 'Useful life', 'Kondisi': 'Condition', 'Servis berikut': 'Next service', 'Kapitalisasi aset': 'Asset capitalization', 'Nama aset *': 'Asset name *', 'Nilai perolehan (Rp) *': 'Acquisition value (Rp) *',
+  'Umur (bulan) *': 'Life (months) *', 'Sumber proyek / PO': 'Project / PO source', 'Jadwal penyusutan (garis lurus)': 'Depreciation schedule (straight line)', '/ bulan': '/ month', 'Akumulasi': 'Accumulated',
+  'Usul disposal': 'Propose disposal', 'Setujui disposal': 'Approve disposal', 'Bed pijat elektrik': 'Electric massage bed', '⏩ Simulasi +24 jam': '⏩ Simulate +24 hours', '+3 hari': '+3 days', 'Semua BU': 'All BUs',
+  'BU JAENS lainnya': 'Other JAENS BUs', 'Semua supplier': 'All suppliers', 'BHP Treatment': 'Treatment consumables', 'Kebersihan': 'Cleaning', 'Promosi': 'Promotion', 'Suku Cadang': 'Spare parts',
+  'Bahan Baku Essence': 'Essence raw materials', 'P0 Kritis': 'P0 Critical', 'P1 Tinggi': 'P1 High', 'P2 Sedang': 'P2 Medium', 'Masih berjalan': 'Still running', 'Terlambat / lewat SLA': 'Late / past SLA',
+  'Rata-rata waktu per tahap': 'Average time per stage', 'PFHI — komponen': 'PFHI — components', 'Minta update': 'Request update', 'Eskalasi': 'Escalate', 'Catat alasan *': 'Record reason *', 'Selesaikan': 'Resolve',
+  'Lihat perjalanan ›': 'View journey ›', 'Heatmap aging × tahap': 'Aging × stage heatmap', '<1 hari': '<1 day', '>3 hari': '>3 days', 'Tren tepat waktu': 'On-time trend', 'Tepat janji': 'On promise',
+  'Alasan keterlambatan': 'Delay reasons', 'Pesanan dalam filter': 'Orders in filter', 'Barang': 'Goods', 'Terpenuhi': 'Fulfilled', 'Tahap aktif': 'Active stage', 'Umur': 'Age', 'Perjalanan ›': 'Journey ›',
+  'Kebijakan SLA': 'SLA policy', 'Berisiko ≥': 'At risk ≥', 'Tagihan terbuka': 'Open invoices', 'Lainnya': 'Other'
+});
+
+;
+/* HAWK i18n — tombol bahasa ID/EN di pojok kanan atas (standar terkunci, Aji 2026-11-14).
+   Bahasa Indonesia = default. Pilihan disimpan di localStorage 'hawk.lang' (dipakai juga oleh iframe Demo Center).
+   Cara kerja: layar tetap dirender dalam Bahasa Indonesia; saat EN aktif, lapisan ini menerjemahkan
+   teks & atribut (aria-label, title, placeholder) yang ada di kamus EN di bawah, lalu memulihkan teks asli saat kembali ke ID.
+   Menambah terjemahan = menambah baris di DICT (frasa persis) atau PATTERNS (pola). Teks yang belum ada di kamus tetap Indonesia.
+   Elemen dengan atribut data-noi18n (dan semua isinya) tidak diterjemahkan. */
+(function () {
+  'use strict';
+  const KEY = 'hawk.lang';
+  const DICT = {
+    /* shell */
+    'Lewati ke konten': 'Skip to content', 'Navigasi portal': 'Portal navigation', 'HAWK ERP, pilih portal': 'HAWK ERP, choose portal',
+    'v1.1 lima portal': 'v1.1 five portals', 'Role demo': 'Demo role', 'Akun demo': 'Demo account', '↺ Reset Demo Data': '↺ Reset Demo Data',
+    'DATA DEMO / SIMULASI': 'DEMO DATA / SIMULATION', 'DEMO / SIMULASI': 'DEMO / SIMULATION', 'PROTOTIPE — DEMO / SIMULASI.': 'PROTOTYPE — DEMO / SIMULATION.',
+    'Angka sintetis; tanpa akun, API, pesan, pembayaran, atau deployment sungguhan. Perubahan tersimpan di browser ini. Mode:': 'Synthetic figures; no real accounts, APIs, messages, payments or deployments. Changes are saved in this browser. Mode:',
+    'Sandbox lokal': 'Local sandbox', 'Pilih portal HAWK': 'Choose a HAWK portal',
+    'Setiap portal punya ruang kerja dan akses sesuai peran. Client Portal dan portal mobile Driver & Referral berada di dalam Sales.': 'Each portal has its own workspace and role-based access. Client Portal and the Driver & Referral mobile portal live inside Sales.',
+    'Portal aktif': 'Active portal', 'Tutup': 'Close', 'Menu': 'Menu', 'Peta alur HAWK': 'HAWK flow map', 'Peta layar': 'Screen map', 'Peta layar F7-01': 'Screen map F7-01',
+    'Demo integrasi': 'Integration demo', 'Bahasa': 'Language', 'Pilih bahasa': 'Choose language', 'DATA DEMO · R&D': 'DEMO DATA · R&D', 'DATA DEMO': 'DEMO DATA',
+    'Modul resmi di HAWK ERP preview (rute terverifikasi):': 'Official module in HAWK ERP preview (verified route):', 'Peta Preview': 'Preview Map', 'untuk status semua layar.': 'for the status of every screen.',
+    'Diarsipkan': 'Archived',
+    /* portal picker */
+    'Modul Finance lengkap HAWK: dashboard, AI capture, 3-way matching, hutang, GL, alokasi, budget 7P + Demo Center': 'Full HAWK Finance module: dashboard, AI capture, 3-way matching, payables, GL, allocation, 7P budget + Demo Center',
+    'Operasional outlet, terapis, ruangan dan POS': 'Outlet operations, therapists, rooms and POS', 'Sales, reservasi dan kemitraan': 'Sales, reservations and partnerships',
+    'HRD Operations, Human Growth, payroll dan kinerja orang': 'HRD Operations, Human Growth, payroll and people performance',
+    /* sidebar: Finance */
+    'Budget & referensi': 'Budget & references', 'Budget tahunan': 'Annual budget', 'Revisi & reforecast': 'Revision & reforecast', 'Referensi PO': 'PO reference',
+    'Referensi stok': 'Stock reference', 'Referensi aset': 'Asset reference', 'Kapitalisasi': 'Capitalization', 'Budget 7P (arsip)': '7P Budget (archive)',
+    'Purchasing & MRF (arsip)': 'Purchasing & MRF (archive)', 'Komisi & Rekonsiliasi (arsip)': 'Commission & Reconciliation (archive)', 'Arsip Finance': 'Finance archive',
+    /* sidebar: Commercial / Sales */
+    'Drill-down Executive Summary': 'Executive Summary drill-down', 'Kinerja Tim': 'Team Performance', 'Kinerja & KPI': 'Performance & KPI', 'Status Tim': 'Team Status',
+    'Beranda Sales': 'Sales Home', 'Sales B2C & Reservasi': 'B2C Sales & Reservations',
+    /* sidebar: HRD */
+    'Beranda': 'Home', 'Karyawan': 'Employees', 'Impor Karyawan': 'Import Employees', 'Tambah Karyawan': 'Add Employee', 'Kehadiran': 'Attendance',
+    'Approval Presensi': 'Attendance Approval', 'Jadwal Kerja': 'Work Schedule', 'Presensi': 'Check-in', 'Izin & Cuti': 'Leave & Permits',
+    'Kunjungan Klien': 'Client Visits', 'Pelacakan Lokasi': 'Location Tracking', 'Rekrutmen': 'Recruitment', 'Profil · Karier': 'Profile · Career',
+    'Manajemen Rekrutmen': 'Recruitment Management', 'Lowongan Pekerjaan': 'Job Openings', 'Kandidat': 'Candidates', 'Jadwal Interview': 'Interview Schedule',
+    'Interview & Praktik': 'Interview & Practical', 'Keputusan & Penawaran': 'Decision & Offer', 'Kontrak & Dokumen': 'Contracts & Documents',
+    'Penempatan & Akun': 'Placement & Account', 'Detail Lowongan': 'Opening Detail', 'Formulir Lamaran': 'Application Form', 'Komponen & Aturan': 'Components & Rules',
+    'Komisi POS': 'POS Commission', 'Proses Payroll': 'Payroll Run', 'Slip & Pembayaran': 'Payslips & Payment', 'Keuangan': 'Finance', 'Kasbon': 'Cash Advance',
+    'Reimburse': 'Reimbursement', 'Klien': 'Clients', 'Laporan': 'Reports', 'Tugas': 'Tasks', 'Detail Kartu': 'Card Detail', 'Pengaturan': 'Settings',
+    'Struktur Organisasi': 'Organization Structure', 'Akun, Role & Akses': 'Accounts, Roles & Access', 'Pengaturan Perusahaan': 'Company Settings',
+    'Pengaturan Sistem': 'System Settings', 'Audit Aktivitas': 'Activity Audit', 'Kelola Data Demo R&D': 'Manage R&D Demo Data', 'Kontrak KPI': 'KPI Contract',
+    'Rencana Pengembangan': 'Development Plan', 'Pelatihan & Talent': 'Training & Talent', 'Pusat Laporan & Bukti': 'Reports & Evidence Center',
+    'Kapasitas Outlet & Shift': 'Outlet & Shift Capacity', 'Beban Kerja Office': 'Office Workload', 'Data Layanan POS': 'POS Service Data',
+    'Simulasi Kebutuhan': 'Demand Simulation', 'Handoff Rekrutmen': 'Recruitment Handoff', 'Rencana Anggaran': 'Budget Plan', 'Simulasi Rekrutmen': 'Recruitment Simulation',
+    'Tren & Kurva S': 'Trends & S-Curve',
+    /* Demo Experience Center / Test Lab */
+    'Option 1 · Scenario Test Lab': 'Option 1 · Scenario Test Lab', 'Login role (DEMO):': 'Login role (DEMO):', '↺ Mulai ulang': '↺ Restart', 'Progres': 'Progress',
+    'Peran': 'Role', 'Layar': 'Screen', 'Giliran ini': 'This turn', '‹ Sebelumnya': '‹ Previous', 'Berikutnya ›': 'Next ›', 'Aturan demo': 'Demo rules',
+    'Perangkat': 'Device', 'Beranda role': 'Role home', 'Layar penuh': 'Full screen', 'Pilih skenario': 'Choose scenario',
+    'Reset data demo dan mulai skenario dari awal': 'Reset demo data and start the scenario from the beginning', 'otomatis': 'automatic',
+    '✓ Lanjutkan (langkah otomatis)': '✓ Continue (automatic step)', '✓ Jalankan langkah ini': '✓ Run this step', 'Persona & kinerja tim': 'Personas & team performance',
+    'Persona tim': 'Team personas', 'Tabel data, dapat digulir': 'Data table, scrollable', 'KONTEKS DIVISI LAIN': 'OTHER DIVISION CONTEXT',
+    /* label umum */
+    'Status': 'Status', 'Aksi': 'Action', 'Tindakan': 'Action', 'Bagian': 'Section', 'Semua': 'All', 'Periode': 'Period', 'Periode:': 'Period:', 'Reset filter': 'Reset filter',
+    'Jenis': 'Type', 'Tahap': 'Stage', 'Tahap saat ini': 'Current stage', 'Lanjutkan tahap': 'Advance stage', 'Semua outlet': 'All outlets', 'Sumber': 'Source',
+    'Tanggal': 'Date', 'Tampilan': 'View', 'Tenggat': 'Due', 'Bukti': 'Evidence', 'Pagi': 'Morning', 'Sore': 'Afternoon', 'Malam': 'Night', 'Nama': 'Name',
+    'Nilai': 'Value', 'Cakupan': 'Scope', 'Lowongan': 'Opening', 'Posisi': 'Position', 'Posisi terbuka': 'Open positions', 'Selesai': 'Done',
+    'Filter laporan': 'Report filter', 'Cari': 'Search', 'Judul': 'Title', 'Lengkap': 'Complete', 'Belum dibuat': 'Not created', 'Divisi': 'Division',
+    'Semua lokasi': 'All locations', 'Terlambat': 'Late', 'Kantor': 'Office', 'Lembur': 'Overtime', 'Aktif': 'Active', 'Nonaktif': 'Inactive', 'Komitmen': 'Commitment',
+    'Keterangan': 'Notes', 'Catatan': 'Notes', 'Outlet / lokasi': 'Outlet / location', 'Disetujui': 'Approved', 'Ditolak': 'Rejected', 'Menunggu': 'Pending',
+    'Kartu': 'Card', 'Di atas kapasitas': 'Over capacity', 'Realisasi': 'Actual', 'Sisa': 'Remaining', 'Pagu': 'Ceiling', 'Telepon': 'Phone', 'Metrik': 'Metric',
+    'Tim': 'Team', 'Simpan': 'Save', 'Batal': 'Cancel', 'Masuk': 'In', 'Keluar': 'Out', 'Hadir': 'Present', 'Libur': 'Day off', 'Sakit': 'Sick',
+    'Waktu (WITA)': 'Time (WITA)', 'Kanal': 'Channel', 'Prospek': 'Prospect', 'Lamaran': 'Application', 'Belum ada data': 'No data yet', 'Orang': 'People',
+    'Bruto': 'Gross', 'Potongan': 'Deductions', 'Di bawah 70%': 'Below 70%', 'Ide': 'Idea', 'Tanpa PIC': 'No PIC', 'Terblokir': 'Blocked', 'Hambatan': 'Obstacle',
+    'Hasil': 'Result', 'Bobot': 'Weight', 'Tahun': 'Year', 'Bulan': 'Month', 'Belum tersedia': 'Not available yet', 'Tidak diketahui': 'Unknown', 'Alasan': 'Reason',
+    'SIMULASI': 'SIMULATION', 'Simulasi': 'Simulation', 'Grup': 'Group', 'Aktual': 'Actual', 'Rasio': 'Ratio', 'Semua PIC': 'All PICs', 'Konten': 'Content',
+    'Prioritas': 'Priority', 'Tinggi': 'High', 'Sedang': 'Medium', 'Rendah': 'Low', 'Koreksi presensi': 'Attendance correction', 'Cuti Tahunan': 'Annual Leave',
+    'Semua shift': 'All shifts', 'Perlu klarifikasi': 'Needs clarification', 'Keputusan': 'Decision', 'Formasi': 'Headcount slot', 'Biaya': 'Cost', 'Versi': 'Version',
+    'Ledger saldo': 'Balance ledger', 'Nominal (Rp)': 'Amount (Rp)', 'Nominal': 'Amount', 'Arsip slip Oktober': 'October payslip archive', 'Target': 'Target',
+    'Headcount aktif': 'Active headcount', 'Grup Spa (konsolidasi)': 'Spa Group (consolidated)', 'Kantor pusat': 'Head office', 'Pos 7P': '7P line',
+    'Revenue dibayar': 'Paid revenue', 'Komisi valid': 'Valid commission', 'Komisi': 'Commission', 'Tidak ada data untuk filter ini.': 'No data for this filter.',
+    'Filter aktif:': 'Active filter:', 'Filter Human Growth': 'Human Growth filter', 'Supervisor Outlet': 'Outlet Supervisor', 'Staf Accounting': 'Accounting Staff',
+    'Staf Operations': 'Operations Staff', 'Staf Finance': 'Finance Staff', 'Staf Production': 'Production Staff', 'Koordinator Rekrutmen': 'Recruitment Coordinator',
+    'Foto & Video': 'Photo & Video', 'Ya': 'Yes', 'Tidak': 'No', 'Kembali': 'Back', 'Lihat': 'View', 'Detail': 'Detail', 'Ubah': 'Edit', 'Hapus': 'Delete',
+    'Tambah': 'Add', 'Kirim': 'Send', 'Setujui': 'Approve', 'Tolak': 'Reject', 'Ajukan': 'Submit', 'Unduh': 'Download', 'Cetak': 'Print', 'Buka': 'Open',
+    'Terapkan': 'Apply', 'Pilih': 'Choose', 'Lainnya': 'Other', 'Total': 'Total', 'Jumlah': 'Count', 'Rata-rata': 'Average', 'Ringkasan': 'Summary',
+    'Riwayat': 'History', 'Dokumen': 'Documents', 'Lokasi': 'Location', 'Jam': 'Time', 'Durasi': 'Duration', 'Pemilik': 'Owner', 'Diajukan': 'Submitted',
+    'Diproses': 'Processing', 'Dibayar': 'Paid', 'Belum': 'Not yet', 'Sudah': 'Done', 'Terjadwal': 'Scheduled', 'Berjalan': 'Running', 'Ditutup': 'Closed',
+    'Dibuka': 'Open', 'Baru': 'New', 'Tinjau': 'Review', 'Wajib': 'Required', 'Opsional': 'Optional', 'Hari ini': 'Today', 'Minggu ini': 'This week',
+    'Bulan ini': 'This month', 'Kemarin': 'Yesterday', 'Karyawan baru': 'New employee', 'Kontrak': 'Contract', 'Jabatan': 'Job title', 'Departemen': 'Department',
+    'Atasan': 'Manager', 'Gaji pokok': 'Base salary', 'Tunjangan': 'Allowance', 'Insentif': 'Incentive', 'Pendapatan': 'Revenue', 'Anggaran': 'Budget',
+    'Pengeluaran': 'Spending', 'Kebutuhan': 'Need', 'Penempatan': 'Placement', 'Pelatihan': 'Training', 'Kinerja': 'Performance', 'Pengembangan': 'Development',
+    /* bulan */
+    'Mei': 'May', 'Agu': 'Aug', 'Okt': 'Oct', 'Des': 'Dec', 'Januari': 'January', 'Februari': 'February', 'Maret': 'March', 'Juni': 'June', 'Juli': 'July',
+    'Agustus': 'August', 'Oktober': 'October', 'Desember': 'December'
+  };
+  Object.assign(DICT, window.HAWK_I18N_EN || {});
+  const MONTHS = { Januari: 'January', Februari: 'February', Maret: 'March', April: 'April', Mei: 'May', Juni: 'June', Juli: 'July', Agustus: 'August', September: 'September', Oktober: 'October', November: 'November', Desember: 'December' };
+  const tr = (s) => DICT[s] !== undefined ? DICT[s] : null;
+  const PATTERNS = [
+    [/^Buka\/tutup (.+)$/, (m, a) => `Expand/collapse ${tr(a) || a}`],
+    [/^Test Lab · (\d+) role · (\d+) skenario$/, (m, a, b) => `Test Lab · ${a} roles · ${b} scenarios`],
+    [/^(\d+) skenario · (\d+) role tim$/, (m, a, b) => `${a} scenarios · ${b} team roles`],
+    [/^LANGKAH (\d+) DARI (\d+)( · KONTEKS DIVISI LAIN)?$/, (m, a, b, c) => `STEP ${a} OF ${b}${c ? ' · OTHER DIVISION CONTEXT' : ''}`],
+    [/^(\d+)\/(\d+) langkah$/, (m, a, b) => `${a}/${b} steps`],
+    [/^Demo Experience Center (.+)$/, (m, a) => `Demo Experience Center ${a}`],
+    [/^Demo Experience (Finance|Operational|Commercial|Sales|HRD)$/, (m, a) => `${a} Demo Experience`],
+    [/^Buka layar sebagai (.+)$/, (m, a) => `Open screen as ${a}`],
+    [/^(.+) — aplikasi HAWK \(DEMO\)$/, (m, a) => `${a} — HAWK app (DEMO)`],
+    [/^(.+) · otomatis$/, (m, a) => `${a} · automatic`],
+    [/^Fase (\d+)$/, (m, a) => `Phase ${a}`],
+    [/^Option 2 · Simulator (\d+) Layar$/, (m, a) => `Option 2 · ${a}-Screen Simulator`],
+    [/^(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember) (\d{4})( \(ditutup\)| \(belum ditutup\)| \(provisional\))?$/, (m, a, b, c) => `${MONTHS[a]} ${b}${c === ' (ditutup)' ? ' (closed)' : c === ' (belum ditutup)' ? ' (not closed)' : c || ''}`],
+    [/^(\d+) mnt$/, (m, a) => `${a} min`],
+    [/^(\d+) jam$/, (m, a) => `${a} hrs`],
+    [/^Minggu (\d+) · (.+)$/, (m, a, b) => `Week ${a} · ${b}`],
+    [/^Layar lengkap dijadwalkan pada Fase (\d+)\.(.*)$/, (m, a, b) => `The full screen is scheduled for Phase ${a}.${b ? ' ' + (tr(b.trim()) || b.trim()) : ''}`],
+    [/^Role demo: (.+)\.$/, (m, a) => `Demo role: ${a}.`],
+    [/^Halo, (.+)!(.*)$/, (m, a, b) => `Hello, ${a}!${b}`],
+    [/^Test Lab · (\d+) layar · (\d+) skenario$/, (m, a, b) => `Test Lab · ${a} screens · ${b} scenarios`],
+    [/^(.+) · Pandu Saya (\d+) skenario$/, (m, a, b) => `${a} · Guide Me ${b} scenarios`],
+    [/^(Sedang berjalan|Antrean) \((\d+)\)$/, (m, a, b) => `${a === 'Antrean' ? 'Queue' : 'In progress'} (${b})`],
+    [/^Pindahkan (\S+) ke$/, (m, a) => `Move ${a} to`],
+    [/^Role baru (\S+)$/, (m, a) => `New role ${a}`],
+    [/^Direktori · halaman (\d+) dari (\d+)$/, (m, a, b) => `Directory · page ${a} of ${b}`],
+    [/^(.+) · halaman (\d+)\/(\d+)$/, (m, a, b, c) => `${tr(a) || a} · page ${b}/${c}`],
+    [/^↑ (.+) vs bulan lalu$/, (m, a) => `↑ ${a} vs last month`],
+    [/^↓ (.+) vs bulan lalu$/, (m, a) => `↓ ${a} vs last month`]
+  ];
+  /* gabungan "A · B · C": terjemahkan tiap bagian yang dikenal */
+  const bySegments = (s) => {
+    if (s.indexOf(' · ') < 0) return null;
+    let hit = false;
+    const out = s.split(' · ').map(seg => { const t = tr(seg) ?? patt(seg); if (t !== null && t !== seg) { hit = true; return t; } return seg; }).join(' · ');
+    return hit ? out : null;
+  };
+  const patt = (s) => { for (const [re, fn] of PATTERNS) { const m = s.match(re); if (m) return fn(...m); } return null; };
+  const translate = (raw) => {
+    const s = raw.replace(/\s+/g, ' ').trim();
+    if (!s) return null;
+    let out = tr(s);
+    if (out === null) out = patt(s);
+    if (out === null) out = bySegments(s);
+    if (out === null || out === s) return null;
+    const lead = raw.match(/^\s*/)[0], tail = raw.match(/\s*$/)[0];
+    return lead + out + tail;
+  };
+
+  let lang = 'id';
+  try { lang = localStorage.getItem(KEY) === 'en' ? 'en' : 'id'; } catch (e) { /* storage diblokir: default ID */ }
+  const ATTRS = ['aria-label', 'title', 'placeholder'];
+  const textMem = new WeakMap(); /* node -> {orig, en} */
+  const attrMem = new WeakMap(); /* el -> {attr: {orig, en}} */
+  const skip = (el) => !el || el.closest('script,style,textarea,[data-noi18n]');
+
+  function doText(n) {
+    const rec = textMem.get(n);
+    if (rec && n.nodeValue === rec.en) return; /* sudah diterjemahkan */
+    const orig = n.nodeValue, en = translate(orig);
+    if (en === null) { textMem.delete(n); return; }
+    textMem.set(n, { orig, en }); n.nodeValue = en;
+  }
+  function doAttrs(el) {
+    let mem = attrMem.get(el);
+    for (const a of ATTRS) {
+      const v = el.getAttribute(a); if (v == null) continue;
+      if (mem && mem[a] && mem[a].en === v) continue;
+      const en = translate(v); if (en === null) continue;
+      if (!mem) { mem = {}; attrMem.set(el, mem); }
+      mem[a] = { orig: v, en }; el.setAttribute(a, en);
+    }
+  }
+  function walk(root) {
+    if (lang !== 'en' || !root) return;
+    if (root.nodeType === 3) { if (!skip(root.parentElement)) doText(root); return; }
+    if (root.nodeType !== 1 && root.nodeType !== 9 && root.nodeType !== 11) return;
+    if (root.nodeType === 1) { if (skip(root)) return; doAttrs(root); }
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+      acceptNode: (n) => n.nodeType === 1 && n.matches('script,style,textarea,[data-noi18n]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+    });
+    let n; while ((n = w.nextNode())) { if (n.nodeType === 3) doText(n); else doAttrs(n); }
+  }
+  function restore(root) {
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+    let n; while ((n = w.nextNode())) {
+      if (n.nodeType === 3) { const r = textMem.get(n); if (r && n.nodeValue === r.en) n.nodeValue = r.orig; textMem.delete(n); }
+      else { const m = attrMem.get(n); if (m) { for (const a in m) if (n.getAttribute(a) === m[a].en) n.setAttribute(a, m[a].orig); attrMem.delete(n); } }
+    }
+  }
+  let obs = null, titleOrig = null;
+  const observe = () => {
+    if (obs) return;
+    obs = new MutationObserver((list) => {
+      for (const m of list) {
+        if (m.type === 'childList') m.addedNodes.forEach(walk);
+        else if (m.type === 'characterData') walk(m.target);
+        else if (m.type === 'attributes') { if (!skip(m.target)) doAttrs(m.target); }
+      }
+    });
+    obs.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+  };
+  function paintToggle() {
+    document.querySelectorAll('[data-lang]').forEach(b => { const on = b.dataset.lang === lang; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+  }
+  function apply(next, persist) {
+    lang = next === 'en' ? 'en' : 'id';
+    if (persist) { try { localStorage.setItem(KEY, lang); } catch (e) { /* ignore */ } }
+    document.documentElement.lang = lang;
+    document.documentElement.dataset.lang = lang;
+    if (lang === 'en') {
+      if (titleOrig === null) titleOrig = document.title;
+      document.title = translate(document.title) || document.title;
+      walk(document.body); observe();
+    } else {
+      if (obs) { obs.disconnect(); obs = null; }
+      restore(document.body);
+      if (titleOrig !== null) { document.title = titleOrig; titleOrig = null; }
+    }
+    paintToggle();
+    window.dispatchEvent(new CustomEvent('hawk:lang', { detail: { lang } }));
+  }
+  const CSS = '.lang-tog{display:inline-flex;flex:none;background:#242424;border:1px solid #3a3220;border-radius:10px;padding:3px;gap:2px}' +
+    '.lang-tog button{background:transparent;border:0;color:#cfcfcf;font:inherit;font-size:12px;font-weight:700;letter-spacing:.04em;min-width:34px;height:30px;border-radius:7px;cursor:pointer}' +
+    '.lang-tog button:hover{color:#fff}.lang-tog button.on{background:var(--gold-grad,#C99A2E);color:#111}' +
+    '.lang-tog button:focus-visible{outline:2px solid var(--champagne,#E5C66A);outline-offset:1px}' +
+    /* app 60 NV di ponsel: topbar sempit → satu tombol (bahasa aktif, ketuk untuk ganti), panduan walkthrough disembunyikan */
+    '@media (max-width:1024px){#topbar .lang-tog{padding:2px}#topbar .lang-tog button:not(.on){display:none}#topbar .lang-tog button{min-width:30px;height:30px}}@media (max-width:480px){#topbar #btn-tour{display:none}}';
+  function mountToggle() {
+    if (!document.getElementById('hawk-lang-css')) { const st = document.createElement('style'); st.id = 'hawk-lang-css'; st.textContent = CSS; document.head.appendChild(st); }
+    const bar = document.querySelector('.topbar, #topbar'); if (!bar || bar.querySelector('.lang-tog')) return;
+    const box = document.createElement('div');
+    box.className = 'lang-tog'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Bahasa / Language'); box.dataset.noi18n = '';
+    box.innerHTML = '<button type="button" data-lang="id" title="Bahasa Indonesia">ID</button><button type="button" data-lang="en" title="English">EN</button>';
+    box.addEventListener('click', (e) => { const b = e.target.closest('[data-lang]'); if (!b) return; apply(b.dataset.lang !== lang ? b.dataset.lang : (lang === 'en' ? 'id' : 'en'), true); });
+    const chip = bar.querySelector('.role-chip');
+    bar.insertBefore(box, chip || null);
+    paintToggle();
+  }
+  /* topbar yang dirender ulang (app 60 NV) → pasang lagi tombolnya */
+  const watchBar = () => {
+    const bar = document.querySelector('.topbar, #topbar'); if (!bar) return;
+    new MutationObserver(() => { if (!bar.querySelector('.lang-tog')) mountToggle(); }).observe(bar, { childList: true });
+  };
+  /* iframe Demo Center & tab lain ikut berganti */
+  window.addEventListener('storage', (e) => { if (e.key === KEY) apply(e.newValue === 'en' ? 'en' : 'id', false); });
+  const boot = () => { mountToggle(); watchBar(); apply(lang, false); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  window.HAWK_I18N = { get lang() { return lang; }, set: (l) => apply(l, true), translate, DICT, PATTERNS };
 })();
 
 </script>
