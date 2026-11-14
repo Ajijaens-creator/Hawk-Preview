@@ -1,0 +1,66 @@
+{
+ "pass": 12,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Kartu Demo Experience Center paling atas",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kategori pertama: Dashboard",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Isi Dashboard: Dashboard HRD, Manpower, 9-Box, People Budgeting, Kinerja & KPI, AmbideX & Race",
+   "ok": true,
+   "info": "Dashboard HRD | Manpower Planning | 9-Box Talent | People Budgeting | Kinerja & KPI | AmbideX & Race"
+  },
+  {
+   "name": "Kategori Dashboard terbuka di Dashboard HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Halaman berjudul Dashboard HRD",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada menu \"Beranda\" / \"Tugas\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Menu Workspace ada",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "FAQ paling bawah",
+   "ok": true,
+   "info": "FAQ"
+  },
+  {
+   "name": "Karyawan kembali ke tingkat atas (di luar Dashboard)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Workspace membuka halaman Workspace",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Kategori Dashboard bisa ditutup",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

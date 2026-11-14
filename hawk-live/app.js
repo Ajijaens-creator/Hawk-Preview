@@ -425,9 +425,12 @@ function renderNav(id, portal) {
       h += `<div class="nav-grp${open ? ' open' : ''}"><div class="nav-grp-row">${navLink(it)}<button type="button" class="nav-tog" data-grp="${esc(key)}" aria-expanded="${open}" aria-label="Buka/tutup ${esc(it[1])}">${chev}</button></div><div class="nav-grp-kids">${kids.map(navLink).join('')}</div></div>`;
     } return h; };
     let body = '';
+    /* ['-', judul] membuka seksi; ['-end'] menutup seksi sehingga item berikutnya kembali ke tingkat atas */
+    const mark = (i) => i && (i[0] === '-' || i[0] === '-end');
     for (let k = 0; k < rest.length; k++) {
-      if (rest[k][0] !== '-') { const top = []; while (k < rest.length && rest[k][0] !== '-') top.push(rest[k++]); k--; body += list(top); continue; }
-      const head = rest[k], kids = []; while (rest[k + 1] && rest[k + 1][0] !== '-') kids.push(rest[++k]);
+      if (rest[k][0] === '-end') continue;
+      if (rest[k][0] !== '-') { const top = []; while (k < rest.length && !mark(rest[k])) top.push(rest[k++]); k--; body += list(top); continue; }
+      const head = rest[k], kids = []; while (rest[k + 1] && !mark(rest[k + 1])) kids.push(rest[++k]);
       const key = 'sec:' + head[1], open = isOpen(key, kids);
       body += `<div class="nav-sec${open ? ' open' : ''}"><button type="button" class="nav-sub nav-sec-btn" data-grp="${esc(key)}" aria-expanded="${open}"><span>${head[1]}</span>${chev}</button><div class="nav-grp-kids">${list(kids)}</div></div>`;
     }
