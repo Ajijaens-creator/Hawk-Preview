@@ -20,7 +20,7 @@ Status per 14 Nov 2026 (WITA). Prototype portal kelima HRD, 77 NV, DATA DEMO / S
 | F6 Human Growth & Kinerja | 9 | KPI, SER, KPI Library, kontrak KPI, XScore, People Performance, 9-Box, development, training | 42/42 | 52/52 | 0d4ff40 |
 | F7 Payroll & People Budgeting | 12 | Payroll, aturan, komisi POS, proses, slip, kasbon/reimburse, laporan, handoff Finance, budgeting, rencana, simulasi, kurva S | 52/52 | 47/47 | 1a7d026 |
 | F8 AmbideX, Reporting & Reflection | 8 | Race Vegen, Beacon & Success Factors, Daily, Weekly, Monthly Reflection, STRACON, e-Deck 8 halaman, Pusat Laporan | 49/49 | 54/54 | dd38a93 |
-| Lintas fase F1–F8 | — | Perjalanan Ubud dan peringatan Santi | 29/29 | 19/19 | dd38a93 |
+| Lintas fase F1–F8 | — | Perjalanan Ubud dan peringatan Shanti | 29/29 | 19/19 | dd38a93 |
 
 Regresi penuh (`bash tests/hawk-live/run-all.sh`) lulus semua, termasuk uji empat portal lama: model 104, design-lock 17, browser 45, fase2 30, budget2027 20. Screenshot desktop dan mobile 390 px tiap fase ada di Library: `hawk-hrd/f1` … `hawk-hrd/f8`. Laporan per fase ada di `docs/hawk-live/HRD-F1-LAPORAN.md` … `HRD-F8-LAPORAN.md`.
 
@@ -39,7 +39,7 @@ Regresi penuh (`bash tests/hawk-live/run-all.sh`) lulus semua, termasuk uji empa
 11. Monthly Reflection membuka kartu Workplan yang sama (tanpa duplikat), dan posisi terbuka naik 2.
 12. Tindak lanjut coaching 30 hari dibuat di workspace HG.
 
-**Peringatan Spa Santi (<70%):** tampil di Beranda F1, Utility F5, Reflection F8 dan pusat laporan, semuanya bertaut ke temuan yang sama (TSK-0002). Keputusan STRACON Oktober (uji shift split) dievaluasi pada November dan hasilnya belum tercapai (66,2% < 70%).
+**Peringatan Spa Shanti (<70%):** tampil di Beranda F1, Utility F5, Reflection F8 dan pusat laporan, semuanya bertaut ke temuan yang sama (TSK-0002). Keputusan STRACON Oktober (uji shift split) dievaluasi pada November dan hasilnya belum tercapai (66,2% < 70%).
 
 **Per fase (ringkas):**
 - F2: approval presensi dan cuti.
@@ -94,7 +94,7 @@ Semua fase diuji juga dengan keyboard, mobile 390 px, filter kosong, sumber gaga
 ## 7. Konfirmasi yang dibutuhkan dari Aji
 **Organisasi & akses**
 1. Penempatan Supervisor outlet dihitung di Office Operations, sehingga filter Spa Ubud = 30 orang. Apakah benar?
-2. Nama outlet: NB memakai Santi/Bhisma, SER memakai Shanti/Bisma. Mana yang dipakai?
+2. Nama outlet: diputuskan Owner (14 Nov 2026) memakai Spa Shanti dan Spa Bisma, sama dengan SER.
 3. Apakah Finance boleh melihat nominal atau artefak pembayaran per orang? (Preview: agregat saja.) Apakah slip gaji ESS untuk karyawan sendiri dibuka? (Preview: belum, mengikuti mandat "nominal personal hanya Manager HRD".)
 
 **Operasi & rekrutmen**

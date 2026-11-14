@@ -29,7 +29,7 @@ const four = kl.filter(k => k.four && k.outlet === 'OUT-UBD');
 ok('Four Hands: dua bagian, jumlah = total transaksi', four.length >= 2 && four.filter(k => k.tx === four[0].tx).reduce((s, k) => s + k.amount, 0) === 2 * Math.round(90 / 60 * 5000));
 ok('Pembatalan tidak berkomisi', kl.filter(k => /Batal/.test(k.status)).every(k => k.amount === 0));
 const helper = kl.find(k => k.home === 'OUT-SHT' && k.outlet === 'OUT-UBD');
-ok('Bantuan antaroutlet: komisi di outlet aktual (Ubud) untuk therapist Santi', !!helper && helper.amount > 0);
+ok('Bantuan antaroutlet: komisi di outlet aktual (Ubud) untuk therapist Shanti', !!helper && helper.amount > 0);
 const sum0 = kl.reduce((s, k) => s + k.amount, 0);
 U('hrd-ops', 'pos-ingest', { id: hr().f5.batches[0].id });
 ok('Replay batch POS tidak menambah komisi', HR7.commissionLines(hr(), '2611').reduce((s, k) => s + k.amount, 0) === sum0);

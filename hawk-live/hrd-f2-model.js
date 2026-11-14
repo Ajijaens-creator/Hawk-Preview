@@ -318,7 +318,7 @@ const HR2 = (() => {
   const posByName = (n) => H.POSITIONS.find(p => p.name.toLowerCase() === String(n || '').trim().toLowerCase());
   const locByName = (n) => [...H.OUTLETS, H.HQ].find(o => o.name.toLowerCase() === String(n || '').trim().toLowerCase() || o.id === n);
   const SAMPLE_FILES = {
-    'karyawan-baru-nov.csv': 'nama,posisi,outlet,shift,mulai,telepon\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001\nKomang Sri Wahyuni,Receptionist,Spa Bhisma,Sore,2026-11-20,081200000002\nPutu Ari,Therapist,Spa Santi,Pagi,2026-11-20,081200000003\nGede Surya,Therapist,Spa Sanur,Pagi,2026-11-20,081200000004\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001',
+    'karyawan-baru-nov.csv': 'nama,posisi,outlet,shift,mulai,telepon\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001\nKomang Sri Wahyuni,Receptionist,Spa Bisma,Sore,2026-11-20,081200000002\nPutu Ari,Therapist,Spa Shanti,Pagi,2026-11-20,081200000003\nGede Surya,Therapist,Spa Sanur,Pagi,2026-11-20,081200000004\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001',
     'kolom-berbeda.csv': 'Nama Lengkap;Jabatan;Lokasi;Shift;Tgl Mulai;HP\nNyoman Budi Santika;Staf Accounting;Office Ubud;Kantor;2026-11-24;081200000005'
   };
   const FIELDS = [['nama', 'Nama'], ['posisi', 'Posisi'], ['outlet', 'Outlet / lokasi'], ['shift', 'Shift'], ['mulai', 'Tanggal mulai'], ['telepon', 'Telepon']];

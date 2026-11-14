@@ -13,7 +13,7 @@
    "info": ""
   },
   {
-   "name": "NV01: peringatan Ubud di atas kapasitas & Santi di bawah 70%",
+   "name": "NV01: peringatan Ubud di atas kapasitas & Shanti di bawah 70%",
    "ok": true,
    "info": ""
   },
@@ -33,7 +33,7 @@
    "info": ""
   },
   {
-   "name": "NV02 klik shift → anggota termasuk Bantuan dari Spa Santi",
+   "name": "NV02 klik shift → anggota termasuk Bantuan dari Spa Shanti",
    "ok": true,
    "info": ""
   },
@@ -143,12 +143,12 @@
    "info": ""
   },
   {
-   "name": "Santi 66.2% Di bawah 70% → temuan yang sudah ada (TSK-0002), tanpa kartu ganda",
+   "name": "Shanti 66.2% Di bawah 70% → temuan yang sudah ada (TSK-0002), tanpa kartu ganda",
    "ok": true,
    "info": ""
   },
   {
-   "name": "Kartu Santi terbuka dengan sumber utility",
+   "name": "Kartu Shanti terbuka dengan sumber utility",
    "ok": true,
    "info": ""
   },
@@ -158,7 +158,7 @@
    "info": ""
   },
   {
-   "name": "NV04: Ubud & Bhisma Sore 17–21 kurang coverage",
+   "name": "NV04: Ubud & Bisma Sore 17–21 kurang coverage",
    "ok": true,
    "info": ""
   },

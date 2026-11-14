@@ -1,6 +1,6 @@
 /* HAWK HRD · uji perjalanan lintas fase F1–F8 (node tests/hawk-live/hrd-journey.test.js)
    Kebutuhan therapist Spa Ubud → Workplan → lowongan → lamaran → screening → interview → onboarding → penempatan →
-   POS → komisi/KPI → Monthly Reflection → tindak lanjut, plus peringatan utility rendah Spa Santi. */
+   POS → komisi/KPI → Monthly Reflection → tindak lanjut, plus peringatan utility rendah Spa Shanti. */
 'use strict';
 global.HR = require('../../hawk-live/hrd-model.js');
 for (const n of [2, 3, 4, 5, 6, 7, 8]) global['HR' + n] = require(`../../hawk-live/hrd-f${n}-model.js`);
@@ -14,7 +14,7 @@ const T = (id) => hr().f3.tasks.find(t => t.id === id);
 const ubd0 = HR5.outletUtil(hr(), 'OUT-UBD', 'W46');
 const open0 = HR8.reflection(hr(), '2611', 'hrd').find(r => r.key === 'OPEN').actual;
 const n0 = HR.people(hr(), 'hrd').length;
-ok('Awal: utility Ubud > 100% (kebutuhan therapist), Santi < 70%', ubd0.u > 1 && HR5.outletUtil(hr(), 'OUT-SHT', 'W46').u < 0.7);
+ok('Awal: utility Ubud > 100% (kebutuhan therapist), Shanti < 70%', ubd0.u > 1 && HR5.outletUtil(hr(), 'OUT-SHT', 'W46').u < 0.7);
 const ids = run(U, hr);
 
 /* F5 → F3 → F4 */
@@ -56,11 +56,11 @@ ok('Reflection Ubud → kartu F3 yang sama dengan temuan F5 (tanpa duplikat)', i
 ok('Tindak lanjut: coaching 30 hari hire baru (HG, PIC, tenggat)', T(ids.follow).ws === 'HG' && T(ids.follow).pic === 'EMP-0144' && T(ids.follow).source.id === `ONB-${ids.emp}`);
 ok('Biaya Reflection = draf payroll F7 termasuk hire baru', rows.find(r => r.key === 'THP').actual === HR7.totals(HR7.batchLines(hr(), '2611')).thp);
 
-/* Peringatan Santi */
+/* Peringatan Shanti */
 const sht = rows.find(r => r.key === 'UTIL-OUT-SHT');
-ok('Santi < 70%: peringatan "Di bawah 70%" di Reflection', HR8.gapOf(sht) === 'Di bawah 70%' && sht.actual < 70);
-ok('Santi: Reflection membuka temuan F5 yang sama (TSK-0002)', ids.santi === 'TSK-0002');
-ok('Santi: keputusan STRACON Oktober dievaluasi belum tercapai', HR8.evaluate(hr(), HR8.ensure(hr()).decisions.find(d => d.id === 'DEC-2610-001')).met === false);
+ok('Shanti < 70%: peringatan "Di bawah 70%" di Reflection', HR8.gapOf(sht) === 'Di bawah 70%' && sht.actual < 70);
+ok('Shanti: Reflection membuka temuan F5 yang sama (TSK-0002)', ids.santi === 'TSK-0002');
+ok('Shanti: keputusan STRACON Oktober dievaluasi belum tercapai', HR8.evaluate(hr(), HR8.ensure(hr()).decisions.find(d => d.id === 'DEC-2610-001')).met === false);
 
 /* Perubahan penempatan & retry */
 const before = JSON.stringify(hr().placements.filter(p => p.emp === ids.emp));

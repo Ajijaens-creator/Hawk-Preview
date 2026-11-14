@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T01:02:23.768Z">
+<meta name="hawk-standalone" content="2026-11-14T01:10:45.518Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1786,9 +1786,9 @@ const HR = (() => {
   /* id outlet sama dengan SER (ser-data.js) supaya POS, jadwal dan KPI memakai outlet yang sama */
   const OUTLETS = [
     { id: 'OUT-UBD', entity: 'ENT-SPA', name: 'Spa Ubud', ser: 'Jaens Spa Center', code: 'UBD' },
-    { id: 'OUT-SHT', entity: 'ENT-SPA', name: 'Spa Santi', ser: 'Jaens Spa Shanti', code: 'SHT' },
+    { id: 'OUT-SHT', entity: 'ENT-SPA', name: 'Spa Shanti', ser: 'Jaens Spa Shanti', code: 'SHT' },
     { id: 'OUT-TRL', entity: 'ENT-SPA', name: 'Spa Triloka', ser: 'Jaens Spa Triloka', code: 'TRL' },
-    { id: 'OUT-BSM', entity: 'ENT-SPA', name: 'Spa Bhisma', ser: 'Jaens Spa Bisma', code: 'BSM' }
+    { id: 'OUT-BSM', entity: 'ENT-SPA', name: 'Spa Bisma', ser: 'Jaens Spa Bisma', code: 'BSM' }
   ];
   const HQ = { id: 'LOC-HQ', entity: 'ENT-HQ', name: 'Office Ubud', code: 'HQ' };
   const DIVISIONS = [
@@ -1980,8 +1980,8 @@ const HR = (() => {
   const SEED_AUDIT = (r) => [
     { id: 'AUD-0004', at: '2026-11-10 09:12', by: 'Made Gunarsa (Manager HRD)', object: 'Payroll', ref: 'SLIP-GRP-SPA', action: 'Komponen payroll', detail: 'Tunjangan transport grup slip Spa diperbarui', before: 'Rp 300.000', after: 'Rp 350.000', effective: '2026-11-26', sensitive: true, demo: true },
     { id: 'AUD-0003', at: '2026-11-12 16:40', by: 'Made Gunarsa (Manager HRD)', object: 'Akses', ref: 'EMP-0143', action: 'Perubahan akses', detail: 'Peran akun EMP-0143 diubah', before: 'Karyawan (ESS)', after: 'Staf HRD', demo: true },
-    { id: 'AUD-0002', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0037', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Santi → Spa Ubud', before: 'Spa Santi · Therapist', after: 'Spa Ubud · Therapist · efektif 2026-10-01', demo: true },
-    { id: 'AUD-0001', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0007', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Ubud → Spa Santi', before: 'Spa Ubud · Therapist', after: 'Spa Santi · Therapist · efektif 2026-10-01', demo: true }
+    { id: 'AUD-0002', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0037', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Shanti → Spa Ubud', before: 'Spa Shanti · Therapist', after: 'Spa Ubud · Therapist · efektif 2026-10-01', demo: true },
+    { id: 'AUD-0001', at: '2026-10-01 08:00', by: 'Made Gunarsa (Manager HRD)', object: 'Penempatan', ref: 'EMP-0007', action: 'Penempatan efektif', detail: 'Mutasi therapist Spa Ubud → Spa Shanti', before: 'Spa Ubud · Therapist', after: 'Spa Shanti · Therapist · efektif 2026-10-01', demo: true }
   ];
   function fresh() {
     const r = roster();
@@ -2508,7 +2508,7 @@ const HR2 = (() => {
   const posByName = (n) => H.POSITIONS.find(p => p.name.toLowerCase() === String(n || '').trim().toLowerCase());
   const locByName = (n) => [...H.OUTLETS, H.HQ].find(o => o.name.toLowerCase() === String(n || '').trim().toLowerCase() || o.id === n);
   const SAMPLE_FILES = {
-    'karyawan-baru-nov.csv': 'nama,posisi,outlet,shift,mulai,telepon\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001\nKomang Sri Wahyuni,Receptionist,Spa Bhisma,Sore,2026-11-20,081200000002\nPutu Ari,Therapist,Spa Santi,Pagi,2026-11-20,081200000003\nGede Surya,Therapist,Spa Sanur,Pagi,2026-11-20,081200000004\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001',
+    'karyawan-baru-nov.csv': 'nama,posisi,outlet,shift,mulai,telepon\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001\nKomang Sri Wahyuni,Receptionist,Spa Bisma,Sore,2026-11-20,081200000002\nPutu Ari,Therapist,Spa Shanti,Pagi,2026-11-20,081200000003\nGede Surya,Therapist,Spa Sanur,Pagi,2026-11-20,081200000004\nKadek Ayu Lestari,Therapist,Spa Ubud,Pagi,2026-11-20,081200000001',
     'kolom-berbeda.csv': 'Nama Lengkap;Jabatan;Lokasi;Shift;Tgl Mulai;HP\nNyoman Budi Santika;Staf Accounting;Office Ubud;Kantor;2026-11-24;081200000005'
   };
   const FIELDS = [['nama', 'Nama'], ['posisi', 'Posisi'], ['outlet', 'Outlet / lokasi'], ['shift', 'Shift'], ['mulai', 'Tanggal mulai'], ['telepon', 'Telepon']];
@@ -2569,10 +2569,10 @@ const HR3 = (() => {
     const T = (o) => ({ demo: true, contributors: [], checklist: [], discussion: [], assets: [], blocker: null, parent: null, reviewer: null, requireReview: false, sessionAt: null, version: 1, finding: null, ...o });
     const tasks = [
       T({ id: 'TSK-0001', ws: 'HRD', title: 'Validasi jam treatment POS Spa Ubud Okt–Nov', stage: 'Workplan', prio: 'Tinggi', pic: 'EMP-0142', reviewer: null, due: '2026-11-18', scope: 'OUT-UBD', source: { type: 'POS', id: 'POS-HRS-UBD-2611', label: 'Jam treatment POS Spa Ubud (F5)', route: 'hrd-home?outlet=OUT-UBD' }, checklist: [{ id: 'C1', text: 'Validasi jam treatment POS', done: true }, { id: 'C2', text: 'Usulan formasi ke OM', done: false }] }),
-      T({ id: 'TSK-0002', ws: 'HRD', title: 'Utility Spa Santi 66%: di bawah ambang 70%', stage: 'Ide', prio: 'Sedang', pic: null, due: null, scope: 'OUT-SHT', source: { type: 'Utility', id: 'UTIL-OUT-SHT-2611', label: 'Utility Spa Santi Nov 2026 · 66%', route: 'hrd-home?outlet=OUT-SHT' }, finding: 'FND-UTIL-SHT-2611' }),
+      T({ id: 'TSK-0002', ws: 'HRD', title: 'Utility Spa Shanti 66%: di bawah ambang 70%', stage: 'Ide', prio: 'Sedang', pic: null, due: null, scope: 'OUT-SHT', source: { type: 'Utility', id: 'UTIL-OUT-SHT-2611', label: 'Utility Spa Shanti Nov 2026 · 66%', route: 'hrd-home?outlet=OUT-SHT' }, finding: 'FND-UTIL-SHT-2611' }),
       T({ id: 'TSK-0003', ws: 'HRD', title: 'Perpanjang kontrak PKWT 3 receptionist', stage: 'Workplan', prio: 'Sedang', pic: 'EMP-0143', due: '2026-11-25', scope: 'ENT-SPA', source: { type: 'Kontrak', id: 'CTR-2611', label: 'Kontrak berakhir ≤ 30 hari', route: 'hrd-roster?contract=PKWT' }, checklist: [{ id: 'C1', text: 'Daftar karyawan', done: true }, { id: 'C2', text: 'Draf kontrak', done: false }, { id: 'C3', text: 'Tanda tangan', done: false }], requireReview: true, reviewer: 'EMP-0142' }),
       T({ id: 'TSK-0004', ws: 'HRD', title: 'Interview kandidat therapist Ubud (3 orang)', stage: 'Priority', prio: 'Tinggi', pic: 'EMP-0145', due: '2026-11-17', sessionAt: '2026-11-16 10:00', scope: 'OUT-UBD', source: { type: 'Rekrutmen', id: 'VAC-2611-001', label: 'Lowongan Therapist Spa Ubud', route: 'hrd-recruit' }, contributors: ['EMP-0153'] }),
-      T({ id: 'TSK-0005', ws: 'HRD', title: 'Rekap koreksi presensi minggu 7–13 Nov', stage: 'Dikerjakan', prio: 'Rendah', pic: 'EMP-0143', due: '2026-11-14', scope: 'ENT-SPA', source: { type: 'Presensi', id: 'ATT-W46', label: 'Approval Presensi', route: 'hrd-att-approval' }, blocker: { reason: 'Menunggu keputusan Supervisor Santi', waiting: 'EMP-0154', next: 'Ingatkan via Approval', at: '2026-11-13 09:10' } }),
+      T({ id: 'TSK-0005', ws: 'HRD', title: 'Rekap koreksi presensi minggu 7–13 Nov', stage: 'Dikerjakan', prio: 'Rendah', pic: 'EMP-0143', due: '2026-11-14', scope: 'ENT-SPA', source: { type: 'Presensi', id: 'ATT-W46', label: 'Approval Presensi', route: 'hrd-att-approval' }, blocker: { reason: 'Menunggu keputusan Supervisor Shanti', waiting: 'EMP-0154', next: 'Ingatkan via Approval', at: '2026-11-13 09:10' } }),
       T({ id: 'TSK-0006', ws: 'HRD', title: 'Laporan BPJS Oktober siap dikirim', stage: 'Review', prio: 'Sedang', pic: 'EMP-0143', reviewer: 'EMP-0142', requireReview: true, due: '2026-11-13', scope: 'ENT-HQ', source: { type: 'Laporan', id: 'RPT-BPJS-2610', label: 'BPJS Oktober (F7)', route: 'hrd-reports' }, checklist: [{ id: 'C1', text: 'Rekonsiliasi peserta', done: true }, { id: 'C2', text: 'Unggah dokumen (sintetis)', done: true }] }),
       T({ id: 'TSK-0007', ws: 'HRD', title: 'Arsip slip Oktober', stage: 'Selesai', prio: 'Rendah', pic: 'EMP-0142', due: '2026-11-05', scope: 'ENT-HQ', source: { type: 'Payroll', id: 'PAY-2610', label: 'Payroll Oktober', route: 'hrd-payroll', sensitive: true } }),
       T({ id: 'TSK-0008', ws: 'HRD', title: 'Update data kontak darurat Office', stage: 'Workplan', prio: 'Rendah', pic: 'EMP-0143', due: '2026-11-10', scope: 'ENT-HQ', source: { type: 'Direktori', id: 'DIR-HQ', label: 'Direktori Office', route: 'hrd-roster?outlet=LOC-HQ' } }),
@@ -3043,7 +3043,7 @@ const HRCAREER = (() => {
     const all = HR4.publicVacancies(hr);
     const list = all.filter(v => (!p.division || HR.pos(v.position).division === p.division) && (!p.position || v.position === p.position) && (!p.outlet || v.location === p.outlet));
     const sel = (name, opts, cur, label) => `<label>${label}<select name="${name}"><option value="">Semua</option>${opts.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
-    return `<section class="card hr-career-hero"><p class="eyebrow">JAENS Spa · Karier</p><h2>Tumbuh bersama JAENS</h2><p>Lowongan aktif di Spa Ubud, Santi, Triloka, Bhisma dan Office Ubud. Lamar langsung tanpa akun. <span class="badge demo">DATA DEMO</span></p></section>
+    return `<section class="card hr-career-hero"><p class="eyebrow">JAENS Spa · Karier</p><h2>Tumbuh bersama JAENS</h2><p>Lowongan aktif di Spa Ubud, Shanti, Triloka, Bisma dan Office Ubud. Lamar langsung tanpa akun. <span class="badge demo">DATA DEMO</span></p></section>
       <form id="filters" class="filters" aria-label="Filter lowongan" data-career-filter="1">${sel('division', [...new Set(all.map(v => HR.pos(v.position).division))].map(d => [d, divName(d)]), p.division, 'Divisi')}${sel('position', [...new Set(all.map(v => v.position))].map(x => [x, HR.pos(x).name]), p.position, 'Posisi')}${sel('outlet', [...new Set(all.map(v => v.location))].map(o => [o, HR.locName(o)]), p.outlet, 'Outlet / lokasi')}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>
       ${list.length ? `<div class="grid g3 hr-vacs">${list.map(v => `<a class="card hr-vac" href="${R.href(R.job, { id: v.id, ch: p.ch })}"><span class="status-chip planned">${esc(HR.locName(v.location))}</span><h3>${esc(v.title)}</h3><p class="small">${esc(divName(HR.pos(v.position).division))} · Shift ${esc(v.shift || '—')} · ${v.count} posisi</p><p class="small muted">Dibuka ${esc(v.published || '—')} · ${esc(v.id)}</p><span class="btn sm">Lihat & lamar ›</span></a>`).join('')}</div>`
         : `<section class="card hr-empty"><h2>Belum ada lowongan yang cocok</h2><p>Coba ubah filter atau kembali lagi nanti.</p><button type="button" class="btn" data-action="filter-reset">Reset filter</button></section>`}`;
@@ -4020,7 +4020,7 @@ const HR8 = (() => {
       races: [{ id: 'RACE-HG-2611', name: 'Race Vegen Human Growth', scope: 'Human Growth · Grup Spa', period: '2611', objective: 'Perkuat stabilitas, kepatuhan, efisiensi, dan kesiapan talenta.', versions: [{ v: 1, status: 'Aktif', indicators: PILLARS.map(p => ({ ...p, keys: [...p.keys] })), at: '2026-11-01 09:00', by: 'Manager HRD' }], demo: true }],
       beacon: { id: 'BCN-CTR-2611', version: 1, items: BEACON.map(b => ({ ...b })), demo: true },
       sessions: [{ id: 'SES-W45-HRD', kind: 'Weekly', at: '2026-11-06 16:00', scope: 'HRD', commits: ['TSK-0001', 'TSK-0008'], status: { 'TSK-0001': 'Workplan', 'TSK-0008': 'Workplan' }, notes: 'Komitmen W45: validasi POS Ubud, update kontak darurat', demo: true }],
-      notes: [], decisions: [{ id: 'DEC-2610-001', title: 'Uji jadwal shift split di Spa Santi', finding: 'FND-UTIL-SHT-2610', alternatives: ['Kurangi formasi Santi', 'Shift split 2 minggu', 'Promosi paket sore'], chosen: 'Shift split 2 minggu', reason: 'Pembatalan sore tinggi; hindari pengurangan orang sebelum data permintaan lengkap', owner: 'EMP-0142', due: '2026-11-15', criteria: { key: 'UTIL-OUT-SHT', op: '>=', value: 70, period: '2611' }, task: 'TSK-0002', status: 'Dievaluasi', evaluation: null, at: '2026-10-31 15:00', demo: true }],
+      notes: [], decisions: [{ id: 'DEC-2610-001', title: 'Uji jadwal shift split di Spa Shanti', finding: 'FND-UTIL-SHT-2610', alternatives: ['Kurangi formasi Shanti', 'Shift split 2 minggu', 'Promosi paket sore'], chosen: 'Shift split 2 minggu', reason: 'Pembatalan sore tinggi; hindari pengurangan orang sebelum data permintaan lengkap', owner: 'EMP-0142', due: '2026-11-15', criteria: { key: 'UTIL-OUT-SHT', op: '>=', value: 70, period: '2611' }, task: 'TSK-0002', status: 'Dievaluasi', evaluation: null, at: '2026-10-31 15:00', demo: true }],
       snapshots: [], refresh: {}, seq: { ses: 1, dec: 1, snp: 0, note: 0 }
     };
   }

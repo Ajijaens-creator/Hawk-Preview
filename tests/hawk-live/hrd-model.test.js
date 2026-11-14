@@ -10,12 +10,12 @@ ok('Rekonsiliasi roster brief: semua cek cocok', HR.reconcile(hr).every(c => c.o
 ok('Total 158 pada cakupan perusahaan', HR.people(hr, 'hrd').length === 158);
 ok('Filter Spa Ubud = 30 orang', HR.people(hr, 'hrd', { outlet: 'OUT-UBD' }).length === 30);
 ok('Setiap outlet 25 Therapist + 5 Receptionist', HR.OUTLETS.every(o => { const l = HR.people(hr, 'hrd', { outlet: o.id }); return l.filter(p => p.position === 'POS-THR').length === 25 && l.filter(p => p.position === 'POS-RCP').length === 5; }));
-ok('Spa Bhisma + Receptionist = 5', HR.people(hr, 'hrd', { outlet: 'OUT-BSM' }).filter(p => p.position === 'POS-RCP').length === 5);
+ok('Spa Bisma + Receptionist = 5', HR.people(hr, 'hrd', { outlet: 'OUT-BSM' }).filter(p => p.position === 'POS-RCP').length === 5);
 ok('PC dan Commercial tidak menambah total', HR.people(hr, 'hrd', { division: 'DIV-PC' }).length === 0 && HR.people(hr, 'hrd', { division: 'DIV-COM' }).length === 0);
 ok('Nama samaran unik', new Set(hr.people.map(p => p.name)).size === hr.people.length);
 ok('Employee ID stabil antar fixture', JSON.stringify(HR.fresh().people.map(p => p.id + p.name)) === JSON.stringify(hr.people.map(p => p.id + p.name)));
 /* penempatan efektif */
-ok('EMP-0007 di Spa Santi sejak 2026-10-01', HR.placementOn(hr, 'EMP-0007').location === 'OUT-SHT' && HR.placementOn(hr, 'EMP-0007').from === '2026-10-01');
+ok('EMP-0007 di Spa Shanti sejak 2026-10-01', HR.placementOn(hr, 'EMP-0007').location === 'OUT-SHT' && HR.placementOn(hr, 'EMP-0007').from === '2026-10-01');
 ok('EMP-0007 di Spa Ubud pada 2026-09-15 (histori)', HR.placementOn(hr, 'EMP-0007', '2026-09-15').location === 'OUT-UBD');
 ok('Atasan therapist Ubud = Supervisor Mila', HR.people(hr, 'hrd').find(p => p.id === HR.supervisorOf(hr, 'EMP-0001')).name === 'Mila');
 /* cakupan peran */

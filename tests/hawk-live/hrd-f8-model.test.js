@@ -71,11 +71,11 @@ const iss = U('hrd', 'rfl-mark', { key: 'UTIL-OUT-UBD', period: '2611', stage: '
 const ist = tasks().find(t => t.id === iss);
 ok('Temuan Ubud → Issue F3 dengan Finding ID & sumber', ist.stage === 'Issue' && ist.finding === 'FND-UTIL-UBD-2611' && ist.source.id === 'UTIL-OUT-UBD-2611' && ist.source.type === 'Monthly Reflection');
 ok('Penandaan ulang membuka kartu yang sama', U('hrd', 'rfl-mark', { key: 'UTIL-OUT-UBD', period: '2611', stage: 'Workplan' }) === iss);
-ok('Santi < 70%: penandaan dedupe dengan temuan F5 (TSK-0002)', U('hrd', 'rfl-mark', { key: 'UTIL-OUT-SHT', period: '2611' }) === 'TSK-0002');
+ok('Shanti < 70%: penandaan dedupe dengan temuan F5 (TSK-0002)', U('hrd', 'rfl-mark', { key: 'UTIL-OUT-SHT', period: '2611' }) === 'TSK-0002');
 const n = U('hrd-ops', 'rfl-note', { period: '2611', sec: 'Kapasitas', text: 'Lembur Ubud karena 2 formasi kosong', evidence: 'UTIL-OUT-UBD-2611' });
 ok('Catatan penyebab selisih tersimpan dengan bukti', HR8.ensure(hr()).notes.find(x => x.id === n).evidence === 'UTIL-OUT-UBD-2611');
 ok('Keputusan wajib alasan, pemilik, tenggat', throws(() => U('hrd', 'dec-create', { title: 'Tambah 2 therapist', reason: 'pendek' }), /Alasan/) && throws(() => U('hrd', 'dec-create', { title: 'Tambah 2 therapist', reason: 'Utility di atas 100%' }), /pemilik/));
-const dec = U('hrd', 'dec-create', { title: 'Tambah 2 therapist Spa Ubud', finding: 'FND-UTIL-UBD-2611', task: iss, alternatives: 'Lembur terjadwal|Bantuan Santi|Rekrut 2 therapist', chosen: 'Rekrut 2 therapist', reason: 'Utility di atas 100% dan lembur berulang', owner: 'EMP-0142', due: '2026-11-30', ckey: 'UTIL-OUT-UBD', cop: '<=', cvalue: 100, cperiod: '2611' });
+const dec = U('hrd', 'dec-create', { title: 'Tambah 2 therapist Spa Ubud', finding: 'FND-UTIL-UBD-2611', task: iss, alternatives: 'Lembur terjadwal|Bantuan Shanti|Rekrut 2 therapist', chosen: 'Rekrut 2 therapist', reason: 'Utility di atas 100% dan lembur berulang', owner: 'EMP-0142', due: '2026-11-30', ckey: 'UTIL-OUT-UBD', cop: '<=', cvalue: 100, cperiod: '2611' });
 const D = () => HR8.ensure(hr()).decisions.find(x => x.id === dec);
 ok('Decision ID menaut temuan, kartu, alternatif, kriteria', D().finding === 'FND-UTIL-UBD-2611' && D().task === iss && D().alternatives.length === 3 && D().criteria.key === 'UTIL-OUT-UBD');
 const wp = U('hrd', 'dec-workplan', { id: dec });
@@ -86,7 +86,7 @@ U('hrd', 'dec-evaluate', { id: dec });
 ok('Evaluasi membandingkan hasil dengan kriteria saat keputusan (belum tercapai)', D().evaluation.met === false && D().evaluation.actual === ubd.actual && D().status === 'Dievaluasi');
 const seedDec = HR8.ensure(hr()).decisions.find(x => x.id === 'DEC-2610-001');
 const ev2 = HR8.evaluate(hr(), seedDec);
-ok('Keputusan Oktober (Santi shift split) dievaluasi di November: 66,2% < 70%', ev2.met === false && ev2.actual < 70);
+ok('Keputusan Oktober (Shanti shift split) dievaluasi di November: 66,2% < 70%', ev2.met === false && ev2.actual < 70);
 ok('Staf HRD tidak bisa membuat keputusan STRACON', throws(() => U('hrd-ops', 'dec-create', { title: 'x x x x x', reason: 'alasan cukup panjang', owner: 'EMP-0142', due: '2026-11-30' }), /Akses ditolak/));
 
 /* Jalur 4: e-Deck 8 halaman, snapshot, koreksi berversi, laporan */

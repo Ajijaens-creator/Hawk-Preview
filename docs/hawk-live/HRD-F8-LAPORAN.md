@@ -25,15 +25,15 @@ DATA DEMO / SIMULASI (R&D). File: `hawk-live/hrd-f8-model.js` (global `HR8`) dan
   - posisi terbuka dari F4/F5
   - biaya dari batch F7 periode yang sama (khusus Manager HRD)
 
-  Temuan bisa ditandai Ide, Issue atau Workplan, dan menandai ulang membuka kartu yang sama. Untuk utility, kartunya sama dengan temuan F5 (Santi → TSK-0002).
-- STRACON menyimpan keputusan beserta alternatif, alasan, pemilik, tenggat dan kriteria evaluasi. Dari keputusan bisa dibuat Workplan (sekali saja). Evaluasi membandingkan hasil periode terkait dengan kriteria yang dicatat saat keputusan dibuat. Seed: DEC-2610-001 (shift split Santi) dievaluasi pada November dan belum tercapai.
+  Temuan bisa ditandai Ide, Issue atau Workplan, dan menandai ulang membuka kartu yang sama. Untuk utility, kartunya sama dengan temuan F5 (Shanti → TSK-0002).
+- STRACON menyimpan keputusan beserta alternatif, alasan, pemilik, tenggat dan kriteria evaluasi. Dari keputusan bisa dibuat Workplan (sekali saja). Evaluasi membandingkan hasil periode terkait dengan kriteria yang dicatat saat keputusan dibuat. Seed: DEC-2610-001 (shift split Shanti) dievaluasi pada November dan belum tercapai.
 - e-Deck punya 8 halaman dengan periode dan scope yang konsisten, dan setiap angka bisa diklik sampai ke sumber atau bukti. Snapshot menyimpan versi metrik, versi Race, scope, periode, kelengkapan dan tanda sensitif. Koreksi menghasilkan versi -v2 yang merujuk v1, sementara v1 tetap tidak berubah. Ekspor snapshot sensitif ditolak untuk selain Manager HRD, dan hak akses diperiksa ulang setiap kali dibuka.
 - Pusat Laporan menelusuri laporan → versi formula → perhitungan → bukti → sumber → tanggal pembaruan → tindak lanjut. Status yang tersedia: Lengkap, Provisional, Bukti kosong (Absenteeism), Kedaluwarsa (Exit Interview), Dikoreksi, dan Akses ditolak (payroll). Refresh berulang hanya menambah hitungan refresh, tanpa menggandakan baris atau kartu. Kegagalan sumber bisa disimulasikan.
 
 ## Alur yang teruji
 1. Race: bobot 99% dan 101% tetap draf, tambah indikator, 100% bisa diaktifkan, v1 diarsipkan. Dari goal ke Beacon BCN-02. Review Success Factors tersimpan dengan bukti TSK-0004.
 2. Daily: TSK-0001 dari My Day diberi blocker, dan blocker yang sama terlihat di kartu Planner. Sesi Daily disimpan. Weekly: tugas terbawa dengan tenggat asal, lalu tindakan berikutnya menjadi Workplan F3 (dicoba ulang tanpa duplikat).
-3. Utility Ubud >100% → Issue F3 (FND-UTIL-UBD-2611) → keputusan DEC-2611-xxx → Workplan → evaluasi belum tercapai. Santi <70% bertaut ke TSK-0002.
+3. Utility Ubud >100% → Issue F3 (FND-UTIL-UBD-2611) → keputusan DEC-2611-xxx → Workplan → evaluasi belum tercapai. Shanti <70% bertaut ke TSK-0002.
 4. e-Deck 8 halaman → snapshot → koreksi v2 → Pusat Laporan: status Bukti kosong, Kedaluwarsa dan Dikoreksi tampil; refresh ×3 tanpa duplikat.
 5. Akses diuji untuk setiap peran:
    - Owner hanya melihat agregat; biaya terbatas, laporan payroll ditolak, ekspor snapshot sensitif ditolak.
@@ -53,7 +53,7 @@ DATA DEMO / SIMULASI (R&D). File: `hawk-live/hrd-f8-model.js` (global `HR8`) dan
 6. Draf payroll November memuat slip prorata hire baru.
 7. Rantai POS → komisi → slip → XScore diverifikasi pada therapist Ubud aktif (EMP-0002).
 8. Reflection membuka kartu Workplan yang sama (TSK-1001). Posisi terbuka bertambah 2. Tindak lanjut coaching 30 hari dibuat (HG).
-9. Peringatan Santi <70% tampil di F5, F8 dan STRACON.
+9. Peringatan Shanti <70% tampil di F5, F8 dan STRACON.
 
 Hasil: `hrd-journey.test.js` 29/29, `hrd-journey.e2e.js` 19/19 (16 layar).
 

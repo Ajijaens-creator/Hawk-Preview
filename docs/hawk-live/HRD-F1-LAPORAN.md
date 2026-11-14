@@ -31,10 +31,10 @@ Manager HRD (payroll detail, ubah pengaturan/akses, hapus dummy) · Staf HRD (ro
 ## Asumsi yang perlu dikonfirmasi
 - Empat Supervisor Outlet + OM + AOM + 2 staf = 8 Operations di Office. Karena itu filter Spa Ubud = 30 (25 Therapist + 5 Receptionist), sesuai kriteria.
 - Akun role demo memakai nama tim HAWK yang sudah ada (Made Gunarsa, Eni Restini, Tika, Mila, Tina, Dewik, Wahyudi, Asri); lainnya nama samaran.
-- Nama outlet mengikuti NB (Spa Ubud/Santi/Triloka/Bhisma) dengan ID yang sama seperti SER (Jaens Spa Center/Shanti/Triloka/Bisma).
+- Nama outlet Spa Ubud/Shanti/Triloka/Bisma (ejaan dikonfirmasi Owner 14 Nov 2026), ID sama seperti SER (Jaens Spa Center/Shanti/Triloka/Bisma).
 - Status integrasi: Org/akun HAWK, POS, Finance, GajiHub = TO VERIFY; Google Calendar/Meet, dokumen & tanda tangan, BPJS/PPh/Coretax = NEW INTEGRATION REQUIRED; Task Planner dan notifikasi = UI-ONLY SIMULATION.
 
 ## Uji
-- `node tests/hawk-live/hrd-model.test.js`: 30/30 (rekonsiliasi 158, Ubud 30, Bhisma Receptionist 5, cakupan peran, audit sebelum/sesudah, hapus dummy menjaga record non-demo).
+- `node tests/hawk-live/hrd-model.test.js`: 30/30 (rekonsiliasi 158, Ubud 30, Bisma Receptionist 5, cakupan peran, audit sebelum/sesudah, hapus dummy menjaga record non-demo).
 - `node tests/hawk-live/hrd-f1.e2e.js`: 42/42 (urutan review NB F1, akses langsung, batal/simpan, mobile 390 px, tanpa error console).
 - Uji empat portal tetap lulus: model 104, browser 45, fase2 30, budget2027 20, design-lock 17.

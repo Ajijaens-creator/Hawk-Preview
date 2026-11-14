@@ -26,7 +26,7 @@ DATA DEMO / SIMULASI. File: `hawk-live/hrd-f6-model.js` (global `HR6`) dan `hawk
 1. Dashboard → filter Spa Ubud → kartu XScore → EMP-0001 → bukti utility membuka baris POS F5 → profil kompetensi → 9-Box (pindah kotak dengan alasan, validasi HG + Supervisor = Final) → Workplan coaching F3 (ulang = rencana sama) → bukti coaching tampil di profil.
 2. Pelatihan → Supervisor meluluskan praktik → kompetensi Hot Stone & KPI Learning November memakai Evidence ID yang sama → definisi MET-TRAIN → efektivitas dengan cakupan verifikasi → QoH dengan 2 review tertunda.
 3. SER (15) → Absenteeism belum terverifikasi → Staf HRD tidak melihat rasio salary → MET-UTIL v2 (kontrak aktif tetap v1) → kontrak 90% ditolak → bobot 100% → aktif → tutup periode (butuh konfirmasi bukti belum lengkap) → snapshot → therapist mengajukan koreksi → HG menerima.
-4. Supervisor hanya Ubud; profil Santi ditolak; Owner tanpa skor personal; Finance ditolak; filter bukti belum lengkap; Belum Dinilai dengan alasan; keyboard; mobile 390 px.
+4. Supervisor hanya Ubud; profil Shanti ditolak; Owner tanpa skor personal; Finance ditolak; filter bukti belum lengkap; Belum Dinilai dengan alasan; keyboard; mobile 390 px.
 
 ## Uji
 - `node tests/hawk-live/hrd-f6-model.test.js`: 42/42.
