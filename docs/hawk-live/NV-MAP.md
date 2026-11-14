@@ -118,6 +118,7 @@ DATA DEMO / SIMULASI. Dibuat otomatis oleh `node tools/gen-nv-map.js` dari `HL.P
 | Kehadiran | ↳ Izin & Cuti | F2-NV06 | HRD 2 | Tersedia | `#hrd-leave` |
 | Kehadiran | ↳ Kunjungan Klien | F2-NV08 | HRD 2 | Tersedia | `#hrd-visit` |
 | — | Pelacakan Lokasi | F2-NV09 | HRD 2 | Tersedia | `#hrd-tracking` |
+| — | HAWK Mobile | M1 | HRD M1 | Tersedia | `#hrd-mobile` |
 | — | Rekrutmen | F4-NV05 | HRD 4 | Tersedia | `#hrd-recruit` |
 | Rekrutmen | ↳ Profil · Karier | F4-NV01 | HRD 4 | Tersedia | `#hrd-rec-profile` |
 | Rekrutmen | ↳ Manajemen Rekrutmen | F4-NV04 | HRD 4 | Tersedia | `#hrd-rec-manage` |
