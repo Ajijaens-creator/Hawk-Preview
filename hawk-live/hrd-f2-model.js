@@ -24,6 +24,44 @@ const HR2 = (() => {
   const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   const num = (id) => Number(String(id).replace(/\D/g, '')) || 0;
 
+
+  /* ---------- Pelacakan lokasi: titik kerja nyata (koordinat dari tautan Google Maps Owner, 14 Nov 2026) ---------- */
+  const SITES = {
+    'OUT-UBD': { name: 'Jaens Spa Center Ubud', lat: -8.5215997, lng: 115.2628912, gmaps: 'https://maps.app.goo.gl/6nWA4gUCmCq6rvE5A' },
+    'OUT-SHT': { name: 'Jaens Spa Shanti Ubud', lat: -8.5347371, lng: 115.2661551, gmaps: 'https://maps.app.goo.gl/6oErN4vFYbpC68m66' },
+    'OUT-TRL': { name: 'Jaens Spa Triloka Ubud', lat: -8.5197366, lng: 115.263036, gmaps: 'https://maps.app.goo.gl/TxExX4i89xKiNW2j7' },
+    'OUT-BSM': { name: 'Jaens Spa Bisma Ubud', lat: -8.5134803, lng: 115.2583193, gmaps: 'https://maps.app.goo.gl/U5ynLF9WSDQN4C9U7' },
+    'LOC-HQ': { name: 'Head Office JAENS', lat: -8.5348308, lng: 115.2657347, gmaps: 'https://maps.app.goo.gl/L8dsTP3WHGYsPse76', note: 'Tautan Google Maps menunjuk tempat bernama "Samyama Eatery"; koordinat dipakai apa adanya — TO VERIFY' }
+  };
+  const RADIUS = 150; /* meter, aturan presensi */
+  const dist = (a, b, c, d) => { const R = 6371000, r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, h = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2; return Math.round(2 * R * Math.asin(Math.sqrt(h))); };
+  const move = (lat, lng, m, deg) => [lat + (m * Math.cos(deg * Math.PI / 180)) / 111320, lng + (m * Math.sin(deg * Math.PI / 180)) / (111320 * Math.cos(lat * Math.PI / 180))];
+  /* contoh di luar radius (data demo): jarak & arah dari titik kerja, kejadian (masuk/keluar), keterangan, status tindak lanjut */
+  const OUTSIDE = [
+    { emp: 'EMP-0003', ev: 'in', m: 420, deg: 30, place: 'Jl. Raya Ubud (warung kopi)', reason: 'Check-in sebelum tiba di outlet', follow: 'Perlu verifikasi Supervisor' },
+    { emp: 'EMP-0033', ev: 'in', m: 1850, deg: 200, place: 'Rumah karyawan · Peliatan', reason: 'Absen dari rumah, tidak ada izin dinas luar', follow: 'Perlu klarifikasi' },
+    { emp: 'EMP-0064', ev: 'out', m: 650, deg: 300, place: 'Monkey Forest Rd', reason: 'Check-out setelah meninggalkan outlet', follow: 'Perlu verifikasi Supervisor' },
+    { emp: 'EMP-0095', ev: 'in', m: 2900, deg: 340, place: 'Villa tamu · Penestanan', reason: 'On-site treatment villa (dinas luar)', follow: 'Disetujui · dinas luar' },
+    { emp: 'EMP-0122', ev: 'in', m: 3600, deg: 10, place: 'Hotel Tegallalang Demo', reason: 'Kunjungan klien sebelum ke kantor', follow: 'Disetujui · kunjungan klien' },
+    { emp: 'EMP-0012', ev: 'out', m: 280, deg: 120, place: 'Parkiran Jl. Hanoman', reason: 'GPS tercatat di luar radius saat check-out', follow: 'Ditolak · perlu koreksi presensi' }
+  ];
+  /* satu baris per karyawan aktif yang punya catatan presensi pada tanggal itu */
+  function geo(hr, date = TODAY) {
+    ensure(hr);
+    return hr.people.map(p => {
+      const pl = H.placementOn(hr, p.id, date); if (!pl) return null;
+      const siteId = SITES[pl.location] ? pl.location : 'LOC-HQ', site = SITES[siteId];
+      const a = attendance(hr, p.id, date); if (!a.in) return null;
+      const n = num(p.id), jm = 12 + (n * 37) % 60, jd = (n * 53) % 360;
+      let [lat, lng] = move(site.lat, site.lng, jm, jd), outLat = lat, outLng = lng;
+      const ox = OUTSIDE.find(o => o.emp === p.id);
+      if (ox) { const q = move(site.lat, site.lng, ox.m, ox.deg); if (ox.ev === 'in') [lat, lng] = q; else if (a.out) [outLat, outLng] = q; }
+      const dIn = dist(site.lat, site.lng, lat, lng), dOut = a.out ? dist(site.lat, site.lng, outLat, outLng) : null;
+      const outside = ox && (ox.ev === 'in' || a.out) ? { ev: ox.ev === 'in' ? 'Check-in' : 'Check-out', at: ox.ev === 'in' ? a.in : a.out, d: ox.ev === 'in' ? dIn : dOut, over: (ox.ev === 'in' ? dIn : dOut) - RADIUS, place: ox.place, reason: ox.reason, follow: ox.follow } : null;
+      return { emp: p.id, name: p.name, pos: H.pos(pl.position)?.name || pl.position, site: siteId, siteName: site.name, date, in: a.in, out: a.out, status: a.status, late: a.late, lat, lng, outLat, outLng, dIn, dOut, outside };
+    }).filter(Boolean);
+  }
+
   /* ---------- seed ---------- */
   function seed(hr) {
     const f2 = { seeded: true, schedules: [], overrides: {}, ledger: [], clients: [], visits: [], tracks: [], posts: [], imports: [], docs: [], seq: { req: 10, shf: 1, vis: 20, trk: 40, emp: 159, tl: 10 } };
@@ -47,7 +85,7 @@ const HR2 = (() => {
       f2.tracks.push({ id: trk, emp, at: `${date} ${tin}`, lat: COORD[client][0], lng: COORD[client][1], context: { type: 'Kunjungan', ref: id }, validation: i === 2 ? 'Di luar radius 150 m' : 'Valid', demo: true });
     });
     /* titik presensi outlet (contoh) + satu GPS tidak tersedia */
-    const OUTC = { 'OUT-UBD': [-8.5069, 115.2624], 'OUT-SHT': [-8.5102, 115.2650], 'OUT-TRL': [-8.4985, 115.2591], 'OUT-BSM': [-8.5133, 115.2558] };
+    const OUTC = Object.fromEntries(Object.entries(SITES).map(([k, v]) => [k, [v.lat, v.lng]]));
     ['EMP-0001', 'EMP-0002', 'EMP-0031', 'EMP-0061', 'EMP-0091'].forEach((emp, i) => {
       const pl = H.placementOn(hr, emp); const c = OUTC[pl.location];
       f2.tracks.push({ id: 'TRK-P' + String(i + 1).padStart(2, '0'), emp, at: `${TODAY} ${i === 4 ? '09:12' : '08:5' + i}`, lat: i === 4 ? null : c[0] + i * 0.0002, lng: i === 4 ? null : c[1], context: { type: 'Presensi', ref: `ATT-${TODAY.replace(/-/g, '')}-${emp}` }, validation: i === 4 ? 'GPS tidak tersedia' : 'Valid', demo: true });
@@ -307,6 +345,6 @@ const HR2 = (() => {
   H.EXT.attStatus = attStatus;
   H.EXT.update = (state, hr, action, input, ctx) => update(state, hr, action, input, ctx);
   H.EXT.purge = purge; H.EXT.keep = keep; H.EXT.ensure = ensure;
-  return { SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
+  return { SITES, RADIUS, OUTSIDE, geo, dist, SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
 })();
 if (typeof module !== 'undefined') module.exports = HR2;

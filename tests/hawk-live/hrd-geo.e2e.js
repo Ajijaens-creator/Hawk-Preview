@@ -1,0 +1,62 @@
+/* HAWK HRD · uji F2-NV09 Pelacakan Lokasi · peta (hrd-geo.js): Leaflet dimuat dari vendor, 5 titik kerja dengan koordinat
+   dari tautan Google Maps, radius 150 m, titik karyawan check-in/check-out dengan jam, zoom, Peta/Satelit, laporan di luar radius,
+   cakupan role, mobile. Ubin peta eksternal diblokir saat uji (tidak bergantung jaringan).
+   python3 -m http.server 8811 lalu node tests/hawk-live/hrd-geo.e2e.js */
+'use strict';
+const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path');
+const BASE = process.env.BASE || 'http://localhost:8811/hawk-live/';
+const SHOTS = process.env.SHOTS;
+const out = []; let fail = 0;
+const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: !!cond, info }); console.log(`${cond ? '✓' : '✗'} ${name}${info ? ' · ' + info : ''}`); };
+(async () => {
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  if (!process.env.TILES) await ctx.route(/basemaps\.cartocdn\.com|arcgisonline\.com/, r => r.abort());
+  const p = await ctx.newPage();
+  const errors = [];
+  p.on('pageerror', e => errors.push(e.message)); p.on('console', m => { if (m.type() === 'error' && !/ERR_FAILED|net::/.test(m.text())) errors.push(m.text()); });
+  const shot = async (n) => { if (SHOTS) await p.screenshot({ path: path.join(SHOTS, n + '.png') }); };
+  if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
+  await p.goto(BASE + 'hrd.html#hrd-home'); await p.evaluate(() => { localStorage.clear(); localStorage.setItem('hawk-live-prefs-v1', JSON.stringify({ role: 'hrd', portal: 'HRD' })); });
+  await p.goto(BASE + 'hrd.html#hrd-tracking'); await p.reload(); await p.waitForSelector('#geo-map[data-ready="1"]', { timeout: 8000 }).catch(() => {});
+  await shot('GEO-01-peta');
+  ok('Leaflet dimuat dari vendor, peta siap', await p.evaluate(() => !!window.L && document.querySelector('#geo-map').dataset.ready === '1'));
+  const sites = await p.evaluate(() => HR2.SITES);
+  ok('Koordinat 4 Spa + Head Office dari Google Maps', Math.abs(sites['OUT-UBD'].lat + 8.5215997) < 1e-7 && Math.abs(sites['OUT-SHT'].lng - 115.2661551) < 1e-7 && Math.abs(sites['OUT-TRL'].lat + 8.5197366) < 1e-7 && Math.abs(sites['OUT-BSM'].lng - 115.2583193) < 1e-7 && Math.abs(sites['LOC-HQ'].lat + 8.5348308) < 1e-7);
+  ok('5 pin titik kerja dengan nama', (await p.locator('.geo-site').count()) === 5 && /Jaens Spa Bisma Ubud/.test(await p.locator('#geo-map').innerText()));
+  ok('Lingkaran radius 150 m per titik kerja', (await p.locator('#geo-map path.leaflet-interactive').count()) >= 5);
+  ok('Kontrol zoom +/−, skala, Peta/Satelit', (await p.locator('.leaflet-control-zoom-in').count()) === 1 && (await p.locator('.leaflet-control-scale').count()) === 1 && /Satelit/.test(await p.locator('.leaflet-control-layers').innerText()));
+  const t = await p.locator('#view').innerText();
+  ok('Ringkasan check-in / masih di lokasi / check-out / di luar radius', /Check-in/.test(t) && /Sudah check-out/.test(t) && /Di luar radius 150 m/.test(t));
+  const z0 = await p.evaluate(() => document.getElementById('geo-map')._geo.map.getZoom());
+  await p.click('.leaflet-control-zoom-in'); await p.waitForTimeout(400);
+  ok('Zoom in bekerja', (await p.evaluate(() => document.getElementById('geo-map')._geo.map.getZoom())) === z0 + 1);
+  ok('Di zoom jauh hanya pin titik kerja + karyawan di luar radius', (await p.locator('.geo-emp').count()) === (await p.locator('.geo-emp.t-outside').count()));
+  await p.click('.geo-row >> nth=5'); await p.waitForTimeout(1200);
+  ok('Klik nama → peta mendekat, titik karyawan tampil dengan nama & jam', (await p.locator('.geo-emp').count()) > 10 && (await p.evaluate(() => document.getElementById('geo-map')._geo.map.getZoom())) >= 18);
+  const pop = await p.locator('.leaflet-popup-content').innerText().catch(() => '');
+  ok('Popup: nama, check-in & check-out dengan jam dan jarak', /Check-in/.test(pop) && /Check-out/.test(pop) && /\d\d:\d\d/.test(pop) && /dari titik/.test(pop), pop.replace(/\n/g, ' ').slice(0, 120));
+  await shot('GEO-02-zoom-dekat');
+  const rep = await p.locator('section.card:has-text("Laporan di luar radius")').innerText();
+  ok('Laporan di luar radius: 7 kejadian 12–13 Nov', /7 kejadian/.test(rep));
+  ok('Laporan memuat jarak, melebihi radius, keterangan, tindak lanjut', /Jarak dari titik kerja/.test(rep) && /\+\d/.test(rep) && /Perlu verifikasi Supervisor/.test(rep) && /Disetujui · dinas luar|Disetujui · kunjungan klien/.test(rep) && /Ditolak/.test(rep));
+  await p.locator('section.card:has-text("Laporan di luar radius") a:has-text("Lihat di peta")').first().click(); await p.waitForTimeout(900);
+  ok('Lihat di peta → popup peringatan di luar radius', /di luar radius/.test(await p.locator('.leaflet-popup-content').innerText().catch(() => '')));
+  await shot('GEO-03-luar-radius');
+  await p.selectOption('[data-geo-date]', '2026-11-13'); await p.waitForTimeout(900);
+  ok('Tanggal 13 Nov: belum ada check-out (hari ini)', /hari ini/.test(await p.locator('#view').innerText()) && (await p.locator('.geo-time').allInnerTexts()).every(x => /—/.test(x)));
+  await p.goto(BASE + 'hrd.html#hrd-tracking?date=2026-11-12&site=OUT-UBD'); await p.waitForTimeout(900);
+  ok('Filter lokasi Spa Center Ubud', (await p.locator('.geo-side-head').innerText()).includes('Jaens Spa Center Ubud'));
+  await p.evaluate(() => { HL.prefs.role = 'outlet-spv'; location.hash = 'hrd-tracking?date=2026-11-12'; }); await p.waitForTimeout(900);
+  const spv = await p.evaluate(() => [...document.querySelectorAll('.geo-who small')].map(s => s.textContent));
+  ok('Supervisor Ubud hanya melihat tim Spa Center Ubud (dan dirinya)', spv.length > 0 && spv.every(s => /Spa Center Ubud|Supervisor Outlet/.test(s)), String(spv.length));
+  await p.evaluate(() => { HL.prefs.role = 'hrd'; HL.render(); });
+  await p.setViewportSize({ width: 390, height: 844 }); await p.goto(BASE + 'hrd.html#hrd-tracking'); await p.waitForTimeout(900);
+  const w = await p.evaluate(() => document.documentElement.scrollWidth);
+  ok('Mobile 390 px tanpa geser horizontal', w <= 392, String(w)); await shot('GEO-04-mobile');
+  ok('Tanpa error console', errors.length === 0, errors.slice(0, 3).join(' | '));
+  await browser.close();
+  fs.writeFileSync(path.join(__dirname, 'hrd-geo-results.json'), JSON.stringify({ pass: out.filter(o => o.ok).length, fail, out }, null, 1));
+  console.log(`\n${out.length - fail} lulus, ${fail} gagal`); process.exit(fail ? 1 : 0);
+})();

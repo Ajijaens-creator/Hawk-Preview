@@ -11,7 +11,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   const browser = await chromium.launch();
   const errors = [];
   const p = await browser.newPage({ viewport: { width: 1440, height: 950 } });
-  p.on('pageerror', e => errors.push(e.message)); p.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  p.on('pageerror', e => errors.push(e.message)); p.on('console', m => { if (m.type() === 'error' && !/net::ERR_/.test(m.text())) errors.push(m.text()); }); /* ubin peta eksternal (hrd-geo) bisa gagal tanpa jaringan */
   p.on('dialog', d => d.accept());
   const go = async (r) => { await p.goto(BASE + 'hrd.html#' + r); await p.waitForTimeout(150); };
   const text = () => p.locator('#view').innerText();

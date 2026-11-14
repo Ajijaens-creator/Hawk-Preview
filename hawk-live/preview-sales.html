@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T00:38:25.952Z">
+<meta name="hawk-standalone" content="2026-11-14T01:02:23.752Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Sales</title>
 <style>
@@ -1594,6 +1594,35 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .nav .nav-dx { margin: 4px 0 12px; padding: 14px 12px; }
 .nav .nav-dx small { font-size: 11px; }
 .nav .nav-dx b { display: block; font-size: 15px; }
+/* HRD F2-NV09 Pelacakan Lokasi · peta (hrd-geo.js, Leaflet) */
+.geo-filter{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.geo-filter select{max-width:100%}
+.geo-chips{display:flex;flex-wrap:wrap;gap:6px}
+.geo-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:stretch}
+.geo-map{height:560px;border-radius:14px;overflow:hidden;border:1px solid var(--line,#e3e0d7);background:#e8eef2;z-index:0}
+.geo-side{border:1px solid var(--line,#e3e0d7);border-radius:14px;display:flex;flex-direction:column;max-height:560px;min-width:0;background:#fff}
+.geo-side-head{padding:10px 12px;border-bottom:1px solid var(--line,#e3e0d7);display:flex;flex-direction:column}
+.geo-list{list-style:none;margin:0;padding:6px;overflow:auto}
+.geo-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:6px;cursor:pointer;min-height:44px}
+.geo-row:hover,.geo-row.on{background:#fff7e3;border-color:#f0d78a}
+.geo-who{min-width:0}.geo-who b,.geo-who small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.geo-who small{color:#6b6b6b;font-size:11px}
+.geo-time{font-size:12px;font-weight:700;text-align:right;display:grid;grid-template-columns:auto auto;gap:0 4px}.geo-time small{color:#888;font-weight:400}
+.geo-av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:800;color:#fff;background:#1e8e4e;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.t-outd .geo-av{background:#7a7a7a}.t-late .geo-av{background:#d4881c}.t-outside .geo-av{background:#c0392b}
+.geo-emp{background:none;border:0}
+.geo-emp .geo-emp-lbl{display:none;position:absolute;left:30px;top:4px;white-space:nowrap;background:#fff;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.geo-near .geo-emp .geo-emp-lbl,.geo-emp.t-outside .geo-emp-lbl{display:block}
+.geo-site{background:none;border:0}
+.geo-pin{position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;border:2px solid #b31412;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.geo-pin::after{content:'';position:absolute;left:7px;top:7px;width:8px;height:8px;border-radius:50%;background:#7c0a07}
+.geo-site-lbl{position:absolute;left:30px;top:-2px;white-space:nowrap;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;font-size:12.5px;color:#b31412;line-height:1.2}
+.geo-site-lbl b{display:block}.geo-site-lbl small{color:#3c3c3c;font-weight:600}.geo-site-lbl em{color:#c0392b;font-style:normal}
+.geo-pop b{display:block;font-size:14px}.geo-pop small{color:#666}.geo-pop table{margin:6px 0;font-size:12px;border-collapse:collapse}.geo-pop td{padding:2px 8px 2px 0;vertical-align:top}
+.geo-warn{margin:4px 0 0;padding:6px 8px;border-radius:8px;background:#fde8e6;color:#8e1f1f;font-size:12px}.geo-ok{margin:4px 0 0;padding:4px 8px;border-radius:8px;background:#e6f5ec;color:#145c33;font-size:12px}
+.geo-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;margin:8px 0}.geo-legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:#1e8e4e}
+.geo-legend i.t-outd{background:#7a7a7a}.geo-legend i.t-late{background:#d4881c}.geo-legend i.t-outside{background:#c0392b}.geo-legend i.ring{background:rgba(229,198,106,.3);border:1.5px solid #C99A2E}
+.geo-map .leaflet-control-layers{font-size:12px}
+@media (max-width:900px){.geo-wrap{grid-template-columns:1fr}.geo-map{height:440px}.geo-side{max-height:320px}}
 
 </style>
 </head>
@@ -3261,6 +3290,44 @@ const HR2 = (() => {
   const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   const num = (id) => Number(String(id).replace(/\D/g, '')) || 0;
 
+
+  /* ---------- Pelacakan lokasi: titik kerja nyata (koordinat dari tautan Google Maps Owner, 14 Nov 2026) ---------- */
+  const SITES = {
+    'OUT-UBD': { name: 'Jaens Spa Center Ubud', lat: -8.5215997, lng: 115.2628912, gmaps: 'https://maps.app.goo.gl/6nWA4gUCmCq6rvE5A' },
+    'OUT-SHT': { name: 'Jaens Spa Shanti Ubud', lat: -8.5347371, lng: 115.2661551, gmaps: 'https://maps.app.goo.gl/6oErN4vFYbpC68m66' },
+    'OUT-TRL': { name: 'Jaens Spa Triloka Ubud', lat: -8.5197366, lng: 115.263036, gmaps: 'https://maps.app.goo.gl/TxExX4i89xKiNW2j7' },
+    'OUT-BSM': { name: 'Jaens Spa Bisma Ubud', lat: -8.5134803, lng: 115.2583193, gmaps: 'https://maps.app.goo.gl/U5ynLF9WSDQN4C9U7' },
+    'LOC-HQ': { name: 'Head Office JAENS', lat: -8.5348308, lng: 115.2657347, gmaps: 'https://maps.app.goo.gl/L8dsTP3WHGYsPse76', note: 'Tautan Google Maps menunjuk tempat bernama "Samyama Eatery"; koordinat dipakai apa adanya — TO VERIFY' }
+  };
+  const RADIUS = 150; /* meter, aturan presensi */
+  const dist = (a, b, c, d) => { const R = 6371000, r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, h = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2; return Math.round(2 * R * Math.asin(Math.sqrt(h))); };
+  const move = (lat, lng, m, deg) => [lat + (m * Math.cos(deg * Math.PI / 180)) / 111320, lng + (m * Math.sin(deg * Math.PI / 180)) / (111320 * Math.cos(lat * Math.PI / 180))];
+  /* contoh di luar radius (data demo): jarak & arah dari titik kerja, kejadian (masuk/keluar), keterangan, status tindak lanjut */
+  const OUTSIDE = [
+    { emp: 'EMP-0003', ev: 'in', m: 420, deg: 30, place: 'Jl. Raya Ubud (warung kopi)', reason: 'Check-in sebelum tiba di outlet', follow: 'Perlu verifikasi Supervisor' },
+    { emp: 'EMP-0033', ev: 'in', m: 1850, deg: 200, place: 'Rumah karyawan · Peliatan', reason: 'Absen dari rumah, tidak ada izin dinas luar', follow: 'Perlu klarifikasi' },
+    { emp: 'EMP-0064', ev: 'out', m: 650, deg: 300, place: 'Monkey Forest Rd', reason: 'Check-out setelah meninggalkan outlet', follow: 'Perlu verifikasi Supervisor' },
+    { emp: 'EMP-0095', ev: 'in', m: 2900, deg: 340, place: 'Villa tamu · Penestanan', reason: 'On-site treatment villa (dinas luar)', follow: 'Disetujui · dinas luar' },
+    { emp: 'EMP-0122', ev: 'in', m: 3600, deg: 10, place: 'Hotel Tegallalang Demo', reason: 'Kunjungan klien sebelum ke kantor', follow: 'Disetujui · kunjungan klien' },
+    { emp: 'EMP-0012', ev: 'out', m: 280, deg: 120, place: 'Parkiran Jl. Hanoman', reason: 'GPS tercatat di luar radius saat check-out', follow: 'Ditolak · perlu koreksi presensi' }
+  ];
+  /* satu baris per karyawan aktif yang punya catatan presensi pada tanggal itu */
+  function geo(hr, date = TODAY) {
+    ensure(hr);
+    return hr.people.map(p => {
+      const pl = H.placementOn(hr, p.id, date); if (!pl) return null;
+      const siteId = SITES[pl.location] ? pl.location : 'LOC-HQ', site = SITES[siteId];
+      const a = attendance(hr, p.id, date); if (!a.in) return null;
+      const n = num(p.id), jm = 12 + (n * 37) % 60, jd = (n * 53) % 360;
+      let [lat, lng] = move(site.lat, site.lng, jm, jd), outLat = lat, outLng = lng;
+      const ox = OUTSIDE.find(o => o.emp === p.id);
+      if (ox) { const q = move(site.lat, site.lng, ox.m, ox.deg); if (ox.ev === 'in') [lat, lng] = q; else if (a.out) [outLat, outLng] = q; }
+      const dIn = dist(site.lat, site.lng, lat, lng), dOut = a.out ? dist(site.lat, site.lng, outLat, outLng) : null;
+      const outside = ox && (ox.ev === 'in' || a.out) ? { ev: ox.ev === 'in' ? 'Check-in' : 'Check-out', at: ox.ev === 'in' ? a.in : a.out, d: ox.ev === 'in' ? dIn : dOut, over: (ox.ev === 'in' ? dIn : dOut) - RADIUS, place: ox.place, reason: ox.reason, follow: ox.follow } : null;
+      return { emp: p.id, name: p.name, pos: H.pos(pl.position)?.name || pl.position, site: siteId, siteName: site.name, date, in: a.in, out: a.out, status: a.status, late: a.late, lat, lng, outLat, outLng, dIn, dOut, outside };
+    }).filter(Boolean);
+  }
+
   /* ---------- seed ---------- */
   function seed(hr) {
     const f2 = { seeded: true, schedules: [], overrides: {}, ledger: [], clients: [], visits: [], tracks: [], posts: [], imports: [], docs: [], seq: { req: 10, shf: 1, vis: 20, trk: 40, emp: 159, tl: 10 } };
@@ -3284,7 +3351,7 @@ const HR2 = (() => {
       f2.tracks.push({ id: trk, emp, at: `${date} ${tin}`, lat: COORD[client][0], lng: COORD[client][1], context: { type: 'Kunjungan', ref: id }, validation: i === 2 ? 'Di luar radius 150 m' : 'Valid', demo: true });
     });
     /* titik presensi outlet (contoh) + satu GPS tidak tersedia */
-    const OUTC = { 'OUT-UBD': [-8.5069, 115.2624], 'OUT-SHT': [-8.5102, 115.2650], 'OUT-TRL': [-8.4985, 115.2591], 'OUT-BSM': [-8.5133, 115.2558] };
+    const OUTC = Object.fromEntries(Object.entries(SITES).map(([k, v]) => [k, [v.lat, v.lng]]));
     ['EMP-0001', 'EMP-0002', 'EMP-0031', 'EMP-0061', 'EMP-0091'].forEach((emp, i) => {
       const pl = H.placementOn(hr, emp); const c = OUTC[pl.location];
       f2.tracks.push({ id: 'TRK-P' + String(i + 1).padStart(2, '0'), emp, at: `${TODAY} ${i === 4 ? '09:12' : '08:5' + i}`, lat: i === 4 ? null : c[0] + i * 0.0002, lng: i === 4 ? null : c[1], context: { type: 'Presensi', ref: `ATT-${TODAY.replace(/-/g, '')}-${emp}` }, validation: i === 4 ? 'GPS tidak tersedia' : 'Valid', demo: true });
@@ -3544,7 +3611,7 @@ const HR2 = (() => {
   H.EXT.attStatus = attStatus;
   H.EXT.update = (state, hr, action, input, ctx) => update(state, hr, action, input, ctx);
   H.EXT.purge = purge; H.EXT.keep = keep; H.EXT.ensure = ensure;
-  return { SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
+  return { SITES, RADIUS, OUTSIDE, geo, dist, SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
 })();
 if (typeof module !== 'undefined') module.exports = HR2;
 
@@ -6343,6 +6410,130 @@ document.addEventListener('click', (e) => {
   window.__hrLastExport = { rows: list.length, pay };
   H.render(`Ekspor ${list.length} baris sesuai cakupan ${def().label}${pay ? '' : ' (tanpa kolom payroll)'}.`);
 });
+})();
+
+;
+/* HAWK HRD · F2-NV09 Pelacakan Lokasi · peta interaktif (DATA DEMO / SIMULASI).
+   Peta seperti Google Maps (zoom in/out, geser, Peta / Satelit) memakai Leaflet (vendor/leaflet, BSD-2) + ubin CARTO Voyager
+   (© OpenStreetMap contributors, © CARTO) dan Esri World Imagery. Tanpa API key berbayar.
+   Titik kerja = koordinat dari tautan Google Maps Owner (HR2.SITES). Titik karyawan = presensi F2 (HR2.attendance) di sekitar titik kerja;
+   enam contoh di luar radius 150 m (HR2.OUTSIDE) masuk Laporan di luar radius. Integrasi GPS perangkat: NEW INTEGRATION REQUIRED. */
+(() => {
+const H = window.HL;
+const { esc, table, card, qs, link } = H;
+const hr = () => { const h = HR.ensure(H.state); HR.EXT.ensure?.(h); return h; };
+const chip = (t, tone = '') => `<span class="status-chip ${tone}">${esc(t)}</span>`;
+const DATES = [['2026-11-12', 'Kamis 12 Nov · masuk & keluar lengkap'], ['2026-11-13', 'Jumat 13 Nov · hari ini (belum check-out)']];
+const SHORT = { 'OUT-UBD': 'Spa Center Ubud', 'OUT-SHT': 'Spa Shanti', 'OUT-TRL': 'Spa Triloka', 'OUT-BSM': 'Spa Bisma', 'LOC-HQ': 'Head Office' };
+const ini = (n) => n.split(/\s+/).filter(w => /^[A-Za-z]/.test(w)).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const m = (v) => v >= 1000 ? `${(v / 1000).toLocaleString('id-ID', { maximumFractionDigits: 2 })} km` : `${v} m`;
+const view = { center: null, zoom: null, layer: 'Peta' };
+let map = null;
+
+/* ---------- Leaflet dimuat sekali dari folder vendor (CSP script-src 'self') ---------- */
+let loading = null;
+function leaflet() {
+  if (window.L) return Promise.resolve(window.L);
+  if (loading) return loading;
+  const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'vendor/leaflet/leaflet.css'; document.head.appendChild(css);
+  loading = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'vendor/leaflet/leaflet.js'; s.onload = () => res(window.L); s.onerror = rej; document.head.appendChild(s); });
+  return loading;
+}
+
+function rows(params) {
+  const h = hr(), role = H.prefs.role, date = params.date || DATES[0][0];
+  return HR2.geo(h, date).filter(r => HR.inScope(h, role, r.emp, date));
+}
+function report(params) {
+  const h = hr(), role = H.prefs.role;
+  return DATES.flatMap(([d]) => HR2.geo(h, d).filter(r => r.outside && HR.inScope(h, role, r.emp, d)));
+}
+const tone = (r) => r.outside ? 'outside' : r.out ? 'outd' : r.late ? 'late' : 'in';
+
+function page(params) {
+  const date = params.date || DATES[0][0], site = params.site || '', list = rows(params), shown = site ? list.filter(r => r.site === site) : list;
+  const rep = report(params), today = list.filter(r => !r.out).length;
+  const sites = Object.entries(HR2.SITES);
+  const nav = (p) => '#hrd-tracking' + qs({ date, site, ...p });
+  const kpi = H.metrics([['Check-in', list.length, DATES.find(d => d[0] === date)[1]], ['Masih di lokasi', today, 'belum check-out'], ['Sudah check-out', list.length - today, 'jam keluar tercatat'], ['Di luar radius 150 m', list.filter(r => r.outside).length, `${rep.length} kejadian 12–13 Nov`]]);
+  const filt = `<div class="geo-filter"><label>Tanggal <select data-geo-date>${DATES.map(([d, l]) => `<option value="${d}" ${d === date ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
+    <div class="geo-chips"><a class="chip ${site ? '' : 'on'}" href="${nav({ site: '' })}">Semua lokasi</a>${sites.map(([id]) => `<a class="chip ${site === id ? 'on' : ''}" href="${nav({ site: id })}">${esc(SHORT[id])} · ${list.filter(r => r.site === id).length}</a>`).join('')}</div></div>`;
+  const side = `<aside class="geo-side" aria-label="Daftar check-in"><div class="geo-side-head"><b>${shown.length} orang</b><span class="muted small">${site ? esc(HR2.SITES[site].name) : 'semua lokasi'} · klik nama untuk melihat di peta</span></div>
+    <ol class="geo-list">${shown.sort((a, b) => (b.outside ? 1 : 0) - (a.outside ? 1 : 0) || a.in.localeCompare(b.in)).map(r => `<li><button type="button" class="geo-row t-${tone(r)}" data-geo-emp="${r.emp}"><span class="geo-av">${esc(ini(r.name))}</span><span class="geo-who"><b>${esc(r.name)}</b><small>${esc(r.pos)} · ${esc(SHORT[r.site])}</small></span><span class="geo-time"><small>Masuk</small>${r.in}<small>Keluar</small>${r.out || '—'}</span></button></li>`).join('')}</ol></aside>`;
+  const legend = `<div class="geo-legend"><span><i class="t-in"></i>Check-in, masih di lokasi</span><span><i class="t-outd"></i>Sudah check-out</span><span><i class="t-late"></i>Terlambat</span><span><i class="t-outside"></i>Di luar radius 150 m</span><span><i class="ring"></i>Radius titik kerja</span></div>`;
+  const mapCard = card(`Peta lokasi presensi · ${esc(DATES.find(d => d[0] === date)[1])}`, filt + `<div class="geo-wrap"><div class="geo-map" id="geo-map" role="application" aria-label="Peta Bali: titik kerja dan karyawan yang check-in/check-out"><p class="muted small geo-loading">Memuat peta…</p></div>${side}</div>` + legend +
+    `<p class="muted small">Peta: Leaflet, © OpenStreetMap contributors, © CARTO, citra satelit © Esri. Gulir atau tombol +/− untuk zoom; di zoom dekat setiap karyawan tampil sebagai titik dengan nama dan jam. Koordinat titik kerja dari tautan Google Maps Owner. Head Office: tautan menunjuk tempat bernama "Samyama Eatery", perlu dikonfirmasi (TO VERIFY). GPS perangkat: NEW INTEGRATION REQUIRED.</p>`);
+  const repCard = card(`Laporan di luar radius · ${rep.length} kejadian (12–13 Nov)`, `<p class="muted small">Presensi dianggap valid bila titik GPS berada dalam radius ${HR2.RADIUS} m dari titik kerja. Kejadian di luar radius masuk laporan ini untuk diverifikasi Supervisor/HRD.</p>` +
+    table(['Tanggal', 'Karyawan', 'Lokasi kerja', 'Kejadian', 'Jam', 'Titik tercatat', 'Jarak dari titik kerja', 'Melebihi radius', 'Keterangan', 'Tindak lanjut', ''], rep.map(r => [r.date.slice(8) + ' Nov', `<b>${esc(r.name)}</b><br><small class="muted">${esc(r.pos)}</small>`, esc(SHORT[r.site]), r.outside.ev, r.outside.at, esc(r.outside.place), `<b>${m(r.outside.d)}</b>`, chip(`+${m(r.outside.over)}`, 'bad'), esc(r.outside.reason), chip(r.outside.follow, /Disetujui/.test(r.outside.follow) ? 'ready' : /Ditolak/.test(r.outside.follow) ? 'bad' : 'planned'), `<a href="${'#hrd-tracking' + qs({ date: r.date, site: r.site, focus: r.emp })}">Lihat di peta</a>`])) +
+    `<p class="muted small">Ringkasan: ${rep.filter(r => /Perlu/.test(r.outside.follow)).length} perlu verifikasi/klarifikasi, ${rep.filter(r => /Disetujui/.test(r.outside.follow)).length} disetujui (dinas luar/kunjungan klien), ${rep.filter(r => /Ditolak/.test(r.outside.follow)).length} ditolak dan perlu koreksi presensi.</p>`);
+  setTimeout(() => draw(params, list), 0);
+  return kpi + mapCard + repCard;
+}
+
+function draw(params, list) {
+  const el = document.getElementById('geo-map'); if (!el) return;
+  leaflet().then((L) => {
+    if (!document.body.contains(el)) return;
+    if (map) { try { map.remove(); } catch (e) { /* old */ } map = null; }
+    el.innerHTML = '';
+    const site = params.site || '', S = HR2.SITES;
+    map = L.map(el, { zoomControl: true, scrollWheelZoom: true, attributionControl: true });
+    const base = {
+      Peta: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 20, subdomains: 'abcd', attribution: '© OpenStreetMap contributors © CARTO' }),
+      Satelit: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Tiles © Esri' })
+    };
+    (base[view.layer] || base.Peta).addTo(map);
+    L.control.layers(base, null, { position: 'topright', collapsed: false }).addTo(map);
+    L.control.scale({ imperial: false }).addTo(map);
+    map.on('baselayerchange', (e) => { view.layer = e.name; });
+    const people = L.layerGroup(), markers = {};
+    Object.entries(S).forEach(([id, s]) => {
+      const here = list.filter(r => r.site === id), out = here.filter(r => r.outside).length;
+      L.circle([s.lat, s.lng], { radius: HR2.RADIUS, color: '#C99A2E', weight: 1.5, fillColor: '#E5C66A', fillOpacity: 0.12 }).addTo(map);
+      L.marker([s.lat, s.lng], { icon: L.divIcon({ className: 'geo-site', html: `<span class="geo-pin"></span><span class="geo-site-lbl"><b>${esc(s.name)}</b><small>${here.length} check-in${out ? ` · <em>${out} di luar radius</em>` : ''}</small></span>`, iconSize: [26, 36], iconAnchor: [13, 34] }), zIndexOffset: 1000, title: s.name })
+        .bindPopup(`<b>${esc(s.name)}</b><br>${s.lat.toFixed(6)}, ${s.lng.toFixed(6)}<br>${here.length} check-in · ${here.filter(r => !r.out).length} masih di lokasi · ${here.filter(r => r.out).length} sudah keluar<br>Radius presensi ${HR2.RADIUS} m${s.note ? `<br><small>${esc(s.note)}</small>` : ''}<br><a href="${s.gmaps}" target="_blank" rel="noopener">Buka di Google Maps ↗</a>`).addTo(map);
+    });
+    list.forEach(r => {
+      const t = tone(r), s = S[r.site];
+      const pos = r.outside && r.outside.ev === 'Check-out' ? [r.outLat, r.outLng] : [r.lat, r.lng];
+      const pop = `<div class="geo-pop"><b>${esc(r.name)}</b><small>${esc(r.pos)} · ${esc(s.name)}</small><table><tr><td>Check-in</td><td><b>${r.in}</b> · ${m(r.dIn)} dari titik</td></tr><tr><td>Check-out</td><td>${r.out ? `<b>${r.out}</b> · ${m(r.dOut)} dari titik` : 'belum, masih di lokasi'}</td></tr><tr><td>Status</td><td>${esc(r.status)}${r.late ? ` (${r.late} menit)` : ''}</td></tr></table>${r.outside ? `<p class="geo-warn">${r.outside.ev} di luar radius: ${m(r.outside.d)} dari titik kerja (+${m(r.outside.over)}) · ${esc(r.outside.place)}<br>${esc(r.outside.follow)}</p>` : '<p class="geo-ok">Dalam radius 150 m</p>'}</div>`;
+      const mk = L.marker(pos, { icon: L.divIcon({ className: 'geo-emp t-' + t, html: `<span class="geo-av">${esc(ini(r.name))}</span><span class="geo-emp-lbl">${esc(r.name.split(' ').slice(0, 2).join(' '))} · ${r.in}${r.out ? '–' + r.out : ''}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }), title: `${r.name} · masuk ${r.in}${r.out ? ' · keluar ' + r.out : ''}` }).bindPopup(pop);
+      markers[r.emp] = mk;
+      if (r.outside) { mk.addTo(map); L.polyline([pos, [s.lat, s.lng]], { color: '#C0392B', weight: 2, dashArray: '6 6' }).addTo(map); }
+      else people.addLayer(mk);
+    });
+    const sync = () => { if (map.getZoom() >= 17) people.addTo(map); else people.remove(); el.classList.toggle('geo-near', map.getZoom() >= 19); };
+    map.on('zoomend', () => { sync(); view.zoom = map.getZoom(); view.center = map.getCenter(); });
+    map.on('moveend', () => { view.center = map.getCenter(); });
+    const focus = params.focus && list.find(r => r.emp === params.focus);
+    if (focus) { const mk = markers[focus.emp]; const ll = mk.getLatLng(); map.setView(focus.outside ? L.latLngBounds([ll, [S[focus.site].lat, S[focus.site].lng]]).getCenter() : ll, focus.outside ? 15 : 18); sync(); mk.openPopup(); }
+    else if (site) map.setView([S[site].lat, S[site].lng], 18);
+    else if (view.center && view.zoom) map.setView(view.center, view.zoom);
+    else map.fitBounds(L.latLngBounds(Object.values(S).map(s => [s.lat, s.lng])).pad(0.25));
+    sync();
+    el.dataset.ready = '1';
+    el._geo = { map, markers };
+  }).catch(() => { el.innerHTML = '<p class="muted small">Peta tidak dapat dimuat di tampilan ini (file vendor/leaflet tidak tersedia). Buka pratinjau Vercel untuk peta interaktif.</p>'; });
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-geo-emp]'); if (!b) return;
+  const el = document.getElementById('geo-map'), g = el && el._geo; if (!g) return;
+  const mk = g.markers[b.dataset.geoEmp]; if (!mk) return;
+  g.map.once('moveend', () => setTimeout(() => mk.openPopup(), 50)); g.map.setView(mk.getLatLng(), Math.max(g.map.getZoom(), 18));
+  document.querySelectorAll('.geo-row.on').forEach(x => x.classList.remove('on')); b.classList.add('on');
+});
+document.addEventListener('change', (e) => {
+  if (!e.target.matches('[data-geo-date]')) return;
+  const { params } = H.parseHash(); H.go('hrd-tracking', { ...params, date: e.target.value, focus: '' });
+});
+
+/* bungkus layar F2-NV09: peta + laporan di atas riwayat titik lokasi yang sudah ada */
+const prev = H.REGISTRY['hrd-tracking'];
+const wrapped = (params) => { const old = prev(params); if (params.id || /hr-denied/.test(old)) return old; return page(params) + old; };
+wrapped.title = prev.title; wrapped.purpose = () => 'Peta lokasi presensi seperti Google Maps: titik kerja 4 Spa + Head Office dengan radius 150 m, karyawan yang check-in/check-out lengkap dengan jam, dan laporan karyawan di luar radius. Data demo.';
+H.REGISTRY['hrd-tracking'] = wrapped;
+H.HRGEO = { page, report };
 })();
 
 ;

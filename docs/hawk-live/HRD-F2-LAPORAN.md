@@ -38,3 +38,22 @@ Mesin presensi/selfie dan GPS: NEW INTEGRATION REQUIRED (preview: UI-ONLY SIMULA
 ## Asumsi
 - Karyawan baru hasil impor masuk dengan status Probation dan THP awal posisi.
 - Kunjungan klien dan klien adalah contoh untuk therapist home-service (GajiHub punya modul ini); perlu konfirmasi apakah JAENS memakai layanan kunjungan.
+
+## Tambahan 14 Nov 2026 · F2-NV09 Pelacakan Lokasi: peta interaktif (`hawk-live/hrd-geo.js`)
+- Peta seperti Google Maps: zoom (scroll, +/−), geser, pilihan Peta/Satelit, dan skala. Dibangun dengan Leaflet 1.9.4 (vendor/leaflet, lisensi BSD-2), ubin CARTO Voyager (© OpenStreetMap contributors, © CARTO) dan Esri World Imagery. Tidak perlu API key Google. CSP `img-src` di vercel.json dan tools/build.js ditambah `*.basemaps.cartocdn.com` dan `server.arcgisonline.com`.
+- Titik kerja diambil dari tautan Google Maps Owner (`HR2.SITES`):
+
+  | Titik kerja | Koordinat |
+  |---|---|
+  | Jaens Spa Center Ubud | -8.5215997, 115.2628912 |
+  | Jaens Spa Shanti Ubud | -8.5347371, 115.2661551 |
+  | Jaens Spa Triloka Ubud | -8.5197366, 115.263036 |
+  | Jaens Spa Bisma Ubud | -8.5134803, 115.2583193 |
+  | Head Office | -8.5348308, 115.2657347 |
+
+  Tautan Head Office menunjuk tempat bernama "Samyama Eatery", sekitar 50 m dari Spa Shanti (TO VERIFY).
+- Radius presensi 150 m. Titik karyawan berasal dari presensi F2 (`HR2.geo`), yaitu jam masuk dan jam keluar per karyawan. Di zoom ≥ 17 tiap karyawan tampil sebagai titik berinisial, dan di zoom ≥ 19 nama serta jam ikut tampil. Popup memuat check-in, check-out, jarak dari titik kerja dan status.
+- Ada enam contoh karyawan di luar radius (`HR2.OUTSIDE`), dan **Laporan di luar radius** mencatat 7 kejadian pada 12–13 Nov. Kolomnya: tanggal, karyawan, lokasi kerja, kejadian, jam, titik tercatat, jarak, kelebihan dari radius, keterangan, dan tindak lanjut (Perlu verifikasi/klarifikasi, Disetujui dinas luar/kunjungan klien, Ditolak perlu koreksi), dengan tautan ke peta.
+- Cakupan mengikuti role. Contohnya, Supervisor Ubud hanya melihat timnya.
+- Status: GPS perangkat NEW INTEGRATION REQUIRED, data demo.
+- Uji: `tests/hawk-live/hrd-geo.e2e.js` 18/18. Ubin peta diblokir saat uji, sehingga hasil tidak bergantung pada jaringan.
