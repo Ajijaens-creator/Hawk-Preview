@@ -1,4 +1,4 @@
-# NB Addendum · HAWK Mobile, POS Spa & Presensi
+# NB Addendum · JAENS Mobile, POS Spa & Presensi
 
 Tanggal 14 November 2026 · Spesifikasi pengembangan · R&D dan data dummy
 
@@ -6,7 +6,7 @@ Tanggal 14 November 2026 · Spesifikasi pengembangan · R&D dan data dummy
 
 ## 1. Keputusan produk
 
-HAWK memiliki satu aplikasi yang dipasang pada Android dan iPhone untuk pekerjaan harian seluruh tim. Isi mengikuti peran, business unit, divisi, outlet, penugasan dan tanggal efektif. Mobile POS menjadi bagian Pekerjaan untuk staf operasional yang memiliki izin. Nama kerja aplikasi adalah **HAWK Mobile**.
+JAENS memiliki satu aplikasi yang dipasang pada Android dan iPhone untuk pekerjaan harian seluruh tim. Isi mengikuti peran, business unit, divisi, outlet, penugasan dan tanggal efektif. Mobile POS menjadi bagian Pekerjaan untuk staf operasional yang memiliki izin. Nama kerja aplikasi adalah **JAENS Mobile**.
 
 Fokus mobile adalah Beranda/My Day, presensi, jadwal, tugas, chat, pengajuan dan operasional spa. Marketing, Finance & Accounting, HRD dan manajer memakai desktop untuk penyusunan pekerjaan kompleks, olah data, konfigurasi dan laporan mendalam. Mereka tetap memakai mobile untuk pekerjaan pribadi, komunikasi, pengingat serta approval sesuai kewenangan.
 
@@ -26,7 +26,7 @@ Target hasil adalah aplikasi terpasang dengan kamera, lokasi, notifikasi dan pen
 
 Kalender, Perusahaan, Timeline dan direktori tim dapat dibuka melalui pintasan Beranda/Saya. Tab Approval berisi antrean reviewer bagi approver dan status pengajuan sendiri bagi staf. Ulang tahun hanya menampilkan informasi yang diizinkan. Direktori umum memuat nama, jabatan, outlet/divisi dan kanal kontak kerja yang boleh dibagikan.
 
-Presensi dibuat menonjol pada Beranda dan navigasi bawah. Terapkan identitas HAWK charcoal, ivory dan gold. Gunakan tombol besar, teks terbaca, status dengan label, dukungan pembaca layar dan satu aksi utama per langkah. Halaman tidak bergantung pada hover atau drag. Tugas dapat dipindahkan dengan tombol **Pindahkan ke**.
+Presensi dibuat menonjol pada Beranda dan navigasi bawah. Terapkan identitas JAENS charcoal, ivory dan gold. Gunakan tombol besar, teks terbaca, status dengan label, dukungan pembaca layar dan satu aksi utama per langkah. Halaman tidak bergantung pada hover atau drag. Tugas dapat dipindahkan dengan tombol **Pindahkan ke**.
 
 ## 3. Pekerjaan menurut peran
 
@@ -48,7 +48,7 @@ Semua peran menerima lima menu utama. Tabel berikut mengatur isi tambahan Pekerj
 
 Menu dan data divalidasi di server. Mengganti outlet di layar atau membuka tautan langsung tidak memperluas hak akses. Akun nonaktif dan delegasi berakhir tidak dapat melakukan aksi baru.
 
-**Payroll tetap khusus Manager HRD**, termasuk slip, gaji personal dan nominal komisi. Therapist dapat melihat jumlah layanan, jam treatment dan hasil kerja pribadi. Finance memakai agregat yang telah diizinkan. Menu Gaji pada screenshot referensi tidak otomatis menjadi hak akses staf dalam HAWK.
+**Payroll tetap khusus Manager HRD**, termasuk slip, gaji personal dan nominal komisi. Therapist dapat melihat jumlah layanan, jam treatment dan hasil kerja pribadi. Finance memakai agregat yang telah diizinkan. Menu Gaji pada screenshot referensi tidak otomatis menjadi hak akses staf dalam JAENS.
 
 ## 4. Presensi wajah, lokasi dan jam kerja
 
@@ -115,7 +115,7 @@ Notifikasi mengarah ke objek asal setelah login dan pemeriksaan hak akses. Tampi
 
 ## 7. Bentuk aplikasi dan pemasangan
 
-**Rekomendasi awal: Flutter untuk klien Android/iOS**, dengan layanan server HAWK bersama. Flutter mendukung kedua platform. Pilihan akhir dikonfirmasi developer setelah memeriksa kode yang sudah ada dan kompatibilitas SDK kamera/liveness. Penggunaan Flutter tidak berarti preview HTML langsung menjadi aplikasi siap pasang. [Platform Flutter](https://docs.flutter.dev/reference/supported-platforms)
+**Rekomendasi awal: Flutter untuk klien Android/iOS**, dengan layanan server JAENS bersama. Flutter mendukung kedua platform. Pilihan akhir dikonfirmasi developer setelah memeriksa kode yang sudah ada dan kompatibilitas SDK kamera/liveness. Penggunaan Flutter tidak berarti preview HTML langsung menjadi aplikasi siap pasang. [Platform Flutter](https://docs.flutter.dev/reference/supported-platforms)
 
 Komponen yang diperlukan adalah aplikasi mobile, autentikasi dan izin server, layanan presensi, layanan chat/notifikasi, koneksi POS, penyimpanan bukti terbatas, serta portal desktop untuk konfigurasi dan pemeriksaan. SDK khusus Android/iOS dapat dibutuhkan untuk liveness. Rahasia layanan tetap di server, kredensial sesi disimpan aman di perangkat, dan R&D memiliki lingkungan serta identitas aplikasi terpisah dari produksi.
 
@@ -129,7 +129,7 @@ Internal testing Google Play dibatasi 100 tester, sehingga 158 profil dummy tida
 
 Build TestFlight dapat diuji sampai 90 hari. TestFlight adalah jalur pengujian, kemudian perlu jalur distribusi tetap. [Apple TestFlight](https://developer.apple.com/help/app-store-connect/test-a-beta-version/testflight-overview/)
 
-Custom Apps dapat diberikan ke organisasi tertentu. Unlisted memakai tautan langsung dan tetap memerlukan review. Siapa pun yang mendapat tautan unlisted dapat mengunduh, sehingga login dan izin HAWK tetap wajib. [Apple Custom Apps](https://developer.apple.com/support/volume-purchase-and-custom-apps/) · [Apple Unlisted](https://developer.apple.com/support/unlisted-app-distribution/)
+Custom Apps dapat diberikan ke organisasi tertentu. Unlisted memakai tautan langsung dan tetap memerlukan review. Siapa pun yang mendapat tautan unlisted dapat mengunduh, sehingga login dan izin JAENS tetap wajib. [Apple Custom Apps](https://developer.apple.com/support/volume-purchase-and-custom-apps/) · [Apple Unlisted](https://developer.apple.com/support/unlisted-app-distribution/)
 
 Setelah build tersedia, staf menerima undangan/tautan instalasi atau QR menuju halaman instalasi resmi, memasang aplikasi, mengaktifkan akun dan menyelesaikan onboarding. QR hanya membantu membuka jalur instalasi. Akun developer perusahaan, penandatanganan aplikasi, undangan tester dan publikasi belum dijalankan oleh addendum ini.
 

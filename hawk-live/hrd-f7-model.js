@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F7 Payroll & People Budgeting — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F7 Payroll & People Budgeting — DATA DEMO / SIMULASI.
    Komponen diturunkan dari take-home pay dummy F1 (Oktober = kalibrasi: THP Oktober = THP roster).
    Komisi dari baris layanan POS F5 (Service Line ID), aturan berversi dengan periode efektif, batch payroll draf → review → kunci (snapshot),
    slip & status bayar (Siap Bayar ≠ Sudah Bayar), kasbon/reimburse dengan ledger, laporan 19 entri, handoff jurnal Finance (Batch ID stabil),

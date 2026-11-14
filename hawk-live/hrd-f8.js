@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
    NV01 Race Vegen (hrd-race) · NV02 Race Beacon & Success Factors (hrd-race-beacon) · NV03 Daily Race (hrd-race-daily) ·
    NV04 Weekly Race (hrd-race-weekly) · NV05 Monthly Reflection (hrd-race-reflection) · NV06 STRACON (hrd-race-stracon) ·
    NV07 e-Deck Reflection HRD (hrd-race-deck) · NV08 Pusat Laporan & Jejak Bukti (hrd-report-center). */

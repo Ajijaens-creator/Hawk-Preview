@@ -1,6 +1,6 @@
 # NB F8 · AmbideX, Reporting & Reflection
 
-Portal kelima HAWK ERP · HRD Operations dan Human Growth · R&D · Data dummy
+Portal kelima JAENS ERP · HRD Operations dan Human Growth · R&D · Data dummy
 
 [NB induk](README.md) · [F3 Planner](F3-PLANNER-DAN-WORKPLACE.md) · [F4 Rekrutmen](F4-REKRUTMEN-DAN-PENEMPATAN.md) · [F5 Manpower & POS](F5-MANPOWER-PLANNING-DAN-POS.md) · [F6 Kinerja](F6-HUMAN-GROWTH-DAN-KINERJA.md) · [F7 Payroll & Budgeting](F7-PAYROLL-DAN-PEOPLE-BUDGETING.md) · [Preview](../hrd-rnd/index.html) · [Referensi SER dan Race](../hrd-rnd/KINERJA-REFERENSI.md) · [Panduan brand](../HAWK-BRAND-GUIDELINES.md)
 
@@ -8,7 +8,7 @@ Portal kelima HAWK ERP · HRD Operations dan Human Growth · R&D · Data dummy
 
 Hubungkan komitmen harian, hasil terverifikasi, ekspektasi perusahaan, keputusan strategis dan laporan presentasi. Identitas, organisasi, cakupan dan audit memakai F1. Jadwal dan pengajuan berasal dari F2, tugas dari F3, rekrutmen dari F4, kapasitas/POS dari F5, definisi KPI dan kompetensi dari F6, serta biaya berizin dari F7.
 
-Menu AmbideX & Race membuka siklus kerja dan review. Pusat laporan memberi jalur ke sumber dengan cakupan yang sama. Ringkasan pada Beranda dan Kinerja menaut ke layar F8 yang relevan. Pertahankan shell serta palet HAWK, tampilkan periode dan scope pada setiap layar, dan gunakan waktu WITA untuk sesi serta histori.
+Menu AmbideX & Race membuka siklus kerja dan review. Pusat laporan memberi jalur ke sumber dengan cakupan yang sama. Ringkasan pada Beranda dan Kinerja menaut ke layar F8 yang relevan. Pertahankan shell serta palet JAENS, tampilkan periode dan scope pada setiap layar, dan gunakan waktu WITA untuk sesi serta histori.
 
 ## Delapan layar dan kriteria penerimaan
 

@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
    Jadwal & shift efektif, presensi (log + koreksi), pengajuan bertingkat (satu Request ID dibaca modul asal
    dan inbox Approval), saldo cuti (ledger), klien, kunjungan, pelacakan lokasi, timeline dan impor karyawan.
    Memperluas HR (hrd-model.js) lewat HR.EXT. Deterministik, tanpa jaringan. */
@@ -140,7 +140,7 @@ const HR2 = (() => {
     const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
     if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
     const [s1, s2] = SHIFTS[sch.shift].map(mins);
-    /* HAWK Mobile (addendum 14 Nov 2026): kejadian presensi dari aplikasi digabung ke catatan resmi yang sama */
+    /* JAENS Mobile (addendum 14 Nov 2026): kejadian presensi dari aplikasi digabung ke catatan resmi yang sama */
     const mob = (r) => H.EXT.mobileAtt ? H.EXT.mobileAtt(hr, emp, date, r, s1) : r;
     if (date === TODAY && k >= 18) return mob(base); /* belum absen */
     const late = k === 14 || k === 15 ? 5 + (n * 3 + k) % 25 : 0;

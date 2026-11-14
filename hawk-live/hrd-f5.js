@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
    NV01 Dashboard Manpower (hrd-manpower) · NV02 Kapasitas Outlet & Shift (hrd-mp-capacity) · NV03 Therapist Utility (hrd-mp-utility) ·
    NV04 Coverage Reception (hrd-mp-reception) · NV05 Beban Kerja Divisi Office (hrd-mp-division) · NV06 Data Layanan POS (hrd-mp-pos) ·
    NV07 Simulasi Kebutuhan & Temuan (hrd-mp-sim) · NV08 Handoff Rekrutmen (hrd-mp-handoff). */

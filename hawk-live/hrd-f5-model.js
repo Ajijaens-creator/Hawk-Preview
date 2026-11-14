@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F5 Manpower Planning & POS — DATA DEMO / SIMULASI.
    Periode Okt 2026 (bulan tertutup, sama dengan Beranda F1) dan Minggu 46 (7–13 Nov, provisional, rincian POS per baris layanan).
    Utility = jam treatment selesai ÷ jam kapasitas reguler (jam). Agregasi = total pembilang ÷ total penyebut.
    Baris layanan POS dibangkitkan deterministik (tidak disimpan); yang disimpan hanya batch ingest, refund, koreksi, skenario dan handoff.
@@ -82,7 +82,7 @@ const HR5 = (() => {
   /* blok kurang coverage untuk peringatan dashboard */
   const recGaps = (o) => ['Pagi', 'Sore'].flatMap(sh => RECEPTION[o][sh].peak.filter(([b, st, c, w]) => recStatus(c, st, blockHours(b), w)[1] === 'bad').map(([b, st, c, w]) => ({ outlet: o, shift: sh, block: b, staff: st, checkins: c, wait: w })));
   const DIVISIONS = [
-    { id: 'DIV-FA', name: 'Finance & Accounting', metric: 'Rekonsiliasi bank & POS', unit: 'dokumen', load: 412, output: 365, backlog: 47, sla: '2 hari kerja', slaMet: 0.88, source: 'HAWK Finance (TO VERIFY)', updated: '2026-11-13 18:00', complete: true },
+    { id: 'DIV-FA', name: 'Finance & Accounting', metric: 'Rekonsiliasi bank & POS', unit: 'dokumen', load: 412, output: 365, backlog: 47, sla: '2 hari kerja', slaMet: 0.88, source: 'JAENS ERP Finance (TO VERIFY)', updated: '2026-11-13 18:00', complete: true },
     { id: 'DIV-MKT', name: 'Marketing', metric: 'Campaign & konten terbit', unit: 'konten', load: 64, output: 58, backlog: 6, sla: 'Sesuai kalender konten', slaMet: 0.91, source: 'Planner Marketing (simulasi)', updated: '2026-11-12 17:00', complete: true },
     { id: 'DIV-HRD', name: 'HRD & Human Growth', metric: 'Permintaan HRD (cuti, koreksi, rekrutmen)', unit: 'permintaan', load: null, output: null, backlog: null, sla: '1–3 hari', slaMet: null, source: 'Approval F2 + Rekrutmen F4 (live demo)', updated: null, complete: true, live: true },
     { id: 'DIV-PRD', name: 'Production', metric: 'Batch produk Essence', unit: 'batch', load: 30, output: 26, backlog: 4, sla: 'Rencana mingguan', slaMet: 0.87, source: 'Produksi Essence (TO VERIFY)', updated: '2026-11-10 16:00', complete: false },

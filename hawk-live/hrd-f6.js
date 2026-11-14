@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F6 Human Growth & Kinerja — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · F6 Human Growth & Kinerja — DATA DEMO / SIMULASI.
    NV01 Dashboard HG (hrd-kpi) · NV02 SER (hrd-ser) · NV03 KPI Library (hrd-kpi-lib) · NV04 Kontrak KPI (hrd-kpi-contract) ·
    NV05 XScore (hrd-xscore) · NV06 People Performance & Kompetensi (hrd-people-perf) · NV07 9-Box (hrd-ninebox) ·
    NV08 Rencana Pengembangan & Coaching (hrd-dev) · NV09 Pelatihan, Kesiapan & Talent Pipeline (hrd-training). */

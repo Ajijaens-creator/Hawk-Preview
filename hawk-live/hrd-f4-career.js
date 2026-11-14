@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F4 halaman karier publik (NV01 Landing, NV02 Detail Lowongan, NV03 Formulir Lamaran).
+/* JAENS ERP · Portal HRD · F4 halaman karier publik (NV01 Landing, NV02 Detail Lowongan, NV03 Formulir Lamaran).
    Satu renderer dipakai dua tempat: karier.html (publik, tanpa login internal) dan pratinjau di dalam portal HRD.
    DATA DEMO / SIMULASI. Membaca hanya lowongan berstatus Dipublikasikan. */
 const HRCAREER = (() => {

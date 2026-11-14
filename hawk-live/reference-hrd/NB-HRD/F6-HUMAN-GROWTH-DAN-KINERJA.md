@@ -1,6 +1,6 @@
 # NB F6 · Human Growth & Kinerja
 
-Portal kelima HAWK ERP · Human Growth · R&D · Data dummy
+Portal kelima JAENS ERP · Human Growth · R&D · Data dummy
 
 [NB induk](README.md) · [F1 Fondasi](F1-FONDASI-DAN-BERANDA.md) · [F3 Planner](F3-PLANNER-DAN-WORKPLACE.md) · [F4 Rekrutmen](F4-REKRUTMEN-DAN-PENEMPATAN.md) · [F5 Manpower & POS](F5-MANPOWER-PLANNING-DAN-POS.md) · [Preview](../hrd-rnd/index.html) · [Referensi KPI](../hrd-rnd/KINERJA-REFERENSI.md) · [Panduan brand](../HAWK-BRAND-GUIDELINES.md)
 

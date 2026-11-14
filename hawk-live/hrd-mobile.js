@@ -1,4 +1,4 @@
-/* HAWK Mobile · preview M1 (NB Addendum 14 Nov 2026) — VISUAL HTML + SIMULASI R&D, bukan aplikasi Android/iOS terpasang.
+/* JAENS Mobile · preview M1 (NB Addendum 14 Nov 2026) — VISUAL HTML + SIMULASI R&D, bukan aplikasi Android/iOS terpasang.
    Lima menu: Beranda, Pekerjaan, Presensi, Inbox (Chat · Notifikasi · Approval), Saya. Isi mengikuti peran akun.
    Presensi: pemberitahuan → lokasi → kamera (liveness + 1:1) → hasil, dengan state Terverifikasi / Menunggu sinkronisasi /
    Perlu pemeriksaan, jalur "Ajukan presensi dengan pemeriksaan", offline + sinkronisasi, dan idempotensi per sesi.
@@ -34,9 +34,14 @@ const btn = (label, data, cls = '') => `<button type="button" class="mob-btn ${c
 const sect = (title, body, extra = '') => `<section class="mob-card">${title ? `<h3>${title}${extra}</h3>` : ''}${body}</section>`;
 const msgBar = () => (ui.err ? `<p class="mob-alert bad" role="alert">${esc(ui.err)}</p>` : '') + (ui.ok ? `<p class="mob-alert ok" role="status">${esc(ui.ok)}</p>` : '');
 
-function header(a) {
-  const h = hr(), pl = HR.placementOn(h, a.emp), loc = pl ? HR.locName(pl.location) : '—';
-  return `<header class="mob-head"><span class="mob-av" aria-hidden="true">${ini(nameOf(a.emp))}</span><span><b>${esc(nameOf(a.emp))}</b><small>${esc(a.job)} · ${esc(loc)}</small></span><span class="mob-clock" title="Jam demo (WITA)">${esc(h.mob.clock)} WITA</span></header>`;
+function header(a, tab) {
+  const h = hr(), pl = HR.placementOn(h, a.emp), loc = pl ? HR.locName(pl.location) : '—', nm = nameOf(a.emp), first = nm.split(' ')[0];
+  const av = a.photo ? `<span class="mob-av photo"><img src="${a.photo}" alt="Foto profil demo ${esc(first)}"></span>` : `<span class="mob-av" aria-hidden="true">${ini(nm)}</span>`;
+  const brand = `<div class="mob-brand"><span class="mob-j" aria-hidden="true">J</span><span class="mob-word"><b>JAENS</b><small>MOBILE</small></span><span class="mob-demo">DEMO</span><span class="mob-clock" title="Jam demo (WITA)">${esc(h.mob.clock)} WITA</span></div>`;
+  const hello = tab === 'home'
+    ? `<div class="mob-hello"><span><small class="mob-date">Jumat, 13 November 2026</small><span class="mob-greet">Selamat pagi,</span><b>${esc(first)}.</b><small>${esc(loc)} · ${esc(a.job)}</small></span>${av}</div>`
+    : `<div class="mob-hello sm">${av}<span><b>${esc(nm)}</b><small>${esc(a.job)} · ${esc(loc)}</small></span></div>`;
+  return `<header class="mob-head">${brand}${hello}</header>`;
 }
 function attCard(a, big = true) {
   const h = hr(), p = HRM.phase(h, a.emp), site = HRM.siteOf(h, a.emp), nx = HRM.NEXT[p.phase] || [];
@@ -103,7 +108,7 @@ function attTab(a) {
   const h = hr(), ps = HRM.punchesOf(h, a.emp).slice().reverse();
   const hist = HR2.DAYS.slice().reverse().map(d => ({ d, r: HR2.attendance(h, a.emp, d) }));
   return attCard(a, false) +
-    sect('Bukti presensi hari ini', ps.length ? ps.map(p => { const st = HRM.pStatus(h, p); return `<div class="mob-proof"><div class="mob-row"><span><b>${esc(HRM.KIND[p.kind])} · ${esc(p.serverAt || p.deviceAt)} ${p.zone}</b><small>${p.id} · ${esc(HR.locName(p.site) || p.site)} · shift ${esc(p.shift)}</small></span>${chip(st, tone(st))}</div>${p.reasons && p.reasons.length ? `<ul class="tiny">${p.reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}<p class="tiny muted">Waktu server ${esc(p.serverAt || '—')} · waktu ambil ${esc(p.captureAt)} · waktu HP ${esc(p.deviceAt)}${p.receivedAt ? ' · diterima ' + esc(p.receivedAt) : ''}${p.reqId ? ' · ' + p.reqId : ''}</p></div>`; }).join('') : '<p class="muted small">Belum ada kejadian presensi dari HAWK Mobile hari ini.</p>') +
+    sect('Bukti presensi hari ini', ps.length ? ps.map(p => { const st = HRM.pStatus(h, p); return `<div class="mob-proof"><div class="mob-row"><span><b>${esc(HRM.KIND[p.kind])} · ${esc(p.serverAt || p.deviceAt)} ${p.zone}</b><small>${p.id} · ${esc(HR.locName(p.site) || p.site)} · shift ${esc(p.shift)}</small></span>${chip(st, tone(st))}</div>${p.reasons && p.reasons.length ? `<ul class="tiny">${p.reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}<p class="tiny muted">Waktu server ${esc(p.serverAt || '—')} · waktu ambil ${esc(p.captureAt)} · waktu HP ${esc(p.deviceAt)}${p.receivedAt ? ' · diterima ' + esc(p.receivedAt) : ''}${p.reqId ? ' · ' + p.reqId : ''}</p></div>`; }).join('') : '<p class="muted small">Belum ada kejadian presensi dari JAENS Mobile hari ini.</p>') +
     sect('Histori 7 hari', hist.map(({ d, r }) => `<div class="mob-row"><span><b>${HR2.DOW[HR2.dow(d)]} ${d.slice(8)}/${d.slice(5, 7)}</b><small>${esc(r.shift)}${r.in ? ` · ${r.in}–${r.out || '…'}` : ''}${r.corrected ? ' · dikoreksi' : ''}</small></span><span class="mob-inline">${chip(r.status, tone(r.status))}${d < HR.TODAY && r.status !== 'Libur' ? btn('Koreksi', { m: 'correct', date: d }, 'sm link') : ''}</span></div>`).join('') +
       (ui.correct ? `<form class="mob-form" data-mform="correct"><input type="hidden" name="date" value="${esc(ui.correct)}"><p class="small"><b>Ajukan koreksi ${esc(ui.correct)}</b></p><label>Jam masuk<input name="in" placeholder="09:00" required></label><label>Jam keluar<input name="out" placeholder="17:00"></label><label>Alasan<input name="reason" required minlength="5"></label><button class="mob-btn primary">Kirim koreksi</button></form>` : '')) +
     `<p class="tiny muted">Aturan ${esc(HRM.RULES.version)}: radius ${HRM.RULES.radius} m, umur lokasi ≤ ${HRM.RULES.maxAgeMin} menit, akurasi ≤ ${HRM.RULES.maxAccuracyM} m. Tidak ada keputusan absen, sanksi atau potongan otomatis dari pemeriksaan teknis.</p>`;
@@ -153,7 +158,7 @@ function inbox(a, params) {
     HRM.punchesOf(h, a.emp).filter(p => HRM.pStatus(h, p) !== 'Terverifikasi').forEach(p => items.push([`Presensi ${HRM.pStatus(h, p).toLowerCase()}`, p.id, { tab: 'att' }]));
     h.queue.filter(q => HR2.canDecide(h, a.role, q)).slice(0, 4).forEach(q => items.push([`Pengajuan baru perlu keputusan`, q.id, { tab: 'inbox', sub: 'approval' }]));
     HR3.ensure(h).tasks.filter(t => t.pic === a.emp && t.stage !== 'Selesai').slice(0, 3).forEach(t => items.push(['Tugas ditugaskan ke Anda', t.id, { tab: 'work', task: t.id }]));
-    body = sect('', items.length ? items.map(([t, ref, to]) => `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, ...to })}"><span><b>${esc(t)}</b><small>${esc(ref)}</small></span>›</a>`).join('') : '<p class="muted small">Tidak ada notifikasi.</p>') + '<p class="tiny muted">Di layar terkunci notifikasi sensitif tampil netral ("Ada pembaruan HAWK"). Push nyata: belum (butuh aplikasi terpasang).</p>';
+    body = sect('', items.length ? items.map(([t, ref, to]) => `<a class="mob-row" href="#hrd-mobile${qs({ as: a.id, ...to })}"><span><b>${esc(t)}</b><small>${esc(ref)}</small></span>›</a>`).join('') : '<p class="muted small">Tidak ada notifikasi.</p>') + '<p class="tiny muted">Di layar terkunci notifikasi sensitif tampil netral ("Ada pembaruan JAENS"). Push nyata: belum (butuh aplikasi terpasang).</p>';
   } else {
     const mine = h.queue.filter(q => HR2.canDecide(h, a.role, q));
     const own = h.queue.filter(q => q.emp === a.emp).slice(0, 5);
@@ -166,7 +171,7 @@ function inbox(a, params) {
 /* ---------- Saya ---------- */
 function me(a) {
   const h = hr(), p = h.people.find(x => x.id === a.emp), pl = HR.placementOn(h, a.emp), bal = HR2.balance(h, a.emp);
-  return sect('Profil', `<dl class="mob-dl"><dt>Nama</dt><dd>${esc(p.name)} (nama samaran)</dd><dt>Employee ID</dt><dd>${a.emp}</dd><dt>Jabatan</dt><dd>${esc(a.job)}</dd><dt>Penempatan</dt><dd>${esc(HR.locName(pl.location))} · sejak ${pl.from}</dd><dt>Kanal kerja</dt><dd>Chat HAWK</dd></dl>${a.label ? `<p class="tiny muted">${esc(a.label)}</p>` : ''}`) +
+  return sect('Profil', `<dl class="mob-dl"><dt>Nama</dt><dd>${esc(p.name)} (nama samaran)</dd><dt>Employee ID</dt><dd>${a.emp}</dd><dt>Jabatan</dt><dd>${esc(a.job)}</dd><dt>Penempatan</dt><dd>${esc(HR.locName(pl.location))} · sejak ${pl.from}</dd><dt>Kanal kerja</dt><dd>Chat JAENS</dd></dl>${a.label ? `<p class="tiny muted">${esc(a.label)}</p>` : ''}`) +
     sect('Saldo cuti & izin', bal.filter(b => b.quota !== null).map(b => `<div class="mob-row"><span><b>${esc(b.name)}</b><small>terpakai ${b.used} · menunggu ${b.pending}</small></span><b>${b.left} hari</b></div>`).join('') +
       `<form class="mob-form" data-mform="leave"><label>Jenis<select name="cat">${bal.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select></label><label>Tanggal<input type="date" name="from" value="2026-11-20" required></label><label>Alasan<input name="reason" placeholder="opsional"></label><button class="mob-btn primary">Ajukan</button></form>`) +
     sect('Gaji & slip', a.role === 'hrd' ? `<p class="small">Payroll, slip dan nominal hanya di portal desktop untuk Manager HRD. <a href="#hrd-payroll">Buka Payroll (desktop)</a></p>` : '<p class="small">Tidak tersedia di akun ini. Payroll, slip dan nominal gaji khusus Manager HRD.</p><p class="tiny muted">Therapist melihat jumlah layanan, jam treatment dan hasil kerja pribadi di Pekerjaan.</p>') +
@@ -177,28 +182,28 @@ function me(a) {
 function sim(a) {
   const h = hr(), sel = (k, map) => `<label>${{ face: 'Wajah', loc: 'Lokasi', net: 'Jaringan', clock: 'Jam HP' }[k]}<select data-msim="${k}">${Object.entries(map).map(([v, l]) => `<option value="${v}" ${ui[k] === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
   return `<aside class="card mob-sim" aria-label="Simulator R&D"><p class="eyebrow">Simulator R&D · bukan bagian aplikasi</p>
-    <label>Akun HAWK Mobile<select data-mas>${HRM.ACCOUNTS.map(x => `<option value="${x.id}" ${x.id === a.id ? 'selected' : ''}>${esc(nameOf(x.emp))} · ${esc(x.job)}</option>`).join('')}</select></label>
+    <label>Akun JAENS Mobile<select data-mas>${HRM.ACCOUNTS.map(x => `<option value="${x.id}" ${x.id === a.id ? 'selected' : ''}>${esc(nameOf(x.emp))} · ${esc(x.job)}</option>`).join('')}</select></label>
     <div class="mob-sim-grid">${sel('face', HRM.SIM.face)}${sel('loc', HRM.SIM.loc)}${sel('net', HRM.SIM.net)}${sel('clock', HRM.SIM.clock)}</div>
     <form class="mob-form row" data-mform="clock"><label>Jam demo (WITA)<input name="time" value="${esc(h.mob.clock)}" pattern="\\d{2}:\\d{2}"></label><button class="btn ghost sm">Set</button></form>
-    <p class="row">${btn('Reset data HAWK Mobile', { m: 'reset' }, 'ghost sm')} <a class="btn ghost sm" href="#hrd-presence">Lihat di Presensi F2</a> <a class="btn ghost sm" href="#hrd-tracking">Peta lokasi</a></p>
+    <p class="row">${btn('Reset data JAENS Mobile', { m: 'reset' }, 'ghost sm')} <a class="btn ghost sm" href="#hrd-presence">Lihat di Presensi F2</a> <a class="btn ghost sm" href="#hrd-tracking">Peta lokasi</a></p>
     <h3>Status implementasi</h3><table class="mob-status"><tbody>${HRM.STATUS.map(([f, s]) => `<tr><td>${esc(f)}</td><td>${esc(s)}</td></tr>`).join('')}</tbody></table>
-    <p class="tiny muted">Rekomendasi klien: Flutter (Android/iOS) + layanan server HAWK bersama. Distribusi: Google Play internal/closed testing, TestFlight, lalu jalur tetap. Lihat docs/hawk-live/HAWK-MOBILE-M1.md.</p></aside>`;
+    <p class="tiny muted">Rekomendasi klien: Flutter (Android/iOS) + layanan server JAENS bersama. Distribusi: Google Play internal/closed testing, TestFlight, lalu jalur tetap. Lihat docs/hawk-live/HAWK-MOBILE-M1.md.</p></aside>`;
 }
 function page(params) {
   const a = cur(params), tab = params.tab || 'home';
   hr();
   const screen = tab === 'work' ? work(a, params) : tab === 'att' ? attTab(a) : tab === 'inbox' ? inbox(a, params) : tab === 'me' ? me(a) : home(a);
   const nav = `<nav class="mob-nav" aria-label="Menu utama">${TABS.map(([k, l, d]) => `<a href="#hrd-mobile${qs({ as: a.id, tab: k })}" class="${k === tab ? 'on' : ''}${k === 'att' ? ' att' : ''}" ${k === tab ? 'aria-current="page"' : ''}>${icon(d)}<span>${l}</span></a>`).join('')}</nav>`;
-  const out = `<section class="mob-wrap"><div class="mob-phone" data-account="${a.id}"><div class="mob-screen">${header(a)}<main class="mob-main">${ui.flow ? '' : msgBar()}${screen}</main>${nav}${flowSheet(a)}</div></div>${sim(a)}</section>`;
+  const out = `<section class="mob-wrap"><div class="mob-phone" data-account="${a.id}"><div class="mob-screen glass">${header(a, tab)}<main class="mob-main">${ui.flow ? '' : msgBar()}${screen}</main>${nav}${flowSheet(a)}</div></div>${sim(a)}</section>`;
   if (!ui.flow) { ui.err = null; ui.ok = null; }
-  return `<p class="eyebrow">HAWK Mobile · M1 alur mobile R&D · visual HTML + simulasi</p><h1>HAWK Mobile (preview)</h1><p class="muted">Satu aplikasi untuk semua peran: Beranda, Pekerjaan, Presensi, Inbox, Saya. Data, identitas dan aturan sama dengan desktop. Bukan aplikasi Android/iOS terpasang.</p>` + out;
+  return `<p class="eyebrow">JAENS Mobile · M1 alur mobile R&D · visual HTML + simulasi</p><h1>JAENS Mobile (preview)</h1><p class="muted">Satu aplikasi untuk semua peran: Beranda, Pekerjaan, Presensi, Inbox, Saya. Data, identitas dan aturan sama dengan desktop. Bukan aplikasi Android/iOS terpasang.</p>` + out;
 }
 const fn = (params) => page(params);
-H.REGISTRY['hrd-mobile'] = fn; fn.title = () => 'HAWK Mobile';
+H.REGISTRY['hrd-mobile'] = fn; fn.title = () => 'JAENS Mobile';
 const items = H.PORTALS.HRD.items, it = items.findIndex(i => i[0] === 'hrd-tracking');
-if (!items.some(i => i[0] === 'hrd-mobile')) items.splice(it + 1, 0, ['hrd-mobile', 'HAWK Mobile', 'M1', 'ready']);
-H.SCREENS.push(['M1', 'HRD · HAWK Mobile (Beranda, Pekerjaan, Presensi, Inbox, Saya)', 'HRD M1', 'hrd-mobile', 'ready', 'Semua peran (simulasi)']);
-H.PURPOSE['hrd-mobile'] = 'Preview HAWK Mobile M1: lima menu sesuai peran, presensi wajah/lokasi/jam simulasi dengan pengecualian, tugas F3, chat dan approval.';
+if (!items.some(i => i[0] === 'hrd-mobile')) items.splice(it + 1, 0, ['hrd-mobile', 'JAENS Mobile', 'M1', 'ready']);
+H.SCREENS.push(['M1', 'HRD · JAENS Mobile (Beranda, Pekerjaan, Presensi, Inbox, Saya)', 'HRD M1', 'hrd-mobile', 'ready', 'Semua peran (simulasi)']);
+H.PURPOSE['hrd-mobile'] = 'Preview JAENS Mobile M1: lima menu sesuai peran, presensi wajah/lokasi/jam simulasi dengan pengecualian, tugas F3, chat dan approval.';
 
 /* ---------- interaksi ---------- */
 const rerender = () => { saveUi(); H.render(); };
@@ -219,7 +224,7 @@ document.addEventListener('click', (e) => {
     case 'ops': act(a, 'm-ops', { op: d.op, ref: d.ref, to: d.to }); break;
     case 'chat-task': { const r = act(a, 'm-chat-task', { msg: d.msg }); if (r) ui.ok = `Tugas ${r} dibuat dari pesan`; break; }
     case 'correct': ui.correct = d.date; break;
-    case 'reset': HR.update(H.state, 'm-reset', { role: a.role, account: a.id, any: true }); persist(); ui.flow = null; ui.ok = 'Data HAWK Mobile dikembalikan ke awal'; break;
+    case 'reset': HR.update(H.state, 'm-reset', { role: a.role, account: a.id, any: true }); persist(); ui.flow = null; ui.ok = 'Data JAENS Mobile dikembalikan ke awal'; break;
   }
   rerender();
 });

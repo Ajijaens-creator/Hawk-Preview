@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD & Human Growth · model F1 (Fondasi dan Beranda) — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD & Human Growth · model F1 (Fondasi dan Beranda) — DATA DEMO / SIMULASI.
    Satu sumber untuk organisasi, 158 profil dummy, penempatan efektif, peran & cakupan, pengaturan,
    audit dan penghapusan dummy. Deterministik (tanpa Math.random). Tanpa jaringan, akun, atau API. */
 const HR = (() => {
@@ -177,9 +177,9 @@ const HR = (() => {
       ['TPL-PKWT', 'Kontrak PKWT', 'F4'], ['TPL-OFFER', 'Surat penawaran kerja', 'F4'], ['TPL-SP', 'Surat peringatan', 'F2'], ['TPL-ONB', 'Checklist onboarding HRD/HG', 'F4'], ['TPL-REF', 'Surat keterangan kerja', 'F2']
     ],
     integrations: [
-      ['HAWK Org & akun (Module B · NV-05–09)', 'TO VERIFY', 'Sumber struktur organisasi dan akun. Preview memakai fixture yang sama strukturnya.'],
-      ['HAWK POS / transaksi outlet', 'TO VERIFY', 'ID transaksi, outlet aktual, therapist dan refund untuk F5–F7.'],
-      ['HAWK Finance (jurnal & batch)', 'TO VERIFY', 'Finance menerima agregat payroll dan jurnal yang disetujui (F7).'],
+      ['JAENS ERP Org & akun (Module B · NV-05–09)', 'TO VERIFY', 'Sumber struktur organisasi dan akun. Preview memakai fixture yang sama strukturnya.'],
+      ['JAENS ERP POS / transaksi outlet', 'TO VERIFY', 'ID transaksi, outlet aktual, therapist dan refund untuk F5–F7.'],
+      ['JAENS ERP Finance (jurnal & batch)', 'TO VERIFY', 'Finance menerima agregat payroll dan jurnal yang disetujui (F7).'],
       ['GajiHub (referensi menu & payroll)', 'TO VERIFY', 'Inventaris menu dari referensi. Jalur data belum ditentukan.'],
       ['Google Calendar / Meet', 'NEW INTEGRATION REQUIRED', 'Jadwal interview F4. Preview memakai simulasi.'],
       ['Penyimpanan dokumen & tanda tangan', 'NEW INTEGRATION REQUIRED', 'Kontrak dan dokumen pribadi F2/F4.'],

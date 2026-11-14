@@ -1,4 +1,4 @@
-/* HAWK HRD F1 · uji browser (Playwright, klik nyata) mengikuti urutan review NB F1.
+/* JAENS ERP HRD F1 · uji browser (Playwright, klik nyata) mengikuti urutan review NB F1.
    python3 -m http.server 8811   lalu   BASE=http://localhost:8811/hawk-live/ node tests/hawk-live/hrd-f1.e2e.js */
 'use strict';
 const { chromium } = require('playwright');
@@ -30,7 +30,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-home'); await shot('F1-NV01-beranda');
   ok('NV01 total 158 pada cakupan perusahaan', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '158');
   const sideTop = (await p.locator('#nav .nav-mod.active .nav-items a:not(.nav-child) > span:nth-child(2)').allInnerTexts()).map(s => s.split('\n')[0].trim());
-  ok('Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah', sideTop.join('|') === 'Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|HAWK Mobile|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ', sideTop.join('|'));
+  ok('Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah', sideTop.join('|') === 'Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|JAENS Mobile|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ', sideTop.join('|'));
   await p.selectOption('#filters [name=outlet]', 'OUT-UBD'); await p.waitForTimeout(200);
   ok('NV01 filter Spa Ubud = 30 orang', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '30');
   await p.click('.kpis .kpi >> nth=0'); await p.waitForTimeout(200);
@@ -91,8 +91,8 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.fill('#cf-workweek', '6 hari kerja · 3 sesi shift'); await p.click('form[data-submit="hr:company-set"] button'); await p.waitForTimeout(200);
   ok('NV05 Simpan → nilai baru tampil', (await text()).includes('3 sesi shift'));
   await go('hrd-system?tab=integrations'); await shot('F1-NV06-integrasi');
-  await p.click('.hr-integ:has-text("HAWK POS") [data-action="hr:integration-test"]'); await p.waitForTimeout(150);
-  ok('NV06 uji koneksi POS → Gagal (simulasi), tanpa koneksi produksi', (await p.locator('.hr-integ:has-text("HAWK POS")').innerText()).includes('Gagal (simulasi)'));
+  await p.click('.hr-integ:has-text("JAENS ERP POS") [data-action="hr:integration-test"]'); await p.waitForTimeout(150);
+  ok('NV06 uji koneksi POS → Gagal (simulasi), tanpa koneksi produksi', (await p.locator('.hr-integ:has-text("JAENS ERP POS")').innerText()).includes('Gagal (simulasi)'));
   ok('NV06 status Belum diuji / Belum dikonfigurasi tampil', (await text()).includes('Belum diuji'));
   await go('hrd-audit');
   await p.selectOption('#filters [name=object]', 'Pengaturan'); await p.waitForTimeout(150); await shot('F1-NV07-audit');

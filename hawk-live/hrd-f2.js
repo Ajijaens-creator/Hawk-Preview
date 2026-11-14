@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · F2 Operasi HRD & Direktori — DATA DEMO / SIMULASI.
    F2-NV01 Direktori (hrd-roster) · NV02 Detail Karyawan (hrd-roster?emp=) · NV03 Jadwal Kerja · NV04 Presensi ·
    NV05 Approval Presensi · NV06 Izin & Cuti · NV07 Approval · NV08 Kunjungan Klien · NV09 Pelacakan Lokasi ·
    NV10 Klien · NV11 Timeline · NV12 Impor Karyawan. Model: hrd-f2-model.js (HR2). */

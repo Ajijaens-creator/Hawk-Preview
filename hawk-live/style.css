@@ -480,3 +480,48 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 @media (max-width: 480px) { .mob-phone { height: calc(100vh - 140px); min-height: 620px; padding: 0; background: none; box-shadow: none; } .mob-screen { border-radius: 16px; border: 1px solid var(--line); } }
 .status-chip.warn { background: var(--warn-bg); color: var(--warn); font-weight: 700; }
 .mob-sim, .mob-sim label { min-width: 0; } .mob-sim select, .mob-sim input { width: 100%; max-width: 100%; } .mob-wrap > * { min-width: 0; }
+/* ---------- JAENS Mobile · Glass Edition V02 (paket JAENS 14 Nov): suasana spa, kaca transparan, gold & forest ---------- */
+.mob-phone { background: #232b26; border: 1px solid #595b4d; box-shadow: 0 32px 85px rgba(0,0,0,.35), 0 0 0 4px #3a3d33; }
+.mob-screen.glass { background: #2a3029; color: #2d382d; isolation: isolate; }
+.mob-screen.glass::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("img/mobile/jaens-spa-bisma.webp") 54% center / cover no-repeat; }
+.mob-screen.glass::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, rgba(22,38,32,.86) 0%, rgba(27,40,32,.62) 26%, rgba(54,52,33,.34) 50%, rgba(69,58,35,.42) 72%, rgba(21,37,29,.72) 100%); }
+.glass .mob-head { display: grid; gap: 12px; background: linear-gradient(180deg, rgba(20,42,32,.35), transparent); color: #fff8e6; padding: 14px 16px 6px; }
+.glass .mob-brand { display: flex; align-items: center; gap: 8px; }
+.glass .mob-j { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-weight: 800; font-size: 17px; color: #2b210f; background: linear-gradient(135deg, #f3db9d, #ad7d36); box-shadow: inset 0 1px 0 #fff8, 0 4px 15px rgba(0,0,0,.2); }
+.glass .mob-word b { display: block; font-size: 14px; letter-spacing: .6px; line-height: 1; color: #fff9e8; } .glass .mob-word small { display: block; font-size: 8px; letter-spacing: 2.4px; color: #e4cea0; }
+.glass .mob-demo { font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #f3dfb3; border: 1px solid rgba(245,223,172,.4); background: rgba(214,186,129,.1); border-radius: 6px; padding: 2px 6px; }
+.glass .mob-clock { color: #f0e6cc; font-size: 11px; }
+.glass .mob-hello { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.glass .mob-hello > span:first-child, .glass .mob-hello.sm > span:last-child { min-width: 0; }
+.glass .mob-hello small { display: block; color: #ede8d5; font-size: 11px; }
+.glass .mob-hello .mob-date { font-size: 10.5px; margin-bottom: 4px; }
+.glass .mob-greet { display: block; font-size: 14px; color: #f0ead7; }
+.glass .mob-hello b { display: block; font-size: 31px; font-weight: 650; letter-spacing: -1px; line-height: 1.1; color: #fff9ed; }
+.glass .mob-hello.sm { justify-content: flex-start; } .glass .mob-hello.sm b { font-size: 15px; letter-spacing: 0; }
+.glass .mob-av { background: linear-gradient(135deg, #f3db9d, #ad7d36); color: #2b210f; }
+.glass .mob-av.photo { width: 60px; height: 60px; border-radius: 20px; padding: 0; overflow: hidden; border: 2px solid #fff7dc; box-shadow: 0 0 0 4px rgba(236,215,168,.16), 0 7px 24px rgba(17,38,28,.3); background: #ecd9ae; transform: rotate(3deg); }
+.glass .mob-hello.sm .mob-av.photo { width: 38px; height: 38px; border-radius: 12px; transform: none; }
+.glass .mob-av.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; display: block; }
+.glass .mob-main { padding: 8px 14px 14px; }
+.glass .mob-card { background: linear-gradient(135deg, rgba(255,254,246,.88), rgba(246,245,229,.76)); border: 1px solid rgba(255,253,241,.55); box-shadow: 0 12px 32px rgba(26,27,18,.1), inset 0 1px 0 rgba(255,255,255,.75); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: 19px; }
+.glass .mob-att.big { color: #fff7e5; border: 1px solid rgba(255,243,211,.3); box-shadow: inset 0 1px 0 rgba(255,249,222,.26), 0 16px 28px rgba(22,38,25,.15); background: linear-gradient(125deg, rgba(31,56,43,.82), rgba(42,59,44,.72) 44%, rgba(141,111,57,.56)); border-radius: 23px; }
+.glass .mob-att.big small, .glass .mob-att.big .mob-times { color: #e6e1c8; } .glass .mob-att.big .mob-times b, .glass .mob-att.big b { color: #fff7e5; }
+.glass .mob-att.big .mob-att-top b { font-size: 20px; letter-spacing: -.3px; }
+.glass .mob-att.big .mob-btn.link { color: #f3dfb3; }
+.glass .mob-btn.primary { background: linear-gradient(105deg, #fae9bc 0%, #ebcf8b 48%, #cda252 100%); border: 1px solid rgba(255,241,207,.65); color: #3a2d17; box-shadow: inset 0 1px 1px rgba(255,249,227,.85), 0 5px 14px rgba(59,43,11,.1); border-radius: 14px; min-height: 48px; }
+.glass .mob-btn:not(.primary):not(.link) { background: rgba(255,252,240,.82); border-color: rgba(255,245,213,.6); border-radius: 14px; }
+.glass .mob-att.big .mob-btn:not(.primary):not(.link) { background: rgba(255,248,231,.1); color: #fff4d9; border-color: rgba(255,244,214,.3); }
+.glass .mob-quick a { background: linear-gradient(135deg, rgba(250,255,241,.82), rgba(237,242,223,.66)); border-color: rgba(255,252,228,.65); border-radius: 18px; color: #324334; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.glass .mob-seg { background: rgba(255,249,226,.18); border-color: rgba(255,249,220,.3); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.glass .mob-seg a { color: #f4ecd7; } .glass .mob-seg a.on { background: linear-gradient(130deg, #fff5df, #dfd7bb); color: #5e4b28; }
+.glass .mob-back { color: #fff0bd; }
+.glass .mob-alert { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.glass .mob-nav { margin: 0 10px 10px; border-radius: 24px; border: 1px solid rgba(255,251,234,.68); background: linear-gradient(140deg, rgba(255,253,241,.92), rgba(231,235,221,.84)); backdrop-filter: blur(26px); -webkit-backdrop-filter: blur(26px); box-shadow: inset 0 1px 0 rgba(255,253,239,.8), 0 7px 25px rgba(12,40,28,.18); padding: 6px 4px 4px; }
+.glass .mob-nav a { color: #6f7c69; min-height: 52px; } .glass .mob-nav a svg { width: 34px; height: 28px; padding: 3px 6px; border-radius: 11px; }
+.glass .mob-nav a.on { color: #6b552e; } .glass .mob-nav a.on svg { color: #574322; background: linear-gradient(135deg, #fae5aa, #cbb477); }
+.glass .mob-nav a.att svg { width: 38px; height: 38px; padding: 7px; margin-top: -12px; border-radius: 13px; background: linear-gradient(135deg, #4d6852, #293e2d); color: #f8e4b2; border: 1px solid rgba(182,193,154,.42); }
+.glass .mob-nav a.att.on svg { background: linear-gradient(135deg, #f9dfa7, #c9a45e); color: #574322; }
+.glass .mob-sheet-in { background: linear-gradient(160deg, #fffdf4, #f4f1e2); }
+@media (max-width: 480px) { .mob-phone { border: 0; box-shadow: none; } }
+.mob-main { grid-template-columns: minmax(0, 1fr); } .mob-main > *, .mob-row > span:first-child { min-width: 0; } .mob-row .status-chip, .mob-inline .status-chip { white-space: normal; text-align: right; }
+.mob-form.row { grid-template-columns: minmax(0, 1fr) auto auto; } .mob-form input, .mob-form select { min-width: 0; width: 100%; } .mob-form.row .mob-btn { padding: 8px 11px; }

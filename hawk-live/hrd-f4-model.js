@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F4 Rekrutmen sampai Penempatan — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F4 Rekrutmen sampai Penempatan — DATA DEMO / SIMULASI.
    Permintaan tenaga → lowongan (publik) → lamaran → screening (simulasi AI, bukti per kriteria) → klarifikasi (kartu F3) →
    shortlist → interview (Event ID stabil) → uji praktik (rubric per posisi) → keputusan → penawaran → kontrak & dokumen →
    konversi profil (Employee ID F2, mulai efektif) → onboarding (template F3) → penempatan & akun (role F1).

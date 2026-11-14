@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F6 Human Growth & Kinerja — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F6 Human Growth & Kinerja — DATA DEMO / SIMULASI.
    SER 15 ekspektasi (workbook 1.1. SER), KPI Library berversi, kontrak KPI (draf → persetujuan → aktif → ditutup → koreksi),
    XScore therapist (bobot demo Utility 50 / Produktivitas 30 / Learning 20 — formula resmi AJi Creator OS belum terverifikasi),
    kompetensi, 9-Box, rencana pengembangan (Workplan F3), pelatihan & verifikasi praktik, Quality of Hire, talent pipeline.
@@ -16,7 +16,7 @@ const HR6 = (() => {
     ['EXP-01', 'Executive Summary', 'Ratio Salary Jaens Enterprises', '%', 25, 23.5, 'Finance · biaya tenaga kerja ÷ revenue', 'max', 'MET-SALR', true],
     ['EXP-02', 'Executive Summary', 'Ratio Revenue per Employee', 'Rp', 23000000, 21000000, 'Finance + HG · revenue ÷ headcount', 'min', 'MET-RPE'],
     ['EXP-03', 'Executive Summary', 'Ratio Turnover Jaens Enterprises', '%', 2, 1.2, 'HG · karyawan keluar ÷ rata-rata headcount', 'max', 'MET-TURN'],
-    ['EXP-04', 'Collaboration Group', 'Development HAWK', '%', 100, 75, 'HG + tim HAWK · milestone', 'min', 'MET-MILE'],
+    ['EXP-04', 'Collaboration Group', 'Development JAENS', '%', 100, 75, 'HG + tim JAENS · milestone', 'min', 'MET-MILE'],
     ['EXP-05', 'Collaboration Group', 'Development LMS', '%', 100, 60, 'HG + Learning · milestone', 'min', 'MET-MILE'],
     ['EXP-06', 'Collaboration Group', 'Opening Holywings', '%', 100, null, 'HG + Operations · kesiapan pembukaan', 'min', 'MET-MILE'],
     ['EXP-07', 'Human Growth Expectations', 'Recruitment & Selection', '%', 100, 80, 'HG · pemenuhan permintaan SDM (F4)', 'min', 'MET-FILL'],

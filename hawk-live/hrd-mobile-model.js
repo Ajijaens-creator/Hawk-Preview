@@ -1,4 +1,4 @@
-/* HAWK Mobile · model M1 (NB Addendum 14 Nov 2026: HAWK Mobile, POS Spa & Presensi) — DATA DEMO / SIMULASI R&D.
+/* JAENS Mobile · model M1 (NB Addendum 14 Nov 2026: JAENS Mobile, POS Spa & Presensi) — DATA DEMO / SIMULASI R&D.
    Satu aplikasi untuk semua peran: Beranda, Pekerjaan, Presensi, Inbox, Saya. Presensi memakai catatan resmi F2 yang sama
    (H.EXT.mobileAtt), tugas memakai Task ID F3 yang sama, approval memakai hr.queue + aksi 'decide' F2.
    Wajah (liveness + 1:1), lokasi, jaringan dan jam HP adalah SIMULASI berlabel: tidak ada kamera, GPS, biometrik
@@ -10,8 +10,8 @@ const HRM = (() => {
   const TODAY = H.TODAY;
   /* akun demo mobile (Employee ID dari fixture 158; tidak menambah headcount) */
   const ACCOUNTS = [
-    { id: 'ayu-indra', emp: 'EMP-0008', role: 'therapist', job: 'Spa Therapist', kind: 'therapist' },
-    { id: 'ayu-astiti', emp: 'EMP-0028', role: 'therapist', job: 'Spa Reception', kind: 'reception' },
+    { id: 'ayu-indra', emp: 'EMP-0008', role: 'therapist', job: 'Spa Therapist', kind: 'therapist', photo: 'img/mobile/therapist-demo.webp' },
+    { id: 'ayu-astiti', emp: 'EMP-0028', role: 'therapist', job: 'Spa Reception', kind: 'reception', photo: 'img/mobile/receptionist-demo.webp' },
     { id: 'gede-ari', emp: 'EMP-0002', role: 'therapist', job: 'Spa Attendant', kind: 'attendant', label: 'Skenario peran berlabel: fixture mencatat Therapist, formasi Attendant belum disetujui' },
     { id: 'mila', emp: 'EMP-0153', role: 'outlet-spv', job: 'Spa Supervisor', kind: 'supervisor' },
     { id: 'made', emp: 'EMP-0142', role: 'hrd', job: 'Manager HRD', kind: 'hrd' },
@@ -33,7 +33,7 @@ const HRM = (() => {
     ['Catatan presensi → F2, Supervisor, HRD', 'Simulasi: satu catatan di penyimpanan browser (bukan layanan server)'],
     ['Aplikasi Android/iPhone terpasang', 'Belum: butuh build native (rekomendasi Flutter), signing & distribusi'],
     ['Verifikasi wajah 1:1 + liveness', 'Belum: butuh SDK/penyedia teruji, tata kelola biometrik'],
-    ['Notifikasi push, penyimpanan aman, sinkronisasi server', 'Belum: butuh layanan server HAWK'],
+    ['Notifikasi push, penyimpanan aman, sinkronisasi server', 'Belum: butuh layanan server JAENS'],
     ['Uji perangkat nyata', 'Belum dilakukan']
   ];
   const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3, 5);
@@ -65,7 +65,7 @@ const HRM = (() => {
         { id: 'DM-0008-0153', name: null, kind: 'Pribadi', members: ['EMP-0008', 'EMP-0153'] }
       ],
       msgs: [
-        { id: 'MSG-001', conv: 'ANN', from: 'EMP-0142', at: '2026-11-12 16:00', text: 'Mulai Senin presensi memakai HAWK Mobile (uji R&D). Bila kamera/GPS bermasalah, pakai tombol "Ajukan presensi dengan pemeriksaan".', status: 'Terkirim' },
+        { id: 'MSG-001', conv: 'ANN', from: 'EMP-0142', at: '2026-11-12 16:00', text: 'Mulai Senin presensi memakai JAENS Mobile (uji R&D). Bila kamera/GPS bermasalah, pakai tombol "Ajukan presensi dengan pemeriksaan".', status: 'Terkirim' },
         { id: 'MSG-002', conv: 'GRP-UBD', from: 'EMP-0153', at: `${TODAY} 07:45`, text: 'Pagi tim. Tamu VIP 10:00 di Ruang 3 (hot stone). @Gede Ari tolong cek suhu batu.', status: 'Terkirim' },
         { id: 'MSG-003', conv: 'GRP-UBD', from: 'EMP-0002', at: `${TODAY} 07:52`, text: 'Siap Bu. AC Ruang 2 netes lagi, mohon dicek teknisi.', status: 'Terkirim' },
         { id: 'MSG-004', conv: 'DM-0008-0153', from: 'EMP-0153', at: `${TODAY} 07:30`, text: 'Ayu, hari ini kamu pegang tamu BK-1113-014 jam 10:00 ya.', status: 'Terkirim' },
@@ -99,7 +99,7 @@ const HRM = (() => {
     if (!ps.length) return rec;
     const r = { ...rec }, pin = ps.find(p => p.kind === 'in'), pout = [...ps].reverse().find(p => p.kind === 'out');
     const ok = (p) => pStatus(hr, p) === 'Terverifikasi';
-    if (pin) { r.in = timeOf(pin); r.late = Math.max(0, mins(r.in) - s1 - RULES.lateGraceMin); r.evidence = `HAWK Mobile · ${pin.id} · wajah 1:1 + lokasi (simulasi)`; r.status = ok(pin) ? (r.late ? 'Terlambat' : 'Hadir') : 'Perlu Pemeriksaan'; }
+    if (pin) { r.in = timeOf(pin); r.late = Math.max(0, mins(r.in) - s1 - RULES.lateGraceMin); r.evidence = `JAENS Mobile · ${pin.id} · wajah 1:1 + lokasi (simulasi)`; r.status = ok(pin) ? (r.late ? 'Terlambat' : 'Hadir') : 'Perlu Pemeriksaan'; }
     if (pout) r.out = timeOf(pout);
     let br = 0, open = null; ps.forEach(p => { if (p.kind === 'break') open = mins(timeOf(p)); if (p.kind === 'resume' && open !== null) { br += mins(timeOf(p)) - open; open = null; } });
     if (br) r.breakMin = br;
@@ -140,15 +140,15 @@ const HRM = (() => {
   function update(state, hr, action, input, ctx) {
     if (!/^m-/.test(action)) return undefined;
     const m = ensure(hr), { audit } = ctx;
-    const a = acc(input.account); if (!a) throw new Error('Akun HAWK Mobile tidak dikenal.');
+    const a = acc(input.account); if (!a) throw new Error('Akun JAENS Mobile tidak dikenal.');
     if (a.role !== ctx.role) throw new Error('Akses ditolak: sesi tidak cocok dengan role akun.');
     const me = a.emp, name = (hr.people.find(p => p.id === me) || {}).name || me, by = `${name} (${a.job})`;
     /* aksi F2/F3 yang ada dijalankan sebagai akun ini (identitas = Employee ID akun) */
     const asMe = (act, inp) => { const keep = hr.roleEmp[a.role]; hr.roleEmp[a.role] = me; try { return H.EXT.update(state, hr, act, inp, { ...ctx, by }); } finally { hr.roleEmp[a.role] = keep; } };
     const newReq = (type, payload, note) => {
       const pol = hr.settings.approval.find(x => x.id === 'APR-ATT');
-      const q = { id: 'REQ-M' + String(m.seq.req++).padStart(3, '0'), emp: me, type, date: TODAY, note, status: 'Menunggu Persetujuan', policy: pol.id, created: `${TODAY} ${m.clock}`, stage: 0, stages: pol.chain.map(label => ({ label, decision: null, by: null, at: null, reason: null })), payload, demo: true, via: 'HAWK Mobile' };
-      hr.queue.unshift(q); audit(hr, by, 'Pengajuan dibuat', `${q.id} · ${type} · ${me} (HAWK Mobile)`, { object: 'Pengajuan', ref: q.id, before: '—', after: 'Menunggu Persetujuan' });
+      const q = { id: 'REQ-M' + String(m.seq.req++).padStart(3, '0'), emp: me, type, date: TODAY, note, status: 'Menunggu Persetujuan', policy: pol.id, created: `${TODAY} ${m.clock}`, stage: 0, stages: pol.chain.map(label => ({ label, decision: null, by: null, at: null, reason: null })), payload, demo: true, via: 'JAENS Mobile' };
+      hr.queue.unshift(q); audit(hr, by, 'Pengajuan dibuat', `${q.id} · ${type} · ${me} (JAENS Mobile)`, { object: 'Pengajuan', ref: q.id, before: '—', after: 'Menunggu Persetujuan' });
       return q;
     };
     switch (action) {
@@ -206,7 +206,7 @@ const HRM = (() => {
       case 'm-decide': return asMe('decide', { id: input.id, decision: input.decision, reason: input.reason });
       case 'm-leave': return asMe('leave-request', { emp: me, cat: input.cat, from: input.from, to: input.to, reason: input.reason });
       case 'm-correct': return asMe('att-correct', { emp: me, date: input.date, in: input.in, out: input.out, reason: input.reason });
-      case 'm-task-move': return asMe('task-move', { id: input.id, to: input.to, via: 'HAWK Mobile' });
+      case 'm-task-move': return asMe('task-move', { id: input.id, to: input.to, via: 'JAENS Mobile' });
       case 'm-task-check': return asMe('task-check', { id: input.id, item: input.item });
       case 'm-chat-send': {
         const c = m.chats.find(x => x.id === input.conv); if (!c || !canSee(c, me)) throw new Error('Percakapan tidak tersedia untuk akun ini.');
@@ -245,9 +245,9 @@ const HRM = (() => {
       }
       case 'm-reset': {
         if (!['hrd', 'hrd-ops', 'outlet-spv'].includes(a.role) && !input.any) throw new Error('Reset data mobile hanya dari simulator.');
-        hr.queue = hr.queue.filter(q => q.via !== 'HAWK Mobile');
+        hr.queue = hr.queue.filter(q => q.via !== 'JAENS Mobile');
         const f3 = H3.ensure(hr); f3.tasks = f3.tasks.filter(t => !/^TSK-02\d\d$/.test(t.id) && !(t.source && /^MSG-/.test(t.source.id || ''))); f3.focus = f3.focus.filter(f => !/^TSK-02\d\d$/.test(f.task));
-        delete hr.mob; ensure(hr); return 'Data HAWK Mobile dikembalikan';
+        delete hr.mob; ensure(hr); return 'Data JAENS Mobile dikembalikan';
       }
     }
     return undefined;

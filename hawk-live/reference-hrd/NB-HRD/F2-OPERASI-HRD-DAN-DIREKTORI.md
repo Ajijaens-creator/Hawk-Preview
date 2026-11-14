@@ -1,6 +1,6 @@
 # NB F2 · Operasi HRD & Direktori
 
-Portal kelima HAWK ERP · HRD Operations · R&D · Data dummy
+Portal kelima JAENS ERP · HRD Operations · R&D · Data dummy
 
 [NB induk](README.md) · [NB F1](F1-FONDASI-DAN-BERANDA.md) · [F1–F8](FASE.md) · [Preview](../hrd-rnd/index.html) · [Inventaris GajiHub](../hrd-rnd/REFERENSI.md) · [Panduan brand](../HAWK-BRAND-GUIDELINES.md)
 
@@ -8,7 +8,7 @@ Portal kelima HAWK ERP · HRD Operations · R&D · Data dummy
 
 Gunakan identitas, organisasi, cakupan akses, penempatan efektif, audit dan fixture 158 orang dari F1. Dari Roster F1, klik orang untuk membuka Detail Karyawan F2 dengan Employee ID yang sama. F2 menjadi sumber jadwal, presensi dan riwayat penempatan untuk Planner F3, onboarding F4, Manpower F5, Kinerja F6 dan rekonsiliasi F7. Status tugas dari F3 tidak mengubah keputusan resmi pengajuan.
 
-Pertahankan shell HAWK dan urutan GajiHub. Direktori, Detail dan Impor berada di Karyawan. Approval Presensi, Jadwal Kerja, Presensi, Izin & Cuti dan Kunjungan Klien berada di Kehadiran. Approval, Pelacakan Lokasi, Klien dan Timeline memakai entri yang sudah ada.
+Pertahankan shell JAENS dan urutan GajiHub. Direktori, Detail dan Impor berada di Karyawan. Approval Presensi, Jadwal Kerja, Presensi, Izin & Cuti dan Kunjungan Klien berada di Kehadiran. Approval, Pelacakan Lokasi, Klien dan Timeline memakai entri yang sudah ada.
 
 ## Dua belas layar dan kriteria penerimaan
 

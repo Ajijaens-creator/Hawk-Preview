@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F4 Rekrutmen sampai Penempatan — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · F4 Rekrutmen sampai Penempatan — DATA DEMO / SIMULASI.
    NV01 Landing Karier (hrd-rec-profile, publik: karier.html) · NV02 Detail Lowongan (hrd-career-job) · NV03 Formulir (hrd-career-apply) ·
    NV04 Permintaan & Lowongan (hrd-rec-manage / hrd-rec-jobs) · NV05 Pipeline (hrd-rec-candidates) · NV06 Detail & AI Screening (hrd-rec-candidates?id=) ·
    NV07 Jadwal Interview · NV08 Interview & Praktik · NV09 Keputusan & Penawaran · NV10 Kontrak & Dokumen · NV11 Onboarding · NV12 Penempatan & Akun. */
@@ -151,7 +151,7 @@ function place(params) {
   const h = hr(), pl = HR.placementOn(h, a.emp) || HR.upcomingOf(h, a.emp), sup = HR.supervisorOf(h, a.emp), acc = h.accounts.find(x => x.emp === a.emp);
   return top + card(`Penempatan ${a.emp}`, table(['Field', 'Nilai'], [['Outlet', esc(HR.locName(pl.location))], ['Posisi', esc(HR.pos(pl.position).name)], ['Shift', esc(HR2.scheduleOn(h, a.emp, pl.from)?.shift || '—')], ['Atasan', esc(empName(sup))], ['Tanggal efektif', pl.from], ['Assignment ID (F2)', pl.id], ['Akun', `${esc(acc?.role === 'ess' ? 'Karyawan (ESS)' : acc?.role || '—')} · workplace ESS + POS outlet`], ['Status', a.placement ? chip(a.placement.status, a.placement.status === 'Aktif' ? 'ready' : 'planned') + ` · disetujui ${esc(a.placement.approvedBy)}` : chip('Menunggu persetujuan', 'sandbox')]]) +
     (!a.placement && ['owner', 'hrd'].includes(role()) ? `<form class="workflow-form" data-submit="hr:place-approve"><input type="hidden" name="id" value="${a.id}"><label>Role akun<select name="accRole"><option value="ess">Karyawan (ESS)</option></select></label><button class="btn">Setujui penempatan & akun</button></form>` : '') +
-    `<p>${link('hrd-roster' + qs({ emp: a.emp }), 'Buka profil di Direktori')} · ${link('hrd-audit' + qs({ q: a.emp }), 'Audit')}</p><p class="muted small">Provisioning akun produksi: TO VERIFY (HAWK akun). Preview mengubah role demo saja.</p>`);
+    `<p>${link('hrd-roster' + qs({ emp: a.emp }), 'Buka profil di Direktori')} · ${link('hrd-audit' + qs({ q: a.emp }), 'Audit')}</p><p class="muted small">Provisioning akun produksi: TO VERIFY (akun JAENS ERP). Preview mengubah role demo saja.</p>`);
 }
 
 /* ---------- sidebar & registrasi ---------- */

@@ -1,10 +1,10 @@
-# HAWK Mobile · M1 alur mobile R&D
+# JAENS Mobile · M1 alur mobile R&D
 
 Tanggal 14 November 2026. Sumber: `hawk-live/reference-hrd/NB-HRD/ADDENDUM-MOBILE-APP-DAN-PRESENSI.md`. Semua data dummy R&D.
 
 ## Apa yang dibuat
 
-Preview **HTML + simulasi** di portal HRD, menu **HAWK Mobile** (`/hawk-live/hrd#hrd-mobile`). Ini bukan aplikasi Android/iOS terpasang.
+Preview **HTML + simulasi** di portal HRD, menu **JAENS Mobile** (`/hawk-live/hrd#hrd-mobile`). Ini bukan aplikasi Android/iOS terpasang.
 
 | Bagian | Isi | Berkas |
 | --- | --- | --- |
@@ -47,7 +47,7 @@ Alur: pemberitahuan kamera & lokasi (sekali) → lokasi → kamera (liveness + 1
 | Lima menu, peran, tampilan | Visual HTML + simulasi data dummy |
 | Presensi wajah/lokasi/jam | **Simulasi berlabel**. Tidak ada kamera, GPS, liveness atau face matching nyata |
 | Catatan presensi bersama F2/Supervisor/HRD | Simulasi di penyimpanan browser (bukan layanan server) |
-| Aplikasi Android/iPhone terpasang | Belum. Rekomendasi klien Flutter + layanan server HAWK |
+| Aplikasi Android/iPhone terpasang | Belum. Rekomendasi klien Flutter + layanan server JAENS |
 | Verifikasi wajah 1:1 + liveness | Belum. Butuh SDK/penyedia teruji + tata kelola biometrik |
 | Push, penyimpanan aman, sinkronisasi server | Belum |
 | Uji perangkat nyata | Belum |
@@ -60,7 +60,7 @@ open http://localhost:8811/hawk-live/hrd.html#hrd-mobile
 node tests/hawk-live/hrd-mobile.e2e.js
 ```
 
-Panel **Simulator R&D** di samping ponsel: ganti akun, kondisi wajah, lokasi, jaringan, jam HP, jam demo, dan reset data HAWK Mobile.
+Panel **Simulator R&D** di samping ponsel: ganti akun, kondisi wajah, lokasi, jaringan, jam HP, jam demo, dan reset data JAENS Mobile.
 
 ## Checkpoint berikutnya (M2)
 

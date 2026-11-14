@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F3 Planner & Workplace — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F3 Planner & Workplace — DATA DEMO / SIMULASI.
    Satu objek kartu (Task ID) dibaca Workplace, Board, Calendar, List, My Tasks, My Day dan Detail Kartu.
    Setiap perubahan menyimpan event (aktor, waktu WITA, sebelum/sesudah). Versi kartu untuk deteksi konflik.
    Memperluas HR.EXT (dirantai setelah F2). Deterministik, tanpa jaringan. */
@@ -15,7 +15,7 @@ const HR3 = (() => {
 
   const TEMPLATES = () => [
     { id: 'TPL-ONB', name: 'Onboarding administratif therapist', kind: 'Checklist', ws: 'HRD', version: 2, active: true, review: true, history: [{ v: 1, at: '2026-08-01', note: 'Versi awal' }, { v: 2, at: '2026-10-15', note: 'Tambah akun POS & ESS sebelum hari pertama' }],
-      steps: [['Kontrak & dokumen identitas lengkap', 'Staf HRD', -3, 'HRD'], ['Akun HAWK, ESS & POS dibuat', 'Staf HRD', -1, 'HRD'], ['Orientasi SOP & keselamatan', 'Human Growth Lead', 0, 'HG'], ['Pendampingan treatment hari 1–3', 'Supervisor Outlet', 3, 'HG'], ['Verifikasi praktik oleh Supervisor', 'Supervisor Outlet', 7, 'HG'], ['Review akhir onboarding', 'Manager HRD', 10, 'HRD']] },
+      steps: [['Kontrak & dokumen identitas lengkap', 'Staf HRD', -3, 'HRD'], ['Akun JAENS, ESS & POS dibuat', 'Staf HRD', -1, 'HRD'], ['Orientasi SOP & keselamatan', 'Human Growth Lead', 0, 'HG'], ['Pendampingan treatment hari 1–3', 'Supervisor Outlet', 3, 'HG'], ['Verifikasi praktik oleh Supervisor', 'Supervisor Outlet', 7, 'HG'], ['Review akhir onboarding', 'Manager HRD', 10, 'HRD']] },
     { id: 'TPL-KOMP', name: 'Verifikasi kompetensi therapist', kind: 'Rubric', ws: 'HG', version: 1, active: true, review: true, history: [{ v: 1, at: '2026-09-01', note: 'Rubric 5 treatment inti' }],
       steps: [['Jadwalkan observasi praktik', 'Human Growth Lead', 0, 'HG'], ['Observasi Balinese massage & hot stone', 'Supervisor Outlet', 2, 'HG'], ['Isi rubric & bukti video (sintetis)', 'Human Growth Lead', 3, 'HG'], ['Rencana coaching bila skor < 3', 'Human Growth Lead', 5, 'HG']] },
     { id: 'SOP-HYG', name: 'SOP kebersihan ruang treatment', kind: 'SOP', ws: 'HG', version: 3, active: true, review: false, history: [{ v: 3, at: '2026-07-10', note: 'Revisi linen' }], steps: [] },
@@ -77,7 +77,7 @@ const HR3 = (() => {
     const me = hr.roleEmp[role];
     const ev = (t, kind, before, after, reason) => { f3.events.push({ id: `EVT-${++f3.seq.evt}`, task: t.id, by, at: now(), kind, before, after, reason: reason || null, demo: t.demo }); t.version++; };
     const get = (id) => { const t = f3.tasks.find(x => x.id === id); if (!t) throw new Error('Kartu tidak ditemukan.'); if (!scopeOk(hr, role, t)) throw new Error(`Akses ditolak: kartu ${id} di luar cakupan ${H.roleDef(role).label}.`); return t; };
-    /* PIC/kontributor kartu boleh memindahkan & mencentang kartunya sendiri (HAWK Mobile, addendum 14 Nov 2026) */
+    /* PIC/kontributor kartu boleh memindahkan & mencentang kartunya sendiri (JAENS Mobile, addendum 14 Nov 2026) */
     const own = (id) => { const t = f3.tasks.find(x => x.id === id); return !!(t && me && [t.pic, ...t.contributors].includes(me)); };
     const writer = (id) => { if (id && own(id)) return; if (!['owner', 'hrd', 'hrd-ops', 'hg-lead', 'outlet-spv', 'ops-manager'].includes(role)) throw new Error(`Akses ditolak: ${H.roleDef(role).label} hanya membaca kartu.`); };
     const ver = (t) => { if (input.version !== undefined && input.version !== '' && Number(input.version) !== t.version) throw new Error(`Konflik: kartu ${t.id} sudah diubah orang lain (versi ${t.version}). Status terbaru dimuat; ulangi perubahan Anda.`); };

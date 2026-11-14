@@ -1,4 +1,4 @@
-/* HAWK Mobile · uji penerimaan M1 (NB Addendum 14 Nov 2026 §10) pada preview HTML + simulasi R&D.
+/* JAENS Mobile · uji penerimaan M1 (NB Addendum 14 Nov 2026 §10) pada preview HTML + simulasi R&D.
    Lima menu, presensi (wajah/lokasi/jam simulasi) → catatan F2 yang sama, tombol ganda/ulang = satu kejadian, offline + sinkronisasi,
    pengecualian & koreksi lewat approval Supervisor, tugas F3 dari mobile, chat & cakupan, POS spa, payroll khusus Manager HRD, reset.
    python3 -m http.server 8811 lalu node tests/hawk-live/hrd-mobile.e2e.js */
@@ -28,7 +28,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   const nav = await p.locator('.mob-nav a').allInnerTexts();
   ok('Lima menu: Beranda, Pekerjaan, Presensi, Inbox, Saya', nav.map(s => s.trim()).join('|') === 'Beranda|Pekerjaan|Presensi|Inbox|Saya', nav.join('|'));
   const s0 = await scr();
-  ok('Beranda: nama, peran, outlet, shift hari ini, status Belum masuk, aksi Check-in kerja', /Ayu Indra/.test(s0) && /Spa Therapist/.test(s0) && /Spa Ubud/.test(s0) && /Pagi · 09:00–17:00/.test(s0) && /Belum masuk/.test(s0) && /Check-in kerja/.test(s0));
+  ok('Beranda: nama, peran, outlet, shift hari ini, status Belum masuk, aksi Check-in kerja', /Ayu\./.test(s0) && /Spa Therapist/.test(s0) && /Spa Ubud/.test(s0) && /Pagi · 09:00–17:00/.test(s0) && /Belum masuk/.test(s0) && /Check-in kerja/.test(s0));
 
   /* 1. check-in lewat UI → F2 + Supervisor */
   await p.click('.mob-att [data-m="flow"][data-kind="in"]');
@@ -39,7 +39,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('Bukti hasil: jenis, jam WITA, outlet, shift, status Terverifikasi, ID presensi', /Check-in kerja/.test(res) && /08:52 WITA/.test(res) && /Jaens Spa Center Ubud/.test(res) && /Pagi/.test(res) && /Terverifikasi/.test(res) && /PRS-20261113-0008-01/.test(res));
   await p.click('[data-m="flow-close"]');
   const f2 = await J(() => HR2.attendance(HL.state.hr, 'EMP-0008', HR.TODAY));
-  ok('Catatan F2 yang sama: Hadir 08:52, bukti HAWK Mobile', f2.status === 'Hadir' && f2.in === '08:52' && /HAWK Mobile/.test(f2.evidence) && !f2.provisional, JSON.stringify([f2.status, f2.in]));
+  ok('Catatan F2 yang sama: Hadir 08:52, bukti JAENS Mobile', f2.status === 'Hadir' && f2.in === '08:52' && /JAENS Mobile/.test(f2.evidence) && !f2.provisional, JSON.stringify([f2.status, f2.in]));
   ok('Status karyawan: Bekerja', /Bekerja/.test(await scr()));
   await go('hrd-mobile?as=mila&tab=work');
   ok('Supervisor Mila melihat Ayu Indra hadir 08:52 di Kontrol shift', /Ayu Indra[\s\S]{0,60}masuk 08:52[\s\S]{0,20}Hadir/.test(await scr()));
@@ -93,7 +93,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.locator('.mob-screen form[data-mform="decide"] button[value="approve"]').first().click(); await p.waitForTimeout(250);
   const ap = await J(() => { const h = HL.state.hr; return { st: HRM.pStatus(h, h.mob.punches.find(x => x.emp === 'EMP-0008')), a: HR2.attendance(h, 'EMP-0008', HR.TODAY) }; });
   ok('Disetujui → Terverifikasi, F2 Hadir 08:52 (tanpa ganda)', ap.st === 'Terverifikasi' && ap.a.status === 'Hadir' && ap.a.in === '08:52' && !ap.a.provisional, JSON.stringify([ap.st, ap.a.status]));
-  const again = await U('mila', 'm-decide', { id: await J(() => HL.state.hr.queue.find(q => q.via === 'HAWK Mobile').id), decision: 'approve' });
+  const again = await U('mila', 'm-decide', { id: await J(() => HL.state.hr.queue.find(q => q.via === 'JAENS Mobile').id), decision: 'approve' });
   ok('Keputusan tidak diulang', /sudah final/.test(again.e || ''));
   await U('made', 'm-reset', { any: true }); await U('ayu-astiti', 'm-consent');
   const rj = await U('ayu-astiti', 'm-punch', { kind: 'in', req: 'RJ', loc: 'outside' });
@@ -120,7 +120,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-mobile?as=gede-ari&tab=work&task=TSK-0201');
   await p.selectOption('.mob-screen select[name="to"]', 'Review'); await p.click('.mob-screen form[data-mform="move"] button'); await p.waitForTimeout(250);
   const tk = await J(() => { const f3 = HL.state.hr.f3; return { st: f3.tasks.find(t => t.id === 'TSK-0201').stage, ev: f3.events.filter(e => e.task === 'TSK-0201').slice(-1)[0] }; });
-  ok('Attendant pindahkan TSK-0201 ke Review dari mobile → F3 (Task ID sama, pelaku tercatat)', tk.st === 'Review' && /gede-ari|Gede Ari/.test(tk.ev.by) && /HAWK Mobile/.test(tk.ev.reason || ''), JSON.stringify(tk.ev));
+  ok('Attendant pindahkan TSK-0201 ke Review dari mobile → F3 (Task ID sama, pelaku tercatat)', tk.st === 'Review' && /gede-ari|Gede Ari/.test(tk.ev.by) && /JAENS Mobile/.test(tk.ev.reason || ''), JSON.stringify(tk.ev));
   const foreign = await U('ayu-indra', 'm-task-move', { id: 'TSK-0201', to: 'Selesai' });
   ok('Therapist tidak bisa memindahkan kartu orang lain', !!foreign.e);
 
@@ -167,8 +167,8 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   /* 12. reset demo mobile tanpa menyentuh data lain */
   const before = await J(() => ({ n: HL.state.hr.people.length, f3: HL.state.hr.f3.tasks.filter(t => !/^TSK-02/.test(t.id) && !(t.source && /^MSG-/.test(t.source.id))).length }));
   await U('made', 'm-reset', { any: true });
-  const after = await J(() => ({ n: HL.state.hr.people.length, f3: HL.state.hr.f3.tasks.filter(t => !/^TSK-02/.test(t.id) && !(t.source && /^MSG-/.test(t.source.id))).length, p: HL.state.hr.mob.punches.length, q: HL.state.hr.queue.filter(q => q.via === 'HAWK Mobile').length }));
-  ok('Reset data HAWK Mobile: kejadian & pengajuan mobile hilang, 158 orang dan kartu F3 lain utuh', after.p === 0 && after.q === 0 && after.n === before.n && after.n === 158 && after.f3 === before.f3, JSON.stringify([before, after]));
+  const after = await J(() => ({ n: HL.state.hr.people.length, f3: HL.state.hr.f3.tasks.filter(t => !/^TSK-02/.test(t.id) && !(t.source && /^MSG-/.test(t.source.id))).length, p: HL.state.hr.mob.punches.length, q: HL.state.hr.queue.filter(q => q.via === 'JAENS Mobile').length }));
+  ok('Reset data JAENS Mobile: kejadian & pengajuan mobile hilang, 158 orang dan kartu F3 lain utuh', after.p === 0 && after.q === 0 && after.n === before.n && after.n === 158 && after.f3 === before.f3, JSON.stringify([before, after]));
 
   /* mobile 390 px */
   await p.setViewportSize({ width: 390, height: 844 }); await go('hrd-mobile?as=ayu-indra'); await p.waitForTimeout(300);
