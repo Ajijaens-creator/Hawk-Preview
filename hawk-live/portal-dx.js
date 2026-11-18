@@ -46,40 +46,10 @@ function register(cfg) {
   return lab;
 }
 
-/* ================= Operational ================= */
-const OPS = [
-  { id: 'eni', emp: 'EMP-0151', name: 'Eni Restini', role: 'ops-manager', title: 'Operational Manager', home: 'pos', does: 'Memantau layanan 4 outlet, menyetujui refund dan pengecualian.' },
-  { id: 'mila', emp: 'EMP-0153', name: 'Mila', role: 'outlet-spv', title: 'Supervisor Spa Ubud', home: 'pos', does: 'Memimpin outlet: check-in tamu, pembatalan dan pembayaran di POS.' },
-  { id: 'ari', emp: 'EMP-0001', name: 'Putu Ari', role: 'therapist', title: 'Therapist Spa Ubud', home: 'pos', does: 'Menjalankan treatment dan menandai treatment selesai.' },
-  CTX.dewa
-];
-register({
-  portal: 'Operational', route: 'ops-dx', page: 'operational.html', code: 'DX-OPS', after: 'pos', publicRole: 'ops-manager',
-  title: 'Demo Experience Center Operational', eyebrow: 'HAWK × JAENS · DX-OPS · GUIDED DEMO',
-  intro: 'Belajar alur kerja outlet dengan menekan tombol asli aplikasi HAWK. Login sebagai Operational Manager, Supervisor atau Therapist, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
-  purpose: 'Persona tim Operational menjalankan alur outlet (check-in, treatment, pembayaran, pembatalan, refund); booking dari Sales hanya muncul sebagai konteks otomatis.',
-  personas: OPS, team: ['eni', 'mila', 'ari'], nameOf: (p) => p.emp ? hrName(p.emp, p.name) : p.name,
-  sim: [{ who: 'eni', device: 'desktop' }, { who: 'mila', device: 'ipad' }, { who: 'ari', device: 'mobile' }],
-  scenarios: [
-    { id: 'day', name: 'Tamu datang → treatment → bayar', why: 'Booking dari Sales masuk ke outlet. Supervisor check-in, therapist menyelesaikan treatment, pembayaran tercatat di POS dan revenue masuk Executive Summary.', steps: [
-      { who: 'dewa', title: 'Booking Wellness Massage masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk = lastId(s.bookings); return c.bk; } },
-      { who: 'mila', title: 'Check-in tamu di POS', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk }); return c.bk + ' · checked-in'; } },
-      { who: 'ari', title: 'Treatment selesai', route: () => 'pos', run: (U, c) => { U('complete', { id: c.bk }); return c.bk + ' · completed'; } },
-      { who: 'mila', title: 'Catat pembayaran di POS', route: () => 'pos', run: (U, c) => { U('pay', { id: c.bk }); return c.bk + ' · paid'; } },
-      { who: 'eni', title: 'Pantau transaksi outlet hari ini', route: () => 'pos', run: view() }
-    ] },
-    { id: 'refund', name: 'Pembatalan & refund', why: 'Tamu membatalkan sebelum datang (slot kembali tersedia). Tamu lain mengeluh setelah bayar: Operational Manager menyetujui refund.', steps: [
-      { who: 'dewa', title: 'Booking masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk1 = lastId(s.bookings); return c.bk1; } },
-      { who: 'mila', title: 'Batalkan booking (tamu tidak jadi datang)', route: () => 'pos', run: (U, c) => { U('cancel', { id: c.bk1 }); return c.bk1 + ' · cancelled, slot kembali'; } },
-      { who: 'dewa', title: 'Booking tamu berikutnya masuk dari Sales', route: () => 'reservation', run: (U, c, s) => { U('book', { slot: freeSlot(s) }); c.bk2 = lastId(s.bookings); return c.bk2; } },
-      { who: 'mila', title: 'Check-in tamu', route: () => 'pos', run: (U, c) => { U('checkin', { id: c.bk2 }); return c.bk2; } },
-      { who: 'ari', title: 'Treatment selesai', route: () => 'pos', run: (U, c) => { U('complete', { id: c.bk2 }); return c.bk2; } },
-      { who: 'mila', title: 'Catat pembayaran', route: () => 'pos', run: (U, c) => { U('pay', { id: c.bk2 }); return c.bk2 + ' · paid'; } },
-      { who: 'eni', title: 'Setujui refund keluhan tamu', route: () => 'pos', run: (U, c) => { U('refund', { id: c.bk2 }); return c.bk2 + ' · refunded'; } }
-    ] }
-  ]
-});
-
+/* ================= Operational =================
+   Sejak NP-OP01 Addendum A01 (19 Nov 2026) Demo Experience Center Operational (#ops-dx) memakai Demo Center prototype
+   Owner v1.1 (hawk-live/ops/ops-demo.js, dipasang oleh ops-shell.js): Scenario Test Lab 7 skenario / 33 langkah,
+   Simulator 5 Role dan Pandu Saya. Lab dx-lab lama untuk Operational tidak didaftarkan lagi. */
 /* ================= Commercial ================= */
 const COM = [
   { id: 'cm', name: 'Commercial Manager', role: 'commercial-manager', title: 'Approval campaign & budget', home: 'commercial', does: 'Menyetujui campaign, membaca revenue, budget marketing dan ROMI.' },

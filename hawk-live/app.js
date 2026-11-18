@@ -396,11 +396,11 @@ function titleOf(id) {
 const LETTER = { Finance: 'F', Operational: 'O', Commercial: 'C', Sales: 'S', HRD: 'H' };
 const navOpen = new Set();
 const navToggle = new Map(); /* kategori sidebar yang dibuka/ditutup pengguna (sesi ini) */
-const HL_DX_INFO = (route) => { const lab = window.HL && HL.DXLAB && HL.DXLAB.LABS[route]; if (lab) return `Test Lab · ${lab.team.length} role · ${lab.scenarios.length} skenario`; return EXT(route) ? 'Test Lab · 3 role · 6 skenario' : 'Test Lab'; };
+const HL_DX_INFO = (route) => { if (window.HL && HL.DXINFO && HL.DXINFO[route]) return HL.DXINFO[route]; const lab = window.HL && HL.DXLAB && HL.DXLAB.LABS[route]; if (lab) return `Test Lab · ${lab.team.length} role · ${lab.scenarios.length} skenario`; return EXT(route) ? 'Test Lab · 3 role · 6 skenario' : 'Test Lab'; };
 function renderNav(id, portal) {
   if (portal) navOpen.add(portal);
   const cur = (route) => route === id || (id === 'commercial-drill' && route === 'commercial');
-  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : EXT(route) ? `<a href="${route}" class="nav-ext" data-nv="${code || ''}"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" data-nv="${code || ''}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
+  const navLink = ([route, name, code, st, soon, sub]) => route === '-' ? `<p class="nav-sub">${name}</p>` : /^https:\/\//.test(route) ? `<a href="${route}" class="nav-ext nav-out" target="_blank" rel="noopener noreferrer" data-nv="${code || ''}" title="Dibuka di tab baru"><span class="nvc">${code || '—'}</span><span>${name} ↗</span></a>` : EXT(route) ? `<a href="${route}" class="nav-ext" data-nv="${code || ''}"><span class="nvc">${code || '—'}</span><span>${name}</span></a>` : `<a href="#${route}" data-nv="${code || ''}" class="${cur(route) ? 'cur' : ''}${sub ? ' nav-child' : ''}" ${cur(route) ? 'aria-current="page"' : ''}><span class="nvc">${code || '—'}</span><span>${name}${st === 'planned' && !/^HRD F/.test(soon || '') ? ` <small class="soon">${soon || 'Fase ' + (SCREENS.find(x => x[0] === code)?.[2] || '')}</small>` : ''}</span></a>`;
   /* Aji 13 Nov 2026: sidebar hanya menampilkan menu portal yang sedang aktif. Pindah divisi lewat popup logo HAWK
      (pemilih portal). Tanpa portal aktif (Peta alur / Peta layar) hanya grup Preview yang tampil. */
   const inPortal = !!portal;

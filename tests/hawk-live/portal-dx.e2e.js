@@ -1,4 +1,4 @@
-/* HAWK · uji Demo Experience Center Operational (#ops-dx), Commercial (#commercial-dx), Sales (#sales-dx) di atas
+/* HAWK · uji Demo Experience Center Commercial (#commercial-dx), Sales (#sales-dx) di atas
    template dx-lab.js (model Demo Center Finance): login role tim portal saja, Desktop/iPad/Mobile, Smart Tutor menjalankan
    semua skenario, langkah divisi lain otomatis, Simulator, menu portal. python3 -m http.server 8811 lalu node tests/hawk-live/portal-dx.e2e.js */
 'use strict';
@@ -9,14 +9,11 @@ const SHOTS = process.env.SHOTS;
 let fail = 0;
 const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ? '✓' : '✗'} ${name}${info ? ' · ' + info : ''}`); };
 const LABS = [
-  { portal: 'Operational', page: 'operational.html', route: 'ops-dx', pills: ['Eni Restini', 'Mila', 'Putu Ari'], not: /Dewa/, sc: [['day', 5], ['refund', 7]], sim: 3 },
   { portal: 'Commercial', page: 'commercial.html', route: 'commercial-dx', pills: ['Commercial Manager', 'Rani', 'Bayu', 'Wulan'], not: /Asri|Dewa|Mila/, sc: [['campaign', 7], ['content', 8], ['brand', 5], ['lead', 5]], sim: 4 },
   { portal: 'Sales', page: 'sales.html', route: 'sales-dx', pills: ['Sales Manager', 'Dewa', 'Sales B2B'], not: /Mila|Asri|Driver/, sc: [['b2c', 4], ['handoff', 5], ['b2b', 7], ['driver', 6]], sim: 3 }
 ];
 const by = (st, id) => st.bookings.find(b => b.id === id);
 const CHECK = {
-  'Operational:day': (st, c) => ['Operational: booking dari Sales dibayar di POS', by(st, c.bk)?.status === 'paid'],
-  'Operational:refund': (st, c) => ['Operational: pembatalan membebaskan slot, refund tercatat', by(st, c.bk1)?.status === 'cancelled' && by(st, c.bk2)?.status === 'refunded'],
   'Commercial:campaign': (st, c) => { const cp = st.cx.campaigns.find(x => x.id === c.cmp); return ['Commercial: campaign Running, MRF diposting Finance, histori atas nama Bayu', cp?.status === 'Running' && st.requests.find(r => r.id === c.mrf)?.status === 'posted' && cp.history[0].by === 'MBR-C02']; },
   'Commercial:content': (st, c) => { const ct = st.cx.content.find(x => x.id === c.cnt); return ['Commercial: konten Analysed, review oleh Rani (MBR-C01)', ct?.stage === 'Analysed' && ct.reviews.some(r => r.by === 'MBR-C01')]; },
   'Commercial:brand': (st) => ['Commercial: tone Jaens Spa approved, banner Bisma terdistribusi', st.cx.brands[0].els.tone[0] === 'approved' && st.cx.comms.find(m => m.id === 'COM-004').status === 'Terdistribusi'],

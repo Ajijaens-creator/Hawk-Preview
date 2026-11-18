@@ -1,6 +1,12 @@
 /* Kamus EN untuk isi layar hawk-live (frasa persis → English). Dimuat sebelum i18n.js.
    Tambah baris baru di sini saat layar diterjemahkan lebih jauh; teks yang belum ada tetap Bahasa Indonesia. */
 window.HAWK_I18N_EN = Object.assign(window.HAWK_I18N_EN || {}, {
+  /* ===== Operational (NP-OP01 v1.1) ===== */
+  'Kendali outlet': 'Outlet control', 'Pelaksanaan': 'Execution', 'Kinerja & kontrol': 'Performance & control', 'Developer handoff': 'Developer handoff',
+  'Peta 12 Fase': '12-phase map', 'Lingkup outlet': 'Outlet scope', 'Semua outlet': 'All outlets', 'Notifikasi': 'Notifications', '▶ Panduan demo': '▶ Demo guide',
+  'Tidak berwenang': 'Not authorised', 'Buka workspace saya': 'Open my workspace', 'Ganti akun demo': 'Switch demo account', 'Pilih akun demo': 'Choose demo account',
+  'Memuat workspace Operational…': 'Loading Operational workspace…', 'Tautan tersedia': 'Link available', 'Parity isi terverifikasi': 'Content parity verified', 'Integrasi data terbukti': 'Data integration proven',
+  'Kendali outlet, POS & Receptionist, Daily Operations, tugas, ruang, inventory, RACE dan budget': 'Outlet control, POS & Receptionist, Daily Operations, tasks, rooms, inventory, RACE and budget',
   /* ===== deskripsi halaman (page-head) ===== */
   'Persona tim Operational menjalankan alur outlet (check-in, treatment, pembayaran, pembatalan, refund); booking dari Sales hanya muncul sebagai konteks otomatis.': 'Operational team personas run the outlet flow (check-in, treatment, payment, cancellation, refund); bookings from Sales appear only as automatic context.',
   'Commercial Performance Overview, mengikuti susunan SER Monthly Report Komersial: revenue, target, pelanggan, budget marketing, ROMI, kanal, negara, dan pembatalan per periode dan outlet.': 'Commercial Performance Overview, following the SER Commercial Monthly Report layout: revenue, target, customers, marketing budget, ROMI, channels, countries and cancellations by period and outlet.',
