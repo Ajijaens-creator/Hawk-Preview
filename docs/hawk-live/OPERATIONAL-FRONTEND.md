@@ -30,7 +30,12 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 
 ## Uji
 
-`python3 -m http.server 8811` dari root repo, lalu `bash tests/hawk-live/run-all.sh` (termasuk `ops-w1.e2e.js`).
+`python3 -m http.server 8811` dari root repo, lalu `bash tests/hawk-live/run-all.sh` (termasuk `ops-w1`…`ops-w4.e2e.js` untuk Gelombang 1–4). Skrip UAT manual per role: `docs/hawk-live/OPERATIONAL-UAT.md`. `SHOTS=<folder>` menyimpan screenshot.
+
+## Aturan yang ditambahkan shell (di luar prototype)
+
+- **Opening/closing PIC → Head → Supervisor** (`ops-shell.js`, F-OP04): item checklist yang dicentang staf (Reception, Therapist, Attendant, Security) pada departemen yang memiliki Head wajib direview Head sebelum Supervisor dapat sign-off. Item seed dianggap sudah direview. Dapat dimatikan lewat `policies.headReview=false`.
+- **Receiving** mengikuti matriks prototype v1.1: Attendant/Head Attendant mencatat fisik, Supervisor ke atas memverifikasi. Receptionist dan Therapist tidak memiliki menu Inventory di prototype (berbeda dengan aturan 60-NV 2026-11-08 "semua user outlet boleh menerima"; menunggu keputusan Owner).
 
 ## Kebutuhan backend (Gelombang 1)
 
@@ -40,3 +45,42 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 | POS existing | Read model dashboard per outlet/hari | bookingId, status, value, roomId, therapistId, paidAt | baca, dengan source/as-of/coverage | NOT VERIFIED |
 | Operational | Readiness ruang & tugas | roomId, taskId, status, actor, time | baca/tulis | BUILD (belum ada) |
 | POS existing | Parity isi POS-P01–P16, mapping ID appointment/room/therapist/invoice | — | — | BLOCKED: source POS tidak di repo, isi setelah login belum diperiksa, checklist belum diterima |
+
+## Kebutuhan backend (Gelombang 2)
+
+| Domain pemilik | Kebutuhan | ID/field | Operasi | Status |
+|---|---|---|---|---|
+| Operational | Checklist opening/closing per outlet/hari, review Head, sign-off Supervisor, EOD | outletId, date, itemId, dept, checkedBy, reviewedBy, signedBy, note, carryoverIssueIds | baca/tulis, kunci setelah sign-off, audit | BUILD (belum ada) |
+| Operational | Tugas & bukti: status todo → in_progress → head_review → supervisor_review → done, return | taskId, assignee, critical, evidence, reviews[], verifiedBy | baca/tulis + upload bukti | BUILD |
+| POS existing | Event selesai treatment (Completed) untuk membuat 1 turnover task | bookingId, roomId, therapistId, completedAt | event/webhook atau polling read model | NOT VERIFIED |
+| Operational | Status ruang Ready/Cleaning/Maintenance/Closed + release maintenance oleh Supervisor | roomId, status, note, actor | baca/tulis | BUILD |
+| Inventory existing | Receiving fisik + verifikasi; posting stok tetap di Inventory | receiptId (RCV-), expected, received, status | tulis status operasional; posting oleh Inventory | NOT VERIFIED (endpoint receiving tidak ditemukan) |
+| MRF engine existing | Draft request material dari outlet | MRF id, outlet, item, qty, reason | buat draft | NOT VERIFIED (pakai engine PR/MRF existing, jangan bangun baru) |
+| Operational | Issue ↔ task (1 issue → 1 tugas), resolusi tanpa mengubah ruang/stok | issueId, taskId, resolution | baca/tulis | BUILD |
+| Komunikasi | Pesan per channel outlet (lokal, tidak terkirim keluar) | messageId, channel, outlet, taskId | baca/tulis | BUILD; WhatsApp/email eksternal di luar scope |
+
+## Kebutuhan backend (Gelombang 3)
+
+| Domain pemilik | Kebutuhan | ID/field | Operasi | Status |
+|---|---|---|---|---|
+| HRD RACE / SER | Kontrak KPI, indikator, target, bobot, arah, data kosong, konsolidasi X-Score | indicatorId, contractId, period, weight, formulaVersion | baca kontrak resmi | PENDING workbook SER/Looker/HRD RACE; X-Score resmi tidak dihitung di frontend |
+| Operational / HRD | Sesi RACE (daily, weekly R2Re, monthly, STRACON) | id, type, outlet, period, sourceTaskIds, title, summary, blocker, commitment, status=draft | baca/tulis draf | BUILD |
+| Finance (Budget 7P) | Alokasi disetujui per outlet/periode, actual, komitmen, sisa; distribusi musiman | outlet, p, period, version, revised, actual, committed | baca saja dari Operational | NOT VERIFIED (pakai engine budget 7P existing) |
+| Finance | Usulan aktivitas outlet (draf, committed=false; tidak mengurangi saldo, tidak membuat PO/jurnal) | id, outlet, p, activity, amount, period, version | buat draf | BUILD; People hanya persentase, nominal People/payroll tidak dikirim ke Operational |
+| Reports | Read model laporan per outlet/periode/departemen + ekspor sesuai izin (Manager/Assistant) | objectId, outlet, actor, time, period, coverage, verification | baca + ekspor terfilter scope di server | BUILD; ekspor saat ini hanya JSON lokal demo |
+
+## Kebutuhan backend (Gelombang 4)
+
+| Domain pemilik | Kebutuhan | Status |
+|---|---|---|
+| Demo Center | Tidak butuh backend. Progres panduan disimpan lokal per browser (`state.demoExperience.runs`), satu fixture untuk 5 panel simulator | Selesai di frontend |
+| QA / release | UAT lapangan, uji isolasi outlet di server (403/IDOR), concurrency, retry tanpa duplikasi | Di luar mandat frontend; hasil UAT frontend bukan izin release |
+
+## Status per fase
+
+| Fase | Frontend | Uji otomatis | Backend/kontrak |
+|---|---|---|---|
+| F-OP00–03 | Siap ditinjau | `ops-w1.e2e.js` | NOT VERIFIED; parity POS BLOCKED |
+| F-OP04–07 | Siap ditinjau | `ops-w2.e2e.js` | BUILD / NOT VERIFIED |
+| F-OP08–10 | Siap ditinjau | `ops-w3.e2e.js` | KPI/X-Score PENDING; Finance NOT VERIFIED |
+| F-OP11 | Siap ditinjau | `ops-w4.e2e.js` | n/a (lokal) |

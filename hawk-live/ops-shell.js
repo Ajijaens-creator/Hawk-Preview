@@ -102,6 +102,25 @@ const parityCard = () => `<section class="card mt opx-parity" aria-labelledby="o
   <p class="help">Item POS-P01 sampai POS-P16 diisi dari checklist Owner beserta file/fungsi/commit dan screenshot setelah dua bukti di atas tersedia. Prototype tidak meneruskan akun demo dan tidak mengklaim single sign-on.</p></section>`;
 if (H.pages.pos) { const base = H.pages.pos.render; H.pages.pos.render = () => base() + parityCard(); }
 
+/* ---------- F-OP04: opening/closing mengikuti alur PIC → Head → Supervisor (NP-FE-OP01) ----------
+   Item yang dicentang PIC staf pada departemen yang memiliki Head harus direview Head sebelum Supervisor sign-off.
+   Item seed (belum pernah dicentang di sesi demo) dianggap sudah melalui review. Kebijakan dapat dimatikan via policies.headReview. */
+const STAFF = ['reception', 'therapist', 'attendant', 'security'];
+const pendingHead = (o, k) => {
+  const b = H.state.data.checklists[o]; if (!b || H.state.policies?.headReview === false) return [];
+  const heads = new Set(H.accounts.filter(a => a.outlet === o && a.role === 'head').map(a => a.dept));
+  return (b[k] || []).filter(i => i.done && i.checkedRole && STAFF.includes(i.checkedRole) && heads.has(i.dept) && !i.reviewedBy);
+};
+const gate = (fn, get) => function (x) {
+  const [o, k] = get(x); const wait = pendingHead(o, k);
+  if (wait.length) { H.toast('Menunggu review Head: ' + [...new Set(wait.map(i => i.dept))].join(', ') + '. Sign-off Supervisor setelah review departemen.'); return; }
+  return fn.apply(this, arguments);
+};
+if (H.actions['daily-check']) { const base = H.actions['daily-check']; H.actions['daily-check'] = (el) => { base(el); const i = H.state.data.checklists[el.dataset.outlet]?.[el.dataset.kind]?.find(x => x.id === el.dataset.id); if (i && i.checkedAt) { i.checkedRole = H.user().role; i.checkedById = H.user().id; if (['manager', 'assistant', 'supervisor', 'head'].includes(i.checkedRole) && i.done && i.checkedRole === 'head') { i.reviewedBy = H.user().name; i.reviewedAt = i.checkedAt; } H.save(); } }; }
+if (H.actions['daily-signoff']) H.actions['daily-signoff'] = gate(H.actions['daily-signoff'], el => [el.dataset.outlet, el.dataset.kind]);
+if (H.forms['daily-signoff']) H.forms['daily-signoff'] = gate(H.forms['daily-signoff'], fd => [String(fd.get('outlet')), String(fd.get('kind'))]);
+H.pendingHeadReview = pendingHead;
+
 /* ---------- registrasi route ke hawk-live ---------- */
 const PHASE = (p) => H.pages[p]?.phase || '';
 const register = (p) => {
