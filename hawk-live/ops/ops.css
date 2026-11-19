@@ -1138,3 +1138,9 @@ body.opx-page .side-field{display:none}
 .opx .wh-links{flex-wrap:wrap;gap:8px}
 /* A02: elemen absolut di dalam tabel (label/tooltip) harus ikut terpotong oleh wadah scroll tabel, bukan melebarkan halaman mobile */
 .opx .table-wrap{position:relative}
+
+/* Paritas Looker: badge perubahan vs periode lalu pada kartu KPI */
+.opx .an-kpi-change{display:inline-flex;align-items:baseline;gap:4px;margin-top:4px;font-size:10px;font-weight:650;letter-spacing:0;white-space:nowrap;color:#8a8370}
+.opx .an-kpi-change em{font-style:normal;font-weight:450;font-size:8.5px;color:#a49c8b}
+.opx .an-kpi-change.good{color:#1f6b3a}
+.opx .an-kpi-change.bad{color:#b23b2e}

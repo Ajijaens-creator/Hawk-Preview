@@ -41,7 +41,7 @@
     const custom=A.classifyMetric?A.classifyMetric(card,id):null;
     const target=card.target===null || card.target===undefined?'Standar belum ditetapkan':`Acuan demo ${format(card.target,card.unit)}`;
     return `<button type="button" class="an-kpi" data-act="analytics-detail" ${attr(id,card.key)} aria-label="Detail ${E(card.label)}">
-      <span class="an-kpi-label">${E(card.label)}</span><span class="an-kpi-main"><span class="an-kpi-icon ${index%2?'warm':''}">${H.icon(isMoney?'wallet':card.unit==='percent'?'target':icons[id],24)}</span><span><strong>${isMoney?'<small>Rp</small> ':''}${E(isMoney?short(card.value,card.unit):format(card.value,card.unit))}</strong><span class="an-kpi-sub">${E(card.note||directionNote(card))}</span></span></span>
+      <span class="an-kpi-label">${E(card.label)}</span><span class="an-kpi-main"><span class="an-kpi-icon ${index%2?'warm':''}">${H.icon(isMoney?'wallet':card.unit==='percent'?'target':icons[id],24)}</span><span><strong>${isMoney?'<small>Rp</small> ':''}${E(isMoney?short(card.value,card.unit):format(card.value,card.unit))}</strong>${H.kpiChange?H.kpiChange(card):''}<span class="an-kpi-sub">${E(card.note||directionNote(card))}</span></span></span>
       <span class="an-kpi-foot"><span>${E(custom?.label||target)}</span>${H.icon('arrow',13)}</span>
     </button>`;
   }

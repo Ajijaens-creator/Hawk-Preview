@@ -147,6 +147,51 @@ HL.HOME.Operational = 'op-dashboard';
 /* peta layar F7-01: Demo Center + 14 workspace Operational */
 HL.SCREENS.push(['DX-OPS', 'Operational · Demo Experience Center', 'Operational DX', 'ops-dx', 'ready', 'Tim Operational']);
 Object.keys(H.pages).filter(p => p !== 'demo').forEach(p => HL.SCREENS.push([PHASE(p), H.pages[p].title, 'Operational OP', routeOf(p), 'ready', 'Tim Operational']));
+/* Paritas Looker: setiap kartu KPI membawa perubahan vs periode sebelumnya (Looker "▼ -24,9%").
+   Periode sebelumnya = jumlah bulan penuh yang sama (mis. Okt → Sep), selain itu rentang hari sama tepat sebelum 'Dari'.
+   Persentase dibandingkan dalam poin persen (pp). Hanya data terverifikasi, label DEMO tetap berlaku. */
+if (H.analytics && !H.analytics.__cmp) {
+  const A = H.analytics, base = A.model, D = (s) => new Date(s + 'T00:00:00Z'), iso = (d) => d.toISOString().slice(0, 10);
+  const lastDay = (d) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  H.prevPeriod = (from, to) => {
+    const f = D(from), t = D(to);
+    if (f.getUTCDate() === 1 && t.getUTCDate() === lastDay(t)) {
+      const months = (t.getUTCFullYear() - f.getUTCFullYear()) * 12 + t.getUTCMonth() - f.getUTCMonth() + 1;
+      return { from: iso(new Date(Date.UTC(f.getUTCFullYear(), f.getUTCMonth() - months, 1))), to: iso(new Date(Date.UTC(f.getUTCFullYear(), f.getUTCMonth(), 0))) };
+    }
+    const days = Math.round((t - f) / 864e5) + 1, pt = new Date(f - 864e5);
+    return { from: iso(new Date(pt - (days - 1) * 864e5)), to: iso(pt) };
+  };
+  A.model = (id) => {
+    const m = base(id);
+    if (!m || m.accessDenied || !m.cards || !m.cards.length || A.__inPrev) return m;
+    const from = H.ui.analyticsFrom || '2026-10-01', to = H.ui.analyticsTo || '2026-10-31', p = H.prevPeriod(from, to);
+    const of = H.ui.analyticsFrom, ot = H.ui.analyticsTo;
+    let prev = null;
+    A.__inPrev = true; H.ui.analyticsFrom = p.from; H.ui.analyticsTo = p.to;
+    try { prev = base(id); } catch (e) { prev = null; } finally { A.__inPrev = false; H.ui.analyticsFrom = of; H.ui.analyticsTo = ot; }
+    m.cards.forEach((c) => {
+      const pc = prev && prev.cards && prev.cards.find((x) => x.key === c.key);
+      if (!pc || c.value === null || c.value === undefined || pc.value === null || pc.value === undefined) return;
+      const pp = c.unit === 'percent';
+      if (!pp && !pc.value) return;
+      const delta = pp ? c.value - pc.value : (c.value - pc.value) / Math.abs(pc.value) * 100;
+      c.change = { delta: Math.round(delta * 10) / 10, unit: pp ? 'pp' : '%', previous: pc.value, from: p.from, to: p.to };
+    });
+    m.previousPeriod = p;
+    return m;
+  };
+  A.__cmp = true;
+  H.kpiChange = (c) => {
+    const ch = c && c.change; if (!ch) return '';
+    const up = ch.delta > 0, flat = ch.delta === 0;
+    const good = flat || c.direction === 'neutral' || c.direction === 'range' ? 'flat' : (up === (c.direction === 'higher') ? 'good' : 'bad');
+    const num = (Math.abs(ch.delta)).toLocaleString('id-ID', { maximumFractionDigits: 1 });
+    const fmt = (s) => D(s).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+    return `<span class="an-kpi-change ${good}" title="vs periode sebelumnya ${fmt(ch.from)}–${fmt(ch.to)} (data demo terverifikasi)">${flat ? '■' : up ? '▲' : '▼'} ${flat ? '' : up ? '+' : '−'}${num}${ch.unit === 'pp' ? ' pp' : '%'}<em>vs periode lalu</em></span>`;
+  };
+}
+
 HL.DXINFO = HL.DXINFO || {};
 HL.DXINFO['ops-dx'] = '8 skenario · 6 peran · Pandu Saya';
 

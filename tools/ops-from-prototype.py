@@ -56,6 +56,10 @@ js = js.replace("therapist:['dashboard','tasks','therapist','rooms','communicati
 js = js.replace("security:['dashboard','daily','tasks','communication','race']", "security:['dashboard','daily','tasks','inventory','communication','race']")
 js = js.replace("const canReceive=()=>H.has('inventory')&&(['manager','assistant','supervisor','attendant'].includes(H.user().role)||H.user().role==='head'&&H.user().dept==='attendant');", "const canReceive=()=>H.has('inventory');")
 js = js.replace("title:'Assistant Spa Manager'", "title:'Assistant Operational Manager'")
+# Looker parity: period-over-period change badge on KPI cards (H.kpiChange defined in ops-shell.js)
+_old = "format(card.value,card.unit))}</strong>"
+assert _old in js
+js = js.replace(_old, "format(card.value,card.unit))}</strong>${H.kpiChange?H.kpiChange(card):''}", 1)
 js = js.replace("name:`Supervisor ${short}`,role:'supervisor',title:'Supervisor Outlet',dept:'management',outlet:o.id,initials:'S'+short[0]",
                 "name:({CTR:'Mila',SHT:'Tina',TRL:'Dewik',BSM:'Wahyudi'})[o.id],role:'supervisor',title:`Supervisor Spa ${short}`,dept:'management',outlet:o.id,initials:({CTR:'MI',SHT:'TI',TRL:'DW',BSM:'WY'})[o.id]")
 

@@ -53,6 +53,10 @@ const HELPERS = () => {
   ok('Semua 56 kombinasi (14 × 2 periode × 2 tab) dirender tanpa NaN dan tanpa tombol mati', bad.length === 0, bad.slice(0, 3).join(' | ') || actions + ' render');
   await open('revenue', { analyticsFrom: '2026-10-01', analyticsTo: '2026-10-31' });
   await shot('A02-01-revenue-overview', true);
+  const chg = await ev(() => ({ n: document.querySelectorAll('#opx-root .an-kpi-change').length, t: document.querySelector('#opx-root .an-kpi-change')?.textContent || '', ui: [OPX.ui.analyticsFrom, OPX.ui.analyticsTo].join('..') }));
+  ok('Paritas Looker: 4 kartu Revenue memuat perubahan vs periode lalu', chg.n === 4 && /vs periode lalu/.test(chg.t) && chg.ui === '2026-10-01..2026-10-31', chg.t);
+  ok('Periode pembanding Okt → Sep (bulan penuh), rentang hari → hari sebelumnya', await ev(() => JSON.stringify([OPX.prevPeriod('2026-10-01', '2026-10-31'), OPX.prevPeriod('2026-01-01', '2026-10-31'), OPX.prevPeriod('2026-10-10', '2026-10-16')])) === JSON.stringify([{ from: '2026-09-01', to: '2026-09-30' }, { from: '2025-03-01', to: '2025-12-31' }, { from: '2026-10-03', to: '2026-10-09' }]));
+  ok('Tanpa data periode lalu, kartu tidak menampilkan perubahan karangan', await ev(() => OPX.analytics.model('retention').cards.every(c => !c.change)));
 
   /* ---------------- drilldown, insight, standar ---------------- */
   await p.click('#opx-root [data-act="analytics-detail"] >> nth=0'); await p.waitForTimeout(250);
