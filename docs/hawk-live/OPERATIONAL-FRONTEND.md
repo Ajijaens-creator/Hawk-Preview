@@ -35,7 +35,7 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 ## Aturan yang ditambahkan shell (di luar prototype)
 
 - **Opening/closing PIC → Head → Supervisor** (`ops-shell.js`, F-OP04): item checklist yang dicentang staf (Reception, Therapist, Attendant, Security) pada departemen yang memiliki Head wajib direview Head sebelum Supervisor dapat sign-off. Item seed dianggap sudah direview. Dapat dimatikan lewat `policies.headReview=false`.
-- **Receiving** mengikuti matriks prototype v1.1: Attendant/Head Attendant mencatat fisik, Supervisor ke atas memverifikasi. Receptionist dan Therapist tidak memiliki menu Inventory di prototype (berbeda dengan aturan 60-NV 2026-11-08 "semua user outlet boleh menerima"; menunggu keputusan Owner).
+- **Receiving** (keputusan Owner 2026-11-19): semua user outlet (Receptionist, Therapist, Attendant, Security, Head, Supervisor) dapat mencatat penerimaan fisik untuk outletnya sendiri; nama penerima diambil dari akun yang login. Verifikasi tetap Supervisor ke atas, posting stok tetap di Inventory. PIC penerimaan per outlet akan ditugaskan kemudian (backend: penugasan PIC + izin `inventory.receive`).
 
 ## Kebutuhan backend (Gelombang 1)
 

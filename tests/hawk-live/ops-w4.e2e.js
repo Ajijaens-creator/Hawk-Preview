@@ -28,10 +28,10 @@ const UAT = {
   'asm-tika': { see: ['#op-dashboard', '#op-budget', '#op-reports'], hide: [] },
   'spv-CTR': { see: ['#op-daily', '#op-tasks', '#op-budget', '#op-inventory', '#op-settings'], hide: [] },
   'head-attendant-CTR': { see: ['#op-daily', '#op-tasks', '#op-inventory'], hide: ['#op-budget', '#op-settings'] },
-  'reception-CTR': { see: ['#op-daily', '#op-tasks', '#op-rooms'], hide: ['#op-budget', '#op-settings', '#op-inventory'] },
-  'therapist-CTR': { see: ['#op-tasks', '#op-therapist'], hide: ['#op-budget', '#op-settings', '#op-daily'] },
+  'reception-CTR': { see: ['#op-daily', '#op-tasks', '#op-rooms', '#op-inventory'], hide: ['#op-budget', '#op-settings'] },
+  'therapist-CTR': { see: ['#op-tasks', '#op-therapist', '#op-inventory'], hide: ['#op-budget', '#op-settings', '#op-daily'] },
   'attendant-CTR': { see: ['#op-daily', '#op-tasks', '#op-inventory'], hide: ['#op-budget', '#op-settings'] },
-  'security-CTR': { see: ['#op-daily', '#op-tasks'], hide: ['#op-budget', '#op-settings', '#op-inventory', '#op-rooms'] },
+  'security-CTR': { see: ['#op-daily', '#op-tasks', '#op-inventory'], hide: ['#op-budget', '#op-settings', '#op-rooms'] },
 };
 (async () => {
   const browser = await chromium.launch();

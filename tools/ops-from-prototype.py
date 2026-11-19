@@ -40,6 +40,11 @@ js = js.replace("host=document.createElement('div');host.id='dx-tour-root';docum
                 "host=document.createElement('div');host.id='dx-tour-root';H.overlay().appendChild(host);")
 
 # people follow the HRD master (hrd-model.js NAMED, assets/js/core/seed.js U-SPV..U-SPV4); outlet names follow POS existing
+# Owner 2026-11-19: semua user outlet boleh menerima barang (PIC penerimaan ditugaskan kemudian); verifikasi tetap Supervisor ke atas
+js = js.replace("reception:['dashboard','pos','daily','tasks','rooms','communication','race']", "reception:['dashboard','pos','daily','tasks','rooms','inventory','communication','race']")
+js = js.replace("therapist:['dashboard','tasks','therapist','rooms','communication','race']", "therapist:['dashboard','tasks','therapist','rooms','inventory','communication','race']")
+js = js.replace("security:['dashboard','daily','tasks','communication','race']", "security:['dashboard','daily','tasks','inventory','communication','race']")
+js = js.replace("const canReceive=()=>H.has('inventory')&&(['manager','assistant','supervisor','attendant'].includes(H.user().role)||H.user().role==='head'&&H.user().dept==='attendant');", "const canReceive=()=>H.has('inventory');")
 js = js.replace("title:'Assistant Spa Manager'", "title:'Assistant Operational Manager'")
 js = js.replace("name:'Jaens Spa Ubud Center'", "name:'Jaens Spa Center (Ubud)'")
 js = js.replace("name:`Supervisor ${short}`,role:'supervisor',title:'Supervisor Outlet',dept:'management',outlet:o.id,initials:'S'+short[0]",

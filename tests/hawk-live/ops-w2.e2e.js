@@ -99,8 +99,16 @@ const HELPERS = () => {
   if (r02 !== 'ready') await ev(() => T.form('room-state', { id: 'CTR-R02', status: 'ready', checked: 'on', note: 'Linen diganti, ruang dicek' }));
   ok('F-OP06 Ready setelah pemeriksaan tercatat', await ev(() => T.d().rooms.find(r => r.id === 'CTR-R02').status === 'ready'), r02 === 'ready' ? 'oleh Attendant' : 'oleh Supervisor');
   await go('op-rooms'); await shot('G2-V06-readiness-ruang');
-  await ev(() => { T.as('attendant-CTR'); T.form('receipt-physical', { id: 'RCV-CTR-02', received: '5', note: 'Diterima lengkap, kemasan baik' }); });
-  ok('F-OP06 Attendant outlet mencatat penerimaan fisik', await ev(() => T.d().receipts.find(r => r.id === 'RCV-CTR-02').status === 'physical_recorded'));
+  await ev(() => { T.as('reception-CTR'); T.form('receipt-physical', { id: 'RCV-CTR-02', received: '5', note: 'Diterima lengkap, kemasan baik' }); });
+  ok('F-OP06 Receptionist (user outlet mana pun) mencatat penerimaan fisik', await ev(() => T.d().receipts.find(r => r.id === 'RCV-CTR-02').status === 'physical_recorded'));
+  ok('F-OP06 penerimaan tercatat atas nama akun yang login', await ev(() => T.d().receipts.find(r => r.id === 'RCV-CTR-02').checkedBy === 'reception-CTR'));
+  for (const who of ['therapist-CTR', 'security-CTR']) {
+    const okRcv = await ev(w => { const r = T.d().receipts.find(x => x.id === 'RCV-CTR-02'); const snap = JSON.stringify(r); r.status = 'awaiting_check'; T.as(w); T.form('receipt-physical', { id: r.id, received: '5', note: 'Dicek ' + w }); const res = r.status === 'physical_recorded' && r.checkedBy === w; Object.assign(r, JSON.parse(snap)); OPX.save(); return res; }, who);
+    ok(`F-OP06 ${who} juga dapat menerima barang outlet sendiri`, okRcv);
+  }
+  ok('F-OP06 user outlet tidak dapat menerima barang outlet lain', await ev(() => { T.as('therapist-CTR'); T.form('receipt-physical', { id: 'RCV-SHT-02', received: '5', note: 'Bukan outlet saya' }); return T.d().receipts.find(r => r.id === 'RCV-SHT-02').status === 'awaiting_check'; }));
+  await ev(() => { T.as('reception-CTR'); T.act('receipt-verify', { id: 'RCV-CTR-02' }); });
+  ok('F-OP06 verifikasi tetap Supervisor ke atas (Receptionist ditolak)', await ev(() => T.d().receipts.find(r => r.id === 'RCV-CTR-02').status === 'physical_recorded'));
   await ev(() => { T.as('spv-CTR'); T.act('receipt-verify', { id: 'RCV-CTR-02' }); });
   ok('F-OP06 receiving verified oleh Supervisor', await ev(() => T.d().receipts.find(r => r.id === 'RCV-CTR-02').status === 'verified'));
   ok('F-OP06 receiving verified tidak menaikkan stok fixture', (await ev(() => JSON.stringify(T.d().stock))) === stock0);
