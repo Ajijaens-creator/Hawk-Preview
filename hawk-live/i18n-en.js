@@ -2,6 +2,7 @@
    Tambah baris baru di sini saat layar diterjemahkan lebih jauh; teks yang belum ada tetap Bahasa Indonesia. */
 window.HAWK_I18N_EN = Object.assign(window.HAWK_I18N_EN || {}, {
   /* ===== Operational (NP-OP01 v1.1) ===== */
+  'Gudang & Stok BHP': 'Warehouse & consumables stock', 'Stok gudang outlet': 'Outlet warehouse stock', 'Harus order': 'To order', 'Order semua BHP yang perlu': 'Order all needed consumables', 'Permintaan barang (MRF / PO)': 'Item requests (MRF / PO)', 'Order sekarang': 'Order now', 'Menunggu Supervisor': 'Awaiting Supervisor', 'Setujui': 'Approve', 'Tolak': 'Reject',
   'Kendali outlet': 'Outlet control', 'Pelaksanaan': 'Execution', 'Kinerja & kontrol': 'Performance & control', 'Developer handoff': 'Developer handoff',
   'Peta 12 Fase': '12-phase map', 'Lingkup outlet': 'Outlet scope', 'Semua outlet': 'All outlets', 'Notifikasi': 'Notifications', '▶ Panduan demo': '▶ Demo guide',
   'Tidak berwenang': 'Not authorised', 'Buka workspace saya': 'Open my workspace', 'Ganti akun demo': 'Switch demo account', 'Pilih akun demo': 'Choose demo account',

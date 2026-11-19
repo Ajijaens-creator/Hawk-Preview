@@ -20,3 +20,8 @@
 .opx .opx-outlet select{flex:1;min-width:0}
 }
 body.opx-page .side-field{display:none}
+.opx .wh-route{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer;font-weight:400}
+.opx .wh-route small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
+.opx .wh-route input{margin-top:3px}
+.opx .wh-table td small{display:block;color:var(--muted);font-size:11px}
+.opx .wh-links{flex-wrap:wrap;gap:8px}

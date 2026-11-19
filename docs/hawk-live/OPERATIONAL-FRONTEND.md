@@ -21,6 +21,7 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 | `#op-daily` | Daily Operations | F-OP04 |
 | `#op-tasks`, `#op-therapist` | Team & Tasks, Therapist Workspace | F-OP05 |
 | `#op-rooms`, `#op-inventory` | Room & Facility, Inventory Coordination | F-OP06 |
+| `#op-warehouse` | Gudang & Stok BHP (sisa, minimum, harus order, Order MRF/PO) | F-OP06 |
 | `#op-communication` | Communication Hub | F-OP07 |
 | `#op-race` | AmbideX & RACE | F-OP08 |
 | `#op-budget` | Budget 7P | F-OP09 |
@@ -84,3 +85,16 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 | F-OP04–07 | Siap ditinjau | `ops-w2.e2e.js` | BUILD / NOT VERIFIED |
 | F-OP08–10 | Siap ditinjau | `ops-w3.e2e.js` | KPI/X-Score PENDING; Finance NOT VERIFIED |
 | F-OP11 | Siap ditinjau | `ops-w4.e2e.js` | n/a (lokal) |
+
+## Gudang & Stok BHP (`#op-warehouse`, permintaan Owner 2026-11-19)
+
+- File `hawk-live/ops-warehouse.js` (dimuat sebelum `ops-shell.js`), uji `tests/hawk-live/ops-warehouse.e2e.js`.
+- Semua role dengan Inventory (semua user outlet) melihat stok gudang outletnya: sisa, minimum, maksimum, dalam pesanan, **harus order = maks − sisa − dalam pesanan** (saat sisa ≤ minimum), tombol **Order** dan **Order semua BHP yang perlu**.
+- Order staf → `menunggu_supervisor`; Supervisor/Assistant/Manager menyetujui atau menolak; order oleh Supervisor ke atas langsung `diajukan`. Order ganda untuk item yang masih menunggu ditahan. Stok tidak berubah saat order.
+- Item memakai kode master HAWK (BHP-001…, SP-…). Tautan ke Gudang 60-NV (NV-40 saldo & ledger, NV-24 Order Sederhana, NV-38/NV-44 untuk Supervisor) sebagai akun demo setara (U-STF, U-ATD, U-RCP, U-SEC, U-SPV, U-AOM, U-BUM).
+
+| Domain pemilik | Kebutuhan | ID/field | Operasi | Status |
+|---|---|---|---|---|
+| Gudang HAWK (NV-38..46) | Saldo per gudang outlet + min/max per item | warehouseId, itemId, qty, min, max | baca (`stock.query`) | CONFIRMED EXISTING di 60-NV (demo); kontrak API TO VERIFY |
+| MRF / Order Sederhana (NV-24..30) | Buat permintaan dari outlet, approval Supervisor, AR-13 | outlet, itemId, qty, route PO/MRF, requestedBy | `order.quick` / MRF create | CONFIRMED EXISTING di 60-NV (demo); penyatuan dengan antrean Supervisor Operational = NEW INTEGRATION REQUIRED |
+| Gudang / Purchasing | Status PO/MRF kembali ke daftar order outlet | orderId, status, poId/mrfId | baca | NEW INTEGRATION REQUIRED |
