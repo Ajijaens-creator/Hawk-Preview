@@ -1,4 +1,4 @@
-/* HAWK Operational · module "tasks" — diadaptasi dari prototype Owner v1.1 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
+/* HAWK Operational · module "tasks" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
 /* Local workflow simulation. Every action rechecks scope and state. */
 (function(){
   'use strict';

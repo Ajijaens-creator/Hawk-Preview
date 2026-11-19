@@ -1,4 +1,4 @@
-/* HAWK Operational · module "operations" — diadaptasi dari prototype Owner v1.1 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
+/* HAWK Operational · module "operations" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
 (function(){'use strict';const H=window.OPX,E=H.escape;
 const statusMap={booked:['Booked','gray'],checked_in:['Check-in','gold'],in_progress:['In treatment','blue'],completed:['Completed','green'],paid:['Paid','green'],cancelled:['Cancelled','red'],ready:['Ready','green'],occupied:['Occupied','blue'],cleaning:['Cleaning','gold'],maintenance:['Maintenance','red'],closed:['Closed','gray'],todo:['Belum mulai','gray'],doing:['Dikerjakan','blue'],head_review:['Review Head','gold'],supervisor_review:['Review Supervisor','gold'],done:['Selesai','green'],awaiting_check:['Menunggu fisik','gray'],physical_recorded:['Perlu verifikasi','gold'],discrepancy:['Ada selisih','red'],verified:['Menunggu posting','blue'],open:['Open','red'],resolved:['Resolved','green']};
 H.status=s=>H.badge(...(statusMap[s]||[s,'gray']));

@@ -48,7 +48,7 @@ const UAT = {
 
   /* ---------------- struktur Demo Center ---------------- */
   const meta = await ev(() => ({ n: OPX.demo.scenarios.length, steps: OPX.demo.scenarios.reduce((a, s) => a + s.steps.length, 0), owner: OPX.demo.ownerTour.steps.length, ownerSep: !OPX.demo.scenarios.some(s => s.id === OPX.demo.ownerTour.id) }));
-  ok('F-OP11 tujuh skenario / 33 langkah', meta.n === 7 && meta.steps === 33, `${meta.n} skenario · ${meta.steps} langkah`);
+  ok('F-OP11 delapan skenario / 39 langkah (A02)', meta.n === 8 && meta.steps === 39, `${meta.n} skenario · ${meta.steps} langkah`);
   ok('F-OP11 Owner tour sembilan langkah, terpisah dari skenario', meta.owner === 9 && meta.ownerSep);
   ok('F-OP11 halaman Demo Center berlabel per portal Operational', /OPERATIONAL/i.test(await p.textContent('#opx-root .dx-hero')));
   await shot('G4-V01-demo-center', true);
@@ -102,14 +102,14 @@ const UAT = {
   ok('F-OP11 kondisi loading tampil', /loading/i.test(await ev(() => document.getElementById('opx-root').innerText)));
   await ev(() => { T.dx().condition = 'normal'; OPX.save(); T.act('dx-mode', { id: 'simulator' }); });
   const panels = await ev(() => document.querySelectorAll('#opx-root .dx-role-panel').length);
-  ok('F-OP11 Simulator 5 role dari satu fixture', panels === 5, panels + ' panel');
+  ok('F-OP11 Simulator 6 peran dari satu fixture (A02, termasuk Jro Okta)', panels === 6, panels + ' panel');
   ok('F-OP11 simulator tidak memuat aplikasi remote (tanpa iframe)', await ev(() => !document.querySelector('#opx-root iframe')));
   await shot('G4-V06-simulator-5-role', true);
   await ev(() => T.act('dx-mode', { id: 'lab' }));
 
   /* ---------------- tujuh skenario dapat dimulai ---------------- */
   const startable = await ev(() => OPX.demo.scenarios.map(s => [s.id, OPX.demo.availability(s.id, 'SHT').ok]));
-  ok('F-OP11 ketujuh skenario siap dimulai di Shanti (fixture belum dipakai)', startable.every(x => x[1]), startable.filter(x => !x[1]).map(x => x[0]).join(',') || 'semua');
+  ok('F-OP11 semua skenario siap dimulai di Shanti (fixture belum dipakai)', startable.every(x => x[1]), startable.filter(x => !x[1]).map(x => x[0]).join(',') || 'semua');
 
   ok('F-OP11 skenario yang sudah dijalankan meminta persiapan fixture, bukan reset diam-diam', await ev(() => !OPX.demo.availability('opening', 'CTR').ok));
   await ev(() => T.as('spv-CTR')); await go('op-settings');

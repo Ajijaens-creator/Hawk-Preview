@@ -5,7 +5,7 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 ## Arsitektur
 
 - Satu shell: `hawk-live/*.html` + `app.js` + `assets/css/hawk.css` + ID/EN (`i18n.js`). Pindah portal hanya lewat logo HAWK.
-- Halaman Operational berasal dari prototype Owner v1.1 (`hawk-live/reference-ops/HAWK-Operational-Prototype-v1.1.html`), dipecah oleh `tools/ops-from-prototype.py` menjadi `hawk-live/ops/ops-*.js` (namespace `window.OPX`) dan `hawk-live/ops/ops.css` (di-scope `.opx`, token hawk.css, shell prototype dibuang).
+- Halaman Operational berasal dari paket Owner A02 v1.2 (`hawk-live/reference-ops/a02/`, menggantikan prototype v1.1), dipecah oleh `tools/ops-from-prototype.py hawk-live/reference-ops/a02` menjadi `hawk-live/ops/ops-*.js` (namespace `window.OPX`) dan `hawk-live/ops/ops.css` (di-scope `.opx`, token hawk.css, shell prototype dibuang).
 - `hawk-live/ops-shell.js` memasang 15 route ke registry hawk-live: `#op-<halaman>` dan Demo Center `#ops-dx` (kartu besar paling atas sidebar). Akun/outlet demo ada di bar konteks halaman; role chip topbar mengikuti akun Operational.
 - Satu fixture lokal `localStorage['hawk-operational-prototype-v1']` untuk semua halaman, ID sama lintas halaman (BK-, TSK-, ISS-, room `CTR-R01`, dst.).
 - Menu **POS & Receptionist** → `https://preview.jaens.id/rnd-demo` (tab baru). `#op-pos` = gateway + register parity. POS sandbox lama `#pos` tetap sebagai route tersembunyi untuk skenario Sales/Commercial.
@@ -17,6 +17,7 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 |---|---|---|
 | `#ops-dx` | Demo Experience Center | F-OP00 · F-OP11 |
 | `#op-dashboard` | Command Center | F-OP02 |
+| `#op-analytics` | Dashboard Kinerja (14 laporan Looker, entry/verifikasi, insight, standar) · A02 | F-OP02 / F-OP08 / F-OP10 |
 | POS existing ↗ / `#op-pos` | POS & Receptionist / gateway | F-OP03 |
 | `#op-daily` | Daily Operations | F-OP04 |
 | `#op-tasks`, `#op-therapist` | Team & Tasks, Therapist Workspace | F-OP05 |
@@ -98,3 +99,7 @@ Status: **frontend siap ditinjau, data demo lokal**. Backend/kontrak: **NOT VERI
 | Gudang HAWK (NV-38..46) | Saldo per gudang outlet + min/max per item | warehouseId, itemId, qty, min, max | baca (`stock.query`) | CONFIRMED EXISTING di 60-NV (demo); kontrak API TO VERIFY |
 | MRF / Order Sederhana (NV-24..30) | Buat permintaan dari outlet, approval Supervisor, AR-13 | outlet, itemId, qty, route PO/MRF, requestedBy | `order.quick` / MRF create | CONFIRMED EXISTING di 60-NV (demo); penyatuan dengan antrean Supervisor Operational = NEW INTEGRATION REQUIRED |
 | Gudang / Purchasing | Status PO/MRF kembali ke daftar order outlet | orderId, status, poId/mrfId | baca | NEW INTEGRATION REQUIRED |
+
+## Addendum A02 (19 November 2026)
+
+Lihat `docs/hawk-live/OPERATIONAL-A02-PARITY.md` untuk matriks 14 dashboard, komponen dan gap. Uji: `tests/hawk-live/ops-a02.e2e.js`. Nama outlet mengikuti A02 (Jaens Spa Ubud Center). Demo Center: 8 skenario, 6 peran, 39 langkah.

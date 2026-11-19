@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """HAWK Operational: adapt the Owner prototype (v1.1) into hawk-live modules.
 
-Usage: python3 tools/ops-from-prototype.py hawk-live/reference-ops/HAWK-Operational-Prototype-v1.1.html
+Usage: python3 tools/ops-from-prototype.py hawk-live/reference-ops/a02   (folder paket Owner: src/ + docs/)
 
 Writes hawk-live/ops/*.js (prototype modules, unchanged behaviour, namespaced as window.OPX) and
 hawk-live/ops/ops.css (prototype CSS scoped under .opx, shell rules dropped, HAWK tokens from hawk.css).
@@ -10,12 +10,22 @@ mounts the pages into it. Re-run after a new prototype version, then re-apply op
 """
 import re, sys, json, pathlib
 
-src = pathlib.Path(sys.argv[1]).read_text()
+SRC = pathlib.Path(sys.argv[1])
 root = pathlib.Path(__file__).resolve().parent.parent / 'hawk-live' / 'ops'
 root.mkdir(parents=True, exist_ok=True)
+for old in root.glob('ops-*.js'): old.unlink()
 
-# ---------------------------------------------------------------- JS
-js = src[src.find('<script>') + 8: src.rfind('</script>')]
+# A02+: input = folder paket (src/ + docs/feature-manifest.json); urutan file mengikuti build.py paket
+JS_FILES = [('core.js', 'core'), ('operations.js', 'operations'), ('daily.js', 'daily'), ('tasks-communication.js', 'tasks'),
+            ('ser-source-catalog.js', 'ser'), ('performance.js', 'performance'), ('governance.js', 'governance'), ('pos-existing.js', 'pos'),
+            ('demo-experience.js', 'demo'), ('analytics-data.js', 'analytics-data'), ('analytics-interactions.js', 'analytics-interactions'),
+            ('analytics.js', 'analytics')]
+CSS_FILES = ['style.css', 'daily.css', 'tasks-communication.css', 'performance.css', 'governance.css', 'demo-experience.css', 'analytics.css', 'analytics-interactions.css']
+MARK = '\n/*@@OPXMODULE {}@@*/\n'
+js = ''.join(MARK.format(n) + (SRC / 'src' / f).read_text() for f, n in JS_FILES)
+manifest = json.loads((SRC / 'docs' / 'feature-manifest.json').read_text())
+js += MARK.format('manifest') + 'window.H.manifest=' + json.dumps(manifest, ensure_ascii=False).replace('</', '<\\/') + ';\n'
+css = '\n'.join((SRC / 'src' / f).read_text() for f in CSS_FILES)
 js = re.sub(r'window\.H\b', 'window.OPX', js)
 
 def cut(text, start, end):
@@ -46,23 +56,15 @@ js = js.replace("therapist:['dashboard','tasks','therapist','rooms','communicati
 js = js.replace("security:['dashboard','daily','tasks','communication','race']", "security:['dashboard','daily','tasks','inventory','communication','race']")
 js = js.replace("const canReceive=()=>H.has('inventory')&&(['manager','assistant','supervisor','attendant'].includes(H.user().role)||H.user().role==='head'&&H.user().dept==='attendant');", "const canReceive=()=>H.has('inventory');")
 js = js.replace("title:'Assistant Spa Manager'", "title:'Assistant Operational Manager'")
-js = js.replace("name:'Jaens Spa Ubud Center'", "name:'Jaens Spa Center (Ubud)'")
 js = js.replace("name:`Supervisor ${short}`,role:'supervisor',title:'Supervisor Outlet',dept:'management',outlet:o.id,initials:'S'+short[0]",
                 "name:({CTR:'Mila',SHT:'Tina',TRL:'Dewik',BSM:'Wahyudi'})[o.id],role:'supervisor',title:`Supervisor Spa ${short}`,dept:'management',outlet:o.id,initials:({CTR:'MI',SHT:'TI',TRL:'DW',BSM:'WY'})[o.id]")
 
-marks = [(0, 'core'), ("(function(){'use strict';const H=window.OPX,E=H.escape;\nconst statusMap", 'operations'),
-         ("(function(){\n'use strict';\nconst H=window.OPX, e=H.escape;\nconst badge", 'daily'),
-         ('/* Local workflow simulation.', 'tasks'), ("(function () {\n  'use strict';\n  const H = window.OPX;\n  if (!H) throw", 'performance'),
-         ('/* HAWK Operational — governance', 'governance'), ('/* Owner decision, v1.1', 'pos'),
-         ('/* Demo Experience Center.', 'demo'), ('window.OPX.manifest=', 'manifest')]
-pos = [(0 if m == 0 else js.index(m), n) for m, n in marks]
-head = '/* HAWK Operational · module "{n}" — diadaptasi dari prototype Owner v1.1 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */\n'
-for k, (p, n) in enumerate(pos):
-    q = pos[k + 1][0] if k + 1 < len(pos) else len(js)
-    (root / f'ops-{n}.js').write_text(head.format(n=n) + js[p:q].strip() + '\n')
+head = '/* HAWK Operational · module "{n}" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */\n'
+for chunk in js.split('/*@@OPXMODULE ')[1:]:
+    n, body = chunk.split('@@*/', 1)
+    (root / f'ops-{n}.js').write_text(head.format(n=n) + body.strip() + '\n')
 
 # ---------------------------------------------------------------- CSS
-css = re.search(r'<style>(.*?)</style>', src, re.S).group(1)
 SHELL = re.compile(r'^(\.sidebar|\.topbar|\.brand|\.nav\b|\.nav-|\.mobile-|\.profile-btn|\.top-divider|\.portal-caption|'
                    r'\.demo-center-entry|\.app-mobile-nav|\.skip|\.main\b|\.footer|\.online-dot|\.demo-header-button|\.crumb\b|\.date-label)')
 HAWK_TOKENS = {'black', 'charcoal', 'canvas', 'surface', 'ink', 'muted', 'line', 'gold', 'gold-dark', 'gold-grad', 'r', 'shadow', 'sidebar', 'topbar'}
@@ -109,7 +111,7 @@ CONFLICT = ['badge', 'between', 'btn', 'card', 'card-head', 'dot', 'dx-feed', 'd
             'eyebrow', 'field', 'icon-btn', 'legend', 'modal', 'modal-body', 'modal-foot', 'modal-head', 'mono', 'muted', 'ring', 'row',
             'small', 'stack', 'tab', 'tabs', 'timeline', 'toast', 'wrap']
 scoped = ','.join(f'.opx .{c}' for c in CONFLICT) + '{all:revert;font-family:inherit;box-sizing:border-box}\n' + scoped
-(root / 'ops.css').write_text('/* HAWK Operational · CSS prototype v1.1 di-scope ke .opx. Token warna/radius/shadow diambil dari assets/css/hawk.css. */\n'
+(root / 'ops.css').write_text('/* HAWK Operational · CSS paket A02 di-scope ke .opx. Token warna/radius/shadow diambil dari assets/css/hawk.css. */\n'
                               '.opx{font-size:14px;line-height:1.5;color:var(--ink)}\n' + scoped + '\n'
                               + '\n/* ---- integrasi shell hawk-live (sumber: hawk-live/ops-shell.css) ---- */\n' + (root.parent / 'ops-shell.css').read_text())
 print('ok', [p.name for p in sorted(root.iterdir())])

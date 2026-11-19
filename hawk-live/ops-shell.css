@@ -25,3 +25,5 @@ body.opx-page .side-field{display:none}
 .opx .wh-route input{margin-top:3px}
 .opx .wh-table td small{display:block;color:var(--muted);font-size:11px}
 .opx .wh-links{flex-wrap:wrap;gap:8px}
+/* A02: elemen absolut di dalam tabel (label/tooltip) harus ikut terpotong oleh wadah scroll tabel, bukan melebarkan halaman mobile */
+.opx .table-wrap{position:relative}

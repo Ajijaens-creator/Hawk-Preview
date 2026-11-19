@@ -148,7 +148,7 @@ HL.HOME.Operational = 'op-dashboard';
 HL.SCREENS.push(['DX-OPS', 'Operational · Demo Experience Center', 'Operational DX', 'ops-dx', 'ready', 'Tim Operational']);
 Object.keys(H.pages).filter(p => p !== 'demo').forEach(p => HL.SCREENS.push([PHASE(p), H.pages[p].title, 'Operational OP', routeOf(p), 'ready', 'Tim Operational']));
 HL.DXINFO = HL.DXINFO || {};
-HL.DXINFO['ops-dx'] = '7 skenario · 5 role · Pandu Saya';
+HL.DXINFO['ops-dx'] = '8 skenario · 6 peran · Pandu Saya';
 
 window.addEventListener('hashchange', () => { dockVisibility(); if (pageOf(HL.parseHash().id)) return; syncNav(); });
 document.addEventListener('DOMContentLoaded', () => setTimeout(() => { syncNav(); dockVisibility(); }, 0));

@@ -1,4 +1,4 @@
-/* HAWK Operational · module "pos" — diadaptasi dari prototype Owner v1.1 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
+/* HAWK Operational · module "pos" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
 /* Owner decision, v1.1: the existing POS is canonical.
  * This gateway deliberately overrides the former synthetic POS page.
  * Synthetic booking actions in operations.js support local regression fixtures,

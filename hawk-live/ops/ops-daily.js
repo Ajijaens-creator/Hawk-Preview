@@ -1,4 +1,4 @@
-/* HAWK Operational · module "daily" — diadaptasi dari prototype Owner v1.1 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
+/* HAWK Operational · module "daily" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
 (function(){
 'use strict';
 const H=window.OPX, e=H.escape;

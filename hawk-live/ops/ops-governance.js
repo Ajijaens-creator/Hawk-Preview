@@ -1,4 +1,4 @@
-/* HAWK Operational · module "governance" — diadaptasi dari prototype Owner v1.1 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
+/* HAWK Operational · module "governance" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */
 /* HAWK Operational — governance, roadmap, reporting and acceptance UI.
  * Standalone demo only. Visibility controls are not backend authorization.
  */
@@ -9,10 +9,11 @@
   const isLead = () => ['manager', 'assistant'].includes(H.user().role);
   const canConfigure = () => isLead() && H.has('settings') && H.has('settings.manage');
   const isOutletLead = () => ['manager', 'assistant', 'supervisor'].includes(H.user().role);
-  const roleNames = {manager:'Manager Operational', assistant:'Assistant Spa Manager', supervisor:'Supervisor Outlet', head:'Head Departemen', reception:'Receptionist', therapist:'Therapist', attendant:'Attendant', security:'Security'};
+  const roleNames = {manager:'Manager Operational', assistant:'Assistant Spa Manager', hospitality:'Hospitality Manager', supervisor:'Supervisor Outlet', head:'Head Departemen', reception:'Receptionist', therapist:'Therapist', attendant:'Attendant', security:'Security'};
   const delegatedRoles = ['head', 'reception', 'therapist', 'attendant', 'security'];
   const menuCaps = [
-    {id:'dashboard', name:'Dashboard', allowed:delegatedRoles},
+    {id:'dashboard', name:'Command Center', allowed:delegatedRoles},
+    {id:'analytics', name:'Dashboard & input kinerja', allowed:delegatedRoles},
     {id:'pos', name:'POS & Receptionist', allowed:['reception']},
     {id:'daily', name:'Daily Operations', allowed:['head','reception','therapist','attendant','security']},
     {id:'tasks', name:'Team & Tasks', allowed:delegatedRoles},
@@ -28,7 +29,7 @@
   const phases = [
     ['F-OP00','Foundation & mapping','roadmap','Audit referensi dan petakan interface terhadap layanan ERP.','INTEGRATE','Brand NV-47, route existing, daftar bukti dan kontrak tiap layar.','Pastikan demo, reference UI dan backend terverifikasi dibedakan.'],
     ['F-OP01','Organization & access','settings','Akun personal, outlet scope, Head Departemen dan delegasi.','EXTEND','Master karyawan HRD, role, izin tindakan dan relasi pelaporan.','Uji Supervisor satu outlet pada API, ekspor dan ID objek.'],
-    ['F-OP02','Operational dashboards','dashboard','Dashboard Manager, Assistant dan Supervisor sesuai peran.','INTEGRATE','Booking, presensi, target dan stock alert existing.','KPI belum sah ditandai gap; mock tidak dilabel live.'],
+    ['F-OP02','Operational dashboards','dashboard','Command Center + 14 dashboard familiar untuk Manager, Assistant, Hospitality Manager dan Supervisor.','INTEGRATE','Booking, presensi, target dan stock alert existing.','KPI belum sah ditandai gap; mock tidak dilabel live.'],
     ['F-OP03','POS & Receptionist','pos','Buka POS existing; dashboard dan Appointment Book dipertahankan utuh.','REUSE','Appointment, allocation, invoice dan payment engine existing.','Validasi ketersediaan ulang, izin refund dan pembatalan sesuai kebijakan.'],
     ['F-OP04','Daily operations','daily','Opening, briefing, handover, closing dan EOD sign-off.','BUILD','Checklist berversi, tugas, bukti dan status layanan dari POS.','Closing tidak menyembunyikan pekerjaan dan insiden yang masih terbuka.'],
     ['F-OP05','Workforce & task verification','tasks','My Tasks, Head review, Supervisor assurance dan mobile Therapist.','EXTEND','Shift/presensi HRD dan treatment POS; task baru additive.','Selesai bekerja dan terverifikasi memiliki waktu yang berbeda.'],
@@ -36,7 +37,7 @@
     ['F-OP07','Communication & issues','communication','Percakapan terkait tugas, issue, prioritas dan eskalasi.','BUILD','Satu task/issue ID yang dibaca berbagai workspace.','Pesan tidak menggantikan approval; akses lampiran mengikuti scope.'],
     ['F-OP08','Ambidex, RACE & X-Score','race','SER, Vegen, Beacon, Daily, Weekly/R2Re, Reflection, STRACON.','BUILD','Kontrak indikator dari workbook; bukti berasal dari proses operasional.','X-Score resmi ditahan sampai formula, bobot dan agregasi divalidasi.'],
     ['F-OP09','Finance budget integration','budget','Budget aktivitas Process, Place, Facility dan Product per outlet.','INTEGRATE','Finance mengatur alokasi, komitmen dan actual. People hanya persentase.','P7 Profit adalah hasil. Tidak menjumlahkannya sebagai biaya.'],
-    ['F-OP10','Reports & analytics','reports','EOD, tindak lanjut, antrean review dan bukti per scope.','INTEGRATE','Data bersama dari POS, HRD, Inventory dan Operational.','Satu peristiwa tidak dihitung sebagai beberapa transaksi.'],
+    ['F-OP10','Reports & analytics','reports','14 laporan Looker, detail sumber, entry & verifikasi, insight per diagram serta EOD.','INTEGRATE','Data bersama dari POS, HRD, Inventory dan Operational.','Satu peristiwa tidak dihitung sebagai beberapa transaksi.'],
     ['F-OP11','Validation & handoff','validation','UAT frontend, kontrak backend, regresi dan kesiapan integrasi.','VALIDATE','NB, NV, NP, manifest, kontrak data dan paket prototype.','Lulus prototype tidak berarti lulus produksi atau izin deploy.']
   ];
   const checklist = [
@@ -90,7 +91,7 @@
     phase:'F-OP01',
     render() {
       const editable = canConfigure();
-      const accounts = (H.accounts || []).filter(a => isLead() || a.outlet === H.user().outlet);
+      const accounts = (H.accounts || []).filter(a => isLead() || H.user().role==='hospitality' || a.outlet === H.user().outlet);
       const routine = (H.state.policies || {}).routine || 'head';
       const tab = H.ui.govTab || 'roles';
       let body = '';
@@ -110,7 +111,7 @@
           ${editable?'<button class="btn btn-primary" type="submit">Simpan kebijakan demo</button>':'<p class="muted small">Hubungi Manager atau Assistant untuk mengubah kebijakan.</p>'}
         </form><article class="card"><div class="card-head"><h2 class="card-title">Siapa melakukan apa?</h2></div><div class="gov-steps"><div><b>01</b><span><strong>PIC</strong><small>Kerjakan, catat hasil dan lampirkan bukti.</small></span></div><div><b>02</b><span><strong>Head Departemen</strong><small>Review kualitas. Kembalikan untuk perbaikan bila perlu.</small></span></div><div><b>03</b><span><strong>Supervisor Outlet</strong><small>Verifikasi akhir untuk kritis / exception; sampling tugas rutin.</small></span></div><div><b>04</b><span><strong>Manager / Assistant</strong><small>Atur kebijakan, coaching dan eskalasi antar-fungsi.</small></span></div></div></article></div>`;
       } else {
-        body = `<article class="card"><div class="card-head"><div><h2 class="card-title">Akun & penugasan demo</h2><p class="muted small">Identitas akun nyata nantinya merujuk master karyawan HRD.</p></div>${H.badge('Demo, bukan akun produksi','gold')}</div><div class="table-wrap"><table><thead><tr><th>Nama akun</th><th>Role</th><th>Lingkup</th><th>Departemen</th></tr></thead><tbody>${accounts.map(a=>`<tr><td><strong>${e(a.name)}</strong></td><td>${e(a.title || roleNames[a.role])}</td><td>${['manager','assistant'].includes(a.role)?'Seluruh outlet JAENS Spa':e(outletName(a.outlet))}</td><td>${e(a.dept || 'Manajemen')}</td></tr>`).join('')}</tbody></table></div></article><div class="notice">Mutasi outlet mengganti penugasan aktif dan mencabut akses lama. Supervisor tidak dapat memperoleh dua outlet aktif melalui konfigurasi ini.</div>`;
+        body = `<article class="card"><div class="card-head"><div><h2 class="card-title">Akun & penugasan demo</h2><p class="muted small">Identitas akun nyata nantinya merujuk master karyawan HRD.</p></div>${H.badge('Demo, bukan akun produksi','gold')}</div><div class="table-wrap"><table><thead><tr><th>Nama akun</th><th>Role</th><th>Lingkup</th><th>Departemen</th></tr></thead><tbody>${accounts.map(a=>`<tr><td><strong>${e(a.name)}</strong></td><td>${e(a.title || roleNames[a.role])}</td><td>${['manager','assistant','hospitality'].includes(a.role)?'Seluruh outlet JAENS Spa':e(outletName(a.outlet))}</td><td>${e(a.dept || 'Manajemen')}</td></tr>`).join('')}</tbody></table></div></article><div class="notice">Mutasi outlet mengganti penugasan aktif dan mencabut akses lama. Supervisor tidak dapat memperoleh dua outlet aktif melalui konfigurasi ini.</div>`;
       }
       return `<div class="tabs" role="tablist">${[['roles','Roles & permissions'],['workflow','Aturan verifikasi'],['team','Tim & organisasi']].map(([id,label])=>`<button class="tab ${tab===id?'active':''}" role="tab" aria-selected="${tab===id}" data-act="gov-tab" data-id="${id}">${label}</button>`).join('')}</div>${body}`;
     }
@@ -142,7 +143,7 @@
     phase:'F-OP00',
     render() {
       return `<article class="card gov-hero"><div><span class="eyebrow">HAWK × JAENS · OPERATIONAL</span><h2>Satu interface yang menyatukan<br>kesiapan outlet dan pelayanan.</h2><p>POS tetap menjadi workspace di Operational. Setiap fase menyertakan keputusan bisnis, referensi visual, sumber data dan kebutuhan backend yang harus dibuktikan.</p></div><div class="gov-hero-stat"><strong>12</strong><span>fase interface</span><small>F-OP00 — F-OP11</small></div></article>
-        <div class="grid-4">${stat('Sumber yang dipakai','3','Keputusan Owner, audit Claude, UI referensi')}${stat('Supervisor capabilities','17','Cakupan Report 05, bukan seluruh ERP')}${stat('Dilaporkan sudah tersedia','1 + 3','1 tersedia; 3 perlu integrasi')}${stat('Dilaporkan parsial / baru','4 / 9','Audit PARTIAL; belum uji production')}</div>
+        <div class="grid-4">${stat('Dashboard sumber','14','Looker + screenshot Owner + workbook SER')}${stat('Supervisor capabilities','17','Cakupan Report 05, bukan seluruh ERP')}${stat('Dilaporkan sudah tersedia','1 + 3','1 tersedia; 3 perlu integrasi')}${stat('Dilaporkan parsial / baru','4 / 9','Audit PARTIAL; belum uji production')}</div>
         <article class="card"><div class="card-head"><div><h2 class="card-title">Infrastruktur bersama, workspace sesuai tanggung jawab</h2><p class="muted small">Peta target desain. Tidak menyatakan integrasi live telah tersedia.</p></div>${H.badge('One data entry','gold')}</div>
           <div class="gov-architecture"><div class="gov-portal"><span class="eyebrow">SALES</span><h3>CRM & Reservation</h3><p>Lead, komunikasi, booking dan atribusi penjualan</p></div><div class="gov-portal current"><span class="eyebrow">OPERATIONAL</span><h3>Outlet & POS</h3><p>Booking resmi, pelayanan, task, readiness, quality</p></div><div class="gov-portal"><span class="eyebrow">FINANCE</span><h3>Budget & ledger</h3><p>Accounting, Inventory, Purchasing dan actual</p></div><div class="gov-portal"><span class="eyebrow">HRD</span><h3>People & performance</h3><p>Identitas, shift, presensi dan laporan kinerja</p></div><div class="gov-portal"><span class="eyebrow">COMMERCIAL</span><h3>Marketing</h3><p>Campaign, promosi dan kontribusi hasil</p></div></div>
           <div class="gov-service"><strong>API / services HAWK existing + resource Operational additive</strong><span>Identitas bersama · RBAC server · ID transaksi yang sama · audit trail · rekonsiliasi</span></div>
