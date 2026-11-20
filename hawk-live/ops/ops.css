@@ -1144,3 +1144,12 @@ body.opx-page .side-field{display:none}
 .opx .an-kpi-change em{font-style:normal;font-weight:450;font-size:8.5px;color:#a49c8b}
 .opx .an-kpi-change.good{color:#1f6b3a}
 .opx .an-kpi-change.bad{color:#b23b2e}
+
+/* Peta "satu sumber entri" per dashboard (ops-single-entry.js) */
+.se-modal .se-block { border: 1px solid var(--line, #e6e3dc); border-radius: 12px; padding: 14px; background: var(--card, #fff); }
+.se-modal .se-block h3 { margin: 0 0 8px; font-size: 15px; }
+.se-modal .se-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 14px; margin-bottom: 10px; }
+.se-modal .se-facts small { display: block; color: var(--muted, #6b6b6b); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.se-modal .se-facts p { margin: 2px 0 0; font-size: 13px; }
+.se-modal .se-table td small { display: block; color: var(--muted, #6b6b6b); font-size: 12px; margin-top: 2px; }
+.se-modal .se-summary { gap: 6px; }
