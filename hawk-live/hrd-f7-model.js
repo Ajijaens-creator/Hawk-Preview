@@ -7,6 +7,7 @@ const HR7 = (() => {
   const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
   const P5 = () => (typeof HR5 !== 'undefined' ? HR5 : null);
   const P6 = () => (typeof HR6 !== 'undefined' ? HR6 : null);
+  const P2 = () => (typeof HR2 !== 'undefined' ? HR2 : null);
   const TODAY = H.TODAY;
   const now = () => `${TODAY} ${new Date().toTimeString().slice(0, 5)}`;
   const R = (x) => Math.round(x);
@@ -24,9 +25,22 @@ const HR7 = (() => {
     ['RUL-BPJS', 'BPJS karyawan & perusahaan', 'Potongan', 'Karyawan: Kes 1%, JHT 2%, JP 1% · Perusahaan: Kes 4%, JKK 0,24%, JKM 0,3%, JHT 3,7%, JP 2%', null, '2103 Utang BPJS / 6105 Beban BPJS'],
     ['RUL-PPH', 'PPh 21 (TER simulasi)', 'Potongan', 'Bruto ≤ Rp5,4 jt 0% · ≤ Rp6,2 jt 0,5% · ≤ Rp7,5 jt 1,5% · ≤ Rp9 jt 2,5% · di atas 3,5% (SIMULASI, bukan tarif resmi)', null, '2102 Utang PPh 21'],
     ['RUL-KSB', 'Cicilan kasbon', 'Potongan', 'Sesuai jadwal cicilan pada ledger kasbon', null, '1104 Piutang Karyawan'],
-    ['RUL-RMB', 'Reimburse via payroll', 'Pendapatan', 'Reimburse disetujui yang belum diselesaikan di kanal lain', null, '6106 Beban Reimburse']
+    ['RUL-RMB', 'Reimburse via payroll', 'Pendapatan', 'Reimburse disetujui yang belum diselesaikan di kanal lain', null, '6106 Beban Reimburse'],
+    ['RUL-UNP', 'Potongan cuti tidak dibayar', 'Potongan', 'ROUND(Gaji pokok ÷ hari kerja terjadwal periode × hari unpaid disetujui, 0) · presisi penuh, dibulatkan sekali pada total · periode 1–akhir bulan', null, '6101 Beban Gaji (pengurang) · TO VERIFY Finance']
   ].map(([id, name, kind, formula, value, coa]) => ({ id, name, kind, coa, versions: [{ v: 1, from: '2610', formula, value, by: 'Manager HRD', at: '2026-01-05', note: 'Versi awal (simulasi)' }] }));
   const ruleAt = (f7, id, period) => { const r = f7.rules.find(x => x.id === id); const vs = r.versions.filter(v => v.from <= String(period)); return vs[vs.length - 1] || r.versions[0]; };
+  const nextPeriod = (p) => { const y = +String(p).slice(0, 2), m = +String(p).slice(2, 4); return m === 12 ? `${y + 1}01` : `${y}${String(m + 1).padStart(2, '0')}`; };
+  const periodRange = (p) => PERIODS[p] || (() => { const y = 2000 + +String(p).slice(0, 2), m = +String(p).slice(2, 4), last = new Date(Date.UTC(y, m, 0)).getUTCDate(); return { from: `${y}-${String(m).padStart(2, '0')}-01`, to: `${y}-${String(m).padStart(2, '0')}-${last}` }; })();
+  /* NP-HRD-F2-001 · potongan unpaid leave: dasar gaji pokok kontrak (bukan prorata, bukan tunjangan), pembagi = hari kerja terjadwal
+     karyawan dalam periode payroll (1–akhir bulan), jumlah hari = hari unpaid disetujui F2 dalam periode. Dibulatkan sekali. */
+  function unpaidOf(hr, emp, period) {
+    const p2 = P2(), P = periodRange(String(period)); if (!p2) return { days: 0, wd: 0, amount: 0, items: [] };
+    const items = p2.unpaidDates(hr, emp, P.from, P.to); if (!items.length) return { days: 0, wd: 0, amount: 0, items };
+    const wd = p2.workdays(hr, emp, P.from, P.to).length;
+    const amount = wd ? R(baseOf(hr, emp) * items.length / wd) : 0;
+    return { days: items.length, wd, amount, items, reqs: [...new Set(items.map(i => i.req))] };
+  }
+  const unpaidKeys = (hr, period) => hr.people.flatMap(p => unpaidOf(hr, p.id, period).items.map(i => `${i.req}:${i.date}`));
   const pphRate = (gross) => gross <= 5.4e6 ? 0 : gross <= 6.2e6 ? 0.005 : gross <= 7.5e6 ? 0.015 : gross <= 9e6 ? 0.025 : 0.035;
 
   /* ---------- aktivitas therapist per periode ---------- */
@@ -73,7 +87,8 @@ const HR7 = (() => {
     const ot = R(act.ot * baseOf(hr, emp) / 173 * otMult);
     const rmb = f7.reimburse.filter(r => r.emp === emp && r.status === 'Disetujui' && r.period === period && !r.settledOther).reduce((s, r) => s + r.amount, 0);
     const adjIn = adjustments(hr).filter(a => a.emp === emp && a.toPeriod === period).reduce((s, a) => s + a.amount, 0);
-    const earnings = [['Gaji pokok', base, 'RUL-GAPOK', pro < 1 ? `prorata ${days}/${P.days} hari` : 'kontrak F2'], ['Tunjangan', allow, 'RUL-TUNJ', ''], ['Komisi', act.comm, 'RUL-KOM', act.src || ''], ['Lembur', ot, 'RUL-LBR', act.ot ? `${Math.round(act.ot * 10) / 10} jam disetujui` : ''], ['Reimburse', rmb, 'RUL-RMB', rmb ? f7.reimburse.filter(r => r.emp === emp && r.period === period && r.status === 'Disetujui' && !r.settledOther).map(r => r.id).join(', ') : ''], ['Penyesuaian periode lalu', adjIn, 'ADJ', adjIn ? adjustments(hr).filter(a => a.emp === emp && a.toPeriod === period).map(a => a.id).join(', ') : '']].filter(e => e[1] !== 0 || ['Gaji pokok', 'Tunjangan'].includes(e[0]));
+    const unp = unpaidOf(hr, emp, period);
+    const earnings = [['Gaji pokok', base, 'RUL-GAPOK', pro < 1 ? `prorata ${days}/${P.days} hari` : 'kontrak F2'], ['Tunjangan', allow, 'RUL-TUNJ', ''], ['Komisi', act.comm, 'RUL-KOM', act.src || ''], ['Lembur', ot, 'RUL-LBR', act.ot ? `${Math.round(act.ot * 10) / 10} jam disetujui` : ''], ['Reimburse', rmb, 'RUL-RMB', rmb ? f7.reimburse.filter(r => r.emp === emp && r.period === period && r.status === 'Disetujui' && !r.settledOther).map(r => r.id).join(', ') : ''], ['Penyesuaian periode lalu', adjIn, 'ADJ', adjIn ? adjustments(hr).filter(a => a.emp === emp && a.toPeriod === period).map(a => a.id).join(', ') : ''], ['Potongan cuti tidak dibayar', -unp.amount, 'RUL-UNP', unp.days ? `${unp.days} hari ÷ ${unp.wd} hari kerja × gaji pokok ${baseOf(hr, emp)} · ${unp.reqs.join(', ')}` : '']].filter(e => e[1] !== 0 || ['Gaji pokok', 'Tunjangan'].includes(e[0]));
     const gross = earnings.reduce((s, e) => s + e[1], 0);
     const bpjsK = R(base * 0.03 + Math.min(base + allow, 12e6) * 0.01), pph = R(gross * pphRate(gross));
     const inst = f7.advances.flatMap(a => a.schedule.filter(s => s.period === period && a.emp === emp && a.status === 'Dicairkan').map(s => [s.id, s.amount]));
@@ -82,14 +97,14 @@ const HR7 = (() => {
     let thp = gross - dedT, round = 0;
     if (period === '2610' && pro === 1) { round = p.thp - thp; if (Math.abs(round) <= 2000 && round !== 0) { earnings.push(['Pembulatan', round, 'RUL-GAPOK', 'kalibrasi THP roster']); thp += round; } else round = 0; }
     const employer = R(base * (0.04 + 0.0024 + 0.003 + 0.037 + 0.02));
-    return { emp, period, name: p.name, loc: pl.location, pos: pl.position, division: pl.division, entity: pl.entity, earnings, ded, gross: gross + round, dedT, thp, employer, cost: gross + round + employer, pro, versions: Object.fromEntries(f7.rules.map(r => [r.id, ruleAt(f7, r.id, period).v])) };
+    return { emp, period, name: p.name, loc: pl.location, pos: pl.position, division: pl.division, entity: pl.entity, earnings, ded, gross: gross + round, dedT, thp, employer, cost: gross + round + employer, pro, unpaid: unp.days ? { days: unp.days, wd: unp.wd, amount: unp.amount, reqs: unp.reqs } : null, versions: Object.fromEntries(f7.rules.map(r => [r.id, ruleAt(f7, r.id, period).v])) };
   }
   /* ---------- batch ---------- */
   const batchId = (period) => `PAY-${period}-01`;
   function batchOf(hr, period) { return ensure(hr).batches.find(b => b.period === String(period)); }
   function batchLines(hr, period) { const b = batchOf(hr, period); if (b && b.snapshot) return b.snapshot.lines; return hr.people.map(p => slip(hr, p.id, period)).filter(s => s && !s.excluded); }
   function excluded(hr, period) { return hr.people.map(p => slip(hr, p.id, period)).filter(s => s && s.excluded); }
-  function totals(lines) { const t = { n: lines.length, gross: 0, ded: 0, thp: 0, employer: 0, cost: 0, comm: 0, base: 0, allow: 0, ot: 0, bpjs: 0, pph: 0, ksb: 0, rmb: 0, adj: 0 }; for (const l of lines) { t.gross += l.gross; t.ded += l.dedT; t.thp += l.thp; t.employer += l.employer; t.cost += l.cost; for (const [n, v, r] of l.earnings) { if (r === 'RUL-KOM') t.comm += v; if (r === 'RUL-GAPOK' && n === 'Gaji pokok') t.base += v; if (r === 'RUL-TUNJ') t.allow += v; if (r === 'RUL-LBR') t.ot += v; if (r === 'RUL-RMB') t.rmb += v; if (r === 'ADJ') t.adj += v; } for (const [, v, r] of l.ded) { if (r === 'RUL-BPJS') t.bpjs += v; if (r === 'RUL-PPH') t.pph += v; if (r === 'RUL-KSB') t.ksb += v; } } return t; }
+  function totals(lines) { const t = { n: lines.length, gross: 0, ded: 0, thp: 0, employer: 0, cost: 0, comm: 0, base: 0, allow: 0, ot: 0, bpjs: 0, pph: 0, ksb: 0, rmb: 0, adj: 0, unp: 0 }; for (const l of lines) { t.gross += l.gross; t.ded += l.dedT; t.thp += l.thp; t.employer += l.employer; t.cost += l.cost; for (const [n, v, r] of l.earnings) { if (r === 'RUL-KOM') t.comm += v; if (r === 'RUL-GAPOK' && n === 'Gaji pokok') t.base += v; if (r === 'RUL-TUNJ') t.allow += v; if (r === 'RUL-LBR') t.ot += v; if (r === 'RUL-RMB') t.rmb += v; if (r === 'ADJ') t.adj += v; if (r === 'RUL-UNP') t.unp += v; } for (const [, v, r] of l.ded) { if (r === 'RUL-BPJS') t.bpjs += v; if (r === 'RUL-PPH') t.pph += v; if (r === 'RUL-KSB') t.ksb += v; } } return t; }
   function anomalies(hr, period) {
     const ls = batchLines(hr, period), out = [];
     for (const l of ls) { const p = hr.people.find(x => x.id === l.emp); if (String(period) !== '2610' && p && Math.abs(l.thp - p.thp) / p.thp > 0.2) out.push({ emp: l.emp, kind: 'THP berubah > 20% vs Oktober', detail: `${H.locName(l.loc)} · ${Math.round((l.thp - p.thp) / p.thp * 100)}%` }); if (l.pro < 1) out.push({ emp: l.emp, kind: 'Prorata karyawan baru', detail: `${Math.round(l.pro * 100)}% periode` }); }
@@ -99,7 +114,21 @@ const HR7 = (() => {
   const sources = (hr, period) => String(period) === '2610' ? [['POS Oktober', 'Lengkap', 'ready'], ['Presensi & lembur F2', 'Disetujui', 'ready'], ['Kontrak & penempatan F2', 'Lengkap', 'ready'], ['Kasbon/Reimburse', 'Lengkap', 'ready']] : [['POS November', 'Sebagian · 7–13 Nov (provisional)', 'sandbox'], ['Presensi & lembur F2', 'Sampai 13 Nov', 'sandbox'], ['Kontrak & penempatan F2', 'Lengkap', 'ready'], ['Kasbon/Reimburse', `${ensure(hr).reimburse.filter(r => r.status === 'Diajukan').length} menunggu keputusan`, ensure(hr).reimburse.some(r => r.status === 'Diajukan') ? 'sandbox' : 'ready']];
   /* koreksi terlambat: refund/koreksi POS setelah kunci → adjustment ke periode berikut, merujuk baris asal */
   function adjustments(hr) {
-    const f7 = ensure(hr), out = [], p5 = P5(); if (!p5 || !hr.f5) return out;
+    const f7 = ensure(hr), out = [], p5 = P5();
+    /* NP-HRD-F2-001 · unpaid leave disetujui setelah batch dikunci → penyesuaian ke periode berikut; snapshot lama tidak diubah.
+       Kunci anti-ganda: Request ID + tanggal yang sudah masuk snapshot (snapshot.unpaid). */
+    for (const b of f7.batches.filter(x => x.snapshot)) {
+      const done = new Set(b.snapshot.unpaid || []);
+      for (const p of hr.people) {
+        const u = unpaidOf(hr, p.id, b.period), fresh = u.items.filter(i => !done.has(`${i.req}:${i.date}`));
+        if (!fresh.length || !u.wd) continue;
+        for (const req of [...new Set(fresh.map(i => i.req))]) {
+          const n = fresh.filter(i => i.req === req).length;
+          out.push({ id: `ADJ-UNP-${req}-${b.period}`, emp: p.id, fromPeriod: b.period, toPeriod: nextPeriod(b.period), amount: -R(baseOf(hr, p.id) * n / u.wd), ref: req, tx: null, reason: `Cuti tidak dibayar ${n} hari disetujui setelah ${b.id} dikunci`, rule: `RUL-UNP v${ruleAt(f7, 'RUL-UNP', b.period).v}` });
+        }
+      }
+    }
+    if (!p5 || !hr.f5) return out;
     for (const b of f7.batches.filter(x => x.snapshot && x.period === '2611')) {
       const rate = ruleAt(f7, 'RUL-KOM', b.period).value;
       for (const r of hr.f5.refunds.filter(x => !(b.snapshot.refunds || []).includes(x.id))) { const l = p5.lines(hr).find(x => x.line === r.line); if (l) out.push({ id: `ADJ-${r.id}`, emp: l.emp, fromPeriod: b.period, toPeriod: '2612', amount: -R(l.dur / 60 * rate), ref: l.line, tx: l.tx, reason: `Refund ${r.id} setelah ${b.id} dikunci`, rule: `RUL-KOM v${ruleAt(f7, 'RUL-KOM', b.period).v}` }); }
@@ -147,8 +176,9 @@ const HR7 = (() => {
   function ensure(hr) {
     if (hr.f2 && hr.f2.f7) { hr.f7 = hr.f2.f7; delete hr.f2.f7; }
     if (!hr.f7 || !hr.f7.seeded) { const k = hr.f7; hr.f7 = seed(hr); if (k) hr.f7.scenarios.push(...(k.scenarios || [])); }
+    for (const r0 of RULES0) if (!hr.f7.rules.some(r => r.id === r0.id)) hr.f7.rules.push(JSON.parse(JSON.stringify(r0)));
     const b10 = hr.f7.batches.find(b => b.period === '2610');
-    if (b10 && !b10.snapshot && hr.people.length && !building) { building = true; const lines = hr.people.map(p => slip(hr, p.id, '2610')).filter(s => s && !s.excluded); b10.snapshot = { at: '2026-10-29 15:00', by: 'Manager HRD', lines, versions: lines[0]?.versions || {} }; const pays = {}; lines.forEach((l, k) => { pays[l.emp] = k === 17 ? { status: 'Gagal', ref: 'BANK-2610-RTN-01', note: 'Rekening tidak valid' } : k === 40 ? { status: 'Sebagian', ref: 'BANK-2610-0002', note: 'Transfer kedua menunggu' } : { status: 'Sudah Bayar', ref: 'BANK-2610-0001' }; }); b10.payments = pays; building = false; }
+    if (b10 && !b10.snapshot && hr.people.length && !building) { building = true; const lines = hr.people.map(p => slip(hr, p.id, '2610')).filter(s => s && !s.excluded); b10.snapshot = { at: '2026-10-29 15:00', by: 'Manager HRD', lines, unpaid: unpaidKeys(hr, '2610'), versions: lines[0]?.versions || {} }; const pays = {}; lines.forEach((l, k) => { pays[l.emp] = k === 17 ? { status: 'Gagal', ref: 'BANK-2610-RTN-01', note: 'Rekening tidak valid' } : k === 40 ? { status: 'Sebagian', ref: 'BANK-2610-0002', note: 'Transfer kedua menunggu' } : { status: 'Sudah Bayar', ref: 'BANK-2610-0001' }; }); b10.payments = pays; building = false; }
     return hr.f7;
   }
 
@@ -183,7 +213,7 @@ const HR7 = (() => {
         if (action === 'pay-review') { b.status = 'Direview'; b.reviewer = by; b.history.push([now(), `Direview ${by} · ${anomalies(hr, b.period).length} anomali dicatat`]); return b.id; }
         if (b.status !== 'Direview') throw new Error('Review batch sebelum mengunci.');
         const lines = hr.people.map(p => slip(hr, p.id, b.period)).filter(s => s && !s.excluded);
-        b.status = 'Dikunci'; b.approvedAt = now(); b.snapshot = { at: now(), by, lines, versions: lines[0]?.versions || {}, sources: sources(hr, b.period).map(s => s.slice(0, 2)), refunds: (hr.f5?.refunds || []).map(r => r.id) };
+        b.status = 'Dikunci'; b.approvedAt = now(); b.snapshot = { at: now(), by, lines, unpaid: unpaidKeys(hr, b.period), versions: lines[0]?.versions || {}, sources: sources(hr, b.period).map(s => s.slice(0, 2)), refunds: (hr.f5?.refunds || []).map(r => r.id) };
         b.history.push([now(), `Disetujui & dikunci ${by} · snapshot ${lines.length} slip`]);
         audit(hr, by, 'Kunci payroll', `${b.id} · ${lines.length} slip · THP ${totals(lines).thp}`, { object: 'Payroll', ref: b.id });
         return b.id;
@@ -272,10 +302,10 @@ const HR7 = (() => {
   const COA = [['6101', 'Beban Gaji', 'D'], ['6102', 'Beban Tunjangan', 'D'], ['6103', 'Beban Komisi', 'D'], ['6104', 'Beban Lembur', 'D'], ['6105', 'Beban BPJS Perusahaan', 'D'], ['6106', 'Beban Reimburse', 'D'], ['2101', 'Utang Gaji', 'K'], ['2102', 'Utang PPh 21', 'K'], ['2103', 'Utang BPJS', 'K'], ['1104', 'Piutang Karyawan (kasbon)', 'K']];
   function journal(hr, period) {
     const ls = batchLines(hr, period), by = {};
-    for (const l of ls) { const cc = l.loc === H.HQ.id ? `HQ-${l.division}` : l.loc; const t = totals([l]); by[cc] = by[cc] || { cc, '6101': 0, '6102': 0, '6103': 0, '6104': 0, '6105': 0, '6106': 0, adj: 0 }; by[cc]['6101'] += t.base + t.adj; by[cc]['6102'] += t.allow; by[cc]['6103'] += t.comm; by[cc]['6104'] += t.ot; by[cc]['6105'] += t.employer; by[cc]['6106'] += t.rmb; by[cc].round = (by[cc].round || 0) + (t.gross - t.base - t.adj - t.allow - t.comm - t.ot - t.rmb); }
+    for (const l of ls) { const cc = l.loc === H.HQ.id ? `HQ-${l.division}` : l.loc; const t = totals([l]); by[cc] = by[cc] || { cc, '6101': 0, '6102': 0, '6103': 0, '6104': 0, '6105': 0, '6106': 0, adj: 0 }; by[cc]['6101'] += t.base + t.adj + t.unp; by[cc]['6102'] += t.allow; by[cc]['6103'] += t.comm; by[cc]['6104'] += t.ot; by[cc]['6105'] += t.employer; by[cc]['6106'] += t.rmb; by[cc].round = (by[cc].round || 0) + (t.gross - t.base - t.adj - t.unp - t.allow - t.comm - t.ot - t.rmb); }
     const t = totals(ls); const debit = t.gross + t.employer, credit = t.thp + t.pph + t.bpjs + t.employer + t.ksb;
     return { id: `JRN-${batchId(period)}`, centers: Object.values(by), debit, credit, lines: [['2101', 'Utang Gaji (THP)', t.thp], ['2102', 'Utang PPh 21', t.pph], ['2103', 'Utang BPJS (karyawan + perusahaan)', t.bpjs + t.employer], ['1104', 'Piutang Karyawan (cicilan kasbon)', t.ksb]], balanced: Math.abs(debit - credit) < 1 };
   }
-  return { PERIODS, MONTHS, SEASON, REPORTS, COA, ensure, ruleAt, pphRate, slip, batchOf, batchLines, excluded, totals, anomalies, sources, adjustments, commissionLines, activity, baseOf, ledger, budgetYear, ratios, journal, batchId };
+  return { PERIODS, MONTHS, SEASON, REPORTS, COA, ensure, ruleAt, pphRate, slip, batchOf, batchLines, excluded, totals, anomalies, sources, adjustments, unpaidOf, nextPeriod, commissionLines, activity, baseOf, ledger, budgetYear, ratios, journal, batchId };
 })();
 if (typeof module !== 'undefined') module.exports = HR7;
