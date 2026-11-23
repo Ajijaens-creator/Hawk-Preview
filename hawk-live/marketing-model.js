@@ -200,6 +200,50 @@ const MK = (() => {
     });
     return Object.values(byCampaign);
   }
-  return { PLATFORMS, ADS, BENCH, SEO, KOL_STAGES, CONV_CATS, adsView, kolOf, div };
+  /* ---------- F2-06 Social Media · rentang tanggal (NP-COM-SM-001) ----------
+     Tanggal kalender "YYYY-MM-DD", inklusif di kedua ujung. Tanggal acuan = TODAY demo (DATA DEMO);
+     production nanti memakai tanggal sistem Asia/Makassar. Timestamp "YYYY-MM-DD HH:mm" dibaca sebagai WITA. */
+  const RANGE_PRESETS = [['today', 'Hari Ini'], ['7d', '7 Hari Terakhir'], ['30d', '30 Hari Terakhir'], ['month', 'Bulan Ini'], ['lastmonth', 'Bulan Lalu'], ['custom', 'Custom']];
+  const isDate = (v) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(String(v || ''))) return false; const d = new Date(v + 'T00:00:00Z'); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v; };
+  const addDays = (v, n) => { const d = new Date(v + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const monthStart = (v) => v.slice(0, 8) + '01';
+  const monthEnd = (v) => addDays(addDays(monthStart(v), 32).slice(0, 8) + '01', -1);
+  const dayOf = (ts) => String(ts || '').slice(0, 10);
+  function presetRange(key, ref) {
+    switch (key) {
+      case 'today': return { start: ref, end: ref };
+      case '7d': return { start: addDays(ref, -6), end: ref };
+      case '30d': return { start: addDays(ref, -29), end: ref };
+      case 'lastmonth': { const end = addDays(monthStart(ref), -1); return { start: monthStart(end), end }; }
+      default: return { start: monthStart(ref), end: ref };
+    }
+  }
+  /* Dari parameter URL → rentang aktif. Tidak valid → kembali ke default Bulan Ini dengan pesan error.
+     Parameter lama period=YYYY-MM tetap dibaca (bulan penuh, dipotong di tanggal acuan). */
+  function socialRange(params = {}, ref = TODAY) {
+    let key = RANGE_PRESETS.some(([k]) => k === params.range) ? params.range : '';
+    if (!key && /^\d{4}-\d{2}$/.test(params.period || '')) {
+      const start = params.period + '-01';
+      if (isDate(start) && start <= ref) { const e = monthEnd(start); return { key: 'custom', start, end: e > ref ? ref : e, error: '' }; }
+    }
+    if (!key) key = 'month';
+    if (key !== 'custom') return { key, ...presetRange(key, ref), error: '' };
+    const err = validateRange(params.start, params.end, ref);
+    if (err) return { key: 'month', ...presetRange('month', ref), error: err };
+    return { key, start: params.start, end: params.end, error: '' };
+  }
+  function validateRange(start, end, ref = TODAY) {
+    if (!isDate(start) || !isDate(end)) return 'Isi tanggal mulai dan tanggal selesai dengan benar.';
+    if (start > end) return 'Tanggal mulai tidak boleh setelah tanggal selesai.';
+    if (end > ref || start > ref) return 'Tanggal masa depan tidak dapat dipilih.';
+    return '';
+  }
+  const inRange = (r, ts) => { const d = dayOf(ts); return !!d && d >= r.start && d <= r.end; };
+  /* Bulan kalender yang dicakup rentang; metrik platform hanya tersedia per bulan → satu bulan atau null. */
+  const singleMonth = (r) => r.start.slice(0, 7) === r.end.slice(0, 7) ? r.start.slice(0, 7) : null;
+  /* Status publikasi untuk tampilan: Published / Scheduled (mendatang) / Overdue / Draft. Dihitung saat tampil, data tidak diubah.
+     Overdue = masih scheduled dan tanggal jadwal sebelum tanggal acuan (jadwal hari ini masih dianggap mendatang). */
+  const pubStatus = (p, ref = TODAY) => p.status === 'published' ? 'Published' : p.status === 'draft' ? 'Draft' : dayOf(p.scheduledAt) < ref ? 'Overdue' : 'Scheduled';
+  return { PLATFORMS, ADS, BENCH, SEO, KOL_STAGES, CONV_CATS, adsView, kolOf, div, RANGE_PRESETS, presetRange, socialRange, validateRange, inRange, singleMonth, pubStatus, isDate, addDays };
 })();
 if (typeof module !== 'undefined') module.exports = MK;
