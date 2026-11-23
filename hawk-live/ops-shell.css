@@ -1,0 +1,56 @@
+.opx .opx-context{margin:0 0 20px;display:flex;flex-direction:column;gap:10px}
+.opx .opx-context-strip{display:flex;gap:10px;align-items:center;font-size:11px;background:#fffaf0;color:#8a6e2d;border:1px dashed #d7c794;border-radius:8px;padding:8px 11px}
+.opx .opx-context-strip b{letter-spacing:.45px;white-space:nowrap}
+.opx .opx-context-strip .opx-mode{margin-left:auto;color:#9b926f;white-space:nowrap}
+.opx .opx-context-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;box-shadow:var(--shadow)}
+.opx .profile-chip{display:flex;gap:10px;align-items:center;background:var(--black);color:#eee8d9;border:0;border-radius:10px;padding:6px 12px 6px 6px;text-align:left;cursor:pointer}
+.opx .profile-chip b{display:block;font-size:12px}
+.opx .profile-chip small{display:block;font-size:10px;color:#b8aa7e}
+.opx .opx-outlet{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-weight:600}
+.opx .opx-outlet select{min-width:190px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--ink)}
+.opx .opx-date{font-size:11px;color:var(--muted);margin-left:auto}
+.opx .opx-denied{max-width:720px}
+.opx-overlay{position:relative;z-index:120}
+#dx-tour-root[hidden]{display:none!important}
+@media(max-width:720px){
+.opx .opx-context-strip{font-size:10px;align-items:flex-start}
+.opx .opx-context-strip .opx-mode{display:none}
+.opx .opx-date{display:none}
+.opx .opx-outlet{width:100%}
+.opx .opx-outlet select{flex:1;min-width:0}
+}
+body.opx-page .side-field{display:none}
+.opx .wh-route{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer;font-weight:400}
+.opx .wh-route small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
+.opx .wh-route input{margin-top:3px}
+.opx .wh-table td small{display:block;color:var(--muted);font-size:11px}
+.opx .wh-links{flex-wrap:wrap;gap:8px}
+/* A02: elemen absolut di dalam tabel (label/tooltip) harus ikut terpotong oleh wadah scroll tabel, bukan melebarkan halaman mobile */
+.opx .table-wrap{position:relative}
+
+/* Paritas Looker: badge perubahan vs periode lalu pada kartu KPI */
+.opx .an-kpi-change{display:inline-flex;align-items:baseline;gap:4px;margin-top:4px;font-size:10px;font-weight:650;letter-spacing:0;white-space:nowrap;color:#8a8370}
+.opx .an-kpi-change em{font-style:normal;font-weight:450;font-size:8.5px;color:#a49c8b}
+.opx .an-kpi-change.good{color:#1f6b3a}
+.opx .an-kpi-change.bad{color:#b23b2e}
+
+/* Peta "satu sumber entri" per dashboard (ops-single-entry.js) */
+.se-modal .se-block { border: 1px solid var(--line, #e6e3dc); border-radius: 12px; padding: 14px; background: var(--card, #fff); }
+.se-modal .se-block h3 { margin: 0 0 8px; font-size: 15px; }
+.se-modal .se-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 14px; margin-bottom: 10px; }
+.se-modal .se-facts small { display: block; color: var(--muted, #6b6b6b); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.se-modal .se-facts p { margin: 2px 0 0; font-size: 13px; }
+.se-modal .se-table td small { display: block; color: var(--muted, #6b6b6b); font-size: 12px; margin-top: 2px; }
+.se-modal .se-table td small.se-ep { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; word-break: break-word; }
+.se-modal .se-table td .badge + .badge { margin-left: 4px; }
+.se-modal .se-summary { gap: 6px; }
+/* Hospitality Case Workbench (ops-cases.js) */
+.case-table .case-row { cursor: pointer; }
+.case-table .case-row:hover td, .case-table .case-row:focus td { background: var(--canvas, #f7f7f5); }
+.case-table td small { display: block; color: var(--muted, #6b6b6b); font-size: 11px; margin-top: 2px; }
+.case-drawer .case-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px 14px; }
+.case-drawer .case-facts small, .case-drawer .case-links small { display: block; color: var(--muted, #6b6b6b); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.case-drawer .case-facts .badge { margin-right: 6px; }
+.case-drawer .case-links { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.case-drawer .case-timeline { margin: 4px 0 0; padding-left: 18px; font-size: 13px; display: grid; gap: 6px; }
+.case-drawer .case-step { border-top: 1px solid var(--line, #e6e3dc); padding-top: 10px; }

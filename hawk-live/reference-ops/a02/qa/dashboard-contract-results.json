@@ -1,0 +1,80 @@
+{
+  "bundleSha256": "82753b260dbf02db039445bb505ca2bb7ddacd422151af95549169d7b30e5b0e",
+  "date": "2026-11-19",
+  "mode": "offline Node VM; not browser or production verification",
+  "checks": [
+    {
+      "name": "14 dashboard definitions and 13 shared source groups",
+      "status": "pass"
+    },
+    {
+      "name": "Jro Okta distinct role; no automatic sensitive permissions",
+      "status": "pass"
+    },
+    {
+      "name": "All 14 × 2 periods × 2 tabs render with live action registry",
+      "status": "pass"
+    },
+    {
+      "name": "Source Vegen / Beacon / RSF inventory included with source binding",
+      "status": "pass"
+    },
+    {
+      "name": "Financial synthetic data reconciles and YTD trend chronological",
+      "status": "pass"
+    },
+    {
+      "name": "Supervisor scope restricted for all four accounts and writes",
+      "status": "pass"
+    },
+    {
+      "name": "Staff financial dashboard and integrated source edits blocked",
+      "status": "pass"
+    },
+    {
+      "name": "Reception entry handler → Head review → both feedback dashboards update",
+      "status": "pass"
+    },
+    {
+      "name": "Critical manual entry requires final assurance after Head",
+      "status": "pass"
+    },
+    {
+      "name": "Unverified official metric remains missing; no false X-Score",
+      "status": "pass"
+    },
+    {
+      "name": "Supervisor CSV scoped and staff P&L export blocked",
+      "status": "pass"
+    },
+    {
+      "name": "Demo Experience Center 8 scenarios / 6 populated roles / 39 steps; Jro shared data and workspace",
+      "status": "pass"
+    },
+    {
+      "name": "Shared dataset IDs unique; source and prototype are offline",
+      "status": "pass"
+    }
+  ],
+  "passed": 13,
+  "failed": 0,
+  "dashboardViews": 14,
+  "sourceGroups": 13,
+  "demoCenter": {
+    "scenarios": 8,
+    "roles": 6,
+    "steps": 39
+  },
+  "sourceInventory": {
+    "vegen": 23,
+    "beaconCycles": 4,
+    "beaconMeasurements": 77,
+    "rsfDimensions": 17,
+    "rsfItems": 209
+  },
+  "limitations": [
+    "Visual browser review unavailable: cloud browser rejects file URLs.",
+    "Backend/API/RBAC security and live AI not tested or connected.",
+    "Unverified source formulas remain pending; synthetic demo math only."
+  ]
+}

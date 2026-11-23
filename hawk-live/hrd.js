@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal kelima: HRD & Human Growth · F1 Fondasi dan Beranda — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal kelima: HRD & Human Growth · F1 Fondasi dan Beranda — DATA DEMO / SIMULASI.
    F1-NV01 Beranda HRD · NV02 Struktur Organisasi · NV03 Roster & Penempatan · NV04 Akun, Role & Akses ·
    NV05 Pengaturan Perusahaan · NV06 Pengaturan Sistem · NV07 Audit Aktivitas · NV08 Kelola Data Demo R&D.
    Sidebar mengikuti inventaris GajiHub (reference-hrd/hrd-rnd/REFERENSI.md + menu.js), lalu modul HAWK tambahan.
@@ -358,7 +358,7 @@ function demo(params) {
     <form class="workflow-form" data-submit="hr:dummy-delete" data-after="hrd-demo"><label>Ketik <b>HAPUS DUMMY</b> untuk melanjutkan<input name="confirm" required autocomplete="off" autofocus></label><div class="actions"><button class="btn">Hapus dataset dummy</button><a class="btn ghost" href="#hrd-demo">Batal</a></div></form></section>` : '';
   return metrics([['Profil demo', num(demoCount), 'Dataset DS-HRD-DEMO-F1'], ['Record non-demo', num(real.length), real.length ? real.map(r => r.id).join(', ') : 'Data asli dimuat terpisah'], ['Rekonsiliasi', demoCount ? `${checks.filter(c => c.ok).length}/${checks.length}` : '—', demoCount ? 'cek roster brief' : 'dataset kosong'], ['Status dataset', demoCount ? 'Aktif' : 'Dikosongkan']]) +
     confirmBox +
-    (demoCount ? card('Rekonsiliasi 158 profil', table(['Pemeriksaan', 'Roster brief', 'Dataset', 'Hasil'], checks.map(c => [esc(c.label), num(c.want), num(c.got), c.ok ? chip('Cocok', 'ready') : chip('Selisih', 'bad')])) + '<p class="muted small">Nama samaran unik dan profil sintetis. Akun role demo memakai nama tim HAWK yang sudah ada (Made Gunarsa, Eni Restini, Tika, Mila, Tina, Dewik, Wahyudi, Asri).</p>') : emptyCard()) +
+    (demoCount ? card('Rekonsiliasi 158 profil', table(['Pemeriksaan', 'Roster brief', 'Dataset', 'Hasil'], checks.map(c => [esc(c.label), num(c.want), num(c.got), c.ok ? chip('Cocok', 'ready') : chip('Selisih', 'bad')])) + '<p class="muted small">Nama samaran unik dan profil sintetis. Akun role demo memakai nama tim JAENS yang sudah ada (Made Gunarsa, Eni Restini, Tika, Mila, Tina, Dewik, Wahyudi, Asri).</p>') : emptyCard()) +
     card('Kelola dataset', del ? `<div class="actions">${demoCount ? `<a class="btn" href="#hrd-demo?confirm=1">Hapus dataset dummy…</a>` : btn('dummy-load', 'Mulai kembali dari fixture')}${real.some(r => r.id === 'EMP-REAL-001') ? '' : btn('test-add-real', 'Tambah 1 record non-demo (uji)', {}, 'ghost')}</div><p class="muted small">Skenario uji: tambah record non-demo, hapus dataset dummy, lalu pastikan record non-demo masih ada di ${link('hrd-roster', 'roster')}. Pada implementasi cloud, penghapusan wajib dibatasi ke dataset berlabel demo.</p>` : `<p>Hanya Manager HRD yang dapat menghapus atau memuat ulang dataset dummy.</p>`);
 }
 

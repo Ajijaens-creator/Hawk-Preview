@@ -1,0 +1,1620 @@
+{
+  "schema_version": "1.2",
+  "artifact": "HAWK Operational capability manifest",
+  "date": "2026-11-19",
+  "timezone": "Asia/Makassar",
+  "status": "prototype_and_design_only",
+  "phase_count": 12,
+  "counts_note": "67 item tetap merupakan pemecahan cakupan desain/handoff pada 12 fase F-OP00–F-OP11. Revisi A02 memetakan 14 dashboard ke item existing, bukan menambah 14 fase, bukan 67 fitur production selesai atau 67 backend baru. Hitungan ini terpisah dari 17 kapabilitas Supervisor dalam audit NP-OP00.",
+  "evidence_rule": "Existing backend statuses are Claude-reported unless explicitly stated. UI observation does not prove backend operation.",
+  "prototype_status_rule": "Status menggambarkan cakupan prototype lokal dan dokumen, bukan backend/live integration. Cakupan QA revisi A02 hanya mengikuti docs/QA-A02.md; qa/integration-results.json, qa/browser-results.json dan hasil v1.0/v1.1 lainnya adalah bukti historis yang tidak otomatis dijalankan ulang atau berlaku pada A02.",
+  "phases": [
+    {
+      "id": "F-OP00",
+      "title": "Foundation & Existing Mapping",
+      "module_key": "foundation",
+      "dependencies": [],
+      "features": [
+        {
+          "id": "F-OP00.01",
+          "name": "Brand HAWK NV-47",
+          "reference_frontend_status": "ui_observed",
+          "existing_backend_status": "not_applicable",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "REUSE",
+          "sources": [
+            "REF-005"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/style.css; docs/brand-analysis.md",
+          "prototype_implemented": "Shell charcoal, canvas ivory, kartu putih dan gold mengikuti observasi NV-47.",
+          "prototype_remaining": "Bukan audit menyeluruh brand seluruh portal; aset logo resmi masih memakai implementasi existing nanti.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP00.02",
+          "name": "Operational shell & portal switch",
+          "reference_frontend_status": "ui_observed",
+          "existing_backend_status": "authorization_unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "EXTEND",
+          "sources": [
+            "REF-006",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: H.render, H.actions.portals",
+          "prototype_implemented": "Shell Operational, sidebar role dan popup konteks portal. Demo Experience Center menjadi entry khusus di atas sidebar; POS & Receptionist menuju canonical POS existing.",
+          "prototype_remaining": "Portal lain dijelaskan sebagai integrasi; aplikasi Sales/Finance/HRD/Commercial tidak dibangun dalam HTML ini.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP00.03",
+          "name": "Evidence & feature register",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "not_applicable",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "developer_artifact",
+          "decision": "BUILD",
+          "sources": [
+            "REF-001",
+            "REF-003",
+            "REF-011",
+            "REF-012",
+            "REF-020",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "docs/reference-register.md; docs/feature-manifest.json",
+          "prototype_implemented": "Register sumber dan dashboard diperbarui A02; 14 halaman Looker dan empat sheet workbook telah diinspeksi read-only, dengan batas audit formula/backend dipisahkan.",
+          "prototype_remaining": "Editor/data-source Looker, repository backend production dan runtime integrasi belum diaudit ulang.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP00.04",
+          "name": "Shared demo data adapter",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "proposed_only",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js; src/analytics-data.js; src/demo-experience.js",
+          "prototype_implemented": "State lokal bersama, pergantian akun dan reset demo; 14 model dashboard membaca record sintetis yang sama. Demo Center A02 memiliki delapan skenario dan enam tampilan peran.",
+          "prototype_remaining": "Tidak ada adapter API live, autentikasi server, sinkronisasi antarperangkat atau persistensi production.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        }
+      ],
+      "prototype_status_counts": {
+        "read_only_demo": 1,
+        "partial_demo": 1,
+        "developer_artifact": 1,
+        "interactive_demo": 1
+      }
+    },
+    {
+      "id": "F-OP01",
+      "title": "Organization & Access",
+      "module_key": "access",
+      "dependencies": [
+        "F-OP00"
+      ],
+      "features": [
+        {
+          "id": "F-OP01.01",
+          "name": "Akun dan hierarki operasional",
+          "reference_frontend_status": "reported_partial",
+          "existing_backend_status": "reported_missing_reporting_line",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "EXTEND",
+          "sources": [
+            "REF-001",
+            "REF-002",
+            "REF-004",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: H.accounts; src/governance.js: H.pages.settings",
+          "prototype_implemented": "Akun demo Eni Restini, Tika, Hospitality Manager Jro Okta, empat Supervisor outlet, Head dan staff; model dashboard bersama mengikuti scope.",
+          "prototype_remaining": "Role Hospitality adalah desain/demo, bukan provisioning akun production atau perubahan otomatis reporting line HRD. CRUD organisasi, import HRD, mutasi nyata dan IAM server belum tersedia.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP01.02",
+          "name": "Scope satu outlet Supervisor",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_missing_outlet_isolation",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-001",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: H.scope; src/analytics-data.js: canViewDashboard, records, canEnter, canReview",
+          "prototype_implemented": "UI dan fungsi data demo menjaga Supervisor satu outlet; analytics staff hanya sumber/dashboard relevan. Role lead membaca empat outlet sesuai lingkup yang dipilih.",
+          "prototype_remaining": "Seluruh fixture offline tetap berada dalam file browser. Ini simulasi kebijakan, bukan batas keamanan backend atau uji isolasi production.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP01.03",
+          "name": "Role permission checkbox & effective access",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_partial_access_model",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "EXTEND",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/governance.js: govPermissions, allowed, configured",
+          "prototype_implemented": "Checkbox akses menu role delegasi, sesuai ceiling default, hasil terlihat saat ganti akun.",
+          "prototype_remaining": "Granular action matrix, role CRUD, izin individual dan backend IAM belum diimplementasikan.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP01.04",
+          "name": "Department Head & delegasi review",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js: H.canTask, task-head-approve, task-final-verify",
+          "prototype_implemented": "Head meninjau departemen sendiri; critical diteruskan ke Supervisor.",
+          "prototype_remaining": "Delegasi formal berversi dan sign-off enterprise tetap membutuhkan backend.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP01.05",
+          "name": "Policy verifikasi hybrid berversi",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/governance.js: govPolicies",
+          "prototype_implemented": "Manager/Assistant memilih routine self-completion atau Head review; critical tetap Supervisor.",
+          "prototype_remaining": "Belum ada immutable policy version per task, effective date atau migration policy historis.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "partial_demo": 3,
+        "interactive_demo": 2
+      }
+    },
+    {
+      "id": "F-OP02",
+      "title": "Management Dashboard",
+      "module_key": "dashboard",
+      "dependencies": [
+        "F-OP01"
+      ],
+      "features": [
+        {
+          "id": "F-OP02.01",
+          "name": "Supervisor outlet command center",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_partial_sources",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-002",
+            "REF-013",
+            "REF-012",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: H.pages.dashboard; src/analytics.js",
+          "prototype_implemented": "Command Center harian dipertahankan, ditambah akses Dashboard Kinerja dengan 14 halaman sumber yang dapat dibuka dan ditelusuri oleh Supervisor dalam satu outlet.",
+          "prototype_remaining": "Command Center dan analytics memakai fixture periode berbeda yang diberi label. Health Score resmi dan actual API production belum tersedia.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP02.02",
+          "name": "Manager, Assistant & Hospitality multi-outlet view",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_partial_sources",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-001",
+            "REF-004",
+            "REF-012",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js; src/analytics.js; src/analytics-data.js",
+          "prototype_implemented": "Eni Restini, Tika dan Jro Okta dapat membaca model 14 dashboard yang sama, konsolidasi/fokus empat outlet, dengan permission tindakan berbeda.",
+          "prototype_remaining": "Akses lintas outlet, field-level permission dan delegasi nyata harus ditegakkan backend; belum menjadi dashboard reporting production.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP02.03",
+          "name": "Health Score / coverage / freshness",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing_score_formula",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "contract_pending",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002",
+            "REF-011",
+            "REF-012"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: dashboard; src/performance.js: scoreView",
+          "prototype_implemented": "Coverage record demo dan batas sumber terlihat; formula Health Score/X-Score resmi tetap ditahan. Data kosong dibedakan dari nol.",
+          "prototype_remaining": "Tidak ada definisi resmi kesehatan, freshness API, rekonsiliasi production atau agregasi X-Score yang disahkan.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP02.04",
+          "name": "KPI revenue, utilization, review & stock alert",
+          "reference_frontend_status": "directly_inspected_looker_ui_14_pages",
+          "existing_backend_status": "reported_existing_metrics_mixed_mock",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-001",
+            "REF-002",
+            "REF-011",
+            "REF-012",
+            "REF-020",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/analytics-data.js; src/analytics.js; src/analytics-interactions.js; src/operations.js",
+          "prototype_implemented": "14 dashboard berdasarkan struktur referensi Looker: kartu, diagram, filter tanggal/outlet, tabel, detail sumber dan panel insight demo. Revenue/Finance dipadankan pada fixture; data entry manual terverifikasi memperbarui read model bersama.",
+          "prototype_remaining": "Widget, formula dan data-source Looker belum direkonsiliasi dalam editor. Rumus demo tidak otomatis resmi; actual POS/Finance/HRD/Inventory, polling live dan health score belum terintegrasi.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        }
+      ],
+      "prototype_status_counts": {
+        "interactive_demo": 2,
+        "contract_pending": 1,
+        "partial_demo": 1
+      }
+    },
+    {
+      "id": "F-OP03",
+      "title": "POS & Receptionist · Existing workspace",
+      "module_key": "pos",
+      "dependencies": [
+        "F-OP01"
+      ],
+      "features": [
+        {
+          "id": "F-OP03.01",
+          "name": "Booking & appointment daftar",
+          "reference_frontend_status": "ui_observed_sandbox",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "REUSE",
+          "sources": [
+            "REF-001",
+            "REF-006",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: external POS navigation; src/pos-existing.js; docs/POS-Existing-Parity-Checklist.md",
+          "prototype_implemented": "Menu membuka POS existing. Dashboard, Appointment Book dan seluruh fungsi milik aplikasi existing wajib dipertahankan; gateway memberi acuan paritas.",
+          "prototype_remaining": "Claude memeriksa source, menu, fungsi, role, API dan formula existing. Isi di balik login belum diaudit pada pekerjaan ini. UI POS sintetis v1 tidak diekspos sebagai pengganti.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP03.02",
+          "name": "Appointment Gantt room/therapist",
+          "reference_frontend_status": "reported_existing_ui",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "REUSE",
+          "sources": [
+            "REF-002",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: external POS navigation; src/pos-existing.js; docs/POS-Existing-Parity-Checklist.md",
+          "prototype_implemented": "Menu membuka POS existing. Dashboard, Appointment Book dan seluruh fungsi milik aplikasi existing wajib dipertahankan; gateway memberi acuan paritas.",
+          "prototype_remaining": "Claude memeriksa source, menu, fungsi, role, API dan formula existing. Isi di balik login belum diaudit pada pekerjaan ini. UI POS sintetis v1 tidak diekspos sebagai pengganti.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP03.03",
+          "name": "Availability per outlet",
+          "reference_frontend_status": "reported_existing_ui",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "REUSE",
+          "sources": [
+            "REF-002",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: external POS navigation; src/pos-existing.js; docs/POS-Existing-Parity-Checklist.md",
+          "prototype_implemented": "Menu membuka POS existing. Dashboard, Appointment Book dan seluruh fungsi milik aplikasi existing wajib dipertahankan; gateway memberi acuan paritas.",
+          "prototype_remaining": "Claude memeriksa source, menu, fungsi, role, API dan formula existing. Isi di balik login belum diaudit pada pekerjaan ini. UI POS sintetis v1 tidak diekspos sebagai pengganti.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP03.04",
+          "name": "Check-in / start / complete treatment",
+          "reference_frontend_status": "ui_observed_sandbox",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "REUSE",
+          "sources": [
+            "REF-001",
+            "REF-006",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: booking-transition, completeTreatment",
+          "prototype_implemented": "Workspace Therapist dapat menyelesaikan fixture layanan lokal lalu membuat turnover. Operasi check-in/start POS mengikuti POS existing.",
+          "prototype_remaining": "Alur fixture ini belum terhubung ke POS existing dan tidak membuktikan status/API/backend. Claude wajib memetakan event dan menjaga alur POS identik.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP03.05",
+          "name": "Invoice/payment/cashier & retail",
+          "reference_frontend_status": "ui_observed_sandbox",
+          "existing_backend_status": "reported_partial_retail",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "EXTEND",
+          "sources": [
+            "REF-001",
+            "REF-006",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: external POS navigation; src/pos-existing.js; docs/POS-Existing-Parity-Checklist.md",
+          "prototype_implemented": "Menu membuka POS existing. Dashboard, Appointment Book dan seluruh fungsi milik aplikasi existing wajib dipertahankan; gateway memberi acuan paritas.",
+          "prototype_remaining": "Claude memeriksa source, menu, fungsi, role, API dan formula existing. Isi di balik login belum diaudit pada pekerjaan ini. UI POS sintetis v1 tidak diekspos sebagai pengganti.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP03.06",
+          "name": "Sales booking/reschedule/cancel handoff",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "existing_engine_permission_gap",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-004",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: external POS navigation; src/pos-existing.js; docs/POS-Existing-Parity-Checklist.md",
+          "prototype_implemented": "Menu membuka POS existing. Dashboard, Appointment Book dan seluruh fungsi milik aplikasi existing wajib dipertahankan; gateway memberi acuan paritas.",
+          "prototype_remaining": "Claude memeriksa source, menu, fungsi, role, API dan formula existing. Isi di balik login belum diaudit pada pekerjaan ini. UI POS sintetis v1 tidak diekspos sebagai pengganti.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP03.07",
+          "name": "Next-slot dan cross-outlet availability contract",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing_aggregation",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "EXTEND",
+          "sources": [
+            "REF-002",
+            "REF-004",
+            "REF-018"
+          ],
+          "production_ready": false,
+          "prototype_source": "docs/NB-OP01.md; docs/NP-OP01.md; docs/data-contracts.json",
+          "prototype_implemented": "Aturan reuse engine, cross-outlet izin dan validasi slot didokumentasikan.",
+          "prototype_remaining": "Tidak ada next-available search atau aggregate cross-outlet availability engine di prototype.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "reference_only": 6,
+        "partial_demo": 1
+      }
+    },
+    {
+      "id": "F-OP04",
+      "title": "Daily Operations",
+      "module_key": "daily",
+      "dependencies": [
+        "F-OP01",
+        "F-OP03"
+      ],
+      "features": [
+        {
+          "id": "F-OP04.01",
+          "name": "Opening checklist & sign-off",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/daily.js: daily-check, daily-head-review, daily-signoff",
+          "prototype_implemented": "Checklist area, review Head dan sign-off Supervisor dengan penguncian.",
+          "prototype_remaining": "Template/SOP berversi dan critical policy backend belum ada.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP04.02",
+          "name": "Shift briefing",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/daily.js: daily-briefing",
+          "prototype_implemented": "Form topik, agenda, peserta dan histori briefing lokal.",
+          "prototype_remaining": "Tidak mengganti presensi HRD; notification/event server belum tersedia.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP04.03",
+          "name": "Shift handover",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/daily.js: daily-handover, daily-handover-accept",
+          "prototype_implemented": "Handover dengan penerima, referensi tugas/issue dan konfirmasi diterima.",
+          "prototype_remaining": "Workflow lintas-shift resmi dan reminder backend belum tersedia.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP04.04",
+          "name": "Closing checklist & sign-off",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/daily.js: daily-signoff closing",
+          "prototype_implemented": "Checklist closing dan guard layanan aktif sebelum sign-off.",
+          "prototype_remaining": "Tidak melakukan tutup kasir, settlement atau posting jurnal.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP04.05",
+          "name": "EOD operational report",
+          "reference_frontend_status": "reported_partial_ui",
+          "existing_backend_status": "reported_partial_finance_daily",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/daily.js: eod, daily-eod",
+          "prototype_implemented": "EOD sumber sama, carryover issue, sign-off dengan dependency closing.",
+          "prototype_remaining": "Bukan laporan finansial resmi atau template period report lengkap.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "interactive_demo": 5
+      }
+    },
+    {
+      "id": "F-OP05",
+      "title": "Workforce, Tasks & Therapist",
+      "module_key": "workforce",
+      "dependencies": [
+        "F-OP01",
+        "F-OP03",
+        "F-OP04"
+      ],
+      "features": [
+        {
+          "id": "F-OP05.01",
+          "name": "Shift/presence overview",
+          "reference_frontend_status": "reported_existing_ui",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "REUSE",
+          "sources": [
+            "REF-001",
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: seed team; src/operations.js: therapist",
+          "prototype_implemented": "Shift, check-in dan presence sintetis dapat dibaca.",
+          "prototype_remaining": "Tidak ada input attendance, face/GPS/QR, leave atau rostering engine.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP05.02",
+          "name": "My Tasks & team board",
+          "reference_frontend_status": "ui_observed_related_hrd",
+          "existing_backend_status": "unknown_for_operational",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004",
+            "REF-016"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js: tasks, taskCreate, task-start, taskEvidence",
+          "prototype_implemented": "My Tasks/team board, filter, assign PIC, mulai dan submit evidence teks.",
+          "prototype_remaining": "Evidence file/photo upload, recurrence dan server persistence belum tersedia.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP05.03",
+          "name": "Head review / Supervisor assurance",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js: task-head-approve, task-final-verify, taskReturn",
+          "prototype_implemented": "Review berjenjang, rework, completion timestamps dan histori lokal.",
+          "prototype_remaining": "Backend enforcement, immutable audit dan kebijakan formal berversi belum tersedia.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP05.04",
+          "name": "Recurring task & checklist linkage",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "docs/NB-OP01.md; docs/data-contracts.json",
+          "prototype_implemented": "Recurring task dan checklist/task relation tercantum pada blueprint.",
+          "prototype_remaining": "Tidak ada recurrence scheduler/template generator; hanya task seed dan event turnover demo.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP05.05",
+          "name": "Therapist mobile workspace",
+          "reference_frontend_status": "owner_requirement_no_verified_therapist_reference",
+          "existing_backend_status": "reported_existing_treatment_sources",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-004",
+            "REF-002"
+          ],
+          "production_ready": false,
+          "reference_note": "Files named Therapist View display Customer App panels; do not treat them as Therapist UI specifications.",
+          "prototype_source": "src/operations.js: H.pages.therapist; src/style.css",
+          "prototype_implemented": "Workspace therapist responsive, jadwal assignment, tugas dan context service.",
+          "prototype_remaining": "QR scan, GPS, payslip/earnings, consultation, offline sync dan SOS delivery belum dibangun.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP05.06",
+          "name": "Focus mode / room turnover handoff",
+          "reference_frontend_status": "owner_requirement_no_verified_therapist_reference",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004",
+            "REF-002"
+          ],
+          "production_ready": false,
+          "reference_note": "Files named Therapist View display Customer App panels; do not treat them as Therapist UI specifications.",
+          "prototype_source": "src/operations.js: focus-start, focus-confirm, completeTreatment",
+          "prototype_implemented": "Timer lokal, manual finish, room cleaning dan task turnover dengan booking reference.",
+          "prototype_remaining": "Tidak ada QR/sound/realtime countdown server; elapsed timer bukan status treatment authoritative.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP05.07",
+          "name": "Performance evidence to HRD",
+          "reference_frontend_status": "ui_observed_related_hrd",
+          "existing_backend_status": "reported_missing_ser",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-001",
+            "REF-007",
+            "REF-016"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: dailyView; src/governance.js: reports",
+          "prototype_implemented": "Evidence tugas yang sama dibaca RACE dan laporan.",
+          "prototype_remaining": "Tidak ada sinkronisasi aktual ke portal/engine HRD.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "read_only_demo": 1,
+        "interactive_demo": 3,
+        "reference_only": 1,
+        "partial_demo": 2
+      }
+    },
+    {
+      "id": "F-OP06",
+      "title": "Room, Facility & Inventory",
+      "module_key": "rooms-inventory",
+      "dependencies": [
+        "F-OP03",
+        "F-OP04",
+        "F-OP05"
+      ],
+      "features": [
+        {
+          "id": "F-OP06.01",
+          "name": "Room master & booked occupancy",
+          "reference_frontend_status": "reported_existing_ui",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "REUSE",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: seed rooms; src/operations.js: rooms, getRoom",
+          "prototype_implemented": "Master ruang fixture, tipe dan kondisi mengikuti perubahan booking demo.",
+          "prototype_remaining": "Tidak ada CRUD master, import room atau mapping hrd_location production.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.02",
+          "name": "Readiness / cleaning / inspection lifecycle",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: room-state, completeTreatment",
+          "prototype_implemented": "Perubahan cleaning/ready dengan catatan pemeriksaan, guard okupansi aktif.",
+          "prototype_remaining": "Demo memakai status ringkas; dual booking/readiness state, inspection queue dan policy engine lengkap belum ada.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.03",
+          "name": "Maintenance and facility issue",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: room-state; src/tasks-communication.js: issueCreate",
+          "prototype_implemented": "Maintenance/closed room dan issue penanganan lokal.",
+          "prototype_remaining": "Preventive maintenance calendar, asset history, parts/cost, SLA response belum tersedia.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.04",
+          "name": "Stock alert min/max",
+          "reference_frontend_status": "reported_existing_ui",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-001",
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: H.pages.inventory",
+          "prototype_implemented": "Stock snapshot per outlet, min/max dan penanda kosong/di bawah minimum.",
+          "prototype_remaining": "Tidak ada ledger live atau threshold Safe/Low/Critical resmi yang sudah disahkan.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.05",
+          "name": "Material request / replenishment",
+          "reference_frontend_status": "reported_existing_ui",
+          "existing_backend_status": "reported_existing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "REUSE",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: material-save, renderMaterialRequests",
+          "prototype_implemented": "Draft material request dari stock list atau form.",
+          "prototype_remaining": "Belum ada approval request, replenishment posting atau sambungan PR/PO ERP.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.06",
+          "name": "Physical receiving & discrepancy",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_existing_inventory_new_ops_link",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-004",
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: receipt-physical",
+          "prototype_implemented": "Jumlah fisik, catatan kondisi, discrepancy dan pemeriksaan ulang.",
+          "prototype_remaining": "Tidak ada barcode, file evidence, batch/expiry atau Inventory API.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.07",
+          "name": "Supervisor receiving verification",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "proposed_additive_policy",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: receipt-verify",
+          "prototype_implemented": "Supervisor verifikasi sesuai scope; receipt verified menunggu posting.",
+          "prototype_remaining": "Tidak mengubah ledger, tidak membuktikan idempotency layanan Inventory.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP06.08",
+          "name": "Inventory posting reference & BHP/linen",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_existing_ledger_linen_unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-004",
+            "REF-001"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/operations.js: inventory tabs",
+          "prototype_implemented": "Linen/supplies snapshot, BHP references dan penanda waiting for Inventory posting.",
+          "prototype_remaining": "Tidak ada posting_ref nyata, consumption/BOM, laundry cycle atau inventory ledger transaction.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "read_only_demo": 2,
+        "partial_demo": 4,
+        "interactive_demo": 2
+      }
+    },
+    {
+      "id": "F-OP07",
+      "title": "Communication & Issues",
+      "module_key": "communication",
+      "dependencies": [
+        "F-OP01",
+        "F-OP04",
+        "F-OP05",
+        "F-OP06"
+      ],
+      "features": [
+        {
+          "id": "F-OP07.01",
+          "name": "Outlet / department channels",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js: communication, commMessage",
+          "prototype_implemented": "Channel outlet/departemen, pesan lokal dan filter scope.",
+          "prototype_remaining": "Direct message/custom groups/file upload/mentions notification/real delivery belum tersedia.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP07.02",
+          "name": "Task / issue linked conversation",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js: taskComment, commMessage, issue-task",
+          "prototype_implemented": "Komentar task, tautan Task ID pada channel, issue→task terhubung.",
+          "prototype_remaining": "Attachment permissions/retention/transport server masih membutuhkan implementasi.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP07.03",
+          "name": "Issue center / severity / PIC / SLA",
+          "reference_frontend_status": "reference_image_only",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js: issueCreate, issueResolve",
+          "prototype_implemented": "Issue, severity, PIC department, resolution dan task penanganan.",
+          "prototype_remaining": "SLA policy/countdown, reopen state dan escalation tiers belum lengkap.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP07.04",
+          "name": "Escalation / notifications",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: notifications; src/tasks-communication.js: issueCreate",
+          "prototype_implemented": "Daftar perhatian review dan issue diarahkan ke Supervisor demo.",
+          "prototype_remaining": "Tidak ada push/email/WhatsApp, delivery receipts, automated escalation atau scheduler.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP07.05",
+          "name": "Operational event log",
+          "reference_frontend_status": "reported_partial_ui",
+          "existing_backend_status": "reported_partial_orm_audit",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "EXTEND",
+          "sources": [
+            "REF-002"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/core.js: H.log; src/governance.js: reports log",
+          "prototype_implemented": "Jejak aksi lokal sesuai sumber objek dan scope, ditampilkan sebagai log demo.",
+          "prototype_remaining": "Bukan audit trail server immutable atau seluruh event ERP.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "interactive_demo": 2,
+        "partial_demo": 2,
+        "read_only_demo": 1
+      }
+    },
+    {
+      "id": "F-OP08",
+      "title": "SER, Ambidex & RACE",
+      "module_key": "race",
+      "dependencies": [
+        "F-OP03",
+        "F-OP04",
+        "F-OP05",
+        "F-OP06",
+        "F-OP07"
+      ],
+      "features": [
+        {
+          "id": "F-OP08.01",
+          "name": "SER & KPI contract register",
+          "reference_frontend_status": "source_workbook_inspected",
+          "existing_backend_status": "reported_missing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "contract_pending",
+          "decision": "BUILD",
+          "sources": [
+            "REF-011",
+            "REF-001"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/ser-source-catalog.js; src/performance.js; docs/NP-OP01-ADDENDUM-A02-DASHBOARD-PARITY.md",
+          "prototype_implemented": "Register 23 indikator bulanan Vegen dalam tujuh domain berasal dari ekstraksi workbook dengan nama, satuan, bobot domain dan binding sel. SER 12 ekspektasi / 22 fitur telah diinventarisasi. Sepuluh contoh lama tidak diperlakukan sebagai daftar final.",
+          "prototype_remaining": "SER/Vegen sumber berstatus Inactived. Assignment outlet, departemen, PIC individu, goal/objective, tanggal efektif, formula arah/cap/zero handling dan persetujuan kontrak aktif belum lengkap. Bukan registry KPI production yang telah disahkan.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP08.02",
+          "name": "RACE Vegen / Beacons / success factors",
+          "reference_frontend_status": "source_workbook_inspected",
+          "existing_backend_status": "reported_missing_in_erp",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-007",
+            "REF-011",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/ser-source-catalog.js; src/performance.js: vegenView, beaconView, rsfView",
+          "prototype_implemented": "Empat siklus Beacon dengan 19/19/19/20 baris (77 pengukuran berulang) dan katalog 17 dimensi / 209 butir RSF dapat ditelusuri. RACE 1–4 bukan empat outlet. Ringkasan Vegen 21 butir dan Beacon enam aspek per siklus dibedakan.",
+          "prototype_remaining": "Katalog sumber adalah referensi historis, bukan seluruh workflow assessment aktif. Cascade assignment, full scoring, penanganan anomali formula dan approval kontrak belum selesai.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP08.03",
+          "name": "Daily RACE uses same Task ID",
+          "reference_frontend_status": "ui_observed_related_hrd",
+          "existing_backend_status": "unknown_for_operational",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-016"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: dailyView, perf-session",
+          "prototype_implemented": "Daily membaca Task ID sama, membedakan completed/verified dan menyimpan draft sesi.",
+          "prototype_remaining": "Tidak otomatis menghitung KPI atau mengirim score ke HRD.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP08.04",
+          "name": "Weekly RACE / R2Re",
+          "reference_frontend_status": "reference_link_only",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-008",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: rhythmView weekly, perf-session",
+          "prototype_implemented": "Draft Weekly/R2Re berisi hasil, hambatan dan komitmen.",
+          "prototype_remaining": "Struktur usulan belum dicocokkan alur AJI Creator; approval dan period close belum ada.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP08.05",
+          "name": "Monthly Reflection",
+          "reference_frontend_status": "reference_link_only",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-008",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: rhythmView monthly, perf-session",
+          "prototype_implemented": "Draft Monthly Reflection dan histori lokal.",
+          "prototype_remaining": "Tidak ada penutupan periode, appraisal HRD atau official score snapshots.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP08.06",
+          "name": "STRACON & prospective contract revisions",
+          "reference_frontend_status": "reference_link_only",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-008",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: rhythmView stracon, perf-session",
+          "prototype_implemented": "Usulan STRACON, alasan dan tanggal efektif sebagai draft.",
+          "prototype_remaining": "Tidak menerapkan perubahan target/bobot/kontrak atau approval revision engine.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP08.07",
+          "name": "Individual / department / outlet / consolidated X-Score",
+          "reference_frontend_status": "ui_observed_provisional",
+          "existing_backend_status": "formula_pending",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "contract_pending",
+          "decision": "BUILD",
+          "sources": [
+            "REF-007",
+            "REF-011",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: scoreView",
+          "prototype_implemented": "Empat tingkat score dijelaskan; angka resmi ditampilkan — / menunggu kontrak.",
+          "prototype_remaining": "Workbook tidak menyediakan formula akhir X-Score individu→departemen→outlet→seluruh operasional. Race Goal, Key Metrics dan RSF adalah konstruksi berbeda; normalisasi, bobot dan rollup resmi tetap pending.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP08.08",
+          "name": "Evidence / review / period snapshots",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/tasks-communication.js; src/performance.js; src/analytics-data.js; src/analytics-interactions.js",
+          "prototype_implemented": "Evidence/review task, draft RACE dan entry dashboard berbagi jejak sumber lokal. Entry manual mempunyai draft/submitted/verified/rejected, perbaikan draft/rejected, cegah self-approval dan verifikasi bertahap untuk sumber kritis.",
+          "prototype_remaining": "Tidak ada immutable closed-period snapshot, approval KPI official, audit server, concurrency atau history warehouse production.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        }
+      ],
+      "prototype_status_counts": {
+        "contract_pending": 2,
+        "partial_demo": 3,
+        "interactive_demo": 3
+      }
+    },
+    {
+      "id": "F-OP09",
+      "title": "Finance Budget Interface",
+      "module_key": "budget",
+      "dependencies": [
+        "F-OP01",
+        "F-OP06"
+      ],
+      "features": [
+        {
+          "id": "F-OP09.01",
+          "name": "Finance P1-P6 allocation / P7 result",
+          "reference_frontend_status": "ui_observed_demo",
+          "existing_backend_status": "budget_contract_new_integration_required",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-015"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: budget, BUDGETS",
+          "prototype_implemented": "P2/P4/P5/P6 nominal demo, P1 hanya %, P3 konteks, P7 hasil.",
+          "prototype_remaining": "Bukan full Finance 7P allocation engine; COA/master/source payload belum diintegrasikan.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP09.02",
+          "name": "Annual-quarter-month-week allocation",
+          "reference_frontend_status": "ui_observed_demo",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-015",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: budgetContext, perf-budget-period/month/week",
+          "prototype_implemented": "Perubahan annual/quarter/month/week dan distribusi seasonality contoh.",
+          "prototype_remaining": "Bobot mingguan adalah contoh 4 bagian, bukan kalender/policy Finance final.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP09.03",
+          "name": "Process / Place / Facility activity request",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown_budget_existing_pr",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-015",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: perf-budget-request",
+          "prototype_implemented": "Form aktivitas, nilai, OPEX/CAPEX, stream dan draft request lokal.",
+          "prototype_remaining": "Tidak menjadi PO/commitment, tidak mengurangi budget approved atau melakukan approval Finance.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP09.04",
+          "name": "Actual / open commitments / remaining",
+          "reference_frontend_status": "ui_observed_demo",
+          "existing_backend_status": "finance_mapping_pending",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-015"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: budgetContext, budgetTable",
+          "prototype_implemented": "Actual, open commitments dan remaining konsisten dari angka simulasi.",
+          "prototype_remaining": "Tidak ada GL reconciliation, actual source, budget locking atau multi-currency.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP09.05",
+          "name": "People percent-only privacy",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "unknown_authorization",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "read_only_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/performance.js: P1 People card",
+          "prototype_implemented": "People ditampilkan sebagai persen sintetis; tidak ada nominal payroll pada data budget demo.",
+          "prototype_remaining": "Production backend harus menerapkan field-level policy dan mencegah inference leakage.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP09.06",
+          "name": "Version / reforecast / approval lineage",
+          "reference_frontend_status": "ui_observed_demo",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-015"
+          ],
+          "production_ready": false,
+          "prototype_source": "docs/data-contracts.json; src/performance.js: perf-budget-detail",
+          "prototype_implemented": "Forecast contoh dan teks source lineage menjelaskan kebutuhan integrasi.",
+          "prototype_remaining": "Tidak ada version editor, reforecast approval atau actual journal lineage.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        }
+      ],
+      "prototype_status_counts": {
+        "partial_demo": 1,
+        "interactive_demo": 2,
+        "read_only_demo": 2,
+        "reference_only": 1
+      }
+    },
+    {
+      "id": "F-OP10",
+      "title": "Reports & Analytics",
+      "module_key": "reports",
+      "dependencies": [
+        "F-OP02",
+        "F-OP04",
+        "F-OP08",
+        "F-OP09"
+      ],
+      "features": [
+        {
+          "id": "F-OP10.01",
+          "name": "Daily / weekly / monthly report filters",
+          "reference_frontend_status": "directly_inspected_looker_ui",
+          "existing_backend_status": "reported_existing_sources",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-001",
+            "REF-002",
+            "REF-012",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/analytics.js; src/analytics-data.js; src/governance.js: reports",
+          "prototype_implemented": "Filter tanggal dan outlet pada 14 dashboard; fixture Januari–Oktober mendukung tren Revenue, P&L, Capacity, Waste, Maintenance dan Grooming. Sumber lain memakai Oktober. Ringkasan EOD/evidence/log sebelumnya tetap tersedia.",
+          "prototype_remaining": "Warehouse historis, refresh API, kalender kerja resmi, close period dan migrasi data actual belum diintegrasikan.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP10.02",
+          "name": "Outlet & department comparison",
+          "reference_frontend_status": "directly_inspected_looker_ui",
+          "existing_backend_status": "reported_partial_metrics",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "interactive_demo",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-002",
+            "REF-011",
+            "REF-012"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/analytics.js; src/analytics-data.js",
+          "prototype_implemented": "Perbandingan outlet/departemen, tren berurutan, tabel detail dan source drill-down sesuai scope pada data sintetis. Rasio dihitung dari numerator/denominator demo; bukan penjumlahan persen antarbulan.",
+          "prototype_remaining": "Definisi cohort, denominator, temporal assignment, pembobotan dan benchmark resmi harus dikonfirmasi; belum comparative analytics production.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP10.03",
+          "name": "HRD performance read model",
+          "reference_frontend_status": "ui_observed_related_hrd",
+          "existing_backend_status": "unknown",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "reference_only",
+          "decision": "INTEGRATE",
+          "sources": [
+            "REF-007",
+            "REF-004",
+            "REF-012",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "docs/data-contracts.json; docs/NB-OP01.md",
+          "prototype_implemented": "Dashboard kompetensi dan catatan sumber demo menggunakan employee reference sintetis; kebutuhan read model bersama HRD didokumentasikan.",
+          "prototype_remaining": "Tidak ada sinkronisasi HRD app, employee mapping nyata, appraisal production atau perhitungan X-Score individu resmi.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP10.04",
+          "name": "Rule-based insight / evidence export",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "reported_mock_insight",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-001",
+            "REF-002",
+            "REF-012",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/analytics-interactions.js; src/governance.js: gov-export",
+          "prototype_implemented": "Setiap kartu/diagram dapat membuka insight simulasi berbasis aturan, penjelasan sumber, standar demo berarah higher/lower/range serta tindak lanjut terkait tugas. Target belum disahkan tampil pending; kontribusi donut tidak otomatis diberi label baik/buruk.",
+          "prototype_remaining": "Tidak ada model AI/LLM live, standar industri resmi otomatis, scheduler, causal inference atau rekomendasi finansial production. Standar demo lokal bukan keputusan organisasi yang disahkan.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        }
+      ],
+      "prototype_status_counts": {
+        "interactive_demo": 2,
+        "reference_only": 1,
+        "partial_demo": 1
+      }
+    },
+    {
+      "id": "F-OP11",
+      "title": "Integration Readiness & UAT",
+      "module_key": "validation",
+      "dependencies": [
+        "F-OP00",
+        "F-OP01",
+        "F-OP02",
+        "F-OP03",
+        "F-OP04",
+        "F-OP05",
+        "F-OP06",
+        "F-OP07",
+        "F-OP08",
+        "F-OP09",
+        "F-OP10"
+      ],
+      "features": [
+        {
+          "id": "F-OP11.01",
+          "name": "Contract mapping register",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "not_applicable",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "developer_artifact",
+          "decision": "BUILD",
+          "sources": [
+            "REF-001",
+            "REF-003"
+          ],
+          "production_ready": false,
+          "prototype_source": "docs/feature-manifest.json; docs/data-contracts.json; docs/NP-OP01.md",
+          "prototype_implemented": "Kontrak usulan dan existing endpoint references dilabel tingkat bukti.",
+          "prototype_remaining": "Mapping repository/real endpoint/schema belum diperiksa ulang.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP11.02",
+          "name": "RBAC / privacy / conflict acceptance",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "requires_authorized_testing",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-003",
+            "REF-004"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/governance.js: validation; qa/integration-test.cjs",
+          "prototype_implemented": "UAT manual checklist dan VM tests untuk scope/state prototype.",
+          "prototype_remaining": "Bukan backend auth, IDOR/export security, concurrency atau penetration test.",
+          "qa_status": "historical_source_review_A02_regression_only_if_listed_in_docs_QA-A02_md"
+        },
+        {
+          "id": "F-OP11.03",
+          "name": "Workflow / formula / idempotency regression",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "requires_verified_contracts",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-001",
+            "REF-003"
+          ],
+          "production_ready": false,
+          "prototype_source": "qa/integration-test.cjs; docs/QA-checklist.md",
+          "prototype_implemented": "Skenario dan hasil tes v1.0/v1.1 tersimpan sebagai bukti historis. Pengujian revisi A02 hanya dinyatakan sesuai cakupan yang dicatat pada docs/QA-A02.md.",
+          "prototype_remaining": "Test lama tidak otomatis dijalankan ulang. Golden formula, regression API production, security dan concurrency test masih menunggu kontrak/lingkungan resmi.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        },
+        {
+          "id": "F-OP11.04",
+          "name": "Owner UAT & phased handoff",
+          "reference_frontend_status": "new_prototype",
+          "existing_backend_status": "not_applicable",
+          "backend_evidence_level": "not_independently_verified",
+          "prototype_status": "partial_demo",
+          "decision": "BUILD",
+          "sources": [
+            "REF-004",
+            "REF-017",
+            "REF-018",
+            "REF-021"
+          ],
+          "production_ready": false,
+          "prototype_source": "src/demo-experience.js; docs/NP-OP01-ADDENDUM-A02-DASHBOARD-PARITY.md; docs/QA-A02.md; README.md",
+          "prototype_implemented": "Demo Experience Center A02: delapan skenario, enam tampilan peran termasuk Hospitality Manager, walkthrough workspace dan pembedaan review manual versus pemeriksaan state lokal.",
+          "prototype_remaining": "Hasil demo bukan acceptance Owner, persetujuan merge/deploy, backend certification atau production readiness.",
+          "qa_status": "A02_scope_see_docs_QA-A02_md_not_historical_test_results"
+        }
+      ],
+      "prototype_status_counts": {
+        "developer_artifact": 1,
+        "partial_demo": 3
+      }
+    }
+  ],
+  "feature_count": 67,
+  "prototype_status_legend": {
+    "interactive_demo": "Alur lokal dapat dioperasikan dalam prototype, berdasarkan source review. Bukan bukti backend/live integration; lihat QA untuk cakupan tes aktual.",
+    "read_only_demo": "Tampilan atau read model demo tersedia; data sintetis/lokal, tidak melakukan operasi domain production.",
+    "partial_demo": "Bagian dari scope dapat ditinjau/dijalankan, tetapi bagian penting masih usulan/belum tersedia; baca implemented dan remaining.",
+    "reference_only": "Scope dijelaskan pada dokumen/teks referensi, belum ada workflow fungsional di HTML.",
+    "contract_pending": "UI sengaja menahan angka/proses resmi sampai kontrak sumber/rumus disahkan.",
+    "developer_artifact": "Dokumen/register teknis tersedia; bukan kapabilitas aplikasi/backend."
+  },
+  "coverage_review": {
+    "date": "2026-11-19",
+    "basis": "A02: direct read-only inspection of 14 Looker pages and original XLSX; source review of new analytics data/UI/interactions and SER catalog. Backend evidence remains Claude-reported unless separately verified.",
+    "scope": "offline prototype and source inventory",
+    "backend_verification": "none_new",
+    "test_results": "Current A02 scope: docs/QA-A02.md. Earlier QA artifacts are historical, not automatically rerun.",
+    "change_spec": "docs/NP-OP01-ADDENDUM-A02-DASHBOARD-PARITY.md"
+  },
+  "prototype_status_counts": {
+    "read_only_demo": 7,
+    "partial_demo": 22,
+    "developer_artifact": 2,
+    "interactive_demo": 24,
+    "contract_pending": 3,
+    "reference_only": 9
+  },
+  "audit_supervisor_baseline": {
+    "source": "NP-OP00 Report05 v1.1 supplied by Owner",
+    "evidence": "Claude-reported PARTIAL audit, not independently verified here",
+    "total_capabilities": 17,
+    "available": 1,
+    "integrate": 3,
+    "partial": 4,
+    "build_new": 9,
+    "not_same_as_manifest_items": true
+  },
+  "prototype_version": "1.2.0",
+  "canonical_pos_url": "https://preview.jaens.id/rnd-demo",
+  "pos_decision": "Existing POS is authoritative. Main menu opens it directly; no replacement POS dashboard or Appointment Book is exposed in this HTML.",
+  "dashboard_inventory": {
+    "scope": "A02 extension within existing F-OP02/F-OP08/F-OP10 items; not additional phases or backend feature count",
+    "page_count": 14,
+    "reference_evidence": "Looker viewer UI + Owner screenshots inspected 2026-11-19; editor calculated fields and data sources not verified",
+    "prototype_route": "#analytics",
+    "source_group_count": 13,
+    "pages": [
+      {
+        "id": "revenue",
+        "reference_title": "Revenue Overview",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/Bp6AG",
+        "source_group": "revenue",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "pnl",
+        "reference_title": "Profit and Loss",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_mugwu1ga8d",
+        "source_group": "finance",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "capacity",
+        "reference_title": "Capacity & Capability",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_3zil2g8a8d",
+        "source_group": "capacity",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "waste",
+        "reference_title": "Waste and Accuracy",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_2ar2th8a8d",
+        "source_group": "waste",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "reviews",
+        "reference_title": "Customer Review & Satisfaction",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_kc5n4w7b8d",
+        "source_group": "feedback",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "satisfaction",
+        "reference_title": "Customer Satisfaction & Complaints",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_d78u20gg8d",
+        "source_group": "feedback",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "retention",
+        "reference_title": "Rebooking & Customer Retention",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_kpp28ibc8d",
+        "source_group": "customer",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "complaints",
+        "reference_title": "Complain Handling Performance",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_e45tnvdc8d",
+        "source_group": "complaints",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "tripadvisor",
+        "reference_title": "Tripadvisor Performance",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_5bco89cd8d",
+        "source_group": "tripadvisor",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "maintenance",
+        "reference_title": "Maintenance Performance",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_72qja4ee8d",
+        "source_group": "maintenance",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "grading",
+        "reference_title": "Grading FO",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_io3sb5ge8d",
+        "source_group": "grading",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "competency",
+        "reference_title": "Team Competency & Readyness Bisma",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_7k7n43fe8d",
+        "source_group": "competency",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "grooming",
+        "reference_title": "Tracking Grooming",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_sbv7cmff8d",
+        "source_group": "grooming",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      },
+      {
+        "id": "process",
+        "reference_title": "Bisnis Proses",
+        "reference_url": "https://datastudio.google.com/reporting/82810819-9efc-4576-bcc5-91be28c8e414/page/p_lw56eqbd8d",
+        "source_group": "process",
+        "prototype_status": "interactive_demo",
+        "production_ready": false
+      }
+    ],
+    "shared_source_note": "reviews and satisfaction share feedback records; integrated domain totals remain read-only and source-owned",
+    "ai_status": "rule_based_simulation_no_live_model",
+    "official_formula_status": "pending_validation_including_complaint_rate_and_xscore",
+    "dataset": "synthetic_only_no_workbook_financial_or_employee_actuals"
+  },
+  "ser_source_inventory": {
+    "visible_sheets": 4,
+    "ser_expectations": 12,
+    "ser_feature_categories": 14,
+    "ser_features": 22,
+    "vegen_domains": 7,
+    "vegen_indicators": 23,
+    "beacon_cycles": 4,
+    "beacon_rows_per_cycle": [
+      19,
+      19,
+      19,
+      20
+    ],
+    "beacon_measurement_rows": 77,
+    "rsf_dimensions": 17,
+    "rsf_assessment_items": 209,
+    "note": "77 measurement rows are repeated across cycles, not 77 unique KPIs or four outlets. 209 RSF items are a bank of instruments, not daily KPI count. SER/Vegen Inactived; four Beacon blocks Active in historical workbook.",
+    "formula_validation": "pending; source anomalies retained in audit, not silently adopted"
+  },
+  "demo_experience_a02": {
+    "scenario_count": 8,
+    "role_panel_count": 6,
+    "hospitality_manager_demo": {
+      "account_id": "hosp-jro-okta",
+      "name": "Jro Okta",
+      "role": "hospitality",
+      "scope": "four_outlet_dashboard_model_with_bounded_quality_permissions"
+    },
+    "qa": "See docs/QA-A02.md; not proof of production accounts or backend authorization"
+  }
+}

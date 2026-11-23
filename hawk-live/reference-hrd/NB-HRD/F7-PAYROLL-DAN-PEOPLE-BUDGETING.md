@@ -1,6 +1,6 @@
 # NB F7 · Payroll & People Budgeting
 
-Portal kelima HAWK ERP · Manager HRD dan Finance & Accounting sesuai kewenangan · R&D · Data dummy
+Portal kelima JAENS ERP · Manager HRD dan Finance & Accounting sesuai kewenangan · R&D · Data dummy
 
 [NB induk](README.md) · [F1 Fondasi](F1-FONDASI-DAN-BERANDA.md) · [F2 Operasi HRD](F2-OPERASI-HRD-DAN-DIREKTORI.md) · [F3 Planner](F3-PLANNER-DAN-WORKPLACE.md) · [F4 Rekrutmen](F4-REKRUTMEN-DAN-PENEMPATAN.md) · [F5 Manpower & POS](F5-MANPOWER-PLANNING-DAN-POS.md) · [F6 Kinerja](F6-HUMAN-GROWTH-DAN-KINERJA.md) · [Preview](../hrd-rnd/index.html) · [Inventaris GajiHub](../hrd-rnd/REFERENSI.md) · [Panduan brand](../HAWK-BRAND-GUIDELINES.md)
 
@@ -8,7 +8,7 @@ Portal kelima HAWK ERP · Manager HRD dan Finance & Accounting sesuai kewenangan
 
 Hubungkan layanan POS, komisi, komponen penggajian, slip, rekonsiliasi Finance dan rencana biaya tenaga kerja. Gunakan identitas serta scope F1, kontrak/penempatan dan presensi terverifikasi F2, Task ID F3, tanggal mulai kerja F4, serta transaksi dan kebutuhan kapasitas F5. Definisi metrik berizin mengacu ke KPI Library F6. F8 membaca agregat dan snapshot yang sama untuk Monthly Reflection serta e-Deck.
 
-Navigasi memakai Payroll, Keuangan, Laporan, Pengaturan dan People Budgeting yang sudah tercatat. Kasbon/Reimburse menjadi submenu sementara Keuangan berdasarkan kartu pengaturan pada referensi GajiHub. Semua layar mengikuti shell charcoal, ivory dan gold HAWK. Nominal diberi unit rupiah, grafik disertai legenda serta tabel nilai, dan filter tetap terbawa ketika membuka rincian.
+Navigasi memakai Payroll, Keuangan, Laporan, Pengaturan dan People Budgeting yang sudah tercatat. Kasbon/Reimburse menjadi submenu sementara Keuangan berdasarkan kartu pengaturan pada referensi GajiHub. Semua layar mengikuti shell charcoal, ivory dan gold JAENS. Nominal diberi unit rupiah, grafik disertai legenda serta tabel nilai, dan filter tetap terbawa ketika membuka rincian.
 
 ## Dua belas layar dan kriteria penerimaan
 

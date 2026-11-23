@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · model F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · model F8 AmbideX, Reporting & Reflection — DATA DEMO / SIMULASI.
    Race Vegen (6 indikator, kontrak berversi), Race Beacon (5 kelompok, kontrak sendiri) & Success Factors, Daily/Weekly Race dari Planner F3,
    Monthly Reflection (rekonsiliasi F5–F7, temuan → F3), STRACON (keputusan → Workplan → evaluasi), e-Deck 8 halaman dengan snapshot berversi,
    Pusat Laporan & Jejak Bukti. Memperluas HR.EXT. Tanpa jaringan. */
@@ -13,7 +13,7 @@ const HR8 = (() => {
 
   /* ---------- metrik Race: sumber hidup F4–F7 bila ada, selain itu fixture workbook ---------- */
   const FIX = {
-    'Revenue per Employee': ['Rp', 23000000, 21000000, 'Finance + HG (simulasi)'], 'Development HAWK': ['%', 100, 75, 'Milestone HAWK'], 'Strategic Partnership HWC × Jaens Wellness': ['%', 100, 90, 'Milestone kemitraan'],
+    'Revenue per Employee': ['Rp', 23000000, 21000000, 'Finance + HG (simulasi)'], 'Development JAENS': ['%', 100, 75, 'Milestone JAENS'], 'Strategic Partnership HWC × Jaens Wellness': ['%', 100, 90, 'Milestone kemitraan'],
     'Turnover': ['%', 2, 1.2, 'Direktori F2 (pergerakan karyawan)', 'max'], 'Absenteeism': ['%', 85, null, 'Definisi denominator perlu dikonfirmasi'], 'Exit Interview': ['%', 100, 90, 'Log exit interview'], 'BPJS Compliance': ['Dok', 1, 1, 'Laporan BPJS F7'],
     'Uniform Request & Fulfillment': ['Hari', 7, 6, 'Permintaan seragam', 'max'], 'Recruitment Care Estate': ['%', 100, 70, 'Permintaan SDM Care Estate'], 'Recruitment HWC': ['%', 100, 60, 'Permintaan SDM HWC'], 'Share Loker': ['Dok', 6, 5, 'Kanal lowongan F4'],
     'Staff Database Update': ['Dok', 1, 1, 'Audit direktori F2'], 'Employee Loyalty': ['Dok', 1, 1, 'Survei'], 'Training & Learning Program': ['Dok', 1, 1, 'Program pelatihan F6'], 'Pelatihan therapist reguler': ['Jam', 138, 145, 'Log pelatihan F6'], 'Pelatihan therapist baru': ['Jam', 240, 190, 'Onboarding F4/F6'],
@@ -42,7 +42,7 @@ const HR8 = (() => {
   }
   const PILLARS = [
     ['IND-1', 'Financial Efficiency & Value Creation', 20, 'Executive Financial Performance', ['Rasio biaya tenaga kerja', 'Revenue per Employee', 'Therapist Utility']],
-    ['IND-2', 'Collaboration Group', 10, 'Collaboration Group', ['Development HAWK', 'Strategic Partnership HWC × Jaens Wellness']],
+    ['IND-2', 'Collaboration Group', 10, 'Collaboration Group', ['Development JAENS', 'Strategic Partnership HWC × Jaens Wellness']],
     ['IND-3', 'Stability & Risk Governance', 20, 'Risk Control & Compliance Assurance', ['Turnover', 'Absenteeism', 'Exit Interview', 'BPJS Compliance', 'Uniform Request & Fulfillment']],
     ['IND-4', 'Talent Flow, Talent Engine, Pipeline', 20, 'Talent Management & Workforce Readiness', ['Recruitment Jaens Spa', 'Recruitment Care Estate', 'Recruitment HWC', 'Share Loker', 'Talent Readiness', 'Staff Database Update', 'Employee Loyalty']],
     ['IND-5', 'Growth, Learning and Capability', 20, 'Learning & Capability Development', ['Training & Learning Program', 'Pelatihan therapist reguler', 'Pelatihan therapist baru', 'Progress Training', 'Onboarding']],

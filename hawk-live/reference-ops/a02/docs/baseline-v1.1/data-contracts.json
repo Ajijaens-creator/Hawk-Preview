@@ -1,0 +1,660 @@
+{
+  "schema_version": "1.0",
+  "title": "HAWK Operational proposed data contracts",
+  "date": "2026-11-18",
+  "timezone": "Asia/Makassar",
+  "status": "DESIGN_PROPOSAL_NOT_VERIFIED_API",
+  "purpose": "Menyelaraskan frontend prototype dengan pemilik data backend; nama model/field ini usulan, bukan bukti endpoint tersedia.",
+  "network_policy": {
+    "prototype": "offline_only",
+    "live_api_calls": false,
+    "outbound_messages": false,
+    "production_access": false
+  },
+  "contract_rules": [
+    "Single canonical ID per domain; all prototype fixture IDs are demo-only and must never be assumed to be production IDs.",
+    "Every mutable resource carries record_version. Reject stale writes with explicit conflict handling.",
+    "Every business mutation requires actor authorization and outlet scope on the server, not a trusted location_id from the browser.",
+    "Every operation that can repeat uses an idempotency key scoped to operation and actor/company as appropriate.",
+    "Money uses integer minor units and currency; no binary floating-point for financial computation.",
+    "Date-only business periods are interpreted in Asia/Makassar; instant timestamps use RFC3339 with UTC/offset.",
+    "Missing, unavailable, provisional and verified are distinct from numeric zero.",
+    "Events/read models do not create an alternate writer. Failed delivery has retry, deduplication, reconciliation and observable state.",
+    "Budget actual and commitments follow Finance definitions; commitments already realized are not subtracted twice.",
+    "Percentage-only People access excludes nominal data from payload, export, logs and hidden DOM."
+  ],
+  "evidence_levels": [
+    "owner_decision",
+    "reported_code_finding",
+    "ui_observed",
+    "proposed",
+    "demo",
+    "unknown"
+  ],
+  "response_envelope": {
+    "fields": {
+      "data": "object|array",
+      "meta": "ResponseMeta"
+    },
+    "ResponseMeta": {
+      "source_system": "POS|HRD|FINANCE|INVENTORY|OPERATIONAL|PERFORMANCE|DEMO",
+      "source_ref": "canonical source identifier or read-model lineage",
+      "as_of": "RFC3339 timestamp",
+      "period": "start/end date, timezone, calendar semantics",
+      "data_status": "demo|verified|provisional|unavailable|stale",
+      "formula_version": "string|null",
+      "coverage": "number|null (0..100, explicitly percent)",
+      "outlet_scope": "authorized outlet IDs only",
+      "warnings": "array of machine readable warning codes"
+    }
+  },
+  "identity_and_access": {
+    "EmployeeRef": {
+      "employee_id": "HRD canonical ID",
+      "display_name": "allowed display name",
+      "department_id": "HRD mapped ID",
+      "employment_status": "as defined by HRD",
+      "source_system": "HRD"
+    },
+    "OperationalAssignment": {
+      "assignment_id": "string",
+      "employee_id": "EmployeeRef",
+      "role_id": "role catalog ID",
+      "outlet_ids": "array; supervisor active length MUST equal 1",
+      "department_ids": "array",
+      "valid_from": "RFC3339",
+      "valid_to": "RFC3339|null",
+      "record_version": "integer"
+    },
+    "PermissionGrant": {
+      "permission_id": "namespace.action",
+      "actions": [
+        "view",
+        "create",
+        "edit",
+        "approve",
+        "export",
+        "configure"
+      ],
+      "scope": "self|department|outlet|authorized_outlets",
+      "delegated_by": "authorized actor ID",
+      "expires_at": "RFC3339|null",
+      "explicit_deny": "boolean"
+    },
+    "permission_constraints": [
+      "No self-escalation or granting above delegation ceiling",
+      "HRD organizational authority does not imply finance transaction authority",
+      "No frontend role switcher in production",
+      "Revocation invalidates authorization at next request and session policy as defined",
+      "Supervisor cannot gain additional outlet by editing grant"
+    ],
+    "demo_accounts": [
+      {
+        "name": "Eni Restini",
+        "role": "ops_manager",
+        "outlet_ids": [
+          "demo-ubud",
+          "demo-shanti",
+          "demo-triloka",
+          "demo-bisma"
+        ]
+      },
+      {
+        "name": "Tika",
+        "role": "ops_assistant",
+        "outlet_ids": [
+          "demo-ubud",
+          "demo-shanti",
+          "demo-triloka",
+          "demo-bisma"
+        ]
+      },
+      {
+        "name": "Supervisor Ubud",
+        "role": "ops_supervisor",
+        "outlet_ids": [
+          "demo-ubud"
+        ]
+      },
+      {
+        "name": "Supervisor Shanti",
+        "role": "ops_supervisor",
+        "outlet_ids": [
+          "demo-shanti"
+        ]
+      },
+      {
+        "name": "Supervisor Triloka",
+        "role": "ops_supervisor",
+        "outlet_ids": [
+          "demo-triloka"
+        ]
+      },
+      {
+        "name": "Supervisor Bisma",
+        "role": "ops_supervisor",
+        "outlet_ids": [
+          "demo-bisma"
+        ]
+      }
+    ]
+  },
+  "canonical_ownership": [
+    {
+      "domain": "employee, shift, attendance",
+      "writer": "HRD",
+      "operational_action": "read/reference; propose corrections through HRD"
+    },
+    {
+      "domain": "lead, channel, communications attribution",
+      "writer": "Sales CRM",
+      "operational_action": "read only relevant customer service context"
+    },
+    {
+      "domain": "guest master",
+      "writer": "existing customer master",
+      "operational_action": "reference canonical customer ID"
+    },
+    {
+      "domain": "booking, appointment, treatment resource assignment",
+      "writer": "existing POS appointment engine",
+      "operational_action": "commands through authorized existing service"
+    },
+    {
+      "domain": "invoice, payment, refund, GL",
+      "writer": "existing POS/Finance service per verified boundary",
+      "operational_action": "authorized reference/read, not local financial recompute"
+    },
+    {
+      "domain": "item, stock ledger, receipt posting",
+      "writer": "Inventory/Purchasing under Finance portal",
+      "operational_action": "physical receipt and verification reference"
+    },
+    {
+      "domain": "budget, COA, financial actual",
+      "writer": "Finance",
+      "operational_action": "read allocation, submit request"
+    },
+    {
+      "domain": "task, checklist, physical readiness, issue",
+      "writer": "Operational additive services",
+      "operational_action": "create/update with policy"
+    },
+    {
+      "domain": "contract KPI, score snapshot",
+      "writer": "shared Performance service after design verification",
+      "operational_action": "reference operational source evidence; not duplicate actual entry"
+    }
+  ],
+  "models": {
+    "AppointmentReadModel": {
+      "owner": "existing POS engine",
+      "fields": {
+        "appointment_id": "canonical ID",
+        "outlet_id": "HRD/location mapped ID",
+        "customer_ref": "minimal authorized customer fields",
+        "scheduled_start": "RFC3339",
+        "scheduled_end": "RFC3339",
+        "treatment_id": "catalog ID",
+        "therapist_ids": "array of HRD IDs",
+        "room_ids": "array of room IDs",
+        "status_code": "preserve existing enum; mapping not invented",
+        "invoice_ref": "canonical ID|null",
+        "sales_ref": "CRM reference|null",
+        "record_version": "integer"
+      },
+      "commands": [
+        "book",
+        "reschedule",
+        "cancel",
+        "check_in",
+        "start",
+        "complete"
+      ],
+      "command_rule": "Existing service rechecks availability and policy. Payment/refund never implied by cancel."
+    },
+    "RoomReadModel": {
+      "owners": {
+        "room_master": "POS",
+        "occupancy": "POS",
+        "physical_readiness": "Operational"
+      },
+      "fields": {
+        "room_id": "canonical ID",
+        "outlet_id": "canonical ID",
+        "capacity": "from room type",
+        "booking_state": "free|occupied|reserved|unknown",
+        "readiness_state": "ready|needs_cleaning|cleaning|awaiting_check|maintenance|closed|unknown (proposed)",
+        "assigned_cleaner_id": "HRD ID|null",
+        "last_cleaned_at": "RFC3339|null",
+        "inspection_ref": "task/checklist ID|null",
+        "next_appointment_ref": "canonical ID|null",
+        "effective_bookability": "engine-derived, not UI guessed"
+      },
+      "invariants": [
+        "Cleaning does not clear occupied booking",
+        "Treatment completion does not set room ready",
+        "Maintenance must participate in shared availability contract"
+      ]
+    },
+    "Task": {
+      "owner": "Operational",
+      "fields": {
+        "task_id": "canonical Operational ID shared with Daily RACE/My Day",
+        "outlet_id": "canonical ID",
+        "department_id": "canonical ID",
+        "pic_employee_id": "HRD ID",
+        "supporting_employee_ids": "array",
+        "template_id": "string|null",
+        "policy_version": "string",
+        "risk_level": "routine|critical",
+        "state": "assigned|in_progress|submitted|head_review|supervisor_review|rework|blocked|completed|cancelled (proposed)",
+        "due_at": "RFC3339",
+        "started_at": "RFC3339|null",
+        "submitted_at": "RFC3339|null",
+        "verified_at": "RFC3339|null",
+        "completed_at": "RFC3339|null",
+        "evidence_refs": "array",
+        "linked_object": "type/id",
+        "record_version": "integer"
+      },
+      "invariants": [
+        "Submission and verification timestamps stay distinct",
+        "Required reviewer follows task policy version",
+        "Missing evidence blocks verified completion when required",
+        "Daily RACE refers to task, not re-entered task duplicate"
+      ]
+    },
+    "ChecklistRun": {
+      "owner": "Operational",
+      "fields": {
+        "run_id": "string",
+        "outlet_id": "string",
+        "shift_id": "HRD ref|null",
+        "template_id": "string",
+        "template_version": "string",
+        "kind": "opening|closing|cleaning|facility",
+        "items": "item_id/status/evidence_ref/actor/time",
+        "critical_failures": "array",
+        "head_reviews": "array",
+        "supervisor_signoff": "actor/time/reason|null",
+        "state": "draft|in_progress|awaiting_review|signed_off|exception"
+      },
+      "invariant": "High completion percentage cannot suppress unresolved critical failures."
+    },
+    "PhysicalReceipt": {
+      "owner": "Operational for physical evidence; Inventory for posting",
+      "fields": {
+        "physical_receipt_id": "string",
+        "outlet_id": "string",
+        "inventory_document_ref": "PO/transfer/receiving canonical ID",
+        "lines": "item_id/expected_qty/received_qty/unit/condition/discrepancy/evidence",
+        "received_by": "HRD ID",
+        "received_at": "RFC3339",
+        "verified_by": "HRD ID|null",
+        "verified_at": "RFC3339|null",
+        "status": "draft|recorded|discrepancy|awaiting_verification|verified|posting_pending|posted|rejected",
+        "posting_ref": "Inventory canonical ID|null",
+        "idempotency_key": "string",
+        "record_version": "integer"
+      },
+      "invariants": [
+        "Supervisor verified does not mean stock posted",
+        "No duplicate Inventory ledger",
+        "Partial delivery and rejection preserve physical evidence"
+      ]
+    },
+    "Issue": {
+      "owner": "Operational",
+      "fields": {
+        "issue_id": "string",
+        "outlet_id": "string",
+        "category": "room|service|stock|safety|facility|other",
+        "severity": "configured policy",
+        "pic_employee_id": "HRD ID",
+        "source_object": "type/id",
+        "state": "open|triaged|in_progress|awaiting_review|resolved|reopened",
+        "sla_policy_version": "string|null",
+        "due_at": "RFC3339|null",
+        "resolution": "text/evidence/actor/time|null"
+      },
+      "note": "SLA values are not official until policy approved."
+    },
+    "CommunicationThread": {
+      "owner": "shared Communication service",
+      "fields": {
+        "thread_id": "string",
+        "outlet_scope": "authorized scopes",
+        "department_scope": "authorized scopes",
+        "linked_object": "task/issue/room/receipt reference|null",
+        "participants": "authorized identity refs",
+        "messages": "message_id/actor/body/evidence_ref/time",
+        "delivery_status": "local_demo|queued|sent|failed",
+        "retention_policy": "configured ID"
+      },
+      "invariants": [
+        "Object link never bypasses authorization",
+        "Sending chat does not mutate booking/task status",
+        "No outbound service from offline prototype"
+      ]
+    },
+    "KPIContract": {
+      "owner": "Performance governance",
+      "fields": {
+        "contract_id": "string",
+        "version": "string",
+        "effective_from": "date",
+        "effective_to": "date|null",
+        "scope": "individual|department|outlet|operational",
+        "scope_id": "canonical ID",
+        "indicator_id": "stable key",
+        "source_sheet_range": "workbook evidence pointer",
+        "definition": "approved text",
+        "unit": "canonical unit",
+        "direction": "higher_better|lower_better|band|binary|pending",
+        "target": "value|null",
+        "weight_percent": "number|null",
+        "actual_source": "domain/ref/period/query-version",
+        "achievement_rule": "formula ID + version or pending",
+        "aggregation_rule": "approved ID or pending",
+        "missing_data_rule": "explicit approved policy",
+        "reviewer_role": "authorized role",
+        "state": "draft|reviewed|approved|closed|superseded"
+      },
+      "invariants": [
+        "No unsupported X-Score formula",
+        "No summing percent metrics",
+        "Closed-period corrections use a revision",
+        "Template per-scope weights validate as contract defines; 100% only for applicable complete contract"
+      ]
+    },
+    "RACECycle": {
+      "owner": "Performance workflow",
+      "fields": {
+        "cycle_id": "string",
+        "cadence": "daily|weekly_r2re|monthly_reflection|stracon",
+        "scope": "individual|department|outlet|operational",
+        "scope_id": "canonical ID",
+        "period": "date range",
+        "contract_ref": "ID/version",
+        "task_refs": "canonical Task IDs",
+        "evidence_refs": "array",
+        "reflection": "text",
+        "blockers": "array",
+        "next_commitments": "array",
+        "review_status": "draft|submitted|reviewed|returned",
+        "score_ref": "ScoreSnapshot|null"
+      },
+      "note": "Field names are proposed; match AJI Creator reference in phase OP08."
+    },
+    "ScoreSnapshot": {
+      "owner": "Performance",
+      "fields": {
+        "snapshot_id": "string",
+        "contract_ref": "ID/version",
+        "scope": "individual|department|outlet|operational",
+        "scope_id": "string",
+        "period": "date range",
+        "score": "number|null",
+        "status": "not_calculated|provisional|verified",
+        "coverage_percent": "number|null",
+        "formula_version": "string|null",
+        "source_refs": "array",
+        "approved_by": "actor|null",
+        "approved_at": "RFC3339|null"
+      },
+      "prototype_default": {
+        "score": null,
+        "status": "not_calculated",
+        "formula_version": null,
+        "reason": "Formula X-Score resmi belum diverifikasi"
+      }
+    },
+    "BudgetReadModel": {
+      "owner": "Finance",
+      "fields": {
+        "budget_version": "string",
+        "outlet_id": "string",
+        "division_id": "string",
+        "category_code": "P1|P2|P3|P4|P5|P6; P7 is result",
+        "activity_id": "string|null",
+        "period": "year/quarter/month/week plus dates",
+        "allocation_minor": "integer|null authorized only",
+        "actual_minor": "integer|null authorized only",
+        "open_commitment_minor": "integer|null authorized only",
+        "remaining_minor": "integer|null computed by Finance contract",
+        "usage_percent": "number|null",
+        "data_status": "demo|verified|provisional",
+        "source_ref": "Finance ID"
+      },
+      "categories_ui_observed": {
+        "P1": "People",
+        "P2": "Product",
+        "P3": "Promotion",
+        "P4": "Process",
+        "P5": "Place",
+        "P6": "Facility",
+        "P7": "Profit (result, not spending budget)"
+      },
+      "privacy": {
+        "people_for_non_top_management": {
+          "allocation_minor": "omit",
+          "actual_minor": "omit",
+          "open_commitment_minor": "omit",
+          "remaining_minor": "omit",
+          "individual_payroll": "omit",
+          "usage_percent": "only allowed aggregate; protect against inference"
+        }
+      },
+      "invariants": [
+        "Finance owns allocation/revision",
+        "No local double counting budget across nested periods",
+        "Actual and commitment definitions reconciled",
+        "No nominal People in demo payload"
+      ]
+    },
+    "AuditEvent": {
+      "owner": "authoritative service performing action",
+      "fields": {
+        "event_id": "globally unique",
+        "actor_id": "identity ID",
+        "acting_role": "effective role",
+        "outlet_id": "canonical ID",
+        "action": "machine-readable name",
+        "object_ref": "type/id",
+        "previous_version": "integer|null",
+        "new_version": "integer|null",
+        "occurred_at": "RFC3339",
+        "correlation_id": "request/workflow reference",
+        "reason": "text|null",
+        "source_system": "writer domain"
+      },
+      "privacy": "Redact sensitive fields; no passwords, tokens or unnecessary guest/HR details."
+    }
+  },
+  "proposed_event_catalog": [
+    {
+      "name": "appointment.confirmed",
+      "writer": "POS",
+      "readers": [
+        "Operational",
+        "Sales",
+        "Performance"
+      ],
+      "note": "Emit or derive only after authoritative commit"
+    },
+    {
+      "name": "appointment.rescheduled",
+      "writer": "POS",
+      "readers": [
+        "Operational",
+        "Sales"
+      ],
+      "note": "Old and new slot references with record version"
+    },
+    {
+      "name": "treatment.completed",
+      "writer": "POS",
+      "readers": [
+        "Operational",
+        "HRD Performance",
+        "Sales Analytics"
+      ],
+      "note": "Does not imply cleaning complete, paid or recognized revenue"
+    },
+    {
+      "name": "room.readiness.changed",
+      "writer": "Operational",
+      "readers": [
+        "POS availability",
+        "Reception",
+        "Supervisor"
+      ],
+      "note": "Availability adapter must respect state with concurrency protection"
+    },
+    {
+      "name": "task.verified",
+      "writer": "Operational",
+      "readers": [
+        "Performance",
+        "HRD read model"
+      ],
+      "note": "KPI actual only when contract maps this event"
+    },
+    {
+      "name": "receipt.physical.verified",
+      "writer": "Operational",
+      "readers": [
+        "Inventory"
+      ],
+      "note": "Posting is separate authorized idempotent command"
+    },
+    {
+      "name": "inventory.receipt.posted",
+      "writer": "Inventory",
+      "readers": [
+        "Operational",
+        "Finance read model"
+      ],
+      "note": "Canonical posting reference; do not duplicate ledger"
+    },
+    {
+      "name": "budget.allocation.revised",
+      "writer": "Finance",
+      "readers": [
+        "Operational",
+        "HRD",
+        "Sales",
+        "Commercial"
+      ],
+      "note": "Versioned allocation and effective date; field-level permissions"
+    },
+    {
+      "name": "employee.assignment.changed",
+      "writer": "HRD/IAM integration",
+      "readers": [
+        "Operational authorization",
+        "all authorized portals"
+      ],
+      "note": "Atomic revocation of previous active Supervisor outlet scope"
+    },
+    {
+      "name": "performance.snapshot.approved",
+      "writer": "Performance",
+      "readers": [
+        "HRD",
+        "Operational management"
+      ],
+      "note": "Approved contract/version with source coverage"
+    }
+  ],
+  "existing_api_references_as_reported": [
+    {
+      "reference": "GET /spa-appointment/available-therapists",
+      "source": "Report 05 §6.1",
+      "verification": "reported_only",
+      "purpose": "one outlet availability"
+    },
+    {
+      "reference": "GET /spa-appointment/available-rooms",
+      "source": "Report 05 §6.1",
+      "verification": "reported_only",
+      "purpose": "one outlet room availability"
+    },
+    {
+      "reference": "POST /spa-appointment/save",
+      "source": "Report 05 §6.1",
+      "verification": "reported_only",
+      "purpose": "canonical booking"
+    },
+    {
+      "reference": "/spa-home/dashboard/*",
+      "source": "Report 05 §3",
+      "verification": "reported_only",
+      "purpose": "existing dashboard source"
+    },
+    {
+      "reference": "/product/list-product-minmax-loc",
+      "source": "Report 05 §5",
+      "verification": "reported_only",
+      "purpose": "stock min/max by outlet"
+    },
+    {
+      "reference": "budget.getPerformanceCube",
+      "source": "Finance NV-16 UI observed",
+      "verification": "UI contract marked NEW INTEGRATION REQUIRED",
+      "purpose": "budget read model; NOT confirmed endpoint"
+    }
+  ],
+  "error_contract_proposal": {
+    "UNAUTHENTICATED": "authentication required",
+    "FORBIDDEN_SCOPE": "role/outlet/data restriction",
+    "VERSION_CONFLICT": "stale record; reload and reconcile",
+    "SLOT_CONFLICT": "availability changed before confirmation",
+    "POLICY_DENIED": "business policy disallows action",
+    "EVIDENCE_REQUIRED": "required evidence missing",
+    "SOURCE_UNAVAILABLE": "upstream absent; never substitute fabricated actual",
+    "FORMULA_PENDING": "official scoring rule unverified",
+    "DUPLICATE_REQUEST": "return original idempotent result"
+  },
+  "open_decisions": [
+    "Mapping actual API schemas and IDs",
+    "Official K1-K14 definitions",
+    "KPI/score formula register",
+    "Finance COA/category/version schema",
+    "SLA and threshold policies",
+    "Message/evidence retention",
+    "Backend outlet authorization design preserving compatibility",
+    "Production release evidence and non-production test environment"
+  ],
+  "prototype_fixture_mapping": {
+    "note": "Runtime HTML uses compact fixture IDs; contract fields are proposals. Map explicitly before integration.",
+    "outlets": {
+      "CTR": "Jaens Spa Ubud Center",
+      "SHT": "Jaens Spa Shanti",
+      "TRL": "Jaens Spa Triloka",
+      "BSM": "Jaens Spa Bisma"
+    },
+    "roles": {
+      "manager": "ops_manager",
+      "assistant": "ops_assistant",
+      "supervisor": "ops_supervisor",
+      "head": "department_head",
+      "reception": "spa_receptionist",
+      "therapist": "spa_therapist",
+      "attendant": "spa_attendant",
+      "security": "security"
+    },
+    "task_status": {
+      "todo": "assigned",
+      "doing": "in_progress",
+      "head_review": "head_review",
+      "supervisor_review": "supervisor_review",
+      "done": "completed",
+      "blocked": "blocked"
+    },
+    "room_state": "The demo visual may summarize one status; target contract separates booking occupancy from physical readiness.",
+    "security": "Client-side scope simulation is not backend authorization; all fixtures are accessible to the person inspecting the standalone demo source."
+  },
+  "performance_evidence_note": "Ten Operational indicator examples in the prototype are proposed mappings, not verified workbook extraction. Source workbook sheet/range, target, weight, formula and approved version must be validated before official KPI use. HRD preview six-indicator demo is separate evidence and does not establish the Operational contract."
+}

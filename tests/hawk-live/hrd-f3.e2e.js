@@ -34,14 +34,14 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-board');
   const issueCol = p.locator('.hr-col[data-stage="Issue"]');
   ok('NV02 Board 7 kolom, kartu baru di Issue', (await p.locator('.hr-col').count()) === 7 && (await issueCol.locator(`[data-task="${id}"]`).count()) === 1);
-  await p.locator(`[data-task="${id}"]`).dragTo(p.locator('.hr-col[data-stage="Workplan"]')); await p.waitForTimeout(200);
+  await p.locator(`[data-task="${id}"]`).dragTo(p.locator('.hr-col[data-stage="Workplan"]'), { targetPosition: { x: 40, y: 12 } }); await p.waitForTimeout(200);
   ok('Drag ke Workplan tanpa PIC ditolak dengan validasi yang sama', /PIC dan tenggat/.test(await status()), await status());
   await go(`hrd-task?id=${id}`);
   await p.locator('form[data-submit="hr:task-assign"]').first().locator('select').selectOption('EMP-0143'); await p.locator('form[data-submit="hr:task-assign"]').first().locator('button').click(); await p.waitForTimeout(150);
   await p.locator('form[data-submit="hr:task-edit"] [name=due]').fill('2026-11-20'); await p.locator('form[data-submit="hr:task-edit"] button').click(); await p.waitForTimeout(150);
   await shot('F3-NV08-detail');
   await go('hrd-board'); await shot('F3-NV02-board');
-  await p.locator(`[data-task="${id}"]`).dragTo(p.locator('.hr-col[data-stage="Workplan"]')); await p.waitForTimeout(200);
+  await p.locator(`[data-task="${id}"]`).dragTo(p.locator('.hr-col[data-stage="Workplan"]'), { targetPosition: { x: 40, y: 12 } }); await p.waitForTimeout(200);
   ok('NV02 drag-and-drop ke Workplan berhasil', (await p.locator(`.hr-col[data-stage="Workplan"] [data-task="${id}"]`).count()) === 1, await status());
   await p.locator(`[data-task="${id}"] select[name=to]`).selectOption('Priority'); await p.locator(`[data-task="${id}"] .hr-move button`).click(); await p.waitForTimeout(200);
   ok('Menu "Pindahkan ke" (keyboard/ponsel) ke Priority', (await p.locator(`.hr-col[data-stage="Priority"] [data-task="${id}"]`).count()) === 1);

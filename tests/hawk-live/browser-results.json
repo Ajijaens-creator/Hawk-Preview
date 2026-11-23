@@ -1,6 +1,6 @@
 {
- "ranAt": "2026-11-14T01:58:13.057Z",
- "base": "http://localhost:8811/hawk-live/",
+ "ranAt": "2026-11-23T10:37:53.022Z",
+ "base": "http://localhost:8813/hawk-live/",
  "pass": 45,
  "fail": 0,
  "results": [
@@ -185,9 +185,9 @@
    "info": ""
   },
   {
-   "name": "F7-01 peta berisi 41 kode layar empat portal + semua layar HRD + 3 Demo Center portal",
+   "name": "F7-01 peta berisi 41 kode layar empat portal + semua layar HRD + 3 Demo Center portal + 17 workspace Operational (termasuk Dashboard Kinerja, Gudang & Stok BHP dan Hospitality Case)",
    "ok": true,
-   "info": "122 = 41 + 78 + 3"
+   "info": "140 = 41 + 79 + 3 + 17"
   },
   {
    "name": "Entry commercial.html membuka Commercial",

@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · F7 Payroll & People Budgeting — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · F7 Payroll & People Budgeting — DATA DEMO / SIMULASI.
    NV01 Dashboard Payroll (hrd-payroll) · NV02 Komponen & Aturan (hrd-pay-rules) · NV03 Rekonsiliasi Komisi POS (hrd-pay-commission) ·
    NV04 Proses Payroll (hrd-pay-process) · NV05 Slip & Status Bayar (hrd-pay-slip) · NV06 Kasbon & Reimburse (hrd-finance / hrd-cash / hrd-reimburse) ·
    NV07 Laporan Payroll, Pajak & BPJS (hrd-reports) · NV08 Handoff Finance (hrd-pay-handoff) · NV09 Dashboard People Budgeting (hrd-budget) ·

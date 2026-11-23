@@ -31,9 +31,26 @@ DATA DEMO / SIMULASI. Dibuat otomatis oleh `node tools/gen-nv-map.js` dari `HL.P
 
 | Seksi / induk | Menu | Kode NV | Fase | Status | Rute |
 |---|---|---|---|---|---|
-| — | Operational & POS | F4-07 | 4 | Versi sandbox | `#pos` |
-| — | Inventory | — | — | Versi sandbox | `#inventory` |
 | — | Demo Experience Center | DX-OPS | Operational DX | Tersedia | `#ops-dx` |
+| Kendali outlet | Command Center | F-OP02 | Operational OP | Tersedia | `#op-dashboard` |
+| Kendali outlet | Dashboard Kinerja | F-OP02 / F-OP08 / F-OP10 | Operational OP | Tersedia | `#op-analytics` |
+| Kendali outlet | POS & Receptionist | F-OP03 | Operational OP | Tersedia | `#https://preview.jaens.id/rnd-demo` |
+| Kendali outlet | Daily Operations | F-OP04 | Operational OP | Tersedia | `#op-daily` |
+| Pelaksanaan | Team & Tasks | F-OP05 | Operational OP | Tersedia | `#op-tasks` |
+| Pelaksanaan | Therapist Workspace | F-OP05 | Operational OP | Tersedia | `#op-therapist` |
+| Pelaksanaan | Room & Facility | F-OP06 | Operational OP | Tersedia | `#op-rooms` |
+| Pelaksanaan | Inventory Coordination | F-OP06 | Operational OP | Tersedia | `#op-inventory` |
+| Pelaksanaan | Gudang & Stok BHP | F-OP06 | Operational OP | Tersedia | `#op-warehouse` |
+| Pelaksanaan | Communication Hub | F-OP07 | Operational OP | Tersedia | `#op-communication` |
+| Kinerja & kontrol | AmbideX & RACE | F-OP08 | Operational OP | Tersedia | `#op-race` |
+| Kinerja & kontrol | Budget 7P | F-OP09 | Operational OP | Tersedia | `#op-budget` |
+| Kinerja & kontrol | Reports & Analytics | F-OP10 | Operational OP | Tersedia | `#op-reports` |
+| Kinerja & kontrol | Team & Access | F-OP01 | Operational OP | Tersedia | `#op-settings` |
+| Developer handoff | Peta 12 Fase | F-OP00 | Operational OP | Tersedia | `#op-roadmap` |
+| Developer handoff | Validation Lab | F-OP11 | Operational OP | Tersedia | `#op-validation` |
+| Developer handoff | POS & Receptionist · gateway | F-OP03 | Operational OP | Tersedia | `#op-pos` |
+| Developer handoff | Operational & POS (sandbox lintas portal) | F4-07 | 4 | Tersedia | `#pos` |
+| Developer handoff | Inventory (sandbox lama) | — | — | Tersedia | `#inventory` |
 
 ## Commercial
 
@@ -118,6 +135,7 @@ DATA DEMO / SIMULASI. Dibuat otomatis oleh `node tools/gen-nv-map.js` dari `HL.P
 | Kehadiran | ↳ Izin & Cuti | F2-NV06 | HRD 2 | Tersedia | `#hrd-leave` |
 | Kehadiran | ↳ Kunjungan Klien | F2-NV08 | HRD 2 | Tersedia | `#hrd-visit` |
 | — | Pelacakan Lokasi | F2-NV09 | HRD 2 | Tersedia | `#hrd-tracking` |
+| — | JAENS Mobile | M1 | HRD M1 | Tersedia | `#hrd-mobile` |
 | — | Rekrutmen | F4-NV05 | HRD 4 | Tersedia | `#hrd-recruit` |
 | Rekrutmen | ↳ Profil · Karier | F4-NV01 | HRD 4 | Tersedia | `#hrd-rec-profile` |
 | Rekrutmen | ↳ Manajemen Rekrutmen | F4-NV04 | HRD 4 | Tersedia | `#hrd-rec-manage` |
