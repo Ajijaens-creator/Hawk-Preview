@@ -1,0 +1,111 @@
+{
+ "pass": 21,
+ "fail": 0,
+ "out": [
+  {
+   "name": "T01 Search tampil: urutan Tanggal → Outlet → Shift → Search → Reset, placeholder, ikon kiri, tinggi = Shift, lebar 300–360 px, tanpa tombol cari",
+   "ok": true,
+   "info": "Tanggal → Outlet → Shift → Search → Reset · h 36/36 · w 340"
+  },
+  {
+   "name": "T02 Cari nama lengkap → baris karyawan tsb",
+   "ok": true,
+   "info": "Putu Ari: 1 baris"
+  },
+  {
+   "name": "T03 Sebagian nama, case-insensitive, spasi di-trim",
+   "ok": true,
+   "info": "\"PUT\" → 15 baris"
+  },
+  {
+   "name": "T04 Cari Employee ID → tepat 1 baris",
+   "ok": true,
+   "info": "EMP-0001"
+  },
+  {
+   "name": "T05 Cari Attendance ID → tepat 1 baris",
+   "ok": true,
+   "info": "ATT-20261112-EMP-0001"
+  },
+  {
+   "name": "T10 Kartu Hadir / Terlambat / Cuti-sakit-libur / Belum Ada Status tidak berubah karena Search",
+   "ok": true,
+   "info": "114 · 14 · 30 · 0"
+  },
+  {
+   "name": "T09 Tidak ditemukan → \"Data presensi tidak ditemukan.\" + saran",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Search + Outlet: hanya baris outlet terpilih, kartu = kartu outlet",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Search + Shift: hasil tetap di shift terpilih",
+   "ok": true,
+   "info": "Pagi + \"Gede\": 60 → 12"
+  },
+  {
+   "name": "T08 Search + Tanggal: ganti tanggal, kata kunci tetap, Attendance ID ikut tanggal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Reset mengosongkan Search + Tanggal/Outlet/Shift ke default",
+   "ok": true,
+   "info": "#hrd-presence"
+  },
+  {
+   "name": "T12 Real-time dengan debounce (~280 ms), tanpa tombol, fokus & kursor tetap di Search",
+   "ok": true,
+   "info": "80 baris saat mengetik → 1 setelah jeda"
+  },
+  {
+   "name": "T15a Enter tidak mengirim form / memuat ulang halaman",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T13 Search mencakup seluruh data dalam cakupan, bukan hanya 80 baris tampil",
+   "ok": true,
+   "info": "158 orang, 80 tampil; hasil memuat 59 baris di luar 80 pertama"
+  },
+  {
+   "name": "T14 desktop 1440px: satu baris, tanpa scroll horizontal",
+   "ok": true,
+   "info": "scrollWidth 1440 · baris filter 1 · lebar Search 340"
+  },
+  {
+   "name": "T14 tablet 900px: membungkus rapi, tanpa scroll horizontal",
+   "ok": true,
+   "info": "scrollWidth 900 · baris filter 1 · lebar Search 340"
+  },
+  {
+   "name": "T14 mobile 390px: Search lebar penuh, tanpa scroll horizontal",
+   "ok": true,
+   "info": "scrollWidth 390 · baris filter 4 · lebar Search 366"
+  },
+  {
+   "name": "T15b Tab Ringkasan + ?q= lama tetap memfilter (Outlet → Search → Reset)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T15c Ringkasan tidak ditemukan → empty state yang sama",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T15d Koreksi presensi (alur lama) tetap tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T15e Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

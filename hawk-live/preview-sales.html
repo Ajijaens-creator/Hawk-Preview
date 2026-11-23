@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-23T02:02:15.107Z">
+<meta name="hawk-standalone" content="2026-11-23T06:11:48.263Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Sales</title>
 <style>
@@ -1637,6 +1637,13 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
    dan di docs/hawk-live/NV-MAP.md untuk melacak fitur → NV → fase. */
 .nav .nav-items .nvc { display: none; }
 .nav .nav-items a { gap: 0; }
+
+/* HRD F2-NV04 Presensi: Search (NP-HR-F2-NV04-SEARCH-001) */
+.filters label.hr-search { flex: 0 1 340px; min-width: 300px; }
+.hr-search-box { position: relative; display: block; }
+.hr-search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-2); pointer-events: none; }
+#view .hr-search-box input[type=search] { width: 100%; padding-left: 32px; font-weight: 400; }
+@media (max-width: 720px) { .filters label.hr-search { flex: 1 1 100%; min-width: 0; } }
 
 </style>
   </head>
@@ -6355,21 +6362,26 @@ function schedule(params) {
 /* ---------- NV04 Presensi ---------- */
 function presence(params) {
   const h = hr(), tab = params.tab === 'summary' ? 'summary' : 'daily';
-  const date = params.date || HR.TODAY, out = params.outlet || '', shift = params.shift || '', q = (params.q || '').toLowerCase();
-  const list = inScopeList().filter(p => (!out || p.placement.location === out) && (!q || `${p.id} ${p.name}`.toLowerCase().includes(q)));
+  const date = params.date || HR.TODAY, out = params.outlet || '', shift = params.shift || '', qRaw = (params.q || '').trim(), q = qRaw.toLowerCase();
+  /* Search (NP-HR-F2-NV04-SEARCH-001): nama / Employee ID / Attendance ID, tanpa mengubah kartu statistik */
+  const hit = (...v) => !q || v.join(' ').toLowerCase().includes(q);
+  const base = inScopeList().filter(p => !out || p.placement.location === out);
+  const list = tab === 'summary' ? base.filter(p => hit(p.id, p.name)) : base;
+  const notFound = empty('Data presensi tidak ditemukan.', 'Coba gunakan nama atau ID lainnya.');
   const dates = [...HR2.DAYS, ...[1, 2, 3].map(k => HR2.addDays(HR.TODAY, k))];
-  const fil = `<form id="filters" class="filters" aria-label="Filter presensi">${tab === 'daily' ? `<label>Tanggal<select name="date">${dates.map(d => `<option ${d === date ? 'selected' : ''}>${d}</option>`).join('')}</select></label>` : ''}<label>Outlet<select name="outlet">${outletOpts(out)}</select></label>${tab === 'daily' ? `<label>Shift<select name="shift"><option value="">Semua shift</option>${['Pagi', 'Sore', 'Kantor'].map(s => `<option ${s === shift ? 'selected' : ''}>${s}</option>`).join('')}</select></label>` : ''}<input type="hidden" name="tab" value="${tab}">${params.q ? `<input type="hidden" name="q" value="${esc(params.q)}">` : ''}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>`;
+  const fil = `<form id="filters" class="filters" aria-label="Filter presensi">${tab === 'daily' ? `<label>Tanggal<select name="date">${dates.map(d => `<option ${d === date ? 'selected' : ''}>${d}</option>`).join('')}</select></label>` : ''}<label>Outlet<select name="outlet">${outletOpts(out)}</select></label>${tab === 'daily' ? `<label>Shift<select name="shift"><option value="">Semua shift</option>${['Pagi', 'Sore', 'Kantor'].map(s => `<option ${s === shift ? 'selected' : ''}>${s}</option>`).join('')}</select></label>` : ''}<label class="hr-search">Search<span class="hr-search-box"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" name="q" value="${esc(qRaw)}" placeholder="Cari nama / ID / Attendance ID" autocomplete="off" spellcheck="false" data-live-search></span></label><input type="hidden" name="tab" value="${tab}"><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>`;
   const head = tabs('hrd-presence', tab, [['daily', 'Harian'], ['summary', 'Ringkasan 7–13 Nov']], { outlet: out || undefined, q: params.q });
   if (tab === 'summary') {
     const rows = HR2.summary(h, list.map(p => p.id));
-    return head + fil + (rows.length ? card(`Ringkasan · ${rows.length} orang`, table(['Employee ID', 'Nama', 'Hadir', 'Terlambat', 'Menit telat', 'Cuti', 'Sakit', 'Libur', 'Belum ada status', 'Jam kerja', 'Lembur (menit)', 'Terkoreksi'], rows.slice(0, 80).map(r => [r.emp, empLink(r.emp), r.hadir, r.terlambat, r.lateMin, r.cuti, r.sakit, r.libur, r.belum, num(r.hours, 1), r.otMin, r.corrected ? chip(r.corrected + ' disetujui', 'ready') : '—'])) + '<p class="muted small">Ringkasan memakai hasil persetujuan yang sama dengan Harian. Koreksi menunggu review belum mengubah nilai.</p>') : empty('Tidak ada data', 'Filter tidak menemukan orang.'));
+    return head + fil + (rows.length ? card(`Ringkasan · ${rows.length} orang`, table(['Employee ID', 'Nama', 'Hadir', 'Terlambat', 'Menit telat', 'Cuti', 'Sakit', 'Libur', 'Belum ada status', 'Jam kerja', 'Lembur (menit)', 'Terkoreksi'], rows.slice(0, 80).map(r => [r.emp, empLink(r.emp), r.hadir, r.terlambat, r.lateMin, r.cuti, r.sakit, r.libur, r.belum, num(r.hours, 1), r.otMin, r.corrected ? chip(r.corrected + ' disetujui', 'ready') : '—'])) + '<p class="muted small">Ringkasan memakai hasil persetujuan yang sama dengan Harian. Koreksi menunggu review belum mengubah nilai.</p>') : q && base.length ? notFound : empty('Tidak ada data', 'Filter tidak menemukan orang.'));
   }
   const recs = list.map(p => HR2.attendance(h, p.id, date)).filter(r => !shift || r.shift === shift);
+  const shown = recs.filter(r => hit(r.id, r.emp, empName(r.emp))); /* seluruh data dalam cakupan, sebelum batas 80 baris */
   const corr = params.correct && recs.find(r => r.id === params.correct);
   const cnt = (s) => recs.filter(r => r.status === s).length;
   return head + fil + metrics([['Hadir', cnt('Hadir')], ['Terlambat', cnt('Terlambat')], ['Cuti / sakit / libur', cnt('Cuti') + cnt('Sakit') + cnt('Libur')], ['Belum Ada Status', cnt('Belum Ada Status'), date > HR.TODAY ? 'Tanggal mendatang: jadwal saja' : '']]) +
     (corr ? card(`Ajukan koreksi · ${corr.id}`, `<form class="workflow-form" data-submit="hr:att-correct" data-after="hrd-att-approval?id={id}"><input type="hidden" name="emp" value="${corr.emp}"><input type="hidden" name="date" value="${corr.date}"><p>${esc(empName(corr.emp))} · nilai saat ini masuk <b>${corr.in || '—'}</b>, keluar <b>${corr.out || '—'}</b></p><label>Jam masuk benar<input name="in" placeholder="09:00" required pattern="\\d{2}:\\d{2}"></label><label>Jam keluar benar (opsional)<input name="out" placeholder="17:00"></label><label>Alasan<input name="reason" required minlength="5"></label><button class="btn">Kirim ke Approval</button><a class="btn ghost" href="#hrd-presence${qs({ date })}">Batal</a></form>`) : '') +
-    (recs.length ? card(`Harian ${date} · ${recs.length} orang`, table(['Attendance ID', 'Nama', 'Shift', 'Status', 'Masuk', 'Keluar', 'Istirahat', 'Lembur', 'Terlambat', 'Bukti', 'Aksi'], recs.slice(0, 80).map(r => [r.id, empLink(r.emp), r.shift, st(r.status) + (r.provisional ? ' ' + chip('Koreksi menunggu review', 'sandbox') : '') + (r.corrected ? ' ' + chip('Terkoreksi ' + r.corrected.req, 'ready') : ''), r.in || '—', r.out || '—', r.breakMin ? r.breakMin + ' mnt' : '—', r.otMin ? r.otMin + ' mnt' : '—', r.late ? r.late + ' mnt' : '—', esc(r.evidence || '—'), date <= HR.TODAY && !r.provisional && r.status !== 'Libur' ? `<a class="btn ghost sm" href="#hrd-presence${qs({ date, outlet: out || undefined, correct: r.id })}">Ajukan koreksi</a>` : '—'])) + (recs.length > 80 ? '<p class="muted small">80 baris pertama. Persempit dengan filter outlet/shift.</p>' : '')) : empty('Tidak ada data', 'Filter tidak menemukan orang.'));
+    (shown.length ? card(`Harian ${date} · ${shown.length}${q ? ` dari ${recs.length}` : ''} orang`, table(['Attendance ID', 'Nama', 'Shift', 'Status', 'Masuk', 'Keluar', 'Istirahat', 'Lembur', 'Terlambat', 'Bukti', 'Aksi'], shown.slice(0, 80).map(r => [r.id, empLink(r.emp), r.shift, st(r.status) + (r.provisional ? ' ' + chip('Koreksi menunggu review', 'sandbox') : '') + (r.corrected ? ' ' + chip('Terkoreksi ' + r.corrected.req, 'ready') : ''), r.in || '—', r.out || '—', r.breakMin ? r.breakMin + ' mnt' : '—', r.otMin ? r.otMin + ' mnt' : '—', r.late ? r.late + ' mnt' : '—', esc(r.evidence || '—'), date <= HR.TODAY && !r.provisional && r.status !== 'Libur' ? `<a class="btn ghost sm" href="#hrd-presence${qs({ date, outlet: out || undefined, correct: r.id })}">Ajukan koreksi</a>` : '—'])) + (shown.length > 80 ? '<p class="muted small">80 baris pertama. Persempit dengan filter outlet/shift.</p>' : '')) : q && recs.length ? notFound : empty('Tidak ada data', 'Filter tidak menemukan orang.'));
 }
 
 /* ---------- NV05 / NV07 Approval ---------- */
@@ -6500,6 +6512,22 @@ register('hrd-clients', guard('people', clients), () => 'Klien');
 register('hrd-timeline', guard(['dashboard', 'ess'], timeline), () => 'Timeline');
 register('hrd-import', guard('people', importer), () => 'Impor Karyawan');
 
+/* NV04 Search: real-time (debounce 280 ms), fokus & posisi kursor dipertahankan; Enter tidak mengirim form */
+let liveT;
+const liveGo = (el, keepFocus) => {
+  clearTimeout(liveT);
+  const f = el.form; if (!f) return;
+  const { id, params } = H.parseHash(), data = Object.fromEntries(new FormData(f));
+  if ((data.q || '').trim() === (params.q || '').trim()) return;
+  const pos = el.selectionStart;
+  H.go(id, { ...data, q: (data.q || '').trim() }, true);
+  if (!keepFocus) return;
+  const n = document.querySelector('#filters [data-live-search]');
+  if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (err) { /* type=search tanpa selection API */ } }
+};
+document.addEventListener('input', (e) => { const el = e.target.closest?.('[data-live-search]'); if (!el) return; clearTimeout(liveT); liveT = setTimeout(() => liveGo(el, document.activeElement === el), 280); });
+document.addEventListener('change', (e) => { if (!e.target.closest?.('[data-live-search]')) return; e.stopPropagation(); liveGo(e.target, document.activeElement === e.target); }, true);
+document.addEventListener('submit', (e) => { const el = e.target.querySelector?.('[data-live-search]'); if (!el) return; e.preventDefault(); e.stopPropagation(); liveGo(el, true); }, true);
 /* mapping kolom impor: pilihan langsung memperbarui tautan lanjut */
 document.addEventListener('change', (e) => {
   const f = e.target.closest('form[data-search-import]'); if (!f) return;
