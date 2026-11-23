@@ -1,4 +1,4 @@
-# NB Induk · HAWK HRD & Human Growth
+# NB Induk · JAENS HRD & Human Growth
 
 Paket rancangan untuk review visual dan penulisan master prompt Cloud Developer per fase. Preview R&D menjadi acuan interaksi. Spesifikasi fase mencakup pengembangan lanjutan dan integrasi yang masih berupa simulasi pada preview.
 
@@ -8,7 +8,10 @@ Paket rancangan untuk review visual dan penulisan master prompt Cloud Developer 
 - [Inventaris GajiHub dan sidebar](../hrd-rnd/REFERENSI.md)
 - [Pemetaan SER, Race Vegen dan e-Deck](../hrd-rnd/KINERJA-REFERENSI.md)
 - [Pola AJi Creator OS yang terdokumentasi](../HAWK-PERFORMANCE-BRIEF.md)
-- [HAWK Brand & UI Guidelines](../HAWK-BRAND-GUIDELINES.md)
+- [JAENS Brand & UI Guidelines](../HAWK-BRAND-GUIDELINES.md)
+- [Addendum aplikasi mobile, POS spa dan presensi wajah/lokasi/jam](ADDENDUM-MOBILE-APP-DAN-PRESENSI.md)
+- [NV dasar JAENS Mobile · lima layar interaktif](../hrd-rnd/mobile/preview.html) · [Panduan preview mobile](../hrd-rnd/mobile/README.md)
+- [Pemetaan M-NV01–05 dan hasil pemeriksaan visual](NV-MOBILE-DASAR.md)
 
 ## Model keseluruhan
 
@@ -38,6 +41,8 @@ Paket rancangan untuk review visual dan penulisan master prompt Cloud Developer 
 
 Delapan NB fase mencakup **77 NV utama**, dengan jumlah berturut-turut 8, 12, 8, 12, 8, 9, 12 dan 8. Tab, dialog dan halaman e-Deck mengikuti NV induknya. Status implementasi dan bukti verifikasi dilaporkan per fase.
 
+Keputusan mobile 14 November 2026: satu aplikasi terpasang Android/iPhone dengan **Beranda, Pekerjaan, Presensi, Inbox dan Saya**, sesuai peran. Prioritas mencakup presensi wajah, lokasi, jadwal, tugas, chat dan POS operasional spa. Pekerjaan kompleks divisi tetap di desktop. [Addendum mobile](ADDENDUM-MOBILE-APP-DAN-PRESENSI.md) memperluas F1–F8 tanpa mengganti penomoran 77 NV. Jalur pengujian native dan verifikasi nyata terpisah dari preview HTML dummy.
+
 
 
 
@@ -55,7 +60,7 @@ Delapan NB fase mencakup **77 NV utama**, dengan jumlah berturut-turut 8, 12, 8,
 | [F7](FASE.md#f7--payroll-dan-people-budgeting) | Komisi, payroll, Finance & Accounting, anggaran dan kurva S | F1, F2, F4, F5 |
 | [F8](FASE.md#f8--ambidex-reporting-dan-validasi-terpadu) | Race Vegen, Daily/Weekly Race, e-Deck, STRACON dan validasi lintas modul | F3, F5–F7 |
 
-Fase menunjukkan urutan implementasi. Navigasi produk mengikuti [inventaris sidebar](../hrd-rnd/REFERENSI.md), termasuk penambahan modul HAWK sesudah menu inti. Definisi sumber data dan izin dikerjakan di F1 agar visual F2–F8 menggunakan kontrak yang sama.
+Fase menunjukkan urutan implementasi. Navigasi produk mengikuti [inventaris sidebar](../hrd-rnd/REFERENSI.md), termasuk penambahan modul JAENS sesudah menu inti. Definisi sumber data dan izin dikerjakan di F1 agar visual F2–F8 menggunakan kontrak yang sama.
 
 ## Roster dan skenario penerimaan bersama
 
@@ -68,7 +73,7 @@ Fase menunjukkan urutan implementasi. Navigasi produk mengikuti [inventaris side
 ## Format paket per fase
 
 1. **NB fase** berisi tujuan, layar dan state, aktor, aksi, data asal, dependensi, serta uji penerimaan.
-2. **Visual** berisi satu jalur klik utama dan state kosong, gagal, akses dibatasi, serta tampilan desktop dan mobile. Terapkan palet dan shell HAWK.
+2. **Visual** berisi satu jalur klik utama dan state kosong, gagal, akses dibatasi, serta tampilan desktop dan mobile. Terapkan palet dan shell JAENS.
 3. **Master prompt Cloud Developer** merujuk NB fase dan visual yang sudah direview. Sertakan batas pekerjaan, entitas/ID, aturan izin, integrasi dummy, kontrak data, dan bukti uji.
 4. **Review** menelusuri hasil dari aksi ke objek asal dan mengecek efek lintas modul sebelum fase berikutnya.
 

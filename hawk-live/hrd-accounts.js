@@ -1,4 +1,4 @@
-/* HAWK HRD · pemilih akun bernama di portal HRD.
+/* JAENS ERP HRD · pemilih akun bernama di portal HRD.
    Pilihan "Role demo" di portal HRD berisi akun tim HRD sesuai nama terdaftar (Made Gunarsa, Harja, Ayu, Putu Dewi D) dan
    peserta alur (Owner, OM, Supervisor, Therapist, Finance Manager). Memilih akun = masuk otomatis dengan role & izin akun itu
    (HR.ROLE_DEFS); audit tercatat atas nama orangnya. Payroll, slip & nominal gaji hanya role Manager HRD (payroll: 'detail').

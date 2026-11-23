@@ -1,0 +1,51 @@
+{
+ "pass": 9,
+ "fail": 0,
+ "out": [
+  {
+   "name": "Empat kartu: Karyawan asli 214, Therapist 85, Receptionist 29, Menunggu penetapan 214",
+   "ok": true,
+   "info": "[[\"Karyawan asli\",\"214\"],[\"Therapist\",\"85\"],[\"Receptionist\",\"29\"],[\"Menunggu penetapan\",\"214\"]]"
+  },
+  {
+   "name": "Usulan fungsi berjumlah 214",
+   "ok": true,
+   "info": "214"
+  },
+  {
+   "name": "Arsip demo tersembunyi secara default (tidak ada tabel 158 dummy)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol Tampilkan arsip demo tersedia",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tidak ada nama/email karyawan asli di halaman (hanya angka)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Arsip demo tampil setelah ditekan, berlabel 158 orang sintetis",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pilihan arsip diingat setelah muat ulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sembunyikan arsip · kembali ke data asli",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

@@ -1,14 +1,14 @@
-# NB F1 · Fondasi dan Beranda HAWK HRD
+# NB F1 · Fondasi dan Beranda JAENS HRD
 
-Portal kelima HAWK ERP · HRD & Human Growth · R&D · Data dummy
+Portal kelima JAENS ERP · HRD & Human Growth · R&D · Data dummy
 
-[Acuan induk](README.md) · [Brief F1–F8](FASE.md) · [Preview](../hrd-rnd/index.html) · [Inventaris GajiHub](../hrd-rnd/REFERENSI.md) · [Panduan brand HAWK](../HAWK-BRAND-GUIDELINES.md)
+[Acuan induk](README.md) · [Brief F1–F8](FASE.md) · [Preview](../hrd-rnd/index.html) · [Inventaris GajiHub](../hrd-rnd/REFERENSI.md) · [Panduan brand JAENS](../HAWK-BRAND-GUIDELINES.md)
 
 ## Tujuan dan cakupan
 
 F1 menyediakan pintu masuk HRD, organisasi, roster dan penempatan ringkas, akun dan cakupan akses, konfigurasi dasar, audit, serta pengelolaan dataset demo. F2 menangani direktori operasional lengkap, dokumen personal, perubahan shift, presensi dan cuti. Payroll dan laporan keuangan dikembangkan di F7. Pada F1, tujuan navigasi fase berikutnya menampilkan status fase dan akses yang relevan.
 
-Shell memakai charcoal, ivory dan gold HAWK. Logo HAWK membuka pemilih portal. Tambahkan HRD sebagai portal kelima dengan mempertahankan empat entri yang sudah ada. Gunakan rute deployment yang sudah terverifikasi. Urutan sidebar mengikuti inventaris GajiHub dan penambahan HAWK yang tercatat di NB induk. Submenu Keuangan masih bersifat sementara.
+Shell memakai charcoal, ivory dan gold JAENS. Logo JAENS membuka pemilih portal. Tambahkan HRD sebagai portal kelima dengan mempertahankan empat entri yang sudah ada. Gunakan rute deployment yang sudah terverifikasi. Urutan sidebar mengikuti inventaris GajiHub dan penambahan JAENS yang tercatat di NB induk. Submenu Keuangan masih bersifat sementara.
 
 ## Delapan layar dan kriteria penerimaan
 

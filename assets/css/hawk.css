@@ -350,7 +350,11 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   .devbox .dv { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 960px) {
-  .app { grid-template-columns: 1fr; }
+  .app { grid-template-columns: minmax(0, 1fr); }
+  /* topbar items may shrink, so a wider fallback font (no Inter installed) cannot push the page wider than a tablet screen */
+  .topbar { min-width: 0; }
+  .tb-select, .role-chip { min-width: 0; }
+  .role-chip { overflow: hidden; }
   .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 280px; transform: translateX(-100%); transition: transform 0.25s; }
   .sidebar.on { transform: none; box-shadow: var(--shadow-lg); }
   .topbar .burger { display: grid; }

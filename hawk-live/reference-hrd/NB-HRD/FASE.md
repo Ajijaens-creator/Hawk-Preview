@@ -1,10 +1,10 @@
-# NB · Brief fase HAWK HRD
+# NB · Brief fase JAENS HRD
 
 [Acuan bersama dan skenario dummy](README.md)
 
 ## F1 · Fondasi dan Beranda
 
-- **Visual** Shell HAWK, sidebar sesuai inventaris, dashboard HRD, pemilih cakupan perusahaan/divisi/outlet, pengaturan organisasi dan akun, akses ditolak, konfirmasi hapus dummy.
+- **Visual** Shell JAENS, sidebar sesuai inventaris, dashboard HRD, pemilih cakupan perusahaan/divisi/outlet, pengaturan organisasi dan akun, akses ditolak, konfirmasi hapus dummy.
 - **Fungsi** Perusahaan, kalender, approval policy, penomoran, audit, akun, grup data, peran, notifikasi, template, integrasi, FAQ dan aturan Task. Catat cakupan per penempatan dan tanggal efektif. Dashboard membuka ringkasan kehadiran, orang, rekrutmen, kapasitas dan kinerja.
 - **Uji** Rekonsiliasi 158 profil. Staf dan manager melihat menu serta data sesuai izin. Uji penolakan dari URL langsung, ekspor dan API pada implementasi cloud. Penghapusan dummy tidak menjangkau data asli.
 

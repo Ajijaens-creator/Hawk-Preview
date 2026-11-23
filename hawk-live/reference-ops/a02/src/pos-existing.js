@@ -1,0 +1,18 @@
+/* Owner decision, v1.1: the existing POS is canonical.
+ * This gateway deliberately overrides the former synthetic POS page.
+ * Synthetic booking actions in operations.js support local regression fixtures,
+ * not a replacement Dashboard, Appointment Book, pricing or payment engine.
+ */
+(function(){
+  'use strict';
+  const H=window.H;
+  H.pages.pos={
+    title:'POS & Receptionist',
+    subtitle:'Workspace POS existing · Dashboard dan Appointment Book tetap utuh.',
+    phase:'F-OP03',
+    contract:'Canonical POS: https://preview.jaens.id/rnd-demo. Claude wajib memeriksa repository existing dan membuktikan paritas seluruh menu, dashboard, Appointment Book, actions, role, API serta formula. Navigasi prototype tidak mengirim akun, token atau outlet ke POS dan tidak membuktikan SSO maupun outlet isolation backend.',
+    render:()=>`<section class="pos-existing-hero"><div class="eyebrow">HAWK EXISTING POS · SUMBER ACUAN</div><h2>POS yang sama. Seluruh fungsi tetap dipertahankan.</h2><p class="mt">Operational Portal menjadi pintu masuk untuk Receptionist. Dashboard POS, Appointment Book, transaksi, dan seluruh menu yang sudah dimiliki POS dilanjutkan dari aplikasi existing.</p><div class="pos-existing-state">${H.badge('Navigasi tersedia','green')}${H.badge('Paritas menunggu Claude','gold')}${H.badge('API Operational belum terhubung','gray')}</div><div class="pos-existing-cta"><a class="btn btn-primary pos-existing-link" href="${H.existingPosUrl}" target="_blank" rel="noopener noreferrer">${H.icon('calendar')} Buka POS existing ${H.icon('arrow',15)}</a><a class="btn pos-existing-link" href="#demo" data-page="demo">${H.icon('play')} Demo Experience Center</a></div><div class="pos-existing-url">${H.escape(H.existingPosUrl)} · dibuka di tab baru</div></section>
+      <div class="pos-contract-grid"><article class="pos-existing-point">${H.icon('chart')}<h3>Dashboard POS</h3><p>Semua kartu, filter, grafik, sumber angka dan formula dicocokkan dengan versi existing. Nilai pada Command Center Operational masih data contoh.</p></article><article class="pos-existing-point">${H.icon('calendar')}<h3>Appointment Book</h3><p>Jadwal, booking, resource ruangan/therapist, status, popup dan seluruh tindakan yang sudah tersedia dipertahankan sesuai source POS.</p></article><article class="pos-existing-point">${H.icon('shield')}<h3>Semua menu & hak akses</h3><p>Claude membuat inventaris menu, submenu, role, API dan perilaku existing lalu menyajikan bukti paritas sebelum perubahan integrasi diterima.</p></article></div>
+      <div class="grid-2 mt"><section class="card"><h3 class="card-title">Cara kerja integrasi berikutnya</h3><ol class="pos-existing-list mt"><li>Claude membuka repository dan lingkungan POS existing yang diizinkan.</li><li>Mencatat baseline layar, menu, workflow, API, formula dan hak akses.</li><li>Memetakan interface Operational ke objek serta engine yang sama.</li><li>Menguji paritas dan regresi, termasuk Dashboard dan Appointment Book.</li></ol><p class="help">Checklist rinci: docs/POS-Existing-Parity-Checklist.md dalam paket developer.</p></section><section class="card"><h3 class="card-title">Akun dan batas integrasi</h3><p class="small muted mt">Login dan izin mengikuti aplikasi POS existing. Akun demo serta filter outlet di prototype ini tidak diteruskan sebagai otorisasi POS.</p><div class="notice mt">Supervisor tetap ditetapkan hanya satu outlet. Penegakan aturan tersebut di POS/backend menjadi pemeriksaan wajib Claude; membuka tautan belum membuktikan pembatasan itu.</div><p class="small muted mt">Langkah eksternal pada Demo Center ditandai untuk review manual. Hasil di POS existing tidak otomatis mengubah data simulasi Operational.</p></section></div>`
+  };
+})();

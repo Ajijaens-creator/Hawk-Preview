@@ -1,4 +1,4 @@
-/* HAWK HRD · F2-NV09 Pelacakan Lokasi · peta interaktif (DATA DEMO / SIMULASI).
+/* JAENS ERP HRD · F2-NV09 Pelacakan Lokasi · peta interaktif (DATA DEMO / SIMULASI).
    Peta seperti Google Maps (zoom in/out, geser, Peta / Satelit) memakai Leaflet (vendor/leaflet, BSD-2) + ubin CARTO Voyager
    (© OpenStreetMap contributors, © CARTO) dan Esri World Imagery. Tanpa API key berbayar.
    Titik kerja = koordinat dari tautan Google Maps Owner (HR2.SITES). Titik karyawan = presensi F2 (HR2.attendance) di sekitar titik kerja;

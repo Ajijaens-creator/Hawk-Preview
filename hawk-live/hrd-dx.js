@@ -1,4 +1,4 @@
-/* HAWK ERP · Portal HRD · Demo Experience Center HRD (#hrd-dx) — DATA DEMO / SIMULASI.
+/* JAENS ERP · Portal HRD · Demo Experience Center HRD (#hrd-dx) — DATA DEMO / SIMULASI.
    Memakai template hawk-live/dx-lab.js (model Demo Center Finance): Test Lab dengan login role tim HRD (Made Gunarsa, Harja, Ayu,
    Lead Human Growth), Desktop/iPad/Mobile, Smart Tutor, dan Simulator 4 layar. Langkah divisi lain (Operational, Supervisor,
    Finance, Owner, kandidat) hanya muncul bila memang bagian alur HRD dan berjalan otomatis sebagai konteks. */
@@ -101,8 +101,8 @@ function extra() {
 const TEAM = ['made', 'harja', 'ayu', 'hg'];
 H.DXLAB.define({
   portal: 'HRD', route: 'hrd-dx', page: 'hrd.html', publicRole: 'hrd',
-  title: 'Demo Experience Center HRD', eyebrow: 'HAWK × JAENS · DX-HRD · GUIDED DEMO',
-  intro: 'Belajar alur kerja HRD dengan menekan tombol asli aplikasi HAWK. Login sebagai Made Gunarsa, Harja, Ayu atau Lead Human Growth, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke HAWK produksi.',
+  title: 'Demo Experience Center HRD', eyebrow: 'JAENS ERP · DX-HRD · GUIDED DEMO',
+  intro: 'Belajar alur kerja HRD dengan menekan tombol asli aplikasi JAENS ERP. Login sebagai Made Gunarsa, Harja, Ayu atau Lead Human Growth, pilih Desktop, iPad atau Mobile. Satu data sandbox bersama, tidak terhubung ke JAENS ERP produksi.',
   purpose: 'Persona tim HRD menjalankan skenario portal HRD; divisi lain hanya pada langkah yang bersinggungan langsung dengan alur HRD (berjalan otomatis).',
   personas: PERSONAS, team: TEAM, scenarios: SC, nameOf: pName,
   sim: [{ who: 'made', device: 'desktop' }, { who: 'harja', device: 'desktop' }, { who: 'ayu', device: 'ipad' }, { who: 'hg', device: 'mobile' }],

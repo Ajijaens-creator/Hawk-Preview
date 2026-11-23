@@ -1,4 +1,4 @@
-/* HAWK HRD F1 · uji browser (Playwright, klik nyata) mengikuti urutan review NB F1.
+/* JAENS ERP HRD F1 · uji browser (Playwright, klik nyata) mengikuti urutan review NB F1.
    python3 -m http.server 8811   lalu   BASE=http://localhost:8811/hawk-live/ node tests/hawk-live/hrd-f1.e2e.js */
 'use strict';
 const { chromium } = require('playwright');
@@ -30,7 +30,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await go('hrd-home'); await shot('F1-NV01-beranda');
   ok('NV01 total 158 pada cakupan perusahaan', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '158');
   const sideTop = (await p.locator('#nav .nav-mod.active .nav-items a:not(.nav-child) > span:nth-child(2)').allInnerTexts()).map(s => s.split('\n')[0].trim());
-  ok('Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah', sideTop.join('|') === 'Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ', sideTop.join('|'));
+  ok('Sidebar: kategori Dashboard di atas, urutan GajiHub, FAQ paling bawah', sideTop.join('|') === 'Dashboard HRD|Manpower Planning|9-Box Talent|People Budgeting|Kinerja & KPI|AmbideX & Race|Karyawan|Kehadiran|Pelacakan Lokasi|JAENS Mobile|Rekrutmen|Payroll|Keuangan|Approval|Timeline|Klien|Laporan|Workspace|Pengaturan|FAQ', sideTop.join('|'));
   await p.selectOption('#filters [name=outlet]', 'OUT-UBD'); await p.waitForTimeout(200);
   ok('NV01 filter Spa Ubud = 30 orang', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '30');
   await p.click('.kpis .kpi >> nth=0'); await p.waitForTimeout(200);
@@ -46,10 +46,10 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV02 Office terbuka; PC & Commercial "Headcount belum ditetapkan"', (hq.match(/Headcount belum ditetapkan/g) || []).length >= 2);
 
   /* NV03 */
-  await go('hrd-roster'); await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
+  await go('hrd-roster?arsip=1'); await p.selectOption('#filters [name=outlet]', 'OUT-BSM'); await p.waitForTimeout(150);
   await p.selectOption('#filters [name=position]', 'POS-RCP'); await p.waitForTimeout(150);
   ok('NV03 Spa Bisma + Receptionist = 5 orang', (await p.locator('.active-filters').innerText()).startsWith('5 orang'));
-  const first = p.locator('.tbl tbody tr').first(); const id = await first.locator('td').first().innerText();
+  const first = p.locator('.hr-arsip .tbl tbody tr').first(); const id = await first.locator('td').first().innerText();
   await first.locator('td a').first().click(); await p.waitForTimeout(150); await shot('F1-NV03-detail');
   ok('Klik nama membuka penempatan dengan ID yang sama', (await p.locator('.hr-profile h2').innerText()).includes(id), id);
   ok('Detail: outlet induk, jabatan, atasan, tanggal efektif', ['Outlet induk', 'Jabatan', 'Atasan', 'Penempatan efektif'].every(k => true) && /Atasan\s+Wahyudi/.test(await text()));
@@ -91,8 +91,8 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   await p.fill('#cf-workweek', '6 hari kerja · 3 sesi shift'); await p.click('form[data-submit="hr:company-set"] button'); await p.waitForTimeout(200);
   ok('NV05 Simpan → nilai baru tampil', (await text()).includes('3 sesi shift'));
   await go('hrd-system?tab=integrations'); await shot('F1-NV06-integrasi');
-  await p.click('.hr-integ:has-text("HAWK POS") [data-action="hr:integration-test"]'); await p.waitForTimeout(150);
-  ok('NV06 uji koneksi POS → Gagal (simulasi), tanpa koneksi produksi', (await p.locator('.hr-integ:has-text("HAWK POS")').innerText()).includes('Gagal (simulasi)'));
+  await p.click('.hr-integ:has-text("JAENS ERP POS") [data-action="hr:integration-test"]'); await p.waitForTimeout(150);
+  ok('NV06 uji koneksi POS → Gagal (simulasi), tanpa koneksi produksi', (await p.locator('.hr-integ:has-text("JAENS ERP POS")').innerText()).includes('Gagal (simulasi)'));
   ok('NV06 status Belum diuji / Belum dikonfigurasi tampil', (await text()).includes('Belum diuji'));
   await go('hrd-audit');
   await p.selectOption('#filters [name=object]', 'Pengaturan'); await p.waitForTimeout(150); await shot('F1-NV07-audit');
@@ -119,7 +119,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; out.push({ name, ok: 
   ok('NV08 konfirmasi mengosongkan dataset dummy', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '0');
   await go('hrd-home');
   ok('Beranda menampilkan state kosong', (await p.locator('.hr-empty').count()) === 1);
-  await go('hrd-roster');
+  await go('hrd-roster?arsip=1');
   ok('Record non-demo tetap utuh di roster', (await text()).includes('EMP-REAL-001'));
   await go('hrd-demo'); await p.click('[data-action="hr:dummy-load"]'); await p.waitForTimeout(200);
   ok('Mulai kembali dari fixture → 158 demo', (await p.locator('.kpis .kpi').first().locator('.val').innerText()) === '158');

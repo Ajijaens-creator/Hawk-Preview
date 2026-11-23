@@ -1,0 +1,228 @@
+{
+  "date": "2026-11-19",
+  "timezone": "Asia/Makassar",
+  "bundle_sha256": "82753b260dbf02db039445bb505ca2bb7ddacd422151af95549169d7b30e5b0e",
+  "dashboard_views": 14,
+  "shared_source_groups": 13,
+  "qa_passed": 13,
+  "qa_failed": 0,
+  "deployed_preview_modified": false,
+  "visual_browser_qa": "pending",
+  "files": [
+    {
+      "path": "HAWK-Operational-14-Dashboards-Demo.html",
+      "bytes": 602549,
+      "sha256": "82753b260dbf02db039445bb505ca2bb7ddacd422151af95549169d7b30e5b0e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6764,
+      "sha256": "554d89fa60eaa7e2581d32618ed84f07a1aa3ad9aa375385dfec78a1935f2d72"
+    },
+    {
+      "path": "build.py",
+      "bytes": 1406,
+      "sha256": "bb9f81401731899f5521f86ca4bc1a9e810c7330c03d6fcc6ec48071306a4e24"
+    },
+    {
+      "path": "docs/CLAUDE-START-A02.md",
+      "bytes": 5549,
+      "sha256": "5884977618d19ecf421e5fb7929806ead36aad0cfc21cbdaf12ea7a2aa00967d"
+    },
+    {
+      "path": "docs/DASHBOARD-PARITY-MATRIX.csv",
+      "bytes": 5715,
+      "sha256": "43b96f05c58f8abcdc50cbdd7d6edfba3e5282969df6c6e56ef6f093ba99264a"
+    },
+    {
+      "path": "docs/NP-OP01-ADDENDUM-A02-DASHBOARD-PARITY.md",
+      "bytes": 22567,
+      "sha256": "9fcc2ca2909ed34bde1dcb6c43bc149772b6dcaab27ae55aa3eed9213965672a"
+    },
+    {
+      "path": "docs/POS-Existing-Parity-Checklist.md",
+      "bytes": 7542,
+      "sha256": "f0a2c4a1b740b8d99ddd18410bc08d0c52a7245301303ba7679f82277363ca52"
+    },
+    {
+      "path": "docs/QA-A02.md",
+      "bytes": 2847,
+      "sha256": "5f2020253008d714228fc453e2425bbf3e47d367a26c4e6a188ea081a3ec0ebe"
+    },
+    {
+      "path": "docs/SER-Operational-Source-Audit.md",
+      "bytes": 23719,
+      "sha256": "7ccc82e0b50b7d61e8e1f7b491398896d4253bfab7a457e5d67927e14ca31bbd"
+    },
+    {
+      "path": "docs/SER-Operational-Source-Inventory.json",
+      "bytes": 532135,
+      "sha256": "ee0724072d9516bc2ffe632792d93e2c970e96482e10d0c1432fb009e99d0143"
+    },
+    {
+      "path": "docs/baseline-v1.1/NB-OP01.md",
+      "bytes": 19558,
+      "sha256": "3d47be1ca0c05588fbd1fb2654b5f13561dfc360a987974530aff01509c52470"
+    },
+    {
+      "path": "docs/baseline-v1.1/NP-FE-OP01.md",
+      "bytes": 15833,
+      "sha256": "b740b4df16bafaa352615cbe4f2cb08c706e38e1a63aa722bddd141728468deb"
+    },
+    {
+      "path": "docs/baseline-v1.1/NP-OP01-ADDENDUM-A01.md",
+      "bytes": 9063,
+      "sha256": "d4bb0aba72938f924952bd6441e81f582c0481eb72fd830190164d111c122589"
+    },
+    {
+      "path": "docs/baseline-v1.1/NP-OP01.md",
+      "bytes": 15827,
+      "sha256": "491c10bb4ab4a433f14a6cd8b6158bdcf052b62ed833ca04cb45999fb3922794"
+    },
+    {
+      "path": "docs/baseline-v1.1/NV-OP01.md",
+      "bytes": 11099,
+      "sha256": "e726c3f1234c9019df0afe42bbcd17c16664f7ae9d85692ab843ec5dd6a2c47c"
+    },
+    {
+      "path": "docs/baseline-v1.1/brand-analysis.md",
+      "bytes": 4724,
+      "sha256": "ba7520aa5d0ef924fd9c25777a49085bfc9b5025a83b252209c7c410ba2fb81d"
+    },
+    {
+      "path": "docs/baseline-v1.1/data-contracts.json",
+      "bytes": 23532,
+      "sha256": "5a88ce4e9b0ad4bbd4881f42e9396c1e08cb835b39daa33957581562b81ab441"
+    },
+    {
+      "path": "docs/feature-manifest.json",
+      "bytes": 78911,
+      "sha256": "3c32e4a364bded9d0ce1fc688b95e1d45666a95c4c12cf34903d387e4af5fe72"
+    },
+    {
+      "path": "docs/looker-page-inventory.json",
+      "bytes": 19065,
+      "sha256": "d333416c78222aed8ef8874d825a35adcdae61e3851c2aafccd63cbbb95f9578"
+    },
+    {
+      "path": "docs/reference-register.md",
+      "bytes": 15536,
+      "sha256": "9c1e3a17f1db3601596bafd028a1ca1621a10373d0ecbe56f076ac0e39dbfd4d"
+    },
+    {
+      "path": "qa/dashboard-contract-results.json",
+      "bytes": 2259,
+      "sha256": "fa4a47fd1a06ca4eef816b5dc94946cfdf0a81d34903873b6f7f9939fc54ee08"
+    },
+    {
+      "path": "qa/dashboard-contract-test.cjs",
+      "bytes": 10430,
+      "sha256": "ef29bd56b0a308539ace2d332ac2da78b02d111d5f9dabefdd922550a6ab6cfe"
+    },
+    {
+      "path": "src/analytics-data.js",
+      "bytes": 58076,
+      "sha256": "a81f03adca5c76cfb8a11c9f29dbb076845d4046fe725aa245e88b97cb3b6444"
+    },
+    {
+      "path": "src/analytics-interactions.css",
+      "bytes": 3052,
+      "sha256": "683d5787f05b82eeedca6f2ec7494e91cf6aa9707ba3201a78a23cc06eb93af5"
+    },
+    {
+      "path": "src/analytics-interactions.js",
+      "bytes": 44925,
+      "sha256": "2735ad986396a1d6d934d1b34e0ef440ab0095ca2f14556a38a57577b70ab2d2"
+    },
+    {
+      "path": "src/analytics.css",
+      "bytes": 20365,
+      "sha256": "1301b455ca8429b33d1f9aedfd1703fe480cc123fe84f752aceebea79d9a99aa"
+    },
+    {
+      "path": "src/analytics.js",
+      "bytes": 27135,
+      "sha256": "aea8b351f8a1b60acde5bed3c2e95f1aa142928e652168b894202c8ce1994e5b"
+    },
+    {
+      "path": "src/core.js",
+      "bytes": 27533,
+      "sha256": "561ef13fd7747fabc4e1cc1d61a468af7fb6218983abe196a46a7ecddde0b0eb"
+    },
+    {
+      "path": "src/daily.css",
+      "bytes": 5121,
+      "sha256": "304841a6577cacbed31ae00bbcf259e8aa02a56ea3fca1fc837ce15d5a8b2256"
+    },
+    {
+      "path": "src/daily.js",
+      "bytes": 25883,
+      "sha256": "b9377d1be26cf531411d8ac9e812ccb2814e648a44287b93bdd278f1c51ed23c"
+    },
+    {
+      "path": "src/demo-experience.css",
+      "bytes": 16434,
+      "sha256": "e86144118b4536084c4ea6f8ed71da6fe4ed47ec19edc514c93bd6b2274d2a7b"
+    },
+    {
+      "path": "src/demo-experience.js",
+      "bytes": 53786,
+      "sha256": "7aff1741e3767e17c03d8596cec523e50e24c39524184018de0580b28373c94f"
+    },
+    {
+      "path": "src/governance.css",
+      "bytes": 4603,
+      "sha256": "d789794633141b257259a39f9f37611a070d48d80f36276b7ab15eb98344e173"
+    },
+    {
+      "path": "src/governance.js",
+      "bytes": 30290,
+      "sha256": "e4b95e2fd09cd66f45441a542eec87d6b353735378856bed391460eec7b75312"
+    },
+    {
+      "path": "src/operations.js",
+      "bytes": 41785,
+      "sha256": "c9b3200dd5bb9ea6aa2e78b8686f43bd3803fa2a712edfda9732f40e841d909d"
+    },
+    {
+      "path": "src/performance.css",
+      "bytes": 4976,
+      "sha256": "a5d5810413a7593da19f83d5e6a69ec23a2b2111c72fa2c3a63a534b242fe04a"
+    },
+    {
+      "path": "src/performance.js",
+      "bytes": 32366,
+      "sha256": "75aa32519f0f51b1b6777bce554efc6018d9a72ff9cc70640305297d6f3b74f0"
+    },
+    {
+      "path": "src/pos-existing.js",
+      "bytes": 3733,
+      "sha256": "a263133a3adccd211098aba83e0de1fea029310e45b17e02cf6d25998436753d"
+    },
+    {
+      "path": "src/ser-source-catalog.js",
+      "bytes": 78118,
+      "sha256": "a136ffa97581f5e8d33a544534225ba0ab0455d049aebc16a6c2d8838519c764"
+    },
+    {
+      "path": "src/shell.html",
+      "bytes": 694,
+      "sha256": "9fa4dc9efe4f8c0e1f34a6c09d583d1a42fe8bd34415acc97f98305dd2d00a93"
+    },
+    {
+      "path": "src/style.css",
+      "bytes": 25215,
+      "sha256": "a60ec5a8693728cbe423789e5b15375a036be426a86db6a818919d5562246813"
+    },
+    {
+      "path": "src/tasks-communication.css",
+      "bytes": 2550,
+      "sha256": "7b822f2beb96add2e75d6e9766e326c3e3a5492473b0933d3c04ad350043def5"
+    },
+    {
+      "path": "src/tasks-communication.js",
+      "bytes": 31937,
+      "sha256": "387d110095410d4f971cff4eeababe6acacd82e3a7d2ba46220ccae86bfb430c"
+    }
+  ]
+}
