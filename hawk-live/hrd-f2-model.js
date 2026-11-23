@@ -128,14 +128,14 @@ const HR2 = (() => {
 
   /* ---------- presensi ---------- */
   const attId = (emp, date) => `ATT-${date.replace(/-/g, '')}-${emp}`;
-  function leaveOn(hr, emp, date) { return hr.queue.find(q => q.emp === emp && q.payload?.cat && q.status === 'Disetujui' && q.payload.from <= date && q.payload.to >= date); }
+  function leaveOn(hr, emp, date) { return hr.queue.find(q => q.emp === emp && q.payload?.cat && q.status === 'Disetujui' && q.payload.from <= date && q.payload.to >= date && (!q.payload.dates || q.payload.dates.includes(date))); }
   function attendance(hr, emp, date) {
     const f2 = ensure(hr), sch = scheduleOn(hr, emp, date);
     const id = attId(emp, date);
     const base = { id, emp, date, shift: sch?.shift || '—', in: null, out: null, breakMin: 0, otMin: 0, late: 0, status: 'Belum Ada Status', evidence: null, corrected: null, provisional: false };
     if (!sch || date > TODAY) return base;
     const lv = leaveOn(hr, emp, date);
-    if (lv) return { ...base, status: leaveCat(lv.payload.cat).name === 'Sakit' ? 'Sakit' : 'Cuti', ref: lv.id };
+    if (lv) return { ...base, status: leaveCat(lv.payload.cat).name === 'Sakit' ? 'Sakit' : 'Cuti', ref: lv.id, unpaid: !!lv.payload.unpaidDates?.includes(date) || (!lv.payload.unpaidDates && lv.payload.cat === 'LV-UNP') };
     if (dow(date) === sch.off) return { ...base, status: 'Libur' };
     const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
     if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
@@ -162,11 +162,26 @@ const HR2 = (() => {
     const f2 = ensure(hr);
     return LEAVE.filter(c => !c.auto).map(c => {
       const used = f2.ledger.filter(l => l.emp === emp && l.cat === c.id).reduce((a, l) => a + l.days, 0);
-      const pending = hr.queue.filter(q => q.emp === emp && q.payload?.cat === c.id && q.status === 'Menunggu Persetujuan').reduce((a, q) => a + q.payload.days, 0);
+      const pending = hr.queue.filter(q => q.emp === emp && q.status === 'Menunggu Persetujuan' && (q.payload?.cat === c.id || (c.id === 'LV-UNP' && q.payload?.unpaidDays))).reduce((a, q) => a + (c.id === 'LV-UNP' ? (q.payload.unpaidDays ?? (q.payload.cat === 'LV-UNP' ? q.payload.days : 0)) : (q.payload.paidDays ?? q.payload.days)), 0);
       return { ...c, used, pending, left: c.quota === null ? null : c.quota - used };
     });
   }
   const daysBetween = (a, b) => { let n = 0; for (let d = a; d <= b; d = addDays(d, 1)) n++; return n; };
+  /* NP-HRD-F2-001: hari cuti = hari kerja terjadwal (jadwal tetap efektif per tanggal + penugasan tambahan),
+     tidak termasuk hari libur jadwal dan libur/cuti bersama di kalender perusahaan. */
+  const isHoliday = (hr, date) => (hr.settings?.calendar || []).some(c => c.date === date);
+  function isWorkday(hr, emp, date) {
+    if (isHoliday(hr, date)) return false;
+    const sch = scheduleOn(hr, emp, date);
+    if (sch && dow(date) !== sch.off) return true;
+    return extrasOn(hr, emp, date).length > 0;
+  }
+  function workdays(hr, emp, from, to) { const out = []; for (let d = from; d <= to; d = addDays(d, 1)) if (isWorkday(hr, emp, d)) out.push(d); return out; }
+  /* hari unpaid yang disetujui per karyawan dalam rentang tanggal (dasar potongan F7) */
+  function unpaidDates(hr, emp, from, to) {
+    return hr.queue.filter(q => q.emp === emp && q.status === 'Disetujui' && q.payload?.unpaidDates)
+      .flatMap(q => q.payload.unpaidDates.filter(d => d >= from && d <= to).map(d => ({ date: d, req: q.id })));
+  }
 
   /* ---------- otorisasi tahap approval ---------- */
   function canDecide(hr, role, q) {
@@ -232,12 +247,27 @@ const HR2 = (() => {
         const cat = leaveCat(input.cat); if (!cat || cat.auto) throw new Error('Pilih kategori cuti/izin.');
         const from = input.from, to = input.to || input.from;
         if (!/^\d{4}-\d{2}-\d{2}$/.test(from || '') || to < from) throw new Error('Periode cuti tidak valid.');
-        const days = daysBetween(from, to);
+        const dates = workdays(hr, input.emp, from, to);
+        if (!dates.length) throw new Error('Tidak ada hari kerja terjadwal pada periode itu (libur jadwal atau libur perusahaan).');
+        const days = dates.length;
         const clash = hr.queue.find(q => q.emp === input.emp && q.payload?.cat && ['Menunggu Persetujuan', 'Disetujui'].includes(q.status) && q.payload.from <= to && q.payload.to >= from);
         if (clash) throw new Error(`Bertabrakan dengan ${clash.id} (${clash.payload.from} s/d ${clash.payload.to}).`);
         const bal = balance(hr, input.emp).find(b => b.id === cat.id);
-        if (bal.left !== null && bal.left - bal.pending < days) throw new Error(`Saldo ${cat.name} tidak cukup: sisa ${bal.left - bal.pending} hari.`);
-        return newRequest(cat.name, input.emp, { cat: cat.id, from, to, days, reason: input.reason || '' }, `${days} hari · ${from}${to !== from ? ' s/d ' + to : ''}`);
+        /* NP-HRD-F2-001: saldo tidak cukup TIDAK ditolak otomatis. Hari yang tercakup saldo tetap dibayar,
+           kekurangannya menjadi Cuti Tidak Dibayar setelah karyawan menyetujui konversi; lalu tetap lewat APR-LEAVE. */
+        const unpaidCat = cat.id === 'LV-UNP';
+        const avail = unpaidCat || bal.left === null ? days : Math.max(0, bal.left - bal.pending);
+        const paidDays = unpaidCat ? 0 : Math.min(days, avail);
+        const short = days - paidDays;
+        if (!unpaidCat && short > 0 && !['1', 'on', 'true', true].includes(input.convert)) {
+          const e = new Error(`Saldo ${cat.name} sisa ${avail} hari, pengajuan ${days} hari kerja. Centang "Setujui sisa ${short} hari sebagai Cuti Tidak Dibayar" untuk tetap mengirim ke Approval.`);
+          e.code = 'NEED_UNPAID_CONSENT'; e.offer = { paidDays, unpaidDays: short }; throw e;
+        }
+        const unpaidDates = unpaidCat ? dates.slice() : dates.slice(paidDays);
+        const payload = { cat: cat.id, from, to, days, dates, paidDays, unpaidDays: unpaidDates.length, unpaidDates, consent: !unpaidCat && short > 0 ? { by: input.emp, at: TODAY } : null, reason: input.reason || '' };
+        const note = `${days} hari kerja · ${from}${to !== from ? ' s/d ' + to : ''}${!unpaidCat && short > 0 ? ` · ${paidDays} dibayar + ${short} tidak dibayar` : ''}`;
+        /* type harus nama kategori agar policyFor() memilih APR-LEAVE; saldo nol penuh → seluruhnya Cuti Tidak Dibayar */
+        return newRequest(!unpaidCat && paidDays === 0 ? 'Cuti Tidak Dibayar' : cat.name, input.emp, payload, note);
       }
       case 'decide': {
         const q = hr.queue.find(x => x.id === input.id); if (!q) throw new Error('Pengajuan tidak ditemukan.');
@@ -251,7 +281,11 @@ const HR2 = (() => {
         else {
           q.status = 'Disetujui'; q.stage = q.stages.length;
           if (q.type === 'Koreksi presensi' && !f2.overrides[q.payload.att]) f2.overrides[q.payload.att] = { after: q.payload.after, req: q.id, by, at: st.at };
-          if (q.payload?.cat && !f2.ledger.some(l => l.ref === q.id)) f2.ledger.push({ id: 'LDG-' + q.id, emp: q.emp, cat: q.payload.cat, days: q.payload.days, ref: q.id, at: TODAY, demo: true });
+          if (q.payload?.cat && !f2.ledger.some(l => l.ref === q.id)) {
+            const pl = q.payload, paid = pl.paidDays ?? (pl.cat === 'LV-UNP' ? 0 : pl.days), unp = pl.unpaidDays ?? (pl.cat === 'LV-UNP' ? pl.days : 0);
+            if (paid > 0) f2.ledger.push({ id: 'LDG-' + q.id, emp: q.emp, cat: pl.cat, days: paid, ref: q.id, at: TODAY, demo: true });
+            if (unp > 0) f2.ledger.push({ id: 'LDG-' + q.id + (paid > 0 ? '-U' : ''), emp: q.emp, cat: 'LV-UNP', days: unp, dates: pl.unpaidDates || null, ref: q.id, at: TODAY, demo: true });
+          }
         }
         audit(hr, by, 'Keputusan approval', `${q.id} · ${st.label}: ${st.decision}${q.status !== 'Menunggu Persetujuan' ? ' · final' : ' · lanjut ke ' + q.stages[q.stage].label}`, { object: 'Pengajuan', ref: q.id, before: q.type === 'Koreksi presensi' ? JSON.stringify(q.payload.before) : 'Menunggu', after: q.type === 'Koreksi presensi' && q.status === 'Disetujui' ? JSON.stringify(q.payload.after) : q.status });
         return q.status === 'Menunggu Persetujuan' ? `${q.id} lanjut ke ${q.stages[q.stage].label}` : `${q.id} ${q.status}`;
@@ -345,6 +379,6 @@ const HR2 = (() => {
   H.EXT.attStatus = attStatus;
   H.EXT.update = (state, hr, action, input, ctx) => update(state, hr, action, input, ctx);
   H.EXT.purge = purge; H.EXT.keep = keep; H.EXT.ensure = ensure;
-  return { SITES, RADIUS, OUTSIDE, geo, dist, SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
+  return { SITES, RADIUS, OUTSIDE, geo, dist, SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, isWorkday, workdays, unpaidDates, parseFile, validateRow, posByName, locByName, attId };
 })();
 if (typeof module !== 'undefined') module.exports = HR2;

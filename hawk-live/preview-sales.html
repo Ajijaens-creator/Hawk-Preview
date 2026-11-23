@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-14T02:17:17.397Z">
+<meta name="hawk-standalone" content="2026-11-23T02:02:15.107Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Sales</title>
 <style>
@@ -3408,14 +3408,14 @@ const HR2 = (() => {
 
   /* ---------- presensi ---------- */
   const attId = (emp, date) => `ATT-${date.replace(/-/g, '')}-${emp}`;
-  function leaveOn(hr, emp, date) { return hr.queue.find(q => q.emp === emp && q.payload?.cat && q.status === 'Disetujui' && q.payload.from <= date && q.payload.to >= date); }
+  function leaveOn(hr, emp, date) { return hr.queue.find(q => q.emp === emp && q.payload?.cat && q.status === 'Disetujui' && q.payload.from <= date && q.payload.to >= date && (!q.payload.dates || q.payload.dates.includes(date))); }
   function attendance(hr, emp, date) {
     const f2 = ensure(hr), sch = scheduleOn(hr, emp, date);
     const id = attId(emp, date);
     const base = { id, emp, date, shift: sch?.shift || '—', in: null, out: null, breakMin: 0, otMin: 0, late: 0, status: 'Belum Ada Status', evidence: null, corrected: null, provisional: false };
     if (!sch || date > TODAY) return base;
     const lv = leaveOn(hr, emp, date);
-    if (lv) return { ...base, status: leaveCat(lv.payload.cat).name === 'Sakit' ? 'Sakit' : 'Cuti', ref: lv.id };
+    if (lv) return { ...base, status: leaveCat(lv.payload.cat).name === 'Sakit' ? 'Sakit' : 'Cuti', ref: lv.id, unpaid: !!lv.payload.unpaidDates?.includes(date) || (!lv.payload.unpaidDates && lv.payload.cat === 'LV-UNP') };
     if (dow(date) === sch.off) return { ...base, status: 'Libur' };
     const n = num(emp), k = (n * 31 + d2n(date) * 7) % 20;
     if (k === 16) return { ...base, status: 'Sakit', evidence: 'Surat dokter (sintetis)' };
@@ -3442,11 +3442,26 @@ const HR2 = (() => {
     const f2 = ensure(hr);
     return LEAVE.filter(c => !c.auto).map(c => {
       const used = f2.ledger.filter(l => l.emp === emp && l.cat === c.id).reduce((a, l) => a + l.days, 0);
-      const pending = hr.queue.filter(q => q.emp === emp && q.payload?.cat === c.id && q.status === 'Menunggu Persetujuan').reduce((a, q) => a + q.payload.days, 0);
+      const pending = hr.queue.filter(q => q.emp === emp && q.status === 'Menunggu Persetujuan' && (q.payload?.cat === c.id || (c.id === 'LV-UNP' && q.payload?.unpaidDays))).reduce((a, q) => a + (c.id === 'LV-UNP' ? (q.payload.unpaidDays ?? (q.payload.cat === 'LV-UNP' ? q.payload.days : 0)) : (q.payload.paidDays ?? q.payload.days)), 0);
       return { ...c, used, pending, left: c.quota === null ? null : c.quota - used };
     });
   }
   const daysBetween = (a, b) => { let n = 0; for (let d = a; d <= b; d = addDays(d, 1)) n++; return n; };
+  /* NP-HRD-F2-001: hari cuti = hari kerja terjadwal (jadwal tetap efektif per tanggal + penugasan tambahan),
+     tidak termasuk hari libur jadwal dan libur/cuti bersama di kalender perusahaan. */
+  const isHoliday = (hr, date) => (hr.settings?.calendar || []).some(c => c.date === date);
+  function isWorkday(hr, emp, date) {
+    if (isHoliday(hr, date)) return false;
+    const sch = scheduleOn(hr, emp, date);
+    if (sch && dow(date) !== sch.off) return true;
+    return extrasOn(hr, emp, date).length > 0;
+  }
+  function workdays(hr, emp, from, to) { const out = []; for (let d = from; d <= to; d = addDays(d, 1)) if (isWorkday(hr, emp, d)) out.push(d); return out; }
+  /* hari unpaid yang disetujui per karyawan dalam rentang tanggal (dasar potongan F7) */
+  function unpaidDates(hr, emp, from, to) {
+    return hr.queue.filter(q => q.emp === emp && q.status === 'Disetujui' && q.payload?.unpaidDates)
+      .flatMap(q => q.payload.unpaidDates.filter(d => d >= from && d <= to).map(d => ({ date: d, req: q.id })));
+  }
 
   /* ---------- otorisasi tahap approval ---------- */
   function canDecide(hr, role, q) {
@@ -3512,12 +3527,27 @@ const HR2 = (() => {
         const cat = leaveCat(input.cat); if (!cat || cat.auto) throw new Error('Pilih kategori cuti/izin.');
         const from = input.from, to = input.to || input.from;
         if (!/^\d{4}-\d{2}-\d{2}$/.test(from || '') || to < from) throw new Error('Periode cuti tidak valid.');
-        const days = daysBetween(from, to);
+        const dates = workdays(hr, input.emp, from, to);
+        if (!dates.length) throw new Error('Tidak ada hari kerja terjadwal pada periode itu (libur jadwal atau libur perusahaan).');
+        const days = dates.length;
         const clash = hr.queue.find(q => q.emp === input.emp && q.payload?.cat && ['Menunggu Persetujuan', 'Disetujui'].includes(q.status) && q.payload.from <= to && q.payload.to >= from);
         if (clash) throw new Error(`Bertabrakan dengan ${clash.id} (${clash.payload.from} s/d ${clash.payload.to}).`);
         const bal = balance(hr, input.emp).find(b => b.id === cat.id);
-        if (bal.left !== null && bal.left - bal.pending < days) throw new Error(`Saldo ${cat.name} tidak cukup: sisa ${bal.left - bal.pending} hari.`);
-        return newRequest(cat.name, input.emp, { cat: cat.id, from, to, days, reason: input.reason || '' }, `${days} hari · ${from}${to !== from ? ' s/d ' + to : ''}`);
+        /* NP-HRD-F2-001: saldo tidak cukup TIDAK ditolak otomatis. Hari yang tercakup saldo tetap dibayar,
+           kekurangannya menjadi Cuti Tidak Dibayar setelah karyawan menyetujui konversi; lalu tetap lewat APR-LEAVE. */
+        const unpaidCat = cat.id === 'LV-UNP';
+        const avail = unpaidCat || bal.left === null ? days : Math.max(0, bal.left - bal.pending);
+        const paidDays = unpaidCat ? 0 : Math.min(days, avail);
+        const short = days - paidDays;
+        if (!unpaidCat && short > 0 && !['1', 'on', 'true', true].includes(input.convert)) {
+          const e = new Error(`Saldo ${cat.name} sisa ${avail} hari, pengajuan ${days} hari kerja. Centang "Setujui sisa ${short} hari sebagai Cuti Tidak Dibayar" untuk tetap mengirim ke Approval.`);
+          e.code = 'NEED_UNPAID_CONSENT'; e.offer = { paidDays, unpaidDays: short }; throw e;
+        }
+        const unpaidDates = unpaidCat ? dates.slice() : dates.slice(paidDays);
+        const payload = { cat: cat.id, from, to, days, dates, paidDays, unpaidDays: unpaidDates.length, unpaidDates, consent: !unpaidCat && short > 0 ? { by: input.emp, at: TODAY } : null, reason: input.reason || '' };
+        const note = `${days} hari kerja · ${from}${to !== from ? ' s/d ' + to : ''}${!unpaidCat && short > 0 ? ` · ${paidDays} dibayar + ${short} tidak dibayar` : ''}`;
+        /* type harus nama kategori agar policyFor() memilih APR-LEAVE; saldo nol penuh → seluruhnya Cuti Tidak Dibayar */
+        return newRequest(!unpaidCat && paidDays === 0 ? 'Cuti Tidak Dibayar' : cat.name, input.emp, payload, note);
       }
       case 'decide': {
         const q = hr.queue.find(x => x.id === input.id); if (!q) throw new Error('Pengajuan tidak ditemukan.');
@@ -3531,7 +3561,11 @@ const HR2 = (() => {
         else {
           q.status = 'Disetujui'; q.stage = q.stages.length;
           if (q.type === 'Koreksi presensi' && !f2.overrides[q.payload.att]) f2.overrides[q.payload.att] = { after: q.payload.after, req: q.id, by, at: st.at };
-          if (q.payload?.cat && !f2.ledger.some(l => l.ref === q.id)) f2.ledger.push({ id: 'LDG-' + q.id, emp: q.emp, cat: q.payload.cat, days: q.payload.days, ref: q.id, at: TODAY, demo: true });
+          if (q.payload?.cat && !f2.ledger.some(l => l.ref === q.id)) {
+            const pl = q.payload, paid = pl.paidDays ?? (pl.cat === 'LV-UNP' ? 0 : pl.days), unp = pl.unpaidDays ?? (pl.cat === 'LV-UNP' ? pl.days : 0);
+            if (paid > 0) f2.ledger.push({ id: 'LDG-' + q.id, emp: q.emp, cat: pl.cat, days: paid, ref: q.id, at: TODAY, demo: true });
+            if (unp > 0) f2.ledger.push({ id: 'LDG-' + q.id + (paid > 0 ? '-U' : ''), emp: q.emp, cat: 'LV-UNP', days: unp, dates: pl.unpaidDates || null, ref: q.id, at: TODAY, demo: true });
+          }
         }
         audit(hr, by, 'Keputusan approval', `${q.id} · ${st.label}: ${st.decision}${q.status !== 'Menunggu Persetujuan' ? ' · final' : ' · lanjut ke ' + q.stages[q.stage].label}`, { object: 'Pengajuan', ref: q.id, before: q.type === 'Koreksi presensi' ? JSON.stringify(q.payload.before) : 'Menunggu', after: q.type === 'Koreksi presensi' && q.status === 'Disetujui' ? JSON.stringify(q.payload.after) : q.status });
         return q.status === 'Menunggu Persetujuan' ? `${q.id} lanjut ke ${q.stages[q.stage].label}` : `${q.id} ${q.status}`;
@@ -3625,7 +3659,7 @@ const HR2 = (() => {
   H.EXT.attStatus = attStatus;
   H.EXT.update = (state, hr, action, input, ctx) => update(state, hr, action, input, ctx);
   H.EXT.purge = purge; H.EXT.keep = keep; H.EXT.ensure = ensure;
-  return { SITES, RADIUS, OUTSIDE, geo, dist, SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, parseFile, validateRow, posByName, locByName, attId };
+  return { SITES, RADIUS, OUTSIDE, geo, dist, SHIFTS, DAYS, DOW, LEAVE, FIELDS, SAMPLE_FILES, dow, addDays, ensure, scheduleOn, extrasOn, attendance, attStatus, summary, balance, canDecide, isWorkday, workdays, unpaidDates, parseFile, validateRow, posByName, locByName, attId };
 })();
 if (typeof module !== 'undefined') module.exports = HR2;
 
@@ -4708,6 +4742,7 @@ const HR7 = (() => {
   const H = (typeof HR !== 'undefined') ? HR : require('./hrd-model.js');
   const P5 = () => (typeof HR5 !== 'undefined' ? HR5 : null);
   const P6 = () => (typeof HR6 !== 'undefined' ? HR6 : null);
+  const P2 = () => (typeof HR2 !== 'undefined' ? HR2 : null);
   const TODAY = H.TODAY;
   const now = () => `${TODAY} ${new Date().toTimeString().slice(0, 5)}`;
   const R = (x) => Math.round(x);
@@ -4725,9 +4760,22 @@ const HR7 = (() => {
     ['RUL-BPJS', 'BPJS karyawan & perusahaan', 'Potongan', 'Karyawan: Kes 1%, JHT 2%, JP 1% · Perusahaan: Kes 4%, JKK 0,24%, JKM 0,3%, JHT 3,7%, JP 2%', null, '2103 Utang BPJS / 6105 Beban BPJS'],
     ['RUL-PPH', 'PPh 21 (TER simulasi)', 'Potongan', 'Bruto ≤ Rp5,4 jt 0% · ≤ Rp6,2 jt 0,5% · ≤ Rp7,5 jt 1,5% · ≤ Rp9 jt 2,5% · di atas 3,5% (SIMULASI, bukan tarif resmi)', null, '2102 Utang PPh 21'],
     ['RUL-KSB', 'Cicilan kasbon', 'Potongan', 'Sesuai jadwal cicilan pada ledger kasbon', null, '1104 Piutang Karyawan'],
-    ['RUL-RMB', 'Reimburse via payroll', 'Pendapatan', 'Reimburse disetujui yang belum diselesaikan di kanal lain', null, '6106 Beban Reimburse']
+    ['RUL-RMB', 'Reimburse via payroll', 'Pendapatan', 'Reimburse disetujui yang belum diselesaikan di kanal lain', null, '6106 Beban Reimburse'],
+    ['RUL-UNP', 'Potongan cuti tidak dibayar', 'Potongan', 'ROUND(Gaji pokok ÷ hari kerja terjadwal periode × hari unpaid disetujui, 0) · presisi penuh, dibulatkan sekali pada total · periode 1–akhir bulan', null, '6101 Beban Gaji (pengurang) · TO VERIFY Finance']
   ].map(([id, name, kind, formula, value, coa]) => ({ id, name, kind, coa, versions: [{ v: 1, from: '2610', formula, value, by: 'Manager HRD', at: '2026-01-05', note: 'Versi awal (simulasi)' }] }));
   const ruleAt = (f7, id, period) => { const r = f7.rules.find(x => x.id === id); const vs = r.versions.filter(v => v.from <= String(period)); return vs[vs.length - 1] || r.versions[0]; };
+  const nextPeriod = (p) => { const y = +String(p).slice(0, 2), m = +String(p).slice(2, 4); return m === 12 ? `${y + 1}01` : `${y}${String(m + 1).padStart(2, '0')}`; };
+  const periodRange = (p) => PERIODS[p] || (() => { const y = 2000 + +String(p).slice(0, 2), m = +String(p).slice(2, 4), last = new Date(Date.UTC(y, m, 0)).getUTCDate(); return { from: `${y}-${String(m).padStart(2, '0')}-01`, to: `${y}-${String(m).padStart(2, '0')}-${last}` }; })();
+  /* NP-HRD-F2-001 · potongan unpaid leave: dasar gaji pokok kontrak (bukan prorata, bukan tunjangan), pembagi = hari kerja terjadwal
+     karyawan dalam periode payroll (1–akhir bulan), jumlah hari = hari unpaid disetujui F2 dalam periode. Dibulatkan sekali. */
+  function unpaidOf(hr, emp, period) {
+    const p2 = P2(), P = periodRange(String(period)); if (!p2) return { days: 0, wd: 0, amount: 0, items: [] };
+    const items = p2.unpaidDates(hr, emp, P.from, P.to); if (!items.length) return { days: 0, wd: 0, amount: 0, items };
+    const wd = p2.workdays(hr, emp, P.from, P.to).length;
+    const amount = wd ? R(baseOf(hr, emp) * items.length / wd) : 0;
+    return { days: items.length, wd, amount, items, reqs: [...new Set(items.map(i => i.req))] };
+  }
+  const unpaidKeys = (hr, period) => hr.people.flatMap(p => unpaidOf(hr, p.id, period).items.map(i => `${i.req}:${i.date}`));
   const pphRate = (gross) => gross <= 5.4e6 ? 0 : gross <= 6.2e6 ? 0.005 : gross <= 7.5e6 ? 0.015 : gross <= 9e6 ? 0.025 : 0.035;
 
   /* ---------- aktivitas therapist per periode ---------- */
@@ -4774,7 +4822,8 @@ const HR7 = (() => {
     const ot = R(act.ot * baseOf(hr, emp) / 173 * otMult);
     const rmb = f7.reimburse.filter(r => r.emp === emp && r.status === 'Disetujui' && r.period === period && !r.settledOther).reduce((s, r) => s + r.amount, 0);
     const adjIn = adjustments(hr).filter(a => a.emp === emp && a.toPeriod === period).reduce((s, a) => s + a.amount, 0);
-    const earnings = [['Gaji pokok', base, 'RUL-GAPOK', pro < 1 ? `prorata ${days}/${P.days} hari` : 'kontrak F2'], ['Tunjangan', allow, 'RUL-TUNJ', ''], ['Komisi', act.comm, 'RUL-KOM', act.src || ''], ['Lembur', ot, 'RUL-LBR', act.ot ? `${Math.round(act.ot * 10) / 10} jam disetujui` : ''], ['Reimburse', rmb, 'RUL-RMB', rmb ? f7.reimburse.filter(r => r.emp === emp && r.period === period && r.status === 'Disetujui' && !r.settledOther).map(r => r.id).join(', ') : ''], ['Penyesuaian periode lalu', adjIn, 'ADJ', adjIn ? adjustments(hr).filter(a => a.emp === emp && a.toPeriod === period).map(a => a.id).join(', ') : '']].filter(e => e[1] !== 0 || ['Gaji pokok', 'Tunjangan'].includes(e[0]));
+    const unp = unpaidOf(hr, emp, period);
+    const earnings = [['Gaji pokok', base, 'RUL-GAPOK', pro < 1 ? `prorata ${days}/${P.days} hari` : 'kontrak F2'], ['Tunjangan', allow, 'RUL-TUNJ', ''], ['Komisi', act.comm, 'RUL-KOM', act.src || ''], ['Lembur', ot, 'RUL-LBR', act.ot ? `${Math.round(act.ot * 10) / 10} jam disetujui` : ''], ['Reimburse', rmb, 'RUL-RMB', rmb ? f7.reimburse.filter(r => r.emp === emp && r.period === period && r.status === 'Disetujui' && !r.settledOther).map(r => r.id).join(', ') : ''], ['Penyesuaian periode lalu', adjIn, 'ADJ', adjIn ? adjustments(hr).filter(a => a.emp === emp && a.toPeriod === period).map(a => a.id).join(', ') : ''], ['Potongan cuti tidak dibayar', -unp.amount, 'RUL-UNP', unp.days ? `${unp.days} hari ÷ ${unp.wd} hari kerja × gaji pokok ${baseOf(hr, emp)} · ${unp.reqs.join(', ')}` : '']].filter(e => e[1] !== 0 || ['Gaji pokok', 'Tunjangan'].includes(e[0]));
     const gross = earnings.reduce((s, e) => s + e[1], 0);
     const bpjsK = R(base * 0.03 + Math.min(base + allow, 12e6) * 0.01), pph = R(gross * pphRate(gross));
     const inst = f7.advances.flatMap(a => a.schedule.filter(s => s.period === period && a.emp === emp && a.status === 'Dicairkan').map(s => [s.id, s.amount]));
@@ -4783,14 +4832,14 @@ const HR7 = (() => {
     let thp = gross - dedT, round = 0;
     if (period === '2610' && pro === 1) { round = p.thp - thp; if (Math.abs(round) <= 2000 && round !== 0) { earnings.push(['Pembulatan', round, 'RUL-GAPOK', 'kalibrasi THP roster']); thp += round; } else round = 0; }
     const employer = R(base * (0.04 + 0.0024 + 0.003 + 0.037 + 0.02));
-    return { emp, period, name: p.name, loc: pl.location, pos: pl.position, division: pl.division, entity: pl.entity, earnings, ded, gross: gross + round, dedT, thp, employer, cost: gross + round + employer, pro, versions: Object.fromEntries(f7.rules.map(r => [r.id, ruleAt(f7, r.id, period).v])) };
+    return { emp, period, name: p.name, loc: pl.location, pos: pl.position, division: pl.division, entity: pl.entity, earnings, ded, gross: gross + round, dedT, thp, employer, cost: gross + round + employer, pro, unpaid: unp.days ? { days: unp.days, wd: unp.wd, amount: unp.amount, reqs: unp.reqs } : null, versions: Object.fromEntries(f7.rules.map(r => [r.id, ruleAt(f7, r.id, period).v])) };
   }
   /* ---------- batch ---------- */
   const batchId = (period) => `PAY-${period}-01`;
   function batchOf(hr, period) { return ensure(hr).batches.find(b => b.period === String(period)); }
   function batchLines(hr, period) { const b = batchOf(hr, period); if (b && b.snapshot) return b.snapshot.lines; return hr.people.map(p => slip(hr, p.id, period)).filter(s => s && !s.excluded); }
   function excluded(hr, period) { return hr.people.map(p => slip(hr, p.id, period)).filter(s => s && s.excluded); }
-  function totals(lines) { const t = { n: lines.length, gross: 0, ded: 0, thp: 0, employer: 0, cost: 0, comm: 0, base: 0, allow: 0, ot: 0, bpjs: 0, pph: 0, ksb: 0, rmb: 0, adj: 0 }; for (const l of lines) { t.gross += l.gross; t.ded += l.dedT; t.thp += l.thp; t.employer += l.employer; t.cost += l.cost; for (const [n, v, r] of l.earnings) { if (r === 'RUL-KOM') t.comm += v; if (r === 'RUL-GAPOK' && n === 'Gaji pokok') t.base += v; if (r === 'RUL-TUNJ') t.allow += v; if (r === 'RUL-LBR') t.ot += v; if (r === 'RUL-RMB') t.rmb += v; if (r === 'ADJ') t.adj += v; } for (const [, v, r] of l.ded) { if (r === 'RUL-BPJS') t.bpjs += v; if (r === 'RUL-PPH') t.pph += v; if (r === 'RUL-KSB') t.ksb += v; } } return t; }
+  function totals(lines) { const t = { n: lines.length, gross: 0, ded: 0, thp: 0, employer: 0, cost: 0, comm: 0, base: 0, allow: 0, ot: 0, bpjs: 0, pph: 0, ksb: 0, rmb: 0, adj: 0, unp: 0 }; for (const l of lines) { t.gross += l.gross; t.ded += l.dedT; t.thp += l.thp; t.employer += l.employer; t.cost += l.cost; for (const [n, v, r] of l.earnings) { if (r === 'RUL-KOM') t.comm += v; if (r === 'RUL-GAPOK' && n === 'Gaji pokok') t.base += v; if (r === 'RUL-TUNJ') t.allow += v; if (r === 'RUL-LBR') t.ot += v; if (r === 'RUL-RMB') t.rmb += v; if (r === 'ADJ') t.adj += v; if (r === 'RUL-UNP') t.unp += v; } for (const [, v, r] of l.ded) { if (r === 'RUL-BPJS') t.bpjs += v; if (r === 'RUL-PPH') t.pph += v; if (r === 'RUL-KSB') t.ksb += v; } } return t; }
   function anomalies(hr, period) {
     const ls = batchLines(hr, period), out = [];
     for (const l of ls) { const p = hr.people.find(x => x.id === l.emp); if (String(period) !== '2610' && p && Math.abs(l.thp - p.thp) / p.thp > 0.2) out.push({ emp: l.emp, kind: 'THP berubah > 20% vs Oktober', detail: `${H.locName(l.loc)} · ${Math.round((l.thp - p.thp) / p.thp * 100)}%` }); if (l.pro < 1) out.push({ emp: l.emp, kind: 'Prorata karyawan baru', detail: `${Math.round(l.pro * 100)}% periode` }); }
@@ -4800,7 +4849,21 @@ const HR7 = (() => {
   const sources = (hr, period) => String(period) === '2610' ? [['POS Oktober', 'Lengkap', 'ready'], ['Presensi & lembur F2', 'Disetujui', 'ready'], ['Kontrak & penempatan F2', 'Lengkap', 'ready'], ['Kasbon/Reimburse', 'Lengkap', 'ready']] : [['POS November', 'Sebagian · 7–13 Nov (provisional)', 'sandbox'], ['Presensi & lembur F2', 'Sampai 13 Nov', 'sandbox'], ['Kontrak & penempatan F2', 'Lengkap', 'ready'], ['Kasbon/Reimburse', `${ensure(hr).reimburse.filter(r => r.status === 'Diajukan').length} menunggu keputusan`, ensure(hr).reimburse.some(r => r.status === 'Diajukan') ? 'sandbox' : 'ready']];
   /* koreksi terlambat: refund/koreksi POS setelah kunci → adjustment ke periode berikut, merujuk baris asal */
   function adjustments(hr) {
-    const f7 = ensure(hr), out = [], p5 = P5(); if (!p5 || !hr.f5) return out;
+    const f7 = ensure(hr), out = [], p5 = P5();
+    /* NP-HRD-F2-001 · unpaid leave disetujui setelah batch dikunci → penyesuaian ke periode berikut; snapshot lama tidak diubah.
+       Kunci anti-ganda: Request ID + tanggal yang sudah masuk snapshot (snapshot.unpaid). */
+    for (const b of f7.batches.filter(x => x.snapshot)) {
+      const done = new Set(b.snapshot.unpaid || []);
+      for (const p of hr.people) {
+        const u = unpaidOf(hr, p.id, b.period), fresh = u.items.filter(i => !done.has(`${i.req}:${i.date}`));
+        if (!fresh.length || !u.wd) continue;
+        for (const req of [...new Set(fresh.map(i => i.req))]) {
+          const n = fresh.filter(i => i.req === req).length;
+          out.push({ id: `ADJ-UNP-${req}-${b.period}`, emp: p.id, fromPeriod: b.period, toPeriod: nextPeriod(b.period), amount: -R(baseOf(hr, p.id) * n / u.wd), ref: req, tx: null, reason: `Cuti tidak dibayar ${n} hari disetujui setelah ${b.id} dikunci`, rule: `RUL-UNP v${ruleAt(f7, 'RUL-UNP', b.period).v}` });
+        }
+      }
+    }
+    if (!p5 || !hr.f5) return out;
     for (const b of f7.batches.filter(x => x.snapshot && x.period === '2611')) {
       const rate = ruleAt(f7, 'RUL-KOM', b.period).value;
       for (const r of hr.f5.refunds.filter(x => !(b.snapshot.refunds || []).includes(x.id))) { const l = p5.lines(hr).find(x => x.line === r.line); if (l) out.push({ id: `ADJ-${r.id}`, emp: l.emp, fromPeriod: b.period, toPeriod: '2612', amount: -R(l.dur / 60 * rate), ref: l.line, tx: l.tx, reason: `Refund ${r.id} setelah ${b.id} dikunci`, rule: `RUL-KOM v${ruleAt(f7, 'RUL-KOM', b.period).v}` }); }
@@ -4848,8 +4911,9 @@ const HR7 = (() => {
   function ensure(hr) {
     if (hr.f2 && hr.f2.f7) { hr.f7 = hr.f2.f7; delete hr.f2.f7; }
     if (!hr.f7 || !hr.f7.seeded) { const k = hr.f7; hr.f7 = seed(hr); if (k) hr.f7.scenarios.push(...(k.scenarios || [])); }
+    for (const r0 of RULES0) if (!hr.f7.rules.some(r => r.id === r0.id)) hr.f7.rules.push(JSON.parse(JSON.stringify(r0)));
     const b10 = hr.f7.batches.find(b => b.period === '2610');
-    if (b10 && !b10.snapshot && hr.people.length && !building) { building = true; const lines = hr.people.map(p => slip(hr, p.id, '2610')).filter(s => s && !s.excluded); b10.snapshot = { at: '2026-10-29 15:00', by: 'Manager HRD', lines, versions: lines[0]?.versions || {} }; const pays = {}; lines.forEach((l, k) => { pays[l.emp] = k === 17 ? { status: 'Gagal', ref: 'BANK-2610-RTN-01', note: 'Rekening tidak valid' } : k === 40 ? { status: 'Sebagian', ref: 'BANK-2610-0002', note: 'Transfer kedua menunggu' } : { status: 'Sudah Bayar', ref: 'BANK-2610-0001' }; }); b10.payments = pays; building = false; }
+    if (b10 && !b10.snapshot && hr.people.length && !building) { building = true; const lines = hr.people.map(p => slip(hr, p.id, '2610')).filter(s => s && !s.excluded); b10.snapshot = { at: '2026-10-29 15:00', by: 'Manager HRD', lines, unpaid: unpaidKeys(hr, '2610'), versions: lines[0]?.versions || {} }; const pays = {}; lines.forEach((l, k) => { pays[l.emp] = k === 17 ? { status: 'Gagal', ref: 'BANK-2610-RTN-01', note: 'Rekening tidak valid' } : k === 40 ? { status: 'Sebagian', ref: 'BANK-2610-0002', note: 'Transfer kedua menunggu' } : { status: 'Sudah Bayar', ref: 'BANK-2610-0001' }; }); b10.payments = pays; building = false; }
     return hr.f7;
   }
 
@@ -4884,7 +4948,7 @@ const HR7 = (() => {
         if (action === 'pay-review') { b.status = 'Direview'; b.reviewer = by; b.history.push([now(), `Direview ${by} · ${anomalies(hr, b.period).length} anomali dicatat`]); return b.id; }
         if (b.status !== 'Direview') throw new Error('Review batch sebelum mengunci.');
         const lines = hr.people.map(p => slip(hr, p.id, b.period)).filter(s => s && !s.excluded);
-        b.status = 'Dikunci'; b.approvedAt = now(); b.snapshot = { at: now(), by, lines, versions: lines[0]?.versions || {}, sources: sources(hr, b.period).map(s => s.slice(0, 2)), refunds: (hr.f5?.refunds || []).map(r => r.id) };
+        b.status = 'Dikunci'; b.approvedAt = now(); b.snapshot = { at: now(), by, lines, unpaid: unpaidKeys(hr, b.period), versions: lines[0]?.versions || {}, sources: sources(hr, b.period).map(s => s.slice(0, 2)), refunds: (hr.f5?.refunds || []).map(r => r.id) };
         b.history.push([now(), `Disetujui & dikunci ${by} · snapshot ${lines.length} slip`]);
         audit(hr, by, 'Kunci payroll', `${b.id} · ${lines.length} slip · THP ${totals(lines).thp}`, { object: 'Payroll', ref: b.id });
         return b.id;
@@ -4973,11 +5037,11 @@ const HR7 = (() => {
   const COA = [['6101', 'Beban Gaji', 'D'], ['6102', 'Beban Tunjangan', 'D'], ['6103', 'Beban Komisi', 'D'], ['6104', 'Beban Lembur', 'D'], ['6105', 'Beban BPJS Perusahaan', 'D'], ['6106', 'Beban Reimburse', 'D'], ['2101', 'Utang Gaji', 'K'], ['2102', 'Utang PPh 21', 'K'], ['2103', 'Utang BPJS', 'K'], ['1104', 'Piutang Karyawan (kasbon)', 'K']];
   function journal(hr, period) {
     const ls = batchLines(hr, period), by = {};
-    for (const l of ls) { const cc = l.loc === H.HQ.id ? `HQ-${l.division}` : l.loc; const t = totals([l]); by[cc] = by[cc] || { cc, '6101': 0, '6102': 0, '6103': 0, '6104': 0, '6105': 0, '6106': 0, adj: 0 }; by[cc]['6101'] += t.base + t.adj; by[cc]['6102'] += t.allow; by[cc]['6103'] += t.comm; by[cc]['6104'] += t.ot; by[cc]['6105'] += t.employer; by[cc]['6106'] += t.rmb; by[cc].round = (by[cc].round || 0) + (t.gross - t.base - t.adj - t.allow - t.comm - t.ot - t.rmb); }
+    for (const l of ls) { const cc = l.loc === H.HQ.id ? `HQ-${l.division}` : l.loc; const t = totals([l]); by[cc] = by[cc] || { cc, '6101': 0, '6102': 0, '6103': 0, '6104': 0, '6105': 0, '6106': 0, adj: 0 }; by[cc]['6101'] += t.base + t.adj + t.unp; by[cc]['6102'] += t.allow; by[cc]['6103'] += t.comm; by[cc]['6104'] += t.ot; by[cc]['6105'] += t.employer; by[cc]['6106'] += t.rmb; by[cc].round = (by[cc].round || 0) + (t.gross - t.base - t.adj - t.unp - t.allow - t.comm - t.ot - t.rmb); }
     const t = totals(ls); const debit = t.gross + t.employer, credit = t.thp + t.pph + t.bpjs + t.employer + t.ksb;
     return { id: `JRN-${batchId(period)}`, centers: Object.values(by), debit, credit, lines: [['2101', 'Utang Gaji (THP)', t.thp], ['2102', 'Utang PPh 21', t.pph], ['2103', 'Utang BPJS (karyawan + perusahaan)', t.bpjs + t.employer], ['1104', 'Piutang Karyawan (cicilan kasbon)', t.ksb]], balanced: Math.abs(debit - credit) < 1 };
   }
-  return { PERIODS, MONTHS, SEASON, REPORTS, COA, ensure, ruleAt, pphRate, slip, batchOf, batchLines, excluded, totals, anomalies, sources, adjustments, commissionLines, activity, baseOf, ledger, budgetYear, ratios, journal, batchId };
+  return { PERIODS, MONTHS, SEASON, REPORTS, COA, ensure, ruleAt, pphRate, slip, batchOf, batchLines, excluded, totals, anomalies, sources, adjustments, unpaidOf, nextPeriod, commissionLines, activity, baseOf, ledger, budgetYear, ratios, journal, batchId };
 })();
 if (typeof module !== 'undefined') module.exports = HR7;
 
@@ -6313,7 +6377,7 @@ function requestDetail(q) {
   const h = hr(), mine = HR2.canDecide(h, role(), q);
   const pl = q.payload || {};
   const body = q.type === 'Koreksi presensi' ? table(['', 'Masuk', 'Keluar'], [['Sebelum', pl.before?.in || '—', pl.before?.out || '—'], ['Sesudah (diajukan)', pl.after?.in || '—', pl.after?.out || '—']]) + `<p class="small">Attendance ID ${esc(pl.att)} · bukti: ${esc(pl.evidence || '—')} · ${link('hrd-presence' + qs({ date: pl.date || q.date }), 'buka Presensi')}</p>`
-    : pl.cat ? `<p>${esc(q.type)} · ${pl.from} s/d ${pl.to} (${pl.days} hari) · ${link('hrd-leave' + qs({ emp: q.emp }), 'saldo karyawan')}</p>` : `<p>${esc(q.note || '')}</p>`;
+    : pl.cat ? `<p>${esc(q.type)} · ${pl.from} s/d ${pl.to} (${pl.days} hari kerja) · ${link('hrd-leave' + qs({ emp: q.emp }), 'saldo karyawan')}</p>${pl.unpaidDays ? `<p>${chip(`${pl.paidDays || 0} hari dibayar`, 'ready')} ${chip(`${pl.unpaidDays} hari Cuti Tidak Dibayar`, 'sandbox')}</p><p class="muted small">Tanggal tidak dibayar: ${pl.unpaidDates.join(', ')}. ${pl.consent ? `Konversi disetujui karyawan ${pl.consent.at}. ` : ''}Setelah final, hari ini menjadi dasar potongan gaji pokok di Payroll F7 (RUL-UNP) dan tidak mengurangi saldo cuti berbayar.</p>` : ''}` : `<p>${esc(q.note || '')}</p>`;
   return card(`${q.id} · ${esc(q.type)} · ${st(q.status)}`, `<p>Karyawan ${empLink(q.emp)} · dibuat ${esc(q.created)} · kebijakan ${esc(q.policy)}</p>${body}
     <h3>Tahapan</h3>${table(['#', 'Tahap / PIC', 'Keputusan', 'Oleh', 'Waktu (WITA)', 'Alasan'], q.stages.map((s, i) => [i + 1, esc(s.label) + (i === q.stage && q.status === 'Menunggu Persetujuan' ? ' ' + chip('Tahap aktif', 'sandbox') : ''), s.decision ? st(s.decision) : '—', esc(s.by || '—'), esc(s.at || '—'), esc(s.reason || '—')]))}
     ${q.status === 'Menunggu Persetujuan' ? (mine ? `<div class="actions"><button type="button" class="btn" data-action="hr:decide" data-id="${q.id}" data-decision="approve">Setujui tahap ini</button><form class="inline-form" data-submit="hr:decide"><input type="hidden" name="id" value="${q.id}"><input type="hidden" name="decision" value="reject"><label class="sr" for="rj-${q.id}">Alasan tolak</label><input id="rj-${q.id}" name="reason" placeholder="Alasan penolakan" required minlength="5"><button class="btn ghost sm">Tolak</button></form></div>` : `<p class="muted small">Tahap aktif "${esc(q.stages[q.stage].label)}" bukan wewenang ${esc(def().label)}.</p>`) : ''}
@@ -6339,12 +6403,12 @@ function leave(params) {
   const leaves = h.queue.filter(q => q.payload?.cat && HR.inScope(h, role(), q.emp));
   let body = '';
   if (tab === 'balance') body = card(`Saldo 2026 · ${esc(empName(emp))}`, table(['Kategori', 'Kuota', 'Terpakai (disetujui)', 'Menunggu', 'Sisa'], HR2.balance(h, emp).map(b => [esc(b.name), b.quota ?? 'Tanpa kuota', b.used, b.pending, b.left ?? '—'])) + '<p class="muted small">Saldo dihitung dari ledger: hanya pengajuan yang disetujui mengurangi saldo. Penolakan tidak mengubah saldo.</p>');
-  else if (tab === 'request') body = card('Ajukan izin / cuti', `<form class="workflow-form" data-submit="hr:leave-request" data-after="hrd-approval?id={id}"><label>Karyawan<select name="emp">${empOpts(emp)}</select></label><label>Kategori<select name="cat">${HR2.LEAVE.filter(c => !c.auto).map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</select></label><label>Dari<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 7)}" required></label><label>Sampai<input type="date" name="to" value="${HR2.addDays(HR.TODAY, 7)}" required></label><label>Alasan<input name="reason"></label><button class="btn">Kirim ke Approval</button></form><p class="muted small">Pengajuan yang bertabrakan dengan cuti menunggu/disetujui ditolak. Cuti Libur Nasional berasal dari kalender perusahaan.</p>`);
+  else if (tab === 'request') body = card('Ajukan izin / cuti', `<form class="workflow-form" data-submit="hr:leave-request" data-after="hrd-approval?id={id}"><label>Karyawan<select name="emp">${empOpts(emp)}</select></label><label>Kategori<select name="cat">${HR2.LEAVE.filter(c => !c.auto).map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</select></label><label>Dari<input type="date" name="from" value="${HR2.addDays(HR.TODAY, 7)}" required></label><label>Sampai<input type="date" name="to" value="${HR2.addDays(HR.TODAY, 7)}" required></label><label>Alasan<input name="reason"></label><label class="check"><input type="checkbox" name="convert" value="1"> Setujui sisa hari sebagai Cuti Tidak Dibayar bila saldo tidak cukup</label><button class="btn">Kirim ke Approval</button></form><p class="muted small">Jumlah hari = hari kerja terjadwal (libur jadwal dan libur perusahaan tidak dihitung). Bila saldo tidak cukup, pengajuan tidak ditolak: hari yang tercakup saldo tetap dibayar dan sisanya menjadi Cuti Tidak Dibayar setelah Anda menyetujui konversi, lalu tetap melalui Supervisor → Manager HRD. Pengajuan yang bertabrakan dengan cuti menunggu/disetujui ditolak. Cuti Libur Nasional berasal dari kalender perusahaan.</p>`);
   else if (tab === 'calendar') {
     const days = []; for (let d = '2026-11-01'; d <= '2026-11-30'; d = HR2.addDays(d, 1)) days.push(d);
     const hol = h.settings.calendar;
     body = card('Kalender November 2026', `<div class="hr-cal">${days.map(d => { const ls = leaves.filter(q => q.payload.from <= d && q.payload.to >= d && q.status !== 'Ditolak'); const hl = hol.find(c => c.date === d); return `<div class="hr-cal-d${d === HR.TODAY ? ' today' : ''}"><b>${+d.slice(8)}</b>${hl ? `<small>${esc(hl.name)}</small>` : ''}${ls.map(q => `<a href="#hrd-approval${qs({ id: q.id })}" class="small">${esc(empName(q.emp).split(' ')[0])} · ${q.status === 'Disetujui' ? '✓' : '…'}</a>`).join('')}</div>`; }).join('')}</div>`);
-  } else if (tab === 'history') body = card('Riwayat pengajuan', leaves.length ? table(['Request ID', 'Karyawan', 'Kategori', 'Periode', 'Hari', 'Status'], leaves.map(q => [link('hrd-approval' + qs({ id: q.id }), q.id), empLink(q.emp), esc(q.type), `${q.payload.from} s/d ${q.payload.to}`, q.payload.days, st(q.status)])) : '<p>Belum ada pengajuan cuti di cakupan ini.</p>');
+  } else if (tab === 'history') body = card('Riwayat pengajuan', leaves.length ? table(['Request ID', 'Karyawan', 'Kategori', 'Periode', 'Hari kerja', 'Tidak dibayar', 'Status'], leaves.map(q => [link('hrd-approval' + qs({ id: q.id }), q.id), empLink(q.emp), esc(q.type), `${q.payload.from} s/d ${q.payload.to}`, q.payload.days, q.payload.unpaidDays ? chip(q.payload.unpaidDays + ' hari', 'sandbox') : '—', st(q.status)])) : '<p>Belum ada pengajuan cuti di cakupan ini.</p>');
   else body = card('Kebijakan Izin & Cuti', table(['Kategori', 'Kuota/tahun', 'Butuh dokumen', 'Approval'], HR2.LEAVE.map(c => [c.name, c.quota ?? '—', c.doc ? 'Ya' : 'Tidak', c.auto ? 'Kalender perusahaan' : esc(h.settings.approval.find(a => a.id === 'APR-LEAVE').chain.join(' → '))])));
   return head + (['balance'].includes(tab) ? pick : '') + body;
 }
