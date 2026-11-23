@@ -1,0 +1,197 @@
+{
+  "at": "2026-11-23T07:29:05.747Z",
+  "pass": 38,
+  "fail": 0,
+  "out": [
+    {
+      "name": "T01 Default Bulan Ini: preset month, 1–22 Agu 2026",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T01 Label periode aktif",
+      "ok": true,
+      "info": "Periode aktif: Bulan Ini · 1 Agu 2026 – 22 Agu 2026 · Semua platform (tanggal acuan demo 22 Agu 2026, WITA)"
+    },
+    {
+      "name": "T01 Input tanggal dibatasi max = tanggal acuan",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T01 Lima preset + Custom tersedia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T02 Calendar: Published 1, Scheduled 2, Overdue 0, Draft 0",
+      "ok": true,
+      "info": "Published · 1 | Scheduled / Upcoming · 2 | Overdue · 0 | Draft · 0"
+    },
+    {
+      "name": "T03 Pilih preset mengisi tanggal 16–22 Agu",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T03 Belum diterapkan: URL & label tidak berubah",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T03 Ganti platform juga menunggu Terapkan",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T03 Terapkan → URL berisi range=7d & platform",
+      "ok": true,
+      "info": "#social?view=calendar&range=7d&platform=Instagram"
+    },
+    {
+      "name": "T03 Label 7 Hari Terakhir · Instagram",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T04 Hari Ini: Published 0, Scheduled/Upcoming 2 tetap tampil",
+      "ok": true,
+      "info": "Published · 0 | Scheduled / Upcoming · 2 | Overdue · 0 | Draft · 0"
+    },
+    {
+      "name": "T04 PUB-001 (terbit 5 Agu) tidak tampil",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T05 Inbox Hari Ini: CONV 22 Agu tampil, 21 Agu tidak",
+      "ok": true,
+      "info": "24 baris"
+    },
+    {
+      "name": "T05 Badge Inbox = percakapan terbuka di rentang (2)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T05 Inbox Bulan Lalu kosong + pesan",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T06 Alih DM → lead Sales, retry tetap satu lead",
+      "ok": true,
+      "info": "LEAD-002"
+    },
+    {
+      "name": "T06 Filter tetap setelah aksi",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T07 Analytics Bulan Ini memakai angka bulanan Agustus berlabel",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T07 ER Instagram Agustus = 23.800 ÷ 298.000 = 7,99%",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T07 Bulan Lalu → angka Juli 2026",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T07 Publish vs aset Bulan Lalu = 0 terbit + pesan kosong",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T07 30 Hari (lintas bulan) → pesan, tidak menjumlah antarbulan",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T08 Unit Growth Agustus dengan pembanding Juli",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T08 Unit Growth Juli: pembanding Juni tidak tersedia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T09 Ubah tanggal manual → preset Custom",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T09 Tanggal masa depan ditolak, tidak diterapkan",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T09 Mulai > selesai ditolak",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T09 Rentang 1 hari inklusif: PUB-001 terbit 5 Agu 18:02 masuk",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T09 URL dengan tanggal masa depan → default + pesan",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T10 Refresh mempertahankan rentang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T10 Pindah tab mempertahankan rentang",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T10 Back kembali ke Calendar dengan rentang sama",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T11 Link lama period=2026-07 → Custom 1–31 Jul",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T11 Reset → Bulan Ini, view tetap",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T12 Jadwal 20 Agu belum terbit → Overdue, Published tetap 1",
+      "ok": true,
+      "info": "Published · 1 | Scheduled / Upcoming · 1 | Overdue · 1 | Draft · 0"
+    },
+    {
+      "name": "T12 Data publikasi tidak diubah (status tetap scheduled)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "T13 Executive Summary tetap auto-apply filter",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "Tanpa error JavaScript",
+      "ok": true,
+      "info": ""
+    }
+  ]
+}
