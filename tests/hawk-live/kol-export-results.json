@@ -1,0 +1,282 @@
+{
+ "at": "2026-11-24T01:53:21.619Z",
+ "pass": 55,
+ "fail": 0,
+ "out": [
+  {
+   "name": "T01 Tab directory: tombol Export Excel & PDF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 Tab pipeline: tombol Export Excel & PDF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 Tab deliverables: tombol Export Excel & PDF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 Tab performance: tombol Export Excel & PDF",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 Profil partner: tanpa tombol ekspor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Direktori: nama file",
+   "ok": true,
+   "info": "HAWK_F2-07_directory_2026-08-22.xlsx"
+  },
+  {
+   "name": "T02 Direktori: header kolom",
+   "ok": true,
+   "info": "ID|Nama partner|Kanal|Channel|Unit|Audiens|Followers|Tahap|Fee (Rp)|Kode tracking|Status kode|Kode berlaku s.d.|PIC"
+  },
+  {
+   "name": "T02 Direktori: jumlah baris = layar (4)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Fee & followers tersimpan sebagai angka",
+   "ok": true,
+   "info": "6500000 84000"
+  },
+  {
+   "name": "T02 Status kode KOL-002 kedaluwarsa (berlaku s.d. 2026-08-15 < 22 Agu)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 PIC berupa nama (Bayu)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Sheet Info: DATA DEMO, filter Semua, WITA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 File .xlsx valid (dibuka openpyxl)",
+   "ok": true,
+   "info": "['Direktori Partner', 'Info'] 5 13"
+  },
+  {
+   "name": "T03 Filter Kanal=KOL → 3 baris, tanpa MED-001",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T03 Info memuat filter aktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T03 Filter PIC=Rani → MED-001 saja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T04 Pipeline: 4 baris, urut tahap",
+   "ok": true,
+   "info": "Shortlist,Proposal,Publikasi,Review"
+  },
+  {
+   "name": "T04 Pipeline: tanggal masuk tahap dari histori (KOL-002 Review 2026-08-18)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T04 Pipeline filter Status=Shortlist → KOL-003",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Deliverables: 5 baris = layar, urut tenggat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Flag terlambat sesuai layar (tidak ada yang lewat tenggat & belum terbit)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Deliverables: tanpa kolom Aksi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Impressions DLV-003 = 88000 (angka)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Filter Kanal=Media partner → DLV-005 saja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Hasil kosong: tidak ada file, pesan jelas",
+   "ok": true,
+   "info": "Tidak ada data untuk filter ini — file tidak dibuat."
+  },
+  {
+   "name": "T05 Hasil kosong PDF: dialog cetak tidak dibuka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Hasil kosong tidak mengubah data",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Performance: jumlah baris sama dengan layar (filter tidak berlaku)",
+   "ok": true,
+   "info": "2 vs 2"
+  },
+  {
+   "name": "T06 Impr., klik, booking sama dengan tabel layar",
+   "ok": true,
+   "info": "[[52000,1900,180],[109000,2700,175]]"
+  },
+  {
+   "name": "T06 Partner = partner ber-campaign (KOL-001, KOL-002)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Revenue ÷ fee = revenue / fee",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Info: filter tidak berlaku, periode Agustus 2026",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 PDF directory: dialog cetak dibuka, 4 baris, header tabel, judul & filter",
+   "ok": true,
+   "info": "rows 4"
+  },
+  {
+   "name": "T07 PDF directory: mode cetak dilepas setelah cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 PDF pipeline: dialog cetak dibuka, 4 baris, header tabel, judul & filter",
+   "ok": true,
+   "info": "rows 4"
+  },
+  {
+   "name": "T07 PDF pipeline: mode cetak dilepas setelah cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 PDF deliverables: dialog cetak dibuka, 5 baris, header tabel, judul & filter",
+   "ok": true,
+   "info": "rows 5"
+  },
+  {
+   "name": "T07 PDF deliverables: mode cetak dilepas setelah cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 PDF performance: dialog cetak dibuka, 2 baris, header tabel, judul & filter",
+   "ok": true,
+   "info": "rows 2"
+  },
+  {
+   "name": "T07 PDF performance: mode cetak dilepas setelah cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 PDF mengikuti filter (3 baris, Kanal: KOL)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 CSS cetak: landscape & header berulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 Excel: teks diawali = diberi awalan ' (anti formula)",
+   "ok": true,
+   "info": "'=HYPERLINK(\"http://"
+  },
+  {
+   "name": "T08 Excel: teks diawali + diberi awalan '",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 Excel: tidak ada elemen formula <f>",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF: HTML di-escape (tidak ada <img>)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF: teks panjang tetap utuh",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Ekspor 8× tidak mengubah data partner/deliverable",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Data awal sama dengan sebelum seluruh uji",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Filter masih bekerja (1 baris)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Alur tahap masih bekerja (KOL-003 → Brief)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Approve deliverable masih bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Ekspor mengikuti perubahan alur (KOL-003 di Brief)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T10 Mobile 390px: tombol terlihat, tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Tidak ada error konsol/JS",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
