@@ -194,9 +194,69 @@ document.addEventListener('submit', (e) => {
 /* ================= F2-07 Media Partner & KOL ================= */
 const kolPerf = (id, period = '2026-08') => { const tx = SER.dataset(st()).tx.filter(t => t.period === period && MK.kolOf(t) === id); const paid = tx.filter(t => t.status === 'paid'); return { bookings: paid.length, revenue: paid.reduce((s, t) => s + t.amount, 0), refunds: tx.length - paid.length, sandbox: paid.filter(t => t.sandbox).length }; };
 const codeStatus = (p) => !p.code ? chip('Belum ada kode', '') : p.codeValid < TODAY ? chip(`${p.code} · kedaluwarsa ${p.codeValid}`, 'bad') : chip(`${p.code} · berlaku s.d. ${p.codeValid}`, 'ready');
+/* hasil filter Kanal/Status/PIC — dipakai tampilan dan ekspor (himpunan yang sama) */
+const kolPartners = (params) => mk().partners.filter(p => (!params.type || p.type === params.type) && (!params.stage || p.stage === params.stage) && (!params.pic || p.pic === params.pic));
+const codeText = (p) => !p.code ? 'Belum ada kode' : p.codeValid < TODAY ? 'Kedaluwarsa' : 'Berlaku';
+const isLate = (d) => d.due < TODAY && !['Terbit', 'Disetujui'].includes(d.status);
+const KOL_TABS = { directory: 'Direktori Partner', pipeline: 'Pipeline Kolaborasi', deliverables: 'Kalender Deliverables', performance: 'Performance' };
+/* NP-COM-KOL-001 · kolom ekspor per tab: [header, nilai mentah (Excel), teks tampilan (PDF)] — membaca data & rumus yang sama dengan layar */
+function kolExport(view, params) {
+  const ps = kolPartners(params), P = (id) => mk().partners.find(q => q.id === id);
+  const n0 = (v) => v ? num(v) : '—';
+  let cols, items;
+  if (view === 'directory') {
+    items = ps;
+    cols = [['ID', p => p.id], ['Nama partner', p => p.name], ['Kanal', p => p.type], ['Channel', p => p.channel], ['Unit', p => p.unit], ['Audiens', p => p.audience], ['Followers', p => p.followers || '', p => n0(p.followers)], ['Tahap', p => p.stage], ['Fee (Rp)', p => p.fee, p => rp(p.fee)], ['Kode tracking', p => p.code || ''], ['Status kode', p => codeText(p)], ['Kode berlaku s.d.', p => p.codeValid || ''], ['PIC', p => CX.personName(p.pic)]];
+  } else if (view === 'pipeline') {
+    items = MK.KOL_STAGES.flatMap(s => ps.filter(p => p.stage === s));
+    const since = (p) => (p.history.slice().reverse().find(([s]) => s === p.stage) || [])[1] || '';
+    cols = [['Tahap', p => p.stage], ['Urutan tahap', p => MK.KOL_STAGES.indexOf(p.stage) + 1], ['ID', p => p.id], ['Nama partner', p => p.name], ['Kanal', p => p.type], ['Fee (Rp)', p => p.fee, p => rp(p.fee)], ['PIC', p => CX.personName(p.pic)], ['Masuk tahap', since]];
+  } else if (view === 'deliverables') {
+    items = mk().deliverables.filter(d => ps.some(p => p.id === d.partner)).slice().sort((a, b) => a.due.localeCompare(b.due));
+    cols = [['Tenggat', d => d.due], ['Terlambat', d => isLate(d) ? 'Ya' : 'Tidak'], ['ID deliverable', d => d.id], ['Tipe', d => d.type], ['ID partner', d => d.partner], ['Partner', d => P(d.partner)?.name || ''], ['Status', d => d.status], ['Post ID', d => d.postId || '', d => d.postId || '—'], ['Impressions', d => d.impressions, d => n0(d.impressions)], ['Klik', d => d.clicks, d => n0(d.clicks)], ['Aset', d => d.asset || '', d => d.asset || '—']];
+  } else if (view === 'performance') {
+    /* sama dengan tabel Performance: partner ber-campaign, periode Agustus 2026, filter tidak berlaku (keputusan Q1) */
+    items = mk().partners.filter(p => p.campaign).map(p => { const ds = mk().deliverables.filter(d => d.partner === p.id); const k = kolPerf(p.id); return { p, k, impr: ds.reduce((s, d) => s + d.impressions, 0), clk: ds.reduce((s, d) => s + d.clicks, 0), ratio: MK.div(k.revenue, p.fee) }; });
+    cols = [['ID', r => r.p.id], ['Nama partner', r => r.p.name], ['Kode tracking', r => r.p.code || ''], ['Status kode', r => codeText(r.p)], ['Impr. platform', r => r.impr, r => num(r.impr)], ['Klik platform', r => r.clk, r => num(r.clk)], ['Booking dibayar (POS)', r => r.k.bookings, r => num(r.k.bookings)], ['Dari sandbox', r => r.k.sandbox, r => num(r.k.sandbox)], ['Revenue POS (Rp)', r => r.k.revenue, r => rp(r.k.revenue)], ['Fee (Rp)', r => r.p.fee, r => rp(r.p.fee)], ['Revenue ÷ fee', r => r.ratio === null || r.ratio === undefined ? '' : Math.round(r.ratio * 100) / 100, r => x(r.ratio)]];
+  } else return null;
+  const filt = view === 'performance' ? 'Tidak berlaku di tab ini (sesuai tampilan) · periode Agustus 2026'
+    : [`Kanal: ${params.type || 'Semua'}`, `Status: ${params.stage || 'Semua'}`, `PIC: ${params.pic ? CX.personName(params.pic) : 'Semua'}`].join(' · ');
+  return {
+    view, title: `HAWK ERP · F2-07 Media Partner & KOL · ${KOL_TABS[view]}`, filters: filt,
+    headers: cols.map(c => c[0]),
+    raw: items.map(it => cols.map(c => c[1](it))),
+    shown: items.map(it => cols.map(c => String((c[2] || c[1])(it) ?? ''))),
+  };
+}
+const kolExportBtns = (view) => KOL_TABS[view] ? `<div class="export-actions" role="group" aria-label="Ekspor ${KOL_TABS[view]}"><button type="button" class="btn ghost sm" data-kol-export="xlsx" data-view="${view}">Export Excel</button><button type="button" class="btn ghost sm" data-kol-export="pdf" data-view="${view}">Export PDF</button></div>` : '';
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-kol-export]'); if (!b) return;
+  const fmt = b.dataset.kolExport, { params } = H.parseHash();
+  try {
+    const ex = kolExport(b.dataset.view, params);
+    if (!ex) return H.render('Tab ini tidak mendukung ekspor.', true);
+    if (!ex.raw.length) { window.__kolLastExport = { format: fmt, view: ex.view, rows: 0, file: null }; return H.render('Tidak ada data untuk filter ini — file tidak dibuat.', true); }
+    const when = HLX.nowWita();
+    const meta = [['Data', 'DATA DEMO / SIMULASI · angka sintetis'], ['Filter aktif', ex.filters], ['Jumlah baris', String(ex.raw.length)], ['Diekspor', `${when} · tanggal acuan demo ${TODAY}`]];
+    const file = `HAWK_F2-07_${ex.view}_${TODAY}`;
+    if (fmt === 'xlsx') {
+      const info = [['HAWK ERP · F2-07 Media Partner & KOL'], ...meta.map(([k, v]) => [k, v]), ['Tab', KOL_TABS[ex.view]]];
+      const widths = ex.headers.map((h, i) => Math.min(48, Math.max(10, h.length + 2, ...ex.shown.map(r => r[i].length + 2))));
+      const bytes = HLX.xlsx([{ name: KOL_TABS[ex.view], rows: [ex.headers, ...ex.raw], widths }, { name: 'Info', rows: info, widths: [16, 70] }]);
+      HLX.download(file + '.xlsx', bytes, HLX.XLSX_MIME);
+      window.__kolLastExport = { format: 'xlsx', view: ex.view, rows: ex.raw.length, file: file + '.xlsx', headers: ex.headers };
+      H.render(`Excel dibuat: ${ex.raw.length} baris · ${KOL_TABS[ex.view]} · ${file}.xlsx`);
+    } else {
+      const foot = ex.view === 'performance' ? 'Impressions/klik dari platform dipisah dari booking dan revenue POS. Revenue ÷ fee bukan ROAS platform.' : '';
+      HLX.printTable({ title: ex.title, meta, headers: ex.headers, rows: ex.shown, foot });
+      window.__kolLastExport = { format: 'pdf', view: ex.view, rows: ex.raw.length, file: file + '.pdf', headers: ex.headers };
+      H.render(`Laporan PDF disiapkan: ${ex.raw.length} baris · pilih "Simpan sebagai PDF" di dialog cetak.`);
+    }
+  } catch (err) { H.render(`Ekspor gagal: ${err.message}`, true); }
+});
 register('kol', (params) => {
   const view = params.id ? 'profile' : (params.view || 'directory');
-  const ps = mk().partners.filter(p => (!params.type || p.type === params.type) && (!params.stage || p.stage === params.stage) && (!params.pic || p.pic === params.pic));
+  const ps = kolPartners(params);
   const keep = { type: params.type, stage: params.stage, pic: params.pic };
   const bar = `<form id="filters" class="filters" aria-label="Filter">${hidden({ view: params.view })}${sel('type', 'Kanal', [['', 'Semua'], 'KOL', 'Media partner'], params.type)}${sel('stage', 'Status', [['', 'Semua'], ...MK.KOL_STAGES], params.stage)}${sel('pic', 'PIC', [['', 'Semua'], ...CX.PEOPLE.map(p => [p.id, p.name])], params.pic)}<button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
   const tabs = viewTabs('kol', [['directory', 'Direktori', ps.length], ['pipeline', 'Pipeline Kolaborasi'], ['deliverables', 'Kalender Deliverables'], ['performance', 'Performance']], view === 'profile' ? '' : view, keep);
@@ -219,7 +279,7 @@ register('kol', (params) => {
       <div class="grid g2">${card('Deliverables', table(['ID', 'Tipe', 'Tenggat', 'Status', 'Aset'], ds.map(d => [d.id, esc(d.type), d.due, chip(d.status), d.asset ? `<a href="#studio${qs({ view: 'library' })}">${d.asset}</a>` : '—'])))}
       ${card('Histori', `<ol class="history">${p.history.map(([s, at]) => `<li><b>${s}</b> · ${at}</li>`).join('')}</ol>`)}</div>`;
   }
-  return `${view === 'profile' ? '' : `<div class="heading-row">${bar}</div>${tabs}`}${body}`;
+  return `${view === 'profile' ? '' : `<div class="heading-row">${bar}</div>${tabs}${kolExportBtns(view)}`}${body}`;
 }, () => 'Media Partner & KOL');
 
 /* ================= F2-08 Audience & Attribution (+ F7-02 Jejak Booking) ================= */

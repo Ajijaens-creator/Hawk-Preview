@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-23T17:08:44.530Z">
+<meta name="hawk-standalone" content="2026-11-24T01:53:02.003Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1772,6 +1772,26 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .hro-pager { gap: 10px; align-items: center; justify-content: flex-end; }
 .hro-note { margin: 4px 0 14px; }
 .hr-real button.tab { border: 0; background: none; cursor: pointer; font: inherit; }
+
+/* NP-COM-KOL-001 · tombol ekspor F2-07 & laporan cetak (PDF via dialog cetak browser) */
+.export-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin: -4px 0 12px; }
+#hl-print { display: none; }
+@media print {
+  @page { size: A4 landscape; margin: 12mm; }
+  body.hl-printing > *:not(#hl-print) { display: none !important; }
+  body.hl-printing #hl-print { display: block !important; color: #000; background: #fff; font: 10pt/1.35 system-ui, sans-serif; }
+  #hl-print h1 { font-size: 14pt; margin: 0 0 6px; }
+  #hl-print .hl-print-meta { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; margin: 0 0 10px; font-size: 9pt; }
+  #hl-print .hl-print-meta dt { font-weight: 700; }
+  #hl-print .hl-print-meta dd { margin: 0; }
+  #hl-print table { width: 100%; border-collapse: collapse; table-layout: auto; }
+  #hl-print thead { display: table-header-group; }
+  #hl-print tr { break-inside: avoid; }
+  #hl-print th, #hl-print td { border: 1px solid #999; padding: 3px 5px; text-align: left; vertical-align: top; overflow-wrap: break-word; }
+  #hl-print th { background: #eee; font-weight: 700; }
+  #hl-print td.nw { white-space: nowrap; } /* ID, tanggal, angka pendek tidak dipatah */
+  #hl-print .hl-print-foot { margin-top: 8px; font-size: 8.5pt; color: #333; }
+}
 
 </style>
 </head>
