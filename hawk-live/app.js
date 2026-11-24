@@ -3,7 +3,7 @@
    F1-04 Sales home, F7-01 screen map. Other routes are the original sandbox screens, labelled with
    the phase that completes them. DATA DEMO / SIMULASI · no network, no accounts, no deployment calls. */
 (() => {
-const ERP = 'https://preview.hawk.jaens.id/';
+const ERP = 'https://prototype.jaens.id/';
 /* [route, title, screen code, status] · status: ready | sandbox | planned | hidden */
 const PORTALS = {
   /* Finance = modul Finance lengkap di app HAWK 60 NV (Modul H NV-47..52, ruang kerja Finance, Demo Experience Center).
