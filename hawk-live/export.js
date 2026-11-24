@@ -35,22 +35,26 @@
   const safeText = (v) => /^[=+\-@\t\r]/.test(String(v)) ? "'" + v : String(v);
   const colName = (i) => { let s = ''; i += 1; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
   /* opsi sheet: headerRow = indeks baris header (dicetak tebal) */
-  const sheetXml = (rows, headerRow = 0, widths = []) =>
+  /* opts.quotePrefix (NP-HAWK-COM-SM-002): teks berisiko tetap utuh (mis. handle @akun) tetapi diberi gaya quotePrefix
+     sehingga Excel memperlakukannya sebagai teks; tanpa opsi ini perilaku lama (awalan ') tetap dipakai (F2-07). */
+  const risky = (v) => /^[=+\-@\t\r]/.test(String(v));
+  const sheetXml = (rows, headerRow = 0, widths = [], qp = false) =>
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${widths.length ? `<cols>${widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')}</cols>` : ''}<sheetData>${rows
       .map((r, ri) => `<row r="${ri + 1}">${r.map((v, ci) => {
         const ref = colName(ci) + (ri + 1), s = ri === headerRow ? ' s="1"' : '';
         if (v === null || v === undefined || v === '') return '';
         if (typeof v === 'number' && isFinite(v)) return `<c r="${ref}"${s}><v>${Math.round(v * 100) / 100}</v></c>`;
+        if (qp && risky(v)) return `<c r="${ref}" t="inlineStr"${s || ' s="2"'}><is><t xml:space="preserve">${xesc(v)}</t></is></c>`;
         return `<c r="${ref}" t="inlineStr"${s}><is><t xml:space="preserve">${xesc(safeText(v))}</t></is></c>`;
       }).join('')}</row>`).join('')}</sheetData></worksheet>`;
   /* sheets: [{ name, rows, headerRow?, widths? }] → Uint8Array (.xlsx) */
-  const xlsx = (sheets) => zip([
+  const xlsx = (sheets, opts = {}) => zip([
     { name: '[Content_Types].xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>` },
     { name: '_rels/.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
     { name: 'xl/workbook.xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((sh, i) => `<sheet name="${xesc(sh.name.replace(/[\\/?*[\]:]/g, ' ').slice(0, 31))}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets></workbook>` },
     { name: 'xl/_rels/workbook.xml.rels', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
-    { name: 'xl/styles.xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
-    ...sheets.map((sh, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: sheetXml(sh.rows, sh.headerRow || 0, sh.widths || []) })),
+    { name: 'xl/styles.xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" quotePrefix="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
+    ...sheets.map((sh, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: sheetXml(sh.rows, sh.headerRow || 0, sh.widths || [], !!opts.quotePrefix) })),
   ]);
   function download(name, bytes, mime) {
     const a = document.createElement('a');
@@ -75,7 +79,23 @@
     setTimeout(done, 600);
     return box;
   }
+  /* laporan cetak multi-bagian (NP-HAWK-COM-SM-002): tiap bagian punya judul, KPI (opsional), tabel (opsional) dan catatan */
+  function printReport({ title, meta = [], sections = [] }) {
+    let box = document.getElementById('hl-print');
+    if (!box) { box = document.createElement('div'); box.id = 'hl-print'; document.body.appendChild(box); }
+    const td = (c) => `<td${String(c).length <= 14 ? ' class="nw"' : ''}>${esc(c)}</td>`;
+    box.innerHTML = `<h1>${esc(title)}</h1><dl class="hl-print-meta">${meta.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` + sections.map(s => `<section class="hl-print-sec"><h2>${esc(s.heading)}</h2>${s.kpis && s.kpis.length ? `<dl class="hl-print-kpis">${s.kpis.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}${s.headers ? `<table><thead><tr>${s.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${s.rows.length ? s.rows.map(r => `<tr>${r.map(td).join('')}</tr>`).join('') : `<tr><td colspan="${s.headers.length}">Tidak ada data.</td></tr>`}</tbody></table>` : ''}${s.note ? `<p class="hl-print-foot">${esc(s.note)}</p>` : ''}</section>`).join('');
+    document.body.classList.add('hl-printing');
+    const prevTitle = document.title; document.title = title;
+    const done = () => { document.body.classList.remove('hl-printing'); document.title = prevTitle; };
+    window.addEventListener('afterprint', done, { once: true });
+    try { window.print(); } catch (e) { /* cetak tidak tersedia (frame tertanam) */ }
+    setTimeout(done, 600);
+    return box;
+  }
+  /* tanggal ekspor nyata WITA sebagai YYYYMMDD (nama file) */
+  const stampWita = () => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Makassar', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map(x => [x.type, x.value])); return `${p.year}${p.month}${p.day}`; };
   /* waktu ekspor nyata, zona Asia/Makassar (WITA) */
   const nowWita = () => new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()) + ' WITA';
-  window.HLX = { xlsx, zip, download, XLSX_MIME, printTable, safeText, nowWita };
+  window.HLX = { xlsx, zip, download, XLSX_MIME, printTable, printReport, safeText, nowWita, stampWita };
 })();

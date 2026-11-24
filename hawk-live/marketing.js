@@ -114,29 +114,55 @@ const prevMonth = (m) => { const y = Number(m.slice(0, 4)), n = Number(m.slice(5
 const PUB_TONE = { Published: 'ready', Scheduled: 'sandbox', Overdue: 'bad', Draft: '' };
 const PUB_LABEL = { Published: 'Published', Scheduled: 'Scheduled / Upcoming', Overdue: 'Overdue', Draft: 'Draft' };
 const emptyCard = (title, text) => `<div class="card empty-state" role="status"><h2>${title}</h2><p>${text}</p></div>`;
-register('social', (params) => {
+/* NP-HAWK-COM-SM-002 · satu sumber data untuk layar dan ekspor: baris, status dan KPI tiap tab dihitung di sini sekali */
+function socialData(params) {
   const view = ['calendar', 'inbox', 'analytics', 'units'].includes(params.view) ? params.view : 'calendar';
   const R = MK.socialRange(params, TODAY);
   const platform = ['Instagram', 'TikTok', 'Facebook'].includes(params.platform) ? params.platform : '';
   const keep = R.key === 'custom' ? { range: 'custom', start: R.start, end: R.end, platform } : { range: R.key, platform };
-  const bar = `<form id="social-range" class="filters" data-range="social" aria-label="Filter periode Social Media" novalidate>${hidden({ view })}${sel('range', 'Periode', MK.RANGE_PRESETS, R.key)}<label>Mulai<input type="date" name="start" value="${R.start}" max="${TODAY}" required></label><label>Selesai<input type="date" name="end" value="${R.end}" max="${TODAY}" required></label>${sel('platform', 'Platform', [['', 'Semua platform'], 'Instagram', 'TikTok', 'Facebook'], platform)}<button class="btn" type="submit">Terapkan</button><button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
-  const err = R.error ? `<p class="field-error" role="alert">${esc(R.error)} Menampilkan default Bulan Ini.</p>` : '';
-  const active = `<p class="active-filters" role="status"><b>Periode aktif:</b> ${esc(MK.RANGE_PRESETS.find(([k]) => k === R.key)[1])} · ${fmtRange(R)} · ${platform || 'Semua platform'} <span class="muted small">(tanggal acuan demo ${fmtDay(TODAY)}, WITA)</span></p>`;
   const convs = mk().convs.filter(c => MK.inRange(R, c.at) && (!platform || c.channel.includes(platform)));
-  const tabs = viewTabs('social', [['calendar', 'Publishing Calendar'], ['inbox', 'Inbox & Moderation', convs.filter(c => c.status === 'open').length], ['analytics', 'Analytics'], ['units', 'Unit Business Growth']], view, keep);
   const month = MK.singleMonth(R);
-  const monthNote = (m) => note(`Metrik platform hanya tersedia per bulan kalender. Rentang ${fmtRange(R)} berada di ${fmtMonth(m)}, jadi angka di bawah adalah angka bulanan ${fmtMonth(m)}, bukan angka harian rentang ini.`);
-  const multiMonth = emptyCard('Metrik platform tersedia per bulan', `Rentang ${fmtRange(R)} melewati lebih dari satu bulan kalender. Pilih rentang di dalam satu bulan (mis. Bulan Ini atau Bulan Lalu) untuk melihat metrik platform. Angka antarbulan tidak dijumlahkan.`);
-  let body = '';
+  const d = { view, R, platform, keep, convs, month };
   if (view === 'calendar') {
     /* Published dihitung dari tanggal terbit di rentang. Overdue & Draft dari tanggal jadwal di rentang.
        Jadwal mendatang selalu tampil agar rencana publikasi terpantau, tetapi tidak dihitung sebagai Published. */
     const all = cx().publications.filter(p => !platform || p.platform === platform).map(p => ({ p, s: MK.pubStatus(p, TODAY) }));
-    const rows = all.filter(({ p, s }) => s === 'Published' ? MK.inRange(R, p.publishedAt || p.scheduledAt) : s === 'Scheduled' ? true : MK.inRange(R, p.scheduledAt))
-      .sort((a, b) => a.p.scheduledAt.localeCompare(b.p.scheduledAt));
-    const count = (s) => rows.filter(x => x.s === s).length;
-    const summary = `<div class="chips" role="group" aria-label="Ringkasan status publikasi">${['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => `<span class="status-chip ${PUB_TONE[s]}">${PUB_LABEL[s]} · ${count(s)}</span>`).join('')}</div>`;
-    body = summary + card('Jadwal per akun', table(['Waktu (WITA)', 'Akun', 'Platform', 'Konten', 'Status', 'Post ID'], rows.map(({ p, s }) => { const c = cx().content.find(k => k.id === p.content); return [s === 'Published' && p.publishedAt ? p.publishedAt : p.scheduledAt, esc(p.account), p.platform, `<a href="#studio${qs({ content: p.content, ctab: 'publish' })}">${p.content} · ${esc(c?.title || '')}</a>`, chip(PUB_LABEL[s], PUB_TONE[s]), p.postId || '—']; })) +
+    d.rows = all.filter(({ p, s }) => s === 'Published' ? MK.inRange(R, p.publishedAt || p.scheduledAt) : s === 'Scheduled' ? true : MK.inRange(R, p.scheduledAt))
+      .sort((a, b) => a.p.scheduledAt.localeCompare(b.p.scheduledAt))
+      .map(({ p, s }) => ({ p, s, c: cx().content.find(k => k.id === p.content), at: s === 'Published' && p.publishedAt ? p.publishedAt : p.scheduledAt }));
+    d.counts = Object.fromEntries(['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => [s, d.rows.filter(x => x.s === s).length]));
+  } else if (view === 'analytics') {
+    const pubs = cx().publications.filter(p => p.status === 'published' && MK.inRange(R, p.publishedAt || p.scheduledAt) && (!platform || p.platform === platform));
+    d.pub = { count: pubs.length, assets: new Set(pubs.flatMap(p => cx().content.find(c => c.id === p.content)?.assets || [])).size, contents: new Set(pubs.map(p => p.content)).size };
+    d.top = cx().content.filter(c => c.results).sort((a, b) => (b.results.bookings || 0) - (a.results.bookings || 0)).slice(0, 5);
+    if (month) {
+      const rows = mk().social.filter(s => s.period === month && (!platform || acc(s.account).platform === platform));
+      const byPf = {};
+      rows.forEach(s => { const p = acc(s.account).platform; const r = byPf[p] || (byPf[p] = { reach: 0, interactions: 0, followers: 0, net: 0, visits: 0, accounts: 0 }); r.reach += s.reach; r.interactions += s.interactions; r.followers += s.followers; r.net += s.netFollowers; r.visits += s.visits; r.accounts++; });
+      d.platforms = Object.entries(byPf).map(([p, r]) => ({ platform: p, ...r, er: MK.div(r.interactions, r.reach) }));
+    }
+  } else if (view === 'units' && month) {
+    const units = [...new Set(mk().accounts.map(a => a.unit))];
+    d.pm = prevMonth(month);
+    d.hasData = mk().social.some(s => s.period === month);
+    d.hasPrev = mk().social.some(s => s.period === d.pm);
+    d.units = units.map(u => { const ids = mk().accounts.filter(a => a.unit === u).map(a => a.id); const agg = (p) => mk().social.filter(s => s.period === p && ids.includes(s.account)).reduce((a, s) => ({ f: a.f + s.followers, n: a.n + s.newFollowers, net: a.net + s.netFollowers, r: a.r + s.reach, i: a.i + s.interactions }), { f: 0, n: 0, net: 0, r: 0, i: 0 }); const c = agg(month), pv = agg(d.pm); return { unit: u, accounts: ids.length, ...c, er: MK.div(c.i, c.r), vs: pv.net ? (c.net - pv.net) / pv.net : null }; });
+  }
+  return d;
+}
+register('social', (params) => {
+  const d = socialData(params);
+  const { view, R, platform, keep, convs, month } = d;
+  const bar = `<form id="social-range" class="filters" data-range="social" aria-label="Filter periode Social Media" novalidate>${hidden({ view })}${sel('range', 'Periode', MK.RANGE_PRESETS, R.key)}<label>Mulai<input type="date" name="start" value="${R.start}" max="${TODAY}" required></label><label>Selesai<input type="date" name="end" value="${R.end}" max="${TODAY}" required></label>${sel('platform', 'Platform', [['', 'Semua platform'], 'Instagram', 'TikTok', 'Facebook'], platform)}<button class="btn" type="submit">Terapkan</button><button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
+  const err = R.error ? `<p class="field-error" role="alert">${esc(R.error)} Menampilkan default Bulan Ini.</p>` : '';
+  const active = `<p class="active-filters" role="status"><b>Periode aktif:</b> ${esc(MK.RANGE_PRESETS.find(([k]) => k === R.key)[1])} · ${fmtRange(R)} · ${platform || 'Semua platform'} <span class="muted small">(tanggal acuan demo ${fmtDay(TODAY)}, WITA)</span></p>`;
+  const tabs = viewTabs('social', [['calendar', 'Publishing Calendar'], ['inbox', 'Inbox & Moderation', convs.filter(c => c.status === 'open').length], ['analytics', 'Analytics'], ['units', 'Unit Business Growth']], view, keep);
+  const monthNote = (m) => note(`Metrik platform hanya tersedia per bulan kalender. Rentang ${fmtRange(R)} berada di ${fmtMonth(m)}, jadi angka di bawah adalah angka bulanan ${fmtMonth(m)}, bukan angka harian rentang ini.`);
+  const multiMonth = emptyCard('Metrik platform tersedia per bulan', `Rentang ${fmtRange(R)} melewati lebih dari satu bulan kalender. Pilih rentang di dalam satu bulan (mis. Bulan Ini atau Bulan Lalu) untuk melihat metrik platform. Angka antarbulan tidak dijumlahkan.`);
+  let body = '';
+  if (view === 'calendar') {
+    const summary = `<div class="chips" role="group" aria-label="Ringkasan status publikasi">${['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => `<span class="status-chip ${PUB_TONE[s]}">${PUB_LABEL[s]} · ${d.counts[s]}</span>`).join('')}</div>`;
+    body = summary + card('Jadwal per akun', table(['Waktu (WITA)', 'Akun', 'Platform', 'Konten', 'Status', 'Post ID'], d.rows.map(({ p, s, c, at }) => [at, esc(p.account), p.platform, `<a href="#studio${qs({ content: p.content, ctab: 'publish' })}">${p.content} · ${esc(c?.title || '')}</a>`, chip(PUB_LABEL[s], PUB_TONE[s]), p.postId || '—'])) +
       note(`Published = sudah terbit dengan tanggal terbit di rentang. Scheduled / Upcoming = jadwal mulai ${fmtDay(TODAY)} dan seterusnya, selalu tampil untuk pemantauan rencana dan tidak dihitung sebagai Published. Overdue = masih terjadwal tetapi tanggalnya sudah lewat. Draft = jadwal perlu review ulang. Jadwal dan post ID dicatat di Content Studio (tab Publikasi); tidak ada akun sosial yang terhubung.`));
   } else if (view === 'inbox') {
     body = card('Antrean komentar & DM ' + sim, table(['Masuk', 'Kanal', 'Dari', 'Pesan', 'Asal', 'Kategori', 'Status / aksi'], convs.map(c => [c.at, `${esc(c.channel)}<br><small class="muted">${esc(acc(c.account)?.handle || '')}</small>`, esc(c.from), `<span class="wrap">${esc(c.text)}</span>`, c.campaign ? `${cmpLink(c.campaign)}${c.publication ? `<br><small>${c.publication}</small>` : ''}` : '—',
@@ -144,17 +170,12 @@ register('social', (params) => {
       c.lead ? `${chip('Dialihkan ke Sales', 'ready')}<br><a href="#reservation">${c.lead}</a>` : c.status === 'hidden' ? chip('Disembunyikan', '') : c.category === 'Reservasi' ? `<button type="button" class="btn sm" data-action="cx:conv-handoff" data-id="${c.id}">Alihkan ke Sales</button>` : chip('Terbuka', 'sandbox')])) +
       note(`Menampilkan ${num(convs.length)} percakapan yang masuk pada ${fmtRange(R)}. Alihkan ke Sales membuat lead di Sales B2C dengan ringkasan pesan dan asal campaign. Menekan ulang memakai lead yang sama. Balasan tidak dikirim dari preview.`));
   } else if (view === 'analytics') {
-    const pubs = cx().publications.filter(p => p.status === 'published' && MK.inRange(R, p.publishedAt || p.scheduledAt) && (!platform || p.platform === platform));
-    const top = cx().content.filter(c => c.results).sort((a, b) => (b.results.bookings || 0) - (a.results.bookings || 0)).slice(0, 5);
-    const publish = card('Publish vs aset', `<dl class="def compact"><dt>Publikasi terbit</dt><dd>${num(pubs.length)}</dd><dt>Aset unik di publikasi</dt><dd>${num(new Set(pubs.flatMap(p => cx().content.find(c => c.id === p.content)?.assets || [])).size)}</dd><dt>Konten unik</dt><dd>${num(new Set(pubs.map(p => p.content)).size)}</dd></dl>` + note(`Hanya publikasi yang benar-benar terbit pada ${fmtRange(R)}. Konten yang terbit di beberapa platform dihitung per publish dan per aset, tidak digandakan sebagai konten.${pubs.length ? '' : ' Tidak ada publikasi terbit pada periode ini.'}`));
-    const topCard = card('Top content', table(['Konten', 'Format', 'Views', 'Klik', 'Lead', 'Booking'], top.map(c => [`<a href="#studio${qs({ content: c.id, ctab: 'analytics' })}">${c.id} · ${esc(c.title)}</a>`, c.format, num(c.results.views), num(c.results.clicks), num(c.results.leads), num(c.results.bookings)])) + note('Hasil kumulatif per konten (data belum bertanggal), tidak mengikuti filter periode.'));
+    const publish = card('Publish vs aset', `<dl class="def compact"><dt>Publikasi terbit</dt><dd>${num(d.pub.count)}</dd><dt>Aset unik di publikasi</dt><dd>${num(d.pub.assets)}</dd><dt>Konten unik</dt><dd>${num(d.pub.contents)}</dd></dl>` + note(`Hanya publikasi yang benar-benar terbit pada ${fmtRange(R)}. Konten yang terbit di beberapa platform dihitung per publish dan per aset, tidak digandakan sebagai konten.${d.pub.count ? '' : ' Tidak ada publikasi terbit pada periode ini.'}`));
+    const topCard = card('Top content', table(['Konten', 'Format', 'Views', 'Klik', 'Lead', 'Booking'], d.top.map(c => [`<a href="#studio${qs({ content: c.id, ctab: 'analytics' })}">${c.id} · ${esc(c.title)}</a>`, c.format, num(c.results.views), num(c.results.clicks), num(c.results.leads), num(c.results.bookings)])) + note('Hasil kumulatif per konten (data belum bertanggal), tidak mengikuti filter periode.'));
     let platformCards;
     if (!month) platformCards = multiMonth;
     else {
-      const rows = mk().social.filter(s => s.period === month && (!platform || acc(s.account).platform === platform));
-      const byPf = {};
-      rows.forEach(s => { const p = acc(s.account).platform; const r = byPf[p] || (byPf[p] = { reach: 0, interactions: 0, followers: 0, net: 0, visits: 0, accounts: 0 }); r.reach += s.reach; r.interactions += s.interactions; r.followers += s.followers; r.net += s.netFollowers; r.visits += s.visits; r.accounts++; });
-      platformCards = rows.length ? `<section class="grid g3">${Object.entries(byPf).map(([p, r]) => `<section class="card"><h2>${p} <span class="badge">Bulanan · ${fmtMonth(month)}</span></h2><dl class="def compact"><dt>Reach</dt><dd>${num(r.reach)}</dd><dt>Interactions</dt><dd>${num(r.interactions)}</dd><dt>ER periode</dt><dd>${pct(MK.div(r.interactions, r.reach), 2)}</dd><dt>Followers</dt><dd>${num(r.followers)} (net ${r.net >= 0 ? '+' : ''}${num(r.net)})</dd><dt>Kunjungan profil</dt><dd>${num(r.visits)}</dd><dt>Akun</dt><dd>${r.accounts}</dd></dl></section>`).join('')}</section>
+      platformCards = d.platforms.length ? `<section class="grid g3">${d.platforms.map(r => `<section class="card"><h2>${r.platform} <span class="badge">Bulanan · ${fmtMonth(month)}</span></h2><dl class="def compact"><dt>Reach</dt><dd>${num(r.reach)}</dd><dt>Interactions</dt><dd>${num(r.interactions)}</dd><dt>ER periode</dt><dd>${pct(r.er, 2)}</dd><dt>Followers</dt><dd>${num(r.followers)} (net ${r.net >= 0 ? '+' : ''}${num(r.net)})</dd><dt>Kunjungan profil</dt><dd>${num(r.visits)}</dd><dt>Akun</dt><dd>${r.accounts}</dd></dl></section>`).join('')}</section>
       ${monthNote(month)}${note('ER = interactions ÷ reach pada periode yang sama (tidak menjumlahkan ER harian). Reach dijumlah per platform dan tidak dianggap unik lintas platform.')}`
         : `<section class="card empty-state" role="status"><h2>Tidak ada data untuk periode ini</h2><p>Belum ada metrik platform untuk ${fmtMonth(month)}${platform ? ' · ' + platform : ''}.</p><dl class="def compact"><dt>Reach</dt><dd>0</dd><dt>Interactions</dt><dd>0</dd><dt>ER periode</dt><dd>—</dd></dl></section>`;
     }
@@ -162,16 +183,79 @@ register('social', (params) => {
   } else {
     if (!month) body = multiMonth;
     else {
-      const units = [...new Set(mk().accounts.map(a => a.unit))];
-      const pm = prevMonth(month);
-      const hasData = mk().social.some(s => s.period === month);
-      const hasPrev = mk().social.some(s => s.period === pm);
-      body = hasData ? card(`Pertumbuhan per unit bisnis · ${fmtMonth(month)}`, table(['Unit', 'Akun', 'Followers', 'Baru', 'Net', 'Reach', 'Interactions', 'ER', 'vs bulan lalu (net)'], units.map(u => { const ids = mk().accounts.filter(a => a.unit === u).map(a => a.id); const agg = (p) => mk().social.filter(s => s.period === p && ids.includes(s.account)).reduce((a, s) => ({ f: a.f + s.followers, n: a.n + s.newFollowers, net: a.net + s.netFollowers, r: a.r + s.reach, i: a.i + s.interactions }), { f: 0, n: 0, net: 0, r: 0, i: 0 }); const c = agg(month), pv = agg(pm); return [esc(u), ids.length, num(c.f), num(c.n), num(c.net), num(c.r), num(c.i), pct(MK.div(c.i, c.r), 2), pv.net ? pct((c.net - pv.net) / pv.net, 1) : '—']; })) + monthNote(month) + note(`Unit Jaens Essence memakai akun sendiri. Pembanding = ${fmtMonth(pm)}${hasPrev ? '' : ' (data tidak tersedia, tampil “—”)'}.`))
+      body = d.hasData ? card(`Pertumbuhan per unit bisnis · ${fmtMonth(month)}`, table(['Unit', 'Akun', 'Followers', 'Baru', 'Net', 'Reach', 'Interactions', 'ER', 'vs bulan lalu (net)'], d.units.map(u => [esc(u.unit), u.accounts, num(u.f), num(u.n), num(u.net), num(u.r), num(u.i), pct(u.er, 2), u.vs === null ? '—' : pct(u.vs, 1)])) + monthNote(month) + note(`Unit Jaens Essence memakai akun sendiri. Pembanding = ${fmtMonth(d.pm)}${d.hasPrev ? '' : ' (data tidak tersedia, tampil “—”)'}.`))
         : emptyCard('Tidak ada data untuk periode ini', `Belum ada metrik platform untuk ${fmtMonth(month)}. Semua angka bernilai 0 / “—”.`);
     }
   }
   return `<div class="heading-row">${bar}</div>${err}${active}${tabs}${body}`;
 }, () => 'Social Media');
+/* ---------- NP-HAWK-COM-SM-002 · Export Excel & PDF tab aktif, memakai applied filter (hash URL) lewat socialData ---------- */
+const SM_TABS = { calendar: ['Publishing Calendar', 'Publishing_Calendar'], inbox: ['Inbox & Moderation', 'Inbox_Moderation'], analytics: ['Analytics', 'Analytics'], units: ['Unit Business Growth', 'Unit_Business_Growth'] };
+const pct2 = (v) => v === null || v === undefined ? '' : Math.round(v * 10000) / 100; /* rasio → persen 2 desimal (angka) */
+const convStatus = (c) => c.lead ? 'Dialihkan ke Sales' : c.status === 'hidden' ? 'Disembunyikan' : 'Terbuka';
+/* tab tanpa data yang bisa diekspor → tombol disabled. Analytics selalu punya Top content (tidak ikut periode). */
+const smEmpty = (d) => d.view === 'calendar' ? !d.rows.length : d.view === 'inbox' ? !d.convs.length : d.view === 'units' ? !(d.month && d.hasData) : false;
+function socialExport(params) {
+  const d = socialData(params), { view, R, platform, month } = d;
+  if (smEmpty(d)) return null;
+  const sections = []; /* { name (sheet), heading (PDF), kpis?, headers?, raw?, shown?, note? } */
+  const T = (name, heading, cols, items, extra = {}) => sections.push({ name, heading, headers: cols.map(c => c[0]), raw: items.map(it => cols.map(c => c[1](it))), shown: items.map(it => cols.map(c => String((c[2] || c[1])(it) ?? ''))), ...extra });
+  const notes = [];
+  if (view === 'calendar') {
+    T('Ringkasan status', 'Ringkasan status', [['Status', s => PUB_LABEL[s]], ['Jumlah', s => d.counts[s]]], ['Published', 'Scheduled', 'Overdue', 'Draft'],
+      { kpis: ['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => [PUB_LABEL[s], String(d.counts[s])]), table: false });
+    T('Jadwal publikasi', 'Jadwal per akun', [['Waktu (WITA)', r => r.at], ['Akun', r => r.p.account], ['Platform', r => r.p.platform], ['ID konten', r => r.p.content], ['Konten', r => r.c?.title || ''], ['Status', r => PUB_LABEL[r.s]], ['Post ID', r => r.p.postId || '', r => r.p.postId || '—']], d.rows,
+      { note: `Scheduled / Upcoming = jadwal mulai ${fmtDay(TODAY)} dan seterusnya, selalu tampil dan tidak dihitung sebagai Published.` });
+  } else if (view === 'inbox') {
+    const cmp = (c) => c.campaign ? `${c.campaign} · ${cx().campaigns.find(k => k.id === c.campaign)?.name || ''}` : '';
+    T('Percakapan', 'Antrean komentar & DM', [['Masuk', c => c.at], ['Kanal', c => c.channel], ['Akun', c => acc(c.account)?.handle || ''], ['Dari', c => c.from], ['Pesan', c => c.text], ['Campaign', cmp, c => cmp(c) || '—'], ['Publikasi', c => c.publication || '', c => c.publication || '—'], ['Kategori', c => c.category || '', c => c.category || '—'], ['Status', convStatus], ['Lead Sales', c => c.lead || '', c => c.lead || '—']], d.convs,
+      { kpis: [['Percakapan', num(d.convs.length)], ['Terbuka', num(d.convs.filter(c => c.status === 'open').length)]], note: 'Balasan tidak dikirim dari preview. Data percakapan sintetis (DATA DEMO).' });
+  } else if (view === 'analytics') {
+    if (month && d.platforms.length) T('KPI platform', `KPI per platform · bulanan ${fmtMonth(month)}`, [['Platform', r => r.platform], ['Bulan', () => month], ['Reach', r => r.reach, r => num(r.reach)], ['Interactions', r => r.interactions, r => num(r.interactions)], ['ER periode (%)', r => pct2(r.er), r => pct(r.er, 2)], ['Followers', r => r.followers, r => num(r.followers)], ['Net followers', r => r.net, r => `${r.net >= 0 ? '+' : ''}${num(r.net)}`], ['Kunjungan profil', r => r.visits, r => num(r.visits)], ['Akun', r => r.accounts]], d.platforms,
+      { note: 'ER = interactions ÷ reach pada periode yang sama. Reach dijumlah per platform dan tidak dianggap unik lintas platform. Metrik platform hanya tersedia per bulan kalender.' });
+    else notes.push(month ? `Belum ada metrik platform untuk ${fmtMonth(month)}${platform ? ' · ' + platform : ''}.` : `Rentang ${fmtRange(R)} melewati lebih dari satu bulan kalender; metrik platform tidak ditampilkan (angka antarbulan tidak dijumlahkan).`);
+    T('Top content', 'Top content', [['ID konten', c => c.id], ['Konten', c => c.title], ['Format', c => c.format], ['Views', c => c.results.views, c => num(c.results.views)], ['Klik', c => c.results.clicks, c => num(c.results.clicks)], ['Lead', c => c.results.leads, c => num(c.results.leads)], ['Booking', c => c.results.bookings, c => num(c.results.bookings)]], d.top,
+      { note: 'Hasil kumulatif per konten (data belum bertanggal), tidak mengikuti filter periode.' });
+    T('Publish vs aset', 'Publish vs aset', [['Metrik', r => r[0]], ['Nilai', r => r[1], r => num(r[1])]], [['Publikasi terbit', d.pub.count], ['Aset unik di publikasi', d.pub.assets], ['Konten unik', d.pub.contents]],
+      { note: `Hanya publikasi yang benar-benar terbit pada ${fmtRange(R)}.` });
+    if (!(month && d.platforms.length)) sections[0].note = notes[0] + ' ' + sections[0].note;
+  } else {
+    T('Pertumbuhan unit', `Pertumbuhan per unit bisnis · ${fmtMonth(month)}`, [['Unit', u => u.unit], ['Akun', u => u.accounts], ['Followers', u => u.f, u => num(u.f)], ['Baru', u => u.n, u => num(u.n)], ['Net', u => u.net, u => num(u.net)], ['Reach', u => u.r, u => num(u.r)], ['Interactions', u => u.i, u => num(u.i)], ['ER (%)', u => pct2(u.er), u => pct(u.er, 2)], ['vs bulan lalu net (%)', u => u.vs === null ? '' : pct2(u.vs), u => u.vs === null ? '—' : pct(u.vs, 1)]], d.units,
+      { note: `Pembanding = ${fmtMonth(d.pm)}${d.hasPrev ? '' : ' (data tidak tersedia, tampil “—”)'}. Metrik platform hanya tersedia per bulan kalender.` });
+  }
+  const meta = [['Data', 'DATA DEMO / SIMULASI · angka sintetis'], ['Tab', SM_TABS[view][0]], ['Periode aktif', `${MK.RANGE_PRESETS.find(([k]) => k === R.key)[1]} · ${fmtRange(R)}`], ['Platform', platform || 'Semua platform'], ['Grafik', 'Tidak tersedia di tab ini'], ['Diekspor', `${HLX.nowWita()} · tanggal acuan demo ${fmtDay(TODAY)} (WITA)`]];
+  return { view, d, sections, meta, title: `HAWK ERP · Social Media · ${SM_TABS[view][0]}`, file: `Social_Media_${SM_TABS[view][1]}_${HLX.stampWita()}` };
+}
+H.REGISTRY.social.actions = (params) => {
+  let off = true; try { off = smEmpty(socialData(params)); } catch (e) { off = true; }
+  const dis = off ? ' disabled title="Tidak ada data yang dapat diekspor pada tab ini"' : '';
+  return `<button type="button" class="btn ghost sm" data-sm-export="xlsx"${dis}>Export Excel</button><button type="button" class="btn ghost sm" data-sm-export="pdf"${dis}>Export PDF</button>`;
+};
+let smBusy = 0; /* klik ganda pada tombol yang baru dirender ulang diabaikan 800 ms; pindah tab/filter mereset */
+window.addEventListener('hashchange', () => { smBusy = 0; });
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-sm-export]'); if (!b || b.disabled) return;
+  if (Date.now() - smBusy < 800) return; /* cegah klik berulang */
+  smBusy = Date.now();
+  document.querySelectorAll('[data-sm-export]').forEach(x => { x.disabled = true; x.setAttribute('aria-busy', 'true'); });
+  const fmt = b.dataset.smExport, { params } = H.parseHash();
+  try {
+    const ex = socialExport(params);
+    if (!ex) { window.__smLastExport = { format: fmt, rows: 0, file: null }; return H.render('Tidak ada data yang dapat diekspor pada tab ini.', true); }
+    const rowsN = ex.sections.filter(s => s.table !== false).reduce((n, s) => n + s.raw.length, 0);
+    if (fmt === 'xlsx') {
+      const sheets = ex.sections.map(s => ({ name: s.name, rows: [s.headers, ...s.raw, ...(s.note ? [[], ['Catatan', s.note]] : [])], widths: s.headers.map((h, i) => Math.min(60, Math.max(10, h.length + 2, ...s.shown.map(r => r[i].length + 2)))) }));
+      sheets.push({ name: 'Info', rows: [['HAWK ERP · Social Media'], ...ex.meta], widths: [16, 80] });
+      HLX.download(ex.file + '.xlsx', HLX.xlsx(sheets, { quotePrefix: true }), HLX.XLSX_MIME);
+      window.__smLastExport = { format: 'xlsx', view: ex.view, file: ex.file + '.xlsx', sheets: sheets.map(s => s.name), rows: rowsN };
+      H.render(`Excel dibuat: ${ex.file}.xlsx · ${sheets.length - 1} sheet data`);
+    } else {
+      HLX.printReport({ title: ex.title, meta: ex.meta, sections: ex.sections.map(s => ({ heading: s.heading, kpis: s.kpis, note: s.note, ...(s.table === false ? {} : { headers: s.headers, rows: s.shown }) })) });
+      window.__smLastExport = { format: 'pdf', view: ex.view, file: ex.file + '.pdf', sections: ex.sections.map(s => s.heading), rows: rowsN };
+      H.render(`Laporan PDF disiapkan: ${ex.file}.pdf · pilih "Simpan sebagai PDF" di dialog cetak.`);
+    }
+  } catch (err) { H.render(`Ekspor gagal: ${err.message}`, true); }
+});
 /* Preset mengisi tanggal (belum diterapkan); ubah tanggal manual → Custom. Terapkan: validasi lalu navigasi. */
 document.addEventListener('change', (e) => {
   const form = e.target.closest && e.target.closest('form[data-range="social"]'); if (!form) return;

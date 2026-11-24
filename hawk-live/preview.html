@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-24T01:53:01.892Z">
+<meta name="hawk-standalone" content="2026-11-24T03:31:18.964Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Preview lima portal</title>
 <style>
@@ -1790,8 +1790,25 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   #hl-print th, #hl-print td { border: 1px solid #999; padding: 3px 5px; text-align: left; vertical-align: top; overflow-wrap: break-word; }
   #hl-print th { background: #eee; font-weight: 700; }
   #hl-print td.nw { white-space: nowrap; } /* ID, tanggal, angka pendek tidak dipatah */
+  #hl-print .hl-print-sec { margin-top: 12px; }
+  #hl-print .hl-print-sec h2 { font-size: 11.5pt; margin: 0 0 6px; break-after: avoid; }
+  #hl-print .hl-print-kpis { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 8px; }
+  #hl-print .hl-print-kpis dt { font-size: 8.5pt; color: #444; }
+  #hl-print .hl-print-kpis dd { margin: 0; font-weight: 700; }
   #hl-print .hl-print-foot { margin-top: 8px; font-size: 8.5pt; color: #333; }
 }
+.field-error { color: var(--bad); font-weight: 600; margin: 6px 0; flex-basis: 100%; }
+/* ---------- Ganti role DEMO dari chip akun kanan atas (role-switcher.js) ---------- */
+.topbar .role-chip[data-rs] { user-select: none; }
+.topbar .role-chip[data-rs]:hover { border-color: var(--gold, #c99a2e); }
+.topbar .role-chip[data-rs]:focus-visible { outline: 2px solid var(--champagne, #e5c66a); outline-offset: 2px; }
+.topbar .role-chip[data-rs]::after { content: '⌄'; color: var(--champagne, #e5c66a); font-size: 12px; margin-left: 2px; }
+.rs-pop { color: #1a1a1a; }
+.rs-pop .rs-pill { margin-left: auto; }
+.rs-pop .rs-grp { padding: 8px 14px 4px; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--bronze, #8b6914); background: #faf8f2; border-bottom: 1px solid var(--line-2, #eee9dc); }
+.rs-pop .pop-item:focus-visible { outline: 2px solid var(--gold, #c99a2e); outline-offset: -2px; }
+.rs-pop .rs-note { cursor: default; }
+@media (max-width: 720px) { .topbar .role-chip[data-rs]::after { display: none; } }
 
 </style>
 <link rel="stylesheet" href="ops/ops.css">
@@ -5962,7 +5979,7 @@ function render(message = '', error = false) {
   const it0 = itemOf(id), cOv = REGISTRY[id]?.code?.(params);
   const it = it0 && cOv ? Object.assign([...it0], { 2: cOv }) : it0;
   document.title = `HAWK ERP · ${titleOf(id)}`;
-  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${(REGISTRY[id]?.purpose?.(params) || PURPOSE[id]) ? `<p>${REGISTRY[id]?.purpose?.(params) || PURPOSE[id]}</p>` : ''}</div></header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
+  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${(REGISTRY[id]?.purpose?.(params) || PURPOSE[id]) ? `<p>${REGISTRY[id]?.purpose?.(params) || PURPOSE[id]}</p>` : ''}</div>${REGISTRY[id]?.actions ? `<div class="actions">${REGISTRY[id].actions(params)}</div>` : ''}</header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
   view.querySelector('.status').textContent = message;
   if (error) view.querySelector('.status').classList.add('error');
   setNav(false); renderRole();
@@ -9564,22 +9581,26 @@ register('brand', (params) => {
   const safeText = (v) => /^[=+\-@\t\r]/.test(String(v)) ? "'" + v : String(v);
   const colName = (i) => { let s = ''; i += 1; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
   /* opsi sheet: headerRow = indeks baris header (dicetak tebal) */
-  const sheetXml = (rows, headerRow = 0, widths = []) =>
+  /* opts.quotePrefix (NP-HAWK-COM-SM-002): teks berisiko tetap utuh (mis. handle @akun) tetapi diberi gaya quotePrefix
+     sehingga Excel memperlakukannya sebagai teks; tanpa opsi ini perilaku lama (awalan ') tetap dipakai (F2-07). */
+  const risky = (v) => /^[=+\-@\t\r]/.test(String(v));
+  const sheetXml = (rows, headerRow = 0, widths = [], qp = false) =>
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${widths.length ? `<cols>${widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')}</cols>` : ''}<sheetData>${rows
       .map((r, ri) => `<row r="${ri + 1}">${r.map((v, ci) => {
         const ref = colName(ci) + (ri + 1), s = ri === headerRow ? ' s="1"' : '';
         if (v === null || v === undefined || v === '') return '';
         if (typeof v === 'number' && isFinite(v)) return `<c r="${ref}"${s}><v>${Math.round(v * 100) / 100}</v></c>`;
+        if (qp && risky(v)) return `<c r="${ref}" t="inlineStr"${s || ' s="2"'}><is><t xml:space="preserve">${xesc(v)}</t></is></c>`;
         return `<c r="${ref}" t="inlineStr"${s}><is><t xml:space="preserve">${xesc(safeText(v))}</t></is></c>`;
       }).join('')}</row>`).join('')}</sheetData></worksheet>`;
   /* sheets: [{ name, rows, headerRow?, widths? }] → Uint8Array (.xlsx) */
-  const xlsx = (sheets) => zip([
+  const xlsx = (sheets, opts = {}) => zip([
     { name: '[Content_Types].xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>` },
     { name: '_rels/.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
     { name: 'xl/workbook.xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((sh, i) => `<sheet name="${xesc(sh.name.replace(/[\\/?*[\]:]/g, ' ').slice(0, 31))}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets></workbook>` },
     { name: 'xl/_rels/workbook.xml.rels', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
-    { name: 'xl/styles.xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
-    ...sheets.map((sh, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: sheetXml(sh.rows, sh.headerRow || 0, sh.widths || []) })),
+    { name: 'xl/styles.xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" quotePrefix="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
+    ...sheets.map((sh, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: sheetXml(sh.rows, sh.headerRow || 0, sh.widths || [], !!opts.quotePrefix) })),
   ]);
   function download(name, bytes, mime) {
     const a = document.createElement('a');
@@ -9604,9 +9625,25 @@ register('brand', (params) => {
     setTimeout(done, 600);
     return box;
   }
+  /* laporan cetak multi-bagian (NP-HAWK-COM-SM-002): tiap bagian punya judul, KPI (opsional), tabel (opsional) dan catatan */
+  function printReport({ title, meta = [], sections = [] }) {
+    let box = document.getElementById('hl-print');
+    if (!box) { box = document.createElement('div'); box.id = 'hl-print'; document.body.appendChild(box); }
+    const td = (c) => `<td${String(c).length <= 14 ? ' class="nw"' : ''}>${esc(c)}</td>`;
+    box.innerHTML = `<h1>${esc(title)}</h1><dl class="hl-print-meta">${meta.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` + sections.map(s => `<section class="hl-print-sec"><h2>${esc(s.heading)}</h2>${s.kpis && s.kpis.length ? `<dl class="hl-print-kpis">${s.kpis.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}${s.headers ? `<table><thead><tr>${s.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${s.rows.length ? s.rows.map(r => `<tr>${r.map(td).join('')}</tr>`).join('') : `<tr><td colspan="${s.headers.length}">Tidak ada data.</td></tr>`}</tbody></table>` : ''}${s.note ? `<p class="hl-print-foot">${esc(s.note)}</p>` : ''}</section>`).join('');
+    document.body.classList.add('hl-printing');
+    const prevTitle = document.title; document.title = title;
+    const done = () => { document.body.classList.remove('hl-printing'); document.title = prevTitle; };
+    window.addEventListener('afterprint', done, { once: true });
+    try { window.print(); } catch (e) { /* cetak tidak tersedia (frame tertanam) */ }
+    setTimeout(done, 600);
+    return box;
+  }
+  /* tanggal ekspor nyata WITA sebagai YYYYMMDD (nama file) */
+  const stampWita = () => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Makassar', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map(x => [x.type, x.value])); return `${p.year}${p.month}${p.day}`; };
   /* waktu ekspor nyata, zona Asia/Makassar (WITA) */
   const nowWita = () => new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()) + ' WITA';
-  window.HLX = { xlsx, zip, download, XLSX_MIME, printTable, safeText, nowWita };
+  window.HLX = { xlsx, zip, download, XLSX_MIME, printTable, printReport, safeText, nowWita, stampWita };
 })();
 
 ;
@@ -9726,29 +9763,55 @@ const prevMonth = (m) => { const y = Number(m.slice(0, 4)), n = Number(m.slice(5
 const PUB_TONE = { Published: 'ready', Scheduled: 'sandbox', Overdue: 'bad', Draft: '' };
 const PUB_LABEL = { Published: 'Published', Scheduled: 'Scheduled / Upcoming', Overdue: 'Overdue', Draft: 'Draft' };
 const emptyCard = (title, text) => `<div class="card empty-state" role="status"><h2>${title}</h2><p>${text}</p></div>`;
-register('social', (params) => {
+/* NP-HAWK-COM-SM-002 · satu sumber data untuk layar dan ekspor: baris, status dan KPI tiap tab dihitung di sini sekali */
+function socialData(params) {
   const view = ['calendar', 'inbox', 'analytics', 'units'].includes(params.view) ? params.view : 'calendar';
   const R = MK.socialRange(params, TODAY);
   const platform = ['Instagram', 'TikTok', 'Facebook'].includes(params.platform) ? params.platform : '';
   const keep = R.key === 'custom' ? { range: 'custom', start: R.start, end: R.end, platform } : { range: R.key, platform };
-  const bar = `<form id="social-range" class="filters" data-range="social" aria-label="Filter periode Social Media" novalidate>${hidden({ view })}${sel('range', 'Periode', MK.RANGE_PRESETS, R.key)}<label>Mulai<input type="date" name="start" value="${R.start}" max="${TODAY}" required></label><label>Selesai<input type="date" name="end" value="${R.end}" max="${TODAY}" required></label>${sel('platform', 'Platform', [['', 'Semua platform'], 'Instagram', 'TikTok', 'Facebook'], platform)}<button class="btn" type="submit">Terapkan</button><button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
-  const err = R.error ? `<p class="field-error" role="alert">${esc(R.error)} Menampilkan default Bulan Ini.</p>` : '';
-  const active = `<p class="active-filters" role="status"><b>Periode aktif:</b> ${esc(MK.RANGE_PRESETS.find(([k]) => k === R.key)[1])} · ${fmtRange(R)} · ${platform || 'Semua platform'} <span class="muted small">(tanggal acuan demo ${fmtDay(TODAY)}, WITA)</span></p>`;
   const convs = mk().convs.filter(c => MK.inRange(R, c.at) && (!platform || c.channel.includes(platform)));
-  const tabs = viewTabs('social', [['calendar', 'Publishing Calendar'], ['inbox', 'Inbox & Moderation', convs.filter(c => c.status === 'open').length], ['analytics', 'Analytics'], ['units', 'Unit Business Growth']], view, keep);
   const month = MK.singleMonth(R);
-  const monthNote = (m) => note(`Metrik platform hanya tersedia per bulan kalender. Rentang ${fmtRange(R)} berada di ${fmtMonth(m)}, jadi angka di bawah adalah angka bulanan ${fmtMonth(m)}, bukan angka harian rentang ini.`);
-  const multiMonth = emptyCard('Metrik platform tersedia per bulan', `Rentang ${fmtRange(R)} melewati lebih dari satu bulan kalender. Pilih rentang di dalam satu bulan (mis. Bulan Ini atau Bulan Lalu) untuk melihat metrik platform. Angka antarbulan tidak dijumlahkan.`);
-  let body = '';
+  const d = { view, R, platform, keep, convs, month };
   if (view === 'calendar') {
     /* Published dihitung dari tanggal terbit di rentang. Overdue & Draft dari tanggal jadwal di rentang.
        Jadwal mendatang selalu tampil agar rencana publikasi terpantau, tetapi tidak dihitung sebagai Published. */
     const all = cx().publications.filter(p => !platform || p.platform === platform).map(p => ({ p, s: MK.pubStatus(p, TODAY) }));
-    const rows = all.filter(({ p, s }) => s === 'Published' ? MK.inRange(R, p.publishedAt || p.scheduledAt) : s === 'Scheduled' ? true : MK.inRange(R, p.scheduledAt))
-      .sort((a, b) => a.p.scheduledAt.localeCompare(b.p.scheduledAt));
-    const count = (s) => rows.filter(x => x.s === s).length;
-    const summary = `<div class="chips" role="group" aria-label="Ringkasan status publikasi">${['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => `<span class="status-chip ${PUB_TONE[s]}">${PUB_LABEL[s]} · ${count(s)}</span>`).join('')}</div>`;
-    body = summary + card('Jadwal per akun', table(['Waktu (WITA)', 'Akun', 'Platform', 'Konten', 'Status', 'Post ID'], rows.map(({ p, s }) => { const c = cx().content.find(k => k.id === p.content); return [s === 'Published' && p.publishedAt ? p.publishedAt : p.scheduledAt, esc(p.account), p.platform, `<a href="#studio${qs({ content: p.content, ctab: 'publish' })}">${p.content} · ${esc(c?.title || '')}</a>`, chip(PUB_LABEL[s], PUB_TONE[s]), p.postId || '—']; })) +
+    d.rows = all.filter(({ p, s }) => s === 'Published' ? MK.inRange(R, p.publishedAt || p.scheduledAt) : s === 'Scheduled' ? true : MK.inRange(R, p.scheduledAt))
+      .sort((a, b) => a.p.scheduledAt.localeCompare(b.p.scheduledAt))
+      .map(({ p, s }) => ({ p, s, c: cx().content.find(k => k.id === p.content), at: s === 'Published' && p.publishedAt ? p.publishedAt : p.scheduledAt }));
+    d.counts = Object.fromEntries(['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => [s, d.rows.filter(x => x.s === s).length]));
+  } else if (view === 'analytics') {
+    const pubs = cx().publications.filter(p => p.status === 'published' && MK.inRange(R, p.publishedAt || p.scheduledAt) && (!platform || p.platform === platform));
+    d.pub = { count: pubs.length, assets: new Set(pubs.flatMap(p => cx().content.find(c => c.id === p.content)?.assets || [])).size, contents: new Set(pubs.map(p => p.content)).size };
+    d.top = cx().content.filter(c => c.results).sort((a, b) => (b.results.bookings || 0) - (a.results.bookings || 0)).slice(0, 5);
+    if (month) {
+      const rows = mk().social.filter(s => s.period === month && (!platform || acc(s.account).platform === platform));
+      const byPf = {};
+      rows.forEach(s => { const p = acc(s.account).platform; const r = byPf[p] || (byPf[p] = { reach: 0, interactions: 0, followers: 0, net: 0, visits: 0, accounts: 0 }); r.reach += s.reach; r.interactions += s.interactions; r.followers += s.followers; r.net += s.netFollowers; r.visits += s.visits; r.accounts++; });
+      d.platforms = Object.entries(byPf).map(([p, r]) => ({ platform: p, ...r, er: MK.div(r.interactions, r.reach) }));
+    }
+  } else if (view === 'units' && month) {
+    const units = [...new Set(mk().accounts.map(a => a.unit))];
+    d.pm = prevMonth(month);
+    d.hasData = mk().social.some(s => s.period === month);
+    d.hasPrev = mk().social.some(s => s.period === d.pm);
+    d.units = units.map(u => { const ids = mk().accounts.filter(a => a.unit === u).map(a => a.id); const agg = (p) => mk().social.filter(s => s.period === p && ids.includes(s.account)).reduce((a, s) => ({ f: a.f + s.followers, n: a.n + s.newFollowers, net: a.net + s.netFollowers, r: a.r + s.reach, i: a.i + s.interactions }), { f: 0, n: 0, net: 0, r: 0, i: 0 }); const c = agg(month), pv = agg(d.pm); return { unit: u, accounts: ids.length, ...c, er: MK.div(c.i, c.r), vs: pv.net ? (c.net - pv.net) / pv.net : null }; });
+  }
+  return d;
+}
+register('social', (params) => {
+  const d = socialData(params);
+  const { view, R, platform, keep, convs, month } = d;
+  const bar = `<form id="social-range" class="filters" data-range="social" aria-label="Filter periode Social Media" novalidate>${hidden({ view })}${sel('range', 'Periode', MK.RANGE_PRESETS, R.key)}<label>Mulai<input type="date" name="start" value="${R.start}" max="${TODAY}" required></label><label>Selesai<input type="date" name="end" value="${R.end}" max="${TODAY}" required></label>${sel('platform', 'Platform', [['', 'Semua platform'], 'Instagram', 'TikTok', 'Facebook'], platform)}<button class="btn" type="submit">Terapkan</button><button type="button" class="btn ghost" data-action="filter-reset">Reset filter</button></form>`;
+  const err = R.error ? `<p class="field-error" role="alert">${esc(R.error)} Menampilkan default Bulan Ini.</p>` : '';
+  const active = `<p class="active-filters" role="status"><b>Periode aktif:</b> ${esc(MK.RANGE_PRESETS.find(([k]) => k === R.key)[1])} · ${fmtRange(R)} · ${platform || 'Semua platform'} <span class="muted small">(tanggal acuan demo ${fmtDay(TODAY)}, WITA)</span></p>`;
+  const tabs = viewTabs('social', [['calendar', 'Publishing Calendar'], ['inbox', 'Inbox & Moderation', convs.filter(c => c.status === 'open').length], ['analytics', 'Analytics'], ['units', 'Unit Business Growth']], view, keep);
+  const monthNote = (m) => note(`Metrik platform hanya tersedia per bulan kalender. Rentang ${fmtRange(R)} berada di ${fmtMonth(m)}, jadi angka di bawah adalah angka bulanan ${fmtMonth(m)}, bukan angka harian rentang ini.`);
+  const multiMonth = emptyCard('Metrik platform tersedia per bulan', `Rentang ${fmtRange(R)} melewati lebih dari satu bulan kalender. Pilih rentang di dalam satu bulan (mis. Bulan Ini atau Bulan Lalu) untuk melihat metrik platform. Angka antarbulan tidak dijumlahkan.`);
+  let body = '';
+  if (view === 'calendar') {
+    const summary = `<div class="chips" role="group" aria-label="Ringkasan status publikasi">${['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => `<span class="status-chip ${PUB_TONE[s]}">${PUB_LABEL[s]} · ${d.counts[s]}</span>`).join('')}</div>`;
+    body = summary + card('Jadwal per akun', table(['Waktu (WITA)', 'Akun', 'Platform', 'Konten', 'Status', 'Post ID'], d.rows.map(({ p, s, c, at }) => [at, esc(p.account), p.platform, `<a href="#studio${qs({ content: p.content, ctab: 'publish' })}">${p.content} · ${esc(c?.title || '')}</a>`, chip(PUB_LABEL[s], PUB_TONE[s]), p.postId || '—'])) +
       note(`Published = sudah terbit dengan tanggal terbit di rentang. Scheduled / Upcoming = jadwal mulai ${fmtDay(TODAY)} dan seterusnya, selalu tampil untuk pemantauan rencana dan tidak dihitung sebagai Published. Overdue = masih terjadwal tetapi tanggalnya sudah lewat. Draft = jadwal perlu review ulang. Jadwal dan post ID dicatat di Content Studio (tab Publikasi); tidak ada akun sosial yang terhubung.`));
   } else if (view === 'inbox') {
     body = card('Antrean komentar & DM ' + sim, table(['Masuk', 'Kanal', 'Dari', 'Pesan', 'Asal', 'Kategori', 'Status / aksi'], convs.map(c => [c.at, `${esc(c.channel)}<br><small class="muted">${esc(acc(c.account)?.handle || '')}</small>`, esc(c.from), `<span class="wrap">${esc(c.text)}</span>`, c.campaign ? `${cmpLink(c.campaign)}${c.publication ? `<br><small>${c.publication}</small>` : ''}` : '—',
@@ -9756,17 +9819,12 @@ register('social', (params) => {
       c.lead ? `${chip('Dialihkan ke Sales', 'ready')}<br><a href="#reservation">${c.lead}</a>` : c.status === 'hidden' ? chip('Disembunyikan', '') : c.category === 'Reservasi' ? `<button type="button" class="btn sm" data-action="cx:conv-handoff" data-id="${c.id}">Alihkan ke Sales</button>` : chip('Terbuka', 'sandbox')])) +
       note(`Menampilkan ${num(convs.length)} percakapan yang masuk pada ${fmtRange(R)}. Alihkan ke Sales membuat lead di Sales B2C dengan ringkasan pesan dan asal campaign. Menekan ulang memakai lead yang sama. Balasan tidak dikirim dari preview.`));
   } else if (view === 'analytics') {
-    const pubs = cx().publications.filter(p => p.status === 'published' && MK.inRange(R, p.publishedAt || p.scheduledAt) && (!platform || p.platform === platform));
-    const top = cx().content.filter(c => c.results).sort((a, b) => (b.results.bookings || 0) - (a.results.bookings || 0)).slice(0, 5);
-    const publish = card('Publish vs aset', `<dl class="def compact"><dt>Publikasi terbit</dt><dd>${num(pubs.length)}</dd><dt>Aset unik di publikasi</dt><dd>${num(new Set(pubs.flatMap(p => cx().content.find(c => c.id === p.content)?.assets || [])).size)}</dd><dt>Konten unik</dt><dd>${num(new Set(pubs.map(p => p.content)).size)}</dd></dl>` + note(`Hanya publikasi yang benar-benar terbit pada ${fmtRange(R)}. Konten yang terbit di beberapa platform dihitung per publish dan per aset, tidak digandakan sebagai konten.${pubs.length ? '' : ' Tidak ada publikasi terbit pada periode ini.'}`));
-    const topCard = card('Top content', table(['Konten', 'Format', 'Views', 'Klik', 'Lead', 'Booking'], top.map(c => [`<a href="#studio${qs({ content: c.id, ctab: 'analytics' })}">${c.id} · ${esc(c.title)}</a>`, c.format, num(c.results.views), num(c.results.clicks), num(c.results.leads), num(c.results.bookings)])) + note('Hasil kumulatif per konten (data belum bertanggal), tidak mengikuti filter periode.'));
+    const publish = card('Publish vs aset', `<dl class="def compact"><dt>Publikasi terbit</dt><dd>${num(d.pub.count)}</dd><dt>Aset unik di publikasi</dt><dd>${num(d.pub.assets)}</dd><dt>Konten unik</dt><dd>${num(d.pub.contents)}</dd></dl>` + note(`Hanya publikasi yang benar-benar terbit pada ${fmtRange(R)}. Konten yang terbit di beberapa platform dihitung per publish dan per aset, tidak digandakan sebagai konten.${d.pub.count ? '' : ' Tidak ada publikasi terbit pada periode ini.'}`));
+    const topCard = card('Top content', table(['Konten', 'Format', 'Views', 'Klik', 'Lead', 'Booking'], d.top.map(c => [`<a href="#studio${qs({ content: c.id, ctab: 'analytics' })}">${c.id} · ${esc(c.title)}</a>`, c.format, num(c.results.views), num(c.results.clicks), num(c.results.leads), num(c.results.bookings)])) + note('Hasil kumulatif per konten (data belum bertanggal), tidak mengikuti filter periode.'));
     let platformCards;
     if (!month) platformCards = multiMonth;
     else {
-      const rows = mk().social.filter(s => s.period === month && (!platform || acc(s.account).platform === platform));
-      const byPf = {};
-      rows.forEach(s => { const p = acc(s.account).platform; const r = byPf[p] || (byPf[p] = { reach: 0, interactions: 0, followers: 0, net: 0, visits: 0, accounts: 0 }); r.reach += s.reach; r.interactions += s.interactions; r.followers += s.followers; r.net += s.netFollowers; r.visits += s.visits; r.accounts++; });
-      platformCards = rows.length ? `<section class="grid g3">${Object.entries(byPf).map(([p, r]) => `<section class="card"><h2>${p} <span class="badge">Bulanan · ${fmtMonth(month)}</span></h2><dl class="def compact"><dt>Reach</dt><dd>${num(r.reach)}</dd><dt>Interactions</dt><dd>${num(r.interactions)}</dd><dt>ER periode</dt><dd>${pct(MK.div(r.interactions, r.reach), 2)}</dd><dt>Followers</dt><dd>${num(r.followers)} (net ${r.net >= 0 ? '+' : ''}${num(r.net)})</dd><dt>Kunjungan profil</dt><dd>${num(r.visits)}</dd><dt>Akun</dt><dd>${r.accounts}</dd></dl></section>`).join('')}</section>
+      platformCards = d.platforms.length ? `<section class="grid g3">${d.platforms.map(r => `<section class="card"><h2>${r.platform} <span class="badge">Bulanan · ${fmtMonth(month)}</span></h2><dl class="def compact"><dt>Reach</dt><dd>${num(r.reach)}</dd><dt>Interactions</dt><dd>${num(r.interactions)}</dd><dt>ER periode</dt><dd>${pct(r.er, 2)}</dd><dt>Followers</dt><dd>${num(r.followers)} (net ${r.net >= 0 ? '+' : ''}${num(r.net)})</dd><dt>Kunjungan profil</dt><dd>${num(r.visits)}</dd><dt>Akun</dt><dd>${r.accounts}</dd></dl></section>`).join('')}</section>
       ${monthNote(month)}${note('ER = interactions ÷ reach pada periode yang sama (tidak menjumlahkan ER harian). Reach dijumlah per platform dan tidak dianggap unik lintas platform.')}`
         : `<section class="card empty-state" role="status"><h2>Tidak ada data untuk periode ini</h2><p>Belum ada metrik platform untuk ${fmtMonth(month)}${platform ? ' · ' + platform : ''}.</p><dl class="def compact"><dt>Reach</dt><dd>0</dd><dt>Interactions</dt><dd>0</dd><dt>ER periode</dt><dd>—</dd></dl></section>`;
     }
@@ -9774,16 +9832,79 @@ register('social', (params) => {
   } else {
     if (!month) body = multiMonth;
     else {
-      const units = [...new Set(mk().accounts.map(a => a.unit))];
-      const pm = prevMonth(month);
-      const hasData = mk().social.some(s => s.period === month);
-      const hasPrev = mk().social.some(s => s.period === pm);
-      body = hasData ? card(`Pertumbuhan per unit bisnis · ${fmtMonth(month)}`, table(['Unit', 'Akun', 'Followers', 'Baru', 'Net', 'Reach', 'Interactions', 'ER', 'vs bulan lalu (net)'], units.map(u => { const ids = mk().accounts.filter(a => a.unit === u).map(a => a.id); const agg = (p) => mk().social.filter(s => s.period === p && ids.includes(s.account)).reduce((a, s) => ({ f: a.f + s.followers, n: a.n + s.newFollowers, net: a.net + s.netFollowers, r: a.r + s.reach, i: a.i + s.interactions }), { f: 0, n: 0, net: 0, r: 0, i: 0 }); const c = agg(month), pv = agg(pm); return [esc(u), ids.length, num(c.f), num(c.n), num(c.net), num(c.r), num(c.i), pct(MK.div(c.i, c.r), 2), pv.net ? pct((c.net - pv.net) / pv.net, 1) : '—']; })) + monthNote(month) + note(`Unit Jaens Essence memakai akun sendiri. Pembanding = ${fmtMonth(pm)}${hasPrev ? '' : ' (data tidak tersedia, tampil “—”)'}.`))
+      body = d.hasData ? card(`Pertumbuhan per unit bisnis · ${fmtMonth(month)}`, table(['Unit', 'Akun', 'Followers', 'Baru', 'Net', 'Reach', 'Interactions', 'ER', 'vs bulan lalu (net)'], d.units.map(u => [esc(u.unit), u.accounts, num(u.f), num(u.n), num(u.net), num(u.r), num(u.i), pct(u.er, 2), u.vs === null ? '—' : pct(u.vs, 1)])) + monthNote(month) + note(`Unit Jaens Essence memakai akun sendiri. Pembanding = ${fmtMonth(d.pm)}${d.hasPrev ? '' : ' (data tidak tersedia, tampil “—”)'}.`))
         : emptyCard('Tidak ada data untuk periode ini', `Belum ada metrik platform untuk ${fmtMonth(month)}. Semua angka bernilai 0 / “—”.`);
     }
   }
   return `<div class="heading-row">${bar}</div>${err}${active}${tabs}${body}`;
 }, () => 'Social Media');
+/* ---------- NP-HAWK-COM-SM-002 · Export Excel & PDF tab aktif, memakai applied filter (hash URL) lewat socialData ---------- */
+const SM_TABS = { calendar: ['Publishing Calendar', 'Publishing_Calendar'], inbox: ['Inbox & Moderation', 'Inbox_Moderation'], analytics: ['Analytics', 'Analytics'], units: ['Unit Business Growth', 'Unit_Business_Growth'] };
+const pct2 = (v) => v === null || v === undefined ? '' : Math.round(v * 10000) / 100; /* rasio → persen 2 desimal (angka) */
+const convStatus = (c) => c.lead ? 'Dialihkan ke Sales' : c.status === 'hidden' ? 'Disembunyikan' : 'Terbuka';
+/* tab tanpa data yang bisa diekspor → tombol disabled. Analytics selalu punya Top content (tidak ikut periode). */
+const smEmpty = (d) => d.view === 'calendar' ? !d.rows.length : d.view === 'inbox' ? !d.convs.length : d.view === 'units' ? !(d.month && d.hasData) : false;
+function socialExport(params) {
+  const d = socialData(params), { view, R, platform, month } = d;
+  if (smEmpty(d)) return null;
+  const sections = []; /* { name (sheet), heading (PDF), kpis?, headers?, raw?, shown?, note? } */
+  const T = (name, heading, cols, items, extra = {}) => sections.push({ name, heading, headers: cols.map(c => c[0]), raw: items.map(it => cols.map(c => c[1](it))), shown: items.map(it => cols.map(c => String((c[2] || c[1])(it) ?? ''))), ...extra });
+  const notes = [];
+  if (view === 'calendar') {
+    T('Ringkasan status', 'Ringkasan status', [['Status', s => PUB_LABEL[s]], ['Jumlah', s => d.counts[s]]], ['Published', 'Scheduled', 'Overdue', 'Draft'],
+      { kpis: ['Published', 'Scheduled', 'Overdue', 'Draft'].map(s => [PUB_LABEL[s], String(d.counts[s])]), table: false });
+    T('Jadwal publikasi', 'Jadwal per akun', [['Waktu (WITA)', r => r.at], ['Akun', r => r.p.account], ['Platform', r => r.p.platform], ['ID konten', r => r.p.content], ['Konten', r => r.c?.title || ''], ['Status', r => PUB_LABEL[r.s]], ['Post ID', r => r.p.postId || '', r => r.p.postId || '—']], d.rows,
+      { note: `Scheduled / Upcoming = jadwal mulai ${fmtDay(TODAY)} dan seterusnya, selalu tampil dan tidak dihitung sebagai Published.` });
+  } else if (view === 'inbox') {
+    const cmp = (c) => c.campaign ? `${c.campaign} · ${cx().campaigns.find(k => k.id === c.campaign)?.name || ''}` : '';
+    T('Percakapan', 'Antrean komentar & DM', [['Masuk', c => c.at], ['Kanal', c => c.channel], ['Akun', c => acc(c.account)?.handle || ''], ['Dari', c => c.from], ['Pesan', c => c.text], ['Campaign', cmp, c => cmp(c) || '—'], ['Publikasi', c => c.publication || '', c => c.publication || '—'], ['Kategori', c => c.category || '', c => c.category || '—'], ['Status', convStatus], ['Lead Sales', c => c.lead || '', c => c.lead || '—']], d.convs,
+      { kpis: [['Percakapan', num(d.convs.length)], ['Terbuka', num(d.convs.filter(c => c.status === 'open').length)]], note: 'Balasan tidak dikirim dari preview. Data percakapan sintetis (DATA DEMO).' });
+  } else if (view === 'analytics') {
+    if (month && d.platforms.length) T('KPI platform', `KPI per platform · bulanan ${fmtMonth(month)}`, [['Platform', r => r.platform], ['Bulan', () => month], ['Reach', r => r.reach, r => num(r.reach)], ['Interactions', r => r.interactions, r => num(r.interactions)], ['ER periode (%)', r => pct2(r.er), r => pct(r.er, 2)], ['Followers', r => r.followers, r => num(r.followers)], ['Net followers', r => r.net, r => `${r.net >= 0 ? '+' : ''}${num(r.net)}`], ['Kunjungan profil', r => r.visits, r => num(r.visits)], ['Akun', r => r.accounts]], d.platforms,
+      { note: 'ER = interactions ÷ reach pada periode yang sama. Reach dijumlah per platform dan tidak dianggap unik lintas platform. Metrik platform hanya tersedia per bulan kalender.' });
+    else notes.push(month ? `Belum ada metrik platform untuk ${fmtMonth(month)}${platform ? ' · ' + platform : ''}.` : `Rentang ${fmtRange(R)} melewati lebih dari satu bulan kalender; metrik platform tidak ditampilkan (angka antarbulan tidak dijumlahkan).`);
+    T('Top content', 'Top content', [['ID konten', c => c.id], ['Konten', c => c.title], ['Format', c => c.format], ['Views', c => c.results.views, c => num(c.results.views)], ['Klik', c => c.results.clicks, c => num(c.results.clicks)], ['Lead', c => c.results.leads, c => num(c.results.leads)], ['Booking', c => c.results.bookings, c => num(c.results.bookings)]], d.top,
+      { note: 'Hasil kumulatif per konten (data belum bertanggal), tidak mengikuti filter periode.' });
+    T('Publish vs aset', 'Publish vs aset', [['Metrik', r => r[0]], ['Nilai', r => r[1], r => num(r[1])]], [['Publikasi terbit', d.pub.count], ['Aset unik di publikasi', d.pub.assets], ['Konten unik', d.pub.contents]],
+      { note: `Hanya publikasi yang benar-benar terbit pada ${fmtRange(R)}.` });
+    if (!(month && d.platforms.length)) sections[0].note = notes[0] + ' ' + sections[0].note;
+  } else {
+    T('Pertumbuhan unit', `Pertumbuhan per unit bisnis · ${fmtMonth(month)}`, [['Unit', u => u.unit], ['Akun', u => u.accounts], ['Followers', u => u.f, u => num(u.f)], ['Baru', u => u.n, u => num(u.n)], ['Net', u => u.net, u => num(u.net)], ['Reach', u => u.r, u => num(u.r)], ['Interactions', u => u.i, u => num(u.i)], ['ER (%)', u => pct2(u.er), u => pct(u.er, 2)], ['vs bulan lalu net (%)', u => u.vs === null ? '' : pct2(u.vs), u => u.vs === null ? '—' : pct(u.vs, 1)]], d.units,
+      { note: `Pembanding = ${fmtMonth(d.pm)}${d.hasPrev ? '' : ' (data tidak tersedia, tampil “—”)'}. Metrik platform hanya tersedia per bulan kalender.` });
+  }
+  const meta = [['Data', 'DATA DEMO / SIMULASI · angka sintetis'], ['Tab', SM_TABS[view][0]], ['Periode aktif', `${MK.RANGE_PRESETS.find(([k]) => k === R.key)[1]} · ${fmtRange(R)}`], ['Platform', platform || 'Semua platform'], ['Grafik', 'Tidak tersedia di tab ini'], ['Diekspor', `${HLX.nowWita()} · tanggal acuan demo ${fmtDay(TODAY)} (WITA)`]];
+  return { view, d, sections, meta, title: `HAWK ERP · Social Media · ${SM_TABS[view][0]}`, file: `Social_Media_${SM_TABS[view][1]}_${HLX.stampWita()}` };
+}
+H.REGISTRY.social.actions = (params) => {
+  let off = true; try { off = smEmpty(socialData(params)); } catch (e) { off = true; }
+  const dis = off ? ' disabled title="Tidak ada data yang dapat diekspor pada tab ini"' : '';
+  return `<button type="button" class="btn ghost sm" data-sm-export="xlsx"${dis}>Export Excel</button><button type="button" class="btn ghost sm" data-sm-export="pdf"${dis}>Export PDF</button>`;
+};
+let smBusy = 0; /* klik ganda pada tombol yang baru dirender ulang diabaikan 800 ms; pindah tab/filter mereset */
+window.addEventListener('hashchange', () => { smBusy = 0; });
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-sm-export]'); if (!b || b.disabled) return;
+  if (Date.now() - smBusy < 800) return; /* cegah klik berulang */
+  smBusy = Date.now();
+  document.querySelectorAll('[data-sm-export]').forEach(x => { x.disabled = true; x.setAttribute('aria-busy', 'true'); });
+  const fmt = b.dataset.smExport, { params } = H.parseHash();
+  try {
+    const ex = socialExport(params);
+    if (!ex) { window.__smLastExport = { format: fmt, rows: 0, file: null }; return H.render('Tidak ada data yang dapat diekspor pada tab ini.', true); }
+    const rowsN = ex.sections.filter(s => s.table !== false).reduce((n, s) => n + s.raw.length, 0);
+    if (fmt === 'xlsx') {
+      const sheets = ex.sections.map(s => ({ name: s.name, rows: [s.headers, ...s.raw, ...(s.note ? [[], ['Catatan', s.note]] : [])], widths: s.headers.map((h, i) => Math.min(60, Math.max(10, h.length + 2, ...s.shown.map(r => r[i].length + 2)))) }));
+      sheets.push({ name: 'Info', rows: [['HAWK ERP · Social Media'], ...ex.meta], widths: [16, 80] });
+      HLX.download(ex.file + '.xlsx', HLX.xlsx(sheets, { quotePrefix: true }), HLX.XLSX_MIME);
+      window.__smLastExport = { format: 'xlsx', view: ex.view, file: ex.file + '.xlsx', sheets: sheets.map(s => s.name), rows: rowsN };
+      H.render(`Excel dibuat: ${ex.file}.xlsx · ${sheets.length - 1} sheet data`);
+    } else {
+      HLX.printReport({ title: ex.title, meta: ex.meta, sections: ex.sections.map(s => ({ heading: s.heading, kpis: s.kpis, note: s.note, ...(s.table === false ? {} : { headers: s.headers, rows: s.shown }) })) });
+      window.__smLastExport = { format: 'pdf', view: ex.view, file: ex.file + '.pdf', sections: ex.sections.map(s => s.heading), rows: rowsN };
+      H.render(`Laporan PDF disiapkan: ${ex.file}.pdf · pilih "Simpan sebagai PDF" di dialog cetak.`);
+    }
+  } catch (err) { H.render(`Ekspor gagal: ${err.message}`, true); }
+});
 /* Preset mengisi tanggal (belum diterapkan); ubah tanggal manual → Custom. Terapkan: validasi lalu navigasi. */
 document.addEventListener('change', (e) => {
   const form = e.target.closest && e.target.closest('form[data-range="social"]'); if (!form) return;
@@ -11956,7 +12077,7 @@ window.OPX.serCatalog = {"source": "https://docs.google.com/spreadsheets/d/1TqR4
       const charts=(model.charts||[]).map((c,i)=>chartHTML(c,id,i)).join('');
       const tables=(model.tables?.length?model.tables:[model.table]).filter(Boolean);
       const extraTablesHTML=tables.map((t,i)=>tableHTML(t,id,'table'+i)).join('');
-      return `<section class="an-workspace"><aside class="an-report-nav" aria-label="Daftar dashboard sesuai akses"><div class="an-brand"><span class="an-brand-mark">J</span><div><b>Jaens Spa</b><span>OPERATIONAL PERFORMANCE</span></div></div><div class="an-nav-caption">DASHBOARD LIBRARY <b>${definitions.length}</b></div><nav>${definitions.map((x,i)=>`<button class="an-report-item ${x.id===id?'active':''}" data-act="analytics-open" data-id="${E(x.id)}" ${x.id===id?'aria-current="page"':''}><span class="an-report-icon">${H.icon(icons[x.id]||'chart',17)}</span><span>${E(x.navLabel||names[x.id]||x.title)}</span><small>${String(i+1).padStart(2,'0')}</small></button>`).join('')}</nav><div class="an-nav-note">${H.icon('shield',16)}<span>Struktur laporan mengikuti referensi tim.<br><b>Semua angka pada demo sintetis.</b></span></div></aside><div class="an-report-main"><header class="an-report-heading"><div><div class="an-breadcrumb">DASHBOARD <span>/</span> ${String(definitions.findIndex(x=>x.id===id)+1).padStart(2,'0')} DARI ${definitions.length}</div><h2>${E(d.title)}</h2><p>${E(d.description||'Operational standards & performance')}</p></div><span class="an-demo-label">DEMO DATA</span></header>${filtersHTML(id)}<div class="an-tabbar" role="tablist" aria-label="Tampilan dashboard"><button class="${tab==='dashboard'?'active':''}" role="tab" aria-selected="${tab==='dashboard'}" data-act="analytics-tab" data-id="dashboard">${H.icon('chart',15)} Dashboard</button><button class="${tab==='entry'?'active':''}" role="tab" aria-selected="${tab==='entry'}" data-act="analytics-tab" data-id="entry">${H.icon('checklist',15)} Data & verifikasi</button><span class="an-source-pill">${E(schemaTag(d))}</span></div><div class="an-period-meta"><span>${H.icon('calendar',14)} ${E(dateLabel(H.ui.analyticsFrom||'2026-10-01'))} — ${E(dateLabel(H.ui.analyticsTo||'2026-10-31'))}</span><span>${E(d.sourceOwner||'Operational')} · ${Number(model.verifiedCount||0).toLocaleString('id-ID')} data terverifikasi</span></div>${tab==='entry'?(A.entryPanel?A.entryPanel(id):'<div class="empty">Form sumber data sedang disiapkan.</div>'):`<div class="an-toolbar"><p>Klik kartu atau diagram untuk menelusuri sumber dan tindak lanjut.</p><div><button class="btn btn-sm" data-act="analytics-standard" data-id="${E(id)}">${H.icon('target',14)} Standar</button><button class="btn btn-primary btn-sm" data-act="analytics-entry" data-id="${E(id)}" data-group="${E(d.group)}">${H.icon(d.sourceMode==='integrated'?'link':'plus',14)} ${d.sourceMode==='integrated'?'Buka sumber data':'Input data tim'}</button></div></div>${id==='competency'?`<div class="an-competency-layout"><div class="an-kpis an-kpis-vertical">${cards}</div><div>${tableHTML(model.table,id)}</div></div><div class="an-charts">${charts}</div>`:`<div class="an-kpis ${(model.cards?.length||0)<=2?'an-kpis-compact':''}" style="--an-card-count:${Math.min(4,model.cards?.length||4)}">${cards}</div><div class="an-charts">${charts}</div>${outletCardsHTML(model.outletCards,id)}${extraTablesHTML}`}<div class="an-decision-path"><span>${H.icon('chart',18)} Baca dashboard</span><b>→</b><span>${H.icon('star',18)} Tinjau insight</span><b>→</b><span>${H.icon('checklist',18)} Buat tindak lanjut</span><b>→</b><span>${H.icon('target',18)} Review di RACE</span><button class="an-text-action" data-page="race">Buka RACE ${H.icon('arrow',14)}</button></div>`}<footer class="an-report-footer"><span>Operational Report · versi demo 19 Nov 2026</span><span>Entri → verifikasi → dashboard → keputusan</span></footer></div></section>`;
+      return `<section class="an-workspace"><div class="an-report-main"><header class="an-report-heading"><div><div class="an-breadcrumb">DASHBOARD <span>/</span> ${String(definitions.findIndex(x=>x.id===id)+1).padStart(2,'0')} DARI ${definitions.length}</div><h2>${E(d.title)}</h2><p>${E(d.description||'Operational standards & performance')}</p></div><span class="an-demo-label">DEMO DATA</span></header>${filtersHTML(id)}<div class="an-tabbar" role="tablist" aria-label="Tampilan dashboard"><button class="${tab==='dashboard'?'active':''}" role="tab" aria-selected="${tab==='dashboard'}" data-act="analytics-tab" data-id="dashboard">${H.icon('chart',15)} Dashboard</button><button class="${tab==='entry'?'active':''}" role="tab" aria-selected="${tab==='entry'}" data-act="analytics-tab" data-id="entry">${H.icon('checklist',15)} Data & verifikasi</button><span class="an-source-pill">${E(schemaTag(d))}</span></div><div class="an-period-meta"><span>${H.icon('calendar',14)} ${E(dateLabel(H.ui.analyticsFrom||'2026-10-01'))} — ${E(dateLabel(H.ui.analyticsTo||'2026-10-31'))}</span><span>${E(d.sourceOwner||'Operational')} · ${Number(model.verifiedCount||0).toLocaleString('id-ID')} data terverifikasi</span></div>${tab==='entry'?(A.entryPanel?A.entryPanel(id):'<div class="empty">Form sumber data sedang disiapkan.</div>'):`<div class="an-toolbar"><p>Klik kartu atau diagram untuk menelusuri sumber dan tindak lanjut.</p><div><button class="btn btn-sm" data-act="analytics-standard" data-id="${E(id)}">${H.icon('target',14)} Standar</button><button class="btn btn-primary btn-sm" data-act="analytics-entry" data-id="${E(id)}" data-group="${E(d.group)}">${H.icon(d.sourceMode==='integrated'?'link':'plus',14)} ${d.sourceMode==='integrated'?'Buka sumber data':'Input data tim'}</button></div></div>${id==='competency'?`<div class="an-competency-layout"><div class="an-kpis an-kpis-vertical">${cards}</div><div>${tableHTML(model.table,id)}</div></div><div class="an-charts">${charts}</div>`:`<div class="an-kpis ${(model.cards?.length||0)<=2?'an-kpis-compact':''}" style="--an-card-count:${Math.min(4,model.cards?.length||4)}">${cards}</div><div class="an-charts">${charts}</div>${outletCardsHTML(model.outletCards,id)}${extraTablesHTML}`}<div class="an-decision-path"><span>${H.icon('chart',18)} Baca dashboard</span><b>→</b><span>${H.icon('star',18)} Tinjau insight</span><b>→</b><span>${H.icon('checklist',18)} Buat tindak lanjut</span><b>→</b><span>${H.icon('target',18)} Review di RACE</span><button class="an-text-action" data-page="race">Buka RACE ${H.icon('arrow',14)}</button></div>`}<footer class="an-report-footer"><span>Operational Report · versi demo 19 Nov 2026</span><span>Entri → verifikasi → dashboard → keputusan</span></footer></div></section>`;
     }
   };
   H.actions['analytics-open']=el=>{if(!H.has('analytics'))return; if(!visibleDefs().some(d=>d.id===el.dataset.id))return H.toast('Dashboard tidak termasuk lingkup akun ini.');H.ui.analyticsId=el.dataset.id;H.ui.analyticsTab='dashboard';H.ui.analyticsQuery='';H.render();document.querySelector('.an-report-heading')?.scrollIntoView({block:'start',behavior:'smooth'});};
@@ -12427,6 +12548,7 @@ const isLead = () => LEAD.includes(u().role);
 const visible = () => H.scope(H.state.data.issues).filter(i => isLead() || u().role === 'supervisor' || i.dept === u().dept || i.reporter === u().id || i.pic === u().id);
 const isOpen = (i) => i.status !== 'resolved' && !['closed', 'done'].includes(i.status);
 H.cases = { SLA, P7, STATES, visible, open: () => visible().filter(isOpen), guest: () => visible().filter(i => i.kind === 'guest') };
+H.cases.sla = (c) => sla(c); /* dipakai Dashboard Strategis (Customer Focus) */
 H.visibleIssues = visible; /* dipakai Command Center & Communication Hub (patch generator) */
 
 const hours = (a, b) => (new Date(b || NOW()) - new Date(a)) / 36e5;
@@ -12658,6 +12780,358 @@ if (H.demo && Array.isArray(H.demo.scenarios) && !H.demo.scenarios.some(s => s.i
 })();
 
 ;
+/* HAWK Operational · Issue fasilitas → dashboard Maintenance tanpa entry ulang (A03 kontrak #13 work order, F-OP06/F-OP10).
+   DATA DEMO / SIMULASI. Issue fasilitas yang sudah ada (Communication Hub / Room & Facility) dipakai sebagai work order:
+   lapor → tugas penanganan (respons pertama) → penyelesaian → satu catatan Maintenance "submitted" dibuat otomatis
+   dari issue yang sama → verifikasi oleh lead lain → dashboard Maintenance Performance.
+   Tidak ada form total laporan kedua: kategori dipilih sekali saat penyelesaian, waktu diambil dari issue/tugas.
+   Readiness ruang tetap dikelola di Room & Facility (tidak otomatis Ready). Backend: entitas work order belum ada (BUILD). */
+(function () {
+'use strict';
+const H = window.OPX;
+if (!H || !H.analytics) return;
+const A = H.analytics, e = H.escape;
+const CATS = ['Cleanliness / Hygiene', 'Electrical', 'Equipment / Tools', 'Furniture', 'HVAC', 'Building'];
+const isFacility = (i) => i && i.kind !== 'guest';
+/* datetime-local WITA (UTC+8) untuk field "when" pada skema maintenance */
+const wita = (iso) => { const d = new Date(new Date(iso).getTime() + 8 * 36e5); return d.toISOString().slice(0, 16); };
+const issue = (id) => H.state.data.issues.find(i => i.id === id);
+H.workOrders = { CATS, recordOf: (i) => i && i.maintenanceRecordId ? (A.ensure().records || []).find(r => r.id === i.maintenanceRecordId) : null };
+
+/* respons pertama = tugas penanganan dibuat */
+const baseTask = H.actions['issue-task'];
+if (baseTask) H.actions['issue-task'] = (el) => { const i = issue(el.dataset.id); const had = i && i.taskId; baseTask(el); if (i && !had && i.taskId && !i.respondedAt) { i.respondedAt = new Date().toISOString(); H.save(); } };
+
+/* kategori dipilih sekali pada konfirmasi penyelesaian */
+const baseResolveAct = H.actions['issue-resolve'];
+if (baseResolveAct) H.actions['issue-resolve'] = (el) => {
+  baseResolveAct(el);
+  const i = issue(el.dataset.id), f = document.querySelector('#modal-root form[data-form="issueResolve"]');
+  if (!isFacility(i) || !f || f.querySelector('[name="mtCategory"]')) return;
+  const guess = /listrik|lampu|electr/i.test(i.title + i.note) ? 'Electrical' : /ac\b|hvac|udara/i.test(i.title + i.note) ? 'HVAC' : /bersih|kotor|hygiene/i.test(i.title + i.note) ? 'Cleanliness / Hygiene' : 'Equipment / Tools';
+  const lab = document.createElement('label'); lab.className = 'field';
+  lab.innerHTML = `Kategori maintenance<select name="mtCategory">${CATS.map(c => `<option ${c === guess ? 'selected' : ''}>${e(c)}</option>`).join('')}</select><small class="muted">Penyelesaian otomatis membuat satu catatan Maintenance (status menunggu verifikasi) dari issue ini. Tidak perlu input ulang di Dashboard Kinerja.</small>`;
+  f.insertBefore(lab, f.querySelector('button[type="submit"]'));
+};
+const baseResolve = H.forms.issueResolve;
+if (baseResolve) H.forms.issueResolve = (fd) => {
+  const i = issue(String(fd.get('issueId'))), was = i && i.status;
+  baseResolve(fd);
+  if (!isFacility(i) || was === 'resolved' || i.status !== 'resolved' || i.maintenanceRecordId) return;
+  try {
+    const cat = CATS.includes(String(fd.get('mtCategory'))) ? String(fd.get('mtCategory')) : 'Equipment / Tools';
+    const r = A.addRecord({ group: 'maintenance', outlet: i.outlet, date: wita(i.resolvedAt).slice(0, 10), status: 'submitted',
+      values: { ticketRef: i.id + (i.roomId ? ' · ' + i.roomId : ''), category: cat, openedAt: wita(i.createdAt || i.resolvedAt), respondedAt: wita(i.respondedAt || i.resolvedAt), state: 'Done', resolvedAt: wita(i.resolvedAt), description: String(i.resolution || '').slice(0, 500) },
+      evidence: `Issue ${i.id}${i.taskId ? ' · tugas ' + i.taskId : ''} · ${String(i.resolution || '').slice(0, 200)}` });
+    i.maintenanceRecordId = r.id; i.maintenanceCategory = cat;
+    H.log('WORKORDER_TO_MAINTENANCE', i.id, 'Catatan Maintenance ' + r.id + ' dibuat dari issue yang sama; menunggu verifikasi.', i.outlet);
+    H.save(); H.render();
+    H.toast(`${r.id}: catatan Maintenance dibuat dari ${i.id}, menunggu verifikasi lead lain.`);
+  } catch (er) { H.toast('Issue selesai. Catatan Maintenance belum dibuat: ' + er.message); }
+};
+
+/* drawer issue menampilkan catatan Maintenance yang tertaut */
+const baseOpen = H.actions['issue-open'];
+if (baseOpen) H.actions['issue-open'] = (el) => {
+  baseOpen(el);
+  const i = issue(el.dataset.id), r = H.workOrders.recordOf(i), box = document.querySelector('#modal-root .stack');
+  if (!isFacility(i) || !box || box.querySelector('.wo-link')) return;
+  const st = { submitted: ['Menunggu verifikasi', 'gold'], verified: ['Terverifikasi · masuk dashboard', 'green'], rejected: ['Dikembalikan', 'red'], draft: ['Draft', 'gray'] };
+  const div = document.createElement('div'); div.className = 'notice wo-link';
+  div.innerHTML = r ? `<div><strong>Catatan Maintenance ${e(r.id)}</strong><p>${H.badge((st[r.status] || [r.status])[0], (st[r.status] || [0, 'gray'])[1])} ${e(r.values.category)} · respons ${e(r.values.respondedAt.replace('T', ' '))} · selesai ${e(r.values.resolvedAt.replace('T', ' '))} WITA</p>${A.canViewDashboard && A.canViewDashboard('maintenance') ? '<a class="btn btn-sm" href="#op-analytics-maintenance">Buka Maintenance Performance</a>' : ''}</div>`
+    : `<div><strong>Alur work order</strong><p>Lapor → tugas penanganan (respons pertama) → catat penyelesaian → catatan Maintenance otomatis → verifikasi → dashboard.${i.respondedAt ? ' Respons pertama: ' + e(wita(i.respondedAt).replace('T', ' ')) + ' WITA.' : ''}</p></div>`;
+  box.appendChild(div);
+};
+
+/* ---------- Demo Experience Center: DX-OP12 ---------- */
+if (H.demo && Array.isArray(H.demo.scenarios) && !H.demo.scenarios.some(s => s.id === 'work-order')) {
+  const acct = (role, o) => role === 'manager' ? 'mgr-eni' : `${role === 'supervisor' ? 'spv' : role}-${o}`;
+  const M = (title, role, page, instruction, expected, check) => ({ title, role, page, instruction, expected, check, kind: 'state' });
+  const R = (title, role, page, instruction, expected) => ({ title, role, page, instruction, expected, kind: 'manual' });
+  const wo = (r) => H.state.data.issues.filter(i => isFacility(i) && i.outlet === r.outlet && i.reporter === acct('attendant', r.outlet) && String(i.createdAt) >= r.startedAt).slice(-1)[0];
+  H.demo.scenarios.push({ id: 'work-order', code: 'DX-OP12', icon: 'bed', title: 'Issue fasilitas → work order → Maintenance', minutes: '5–7 menit', people: 'Attendant → Supervisor → Manager',
+    summary: 'Kerusakan ruang dilaporkan sekali, ditangani lewat tugas, lalu menjadi satu catatan Maintenance yang diverifikasi tanpa input ulang.',
+    outcome: 'Dashboard Maintenance membaca issue yang sama: waktu lapor, respons pertama dan selesai berasal dari record pekerjaan.', steps: [
+      M('Laporkan kerusakan ruang', 'attendant', 'communication', 'Di Communication Hub buat issue baru untuk departemen Attendant, pilih ruang yang rusak dan jelaskan temuan.', 'Issue fasilitas baru masuk antrean Supervisor outlet.', r => Boolean(wo(r))),
+      M('Buat tugas penanganan', 'supervisor', 'communication', 'Buka issue tersebut lalu tekan "Buat tugas penanganan".', 'Tugas tertaut dibuat; waktu respons pertama tercatat pada issue.', r => Boolean(wo(r)?.taskId && wo(r)?.respondedAt)),
+      M('Catat penyelesaian', 'supervisor', 'communication', 'Setelah perbaikan, buka issue dan tekan "Catat penyelesaian". Pilih kategori maintenance dan tulis hasil pengecekan.', 'Issue selesai dan satu catatan Maintenance menunggu verifikasi dibuat otomatis.', r => Boolean(wo(r)?.status === 'resolved' && H.workOrders.recordOf(wo(r)))),
+      M('Verifikasi catatan Maintenance', 'manager', 'analytics', 'Buka Maintenance Performance → Data & verifikasi (atur periode ke tanggal hari ini) lalu verifikasi catatan dari issue tersebut.', 'Catatan terverifikasi oleh lead yang berbeda dari pencatat.', r => H.workOrders.recordOf(wo(r))?.status === 'verified'),
+      R('Baca dashboard Maintenance', 'manager', 'analytics', 'Pada Maintenance Performance, cek total maintenance, response time dan completion rate untuk periode yang sama.', 'Angka bertambah dari catatan yang sama; tidak ada pengetikan ulang total.'),
+    ] });
+}
+})();
+
+;
+/* HAWK Operational · Dashboard Strategis di Dashboard Library (paket A03 Bab 07, enam opsi prioritas). DATA DEMO / SIMULASI.
+   Permintaan Owner 23 Nov 2026: dashboard tambahan bergabung di Dashboard Library sidebar.
+   Setiap tampilan adalah KOMPOSISI dari sumber yang sudah ada (14 Dashboard Kinerja, case, tugas, checklist, booking, ruang,
+   tim). Tidak ada engine skor kedua, rumus baru atau angka resmi:
+   - nilai hanya tampil bila sumbernya ada di prototipe; selebihnya ditandai "Kontrak/sumber belum ditetapkan";
+   - X-score, bobot, HPP treatment dan skor kesehatan keuangan menunggu kontrak STRACON / kebijakan Finance;
+   - aturan "perlu perhatian" adalah ambang demo, bukan target perusahaan.
+   Tombol membuka workspace tindakan yang sama (case, tugas, RACE, budget, dashboard sumber). Tidak ada API, WA/email atau posting. */
+(function () {
+'use strict';
+const H = window.OPX, HL = window.HL;
+if (!H || !HL || !H.analytics) return;
+const A = H.analytics, e = H.escape;
+const PREFIX = 'op-strategic-';
+const ALL = ['manager', 'assistant'];
+const VIEWS = [
+  { id: 'owner', nav: 'Ringkasan Strategis', title: 'Ringkasan Strategis Owner', q: 'Outlet mana perlu perhatian dan keputusan apa yang tertunda?', roles: [...ALL, 'hospitality', 'supervisor'], status: 'data' },
+  { id: 'xscore', nav: 'X-score Performa Tim', title: 'X-score Performa Tim', q: 'Cabang, departemen dan orang mana membutuhkan dukungan?', roles: [...ALL, 'hospitality', 'supervisor', 'head'], status: 'contract' },
+  { id: 'capacity', nav: 'Kapasitas & Terapis', title: 'Kapasitas & Perencanaan Terapis', q: 'Perlu tambahan terapis, skill, perubahan shift atau ruang?', roles: [...ALL, 'supervisor'], status: 'partial' },
+  { id: 'customer', nav: 'Customer Focus', title: 'Customer Focus & Hospitality', q: 'Tamu dan masalah mana harus ditindaklanjuti sekarang?', roles: [...ALL, 'hospitality', 'supervisor'], status: 'data' },
+  { id: 'hpp', nav: 'HPP & Profitabilitas', title: 'HPP & Profitabilitas Treatment', q: 'Treatment mana menghasilkan kontribusi dan biaya mana menyimpang?', roles: ALL, status: 'design' },
+  { id: 'finance', nav: 'Kesehatan Keuangan', title: 'Kesehatan Keuangan & Budget Outlet', q: 'Outlet sehat secara ekonomi dan masih punya ruang belanja berapa?', roles: ALL, status: 'partial' },
+];
+const STATUS = { data: ['Aktif · data demo', 'green'], partial: ['Sebagian · sumber belum lengkap', 'gold'], contract: ['Menunggu kontrak STRACON', 'gray'], design: ['Desain · menunggu sumber Finance', 'gray'] };
+const role = () => H.user().role;
+const canView = (id) => { const v = VIEWS.find(x => x.id === id); return !!v && H.has('strategic') && v.roles.includes(role()); };
+const visibleViews = () => VIEWS.filter(v => canView(v.id));
+
+/* akses menu: grup "Dashboard Strategis" untuk peran yang memiliki minimal satu tampilan */
+const ROLES = [...new Set(VIEWS.flatMap(v => v.roles))];
+H.defaultPermissions && ROLES.forEach(r => { const g = H.defaultPermissions[r]; if (g && !g.includes('strategic')) g.push('strategic'); });
+
+/* ---------- helper ---------- */
+const NA = (why) => `<span class="st-na" title="${e(why)}">— <small>${e(why)}</small></span>`;
+const pct = (v, d = 1) => v === null || v === undefined || !Number.isFinite(Number(v)) ? null : Number(v).toLocaleString('id-ID', { maximumFractionDigits: d }) + '%';
+const num = (v, d = 0) => v === null || v === undefined || !Number.isFinite(Number(v)) ? null : Number(v).toLocaleString('id-ID', { maximumFractionDigits: d });
+const show = (v, why) => v === null || v === undefined ? NA(why) : e(v);
+const outlets = () => { const o = H.state.outletId; return o === 'all' && H.isManager() ? H.outlets : H.outlets.filter(x => x.id === (o === 'all' ? H.user().outlet : o)); };
+/* model dashboard per outlet: memakai A.model yang sama dengan Dashboard Kinerja (lingkup outlet diganti sementara) */
+const per = (oid, fn) => { const keep = H.state.outletId; H.state.outletId = oid; try { return fn(); } finally { H.state.outletId = keep; } };
+const card = (m, key) => { const c = (m && m.cards || []).find(x => x.key === key); return c && c.value !== null && c.value !== undefined ? c.value : null; };
+const model = (id) => { try { const m = A.model(id); return m && !m.accessDenied ? m : null; } catch (er) { return null; } };
+const dashLink = (id, label) => A.canViewDashboard && A.canViewDashboard(id) ? `<a class="btn btn-sm" href="#op-analytics-${e(id)}">${e(label)} ↗</a>` : '';
+const pageLink = (p, label) => H.has(p) ? `<a class="btn btn-sm" href="#op-${e(p)}">${e(label)}</a>` : '';
+const period = () => `${H.ui.analyticsFrom || '2026-10-01'} s/d ${H.ui.analyticsTo || '2026-10-31'}`;
+const head = (v) => `<div class="st-head"><div><span class="st-eyebrow">DASHBOARD STRATEGIS · ${String(VIEWS.indexOf(v) + 1).padStart(2, '0')} DARI ${VIEWS.length}</span></div><div class="row wrap">${H.badge(STATUS[v.status][0], STATUS[v.status][1])}${H.badge('Data sintetis', 'gold')}</div></div>
+  <p class="small muted st-meta">Periode ${e(period())} (mengikuti filter Dashboard Kinerja) · Lingkup ${e(H.state.outletId === 'all' && H.isManager() ? 'seluruh outlet' : H.outletName(outlets()[0]?.id))}. Komposisi dari sumber yang sama; tidak ada rumus atau skor resmi baru.</p>`;
+const table = (cols, rows, empty = 'Belum ada data pada lingkup ini.') => `<div class="table-wrap"><table class="st-table"><thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.length ? rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${cols.length}"><div class="empty">${e(empty)}</div></td></tr>`}</tbody></table></div>`;
+const section = (title, sub, body, actions = '') => `<section class="card st-card"><div class="card-head"><div><h2 class="card-title">${title}</h2>${sub ? `<p class="small muted">${sub}</p>` : ''}</div>${actions ? `<div class="row wrap">${actions}</div>` : ''}</div>${body}</section>`;
+const kpis = (list) => `<div class="st-kpis">${list.map(([l, v, s, tone]) => `<div class="st-kpi ${tone || ''}"><small>${e(l)}</small><strong>${v}</strong>${s ? `<span>${s}</span>` : ''}</div>`).join('')}</div>`;
+
+/* ---------- data operasional per outlet ---------- */
+const openCases = (oid) => (H.cases ? H.cases.open() : []).filter(c => c.kind === 'guest' && c.outlet === oid);
+const pendingRecords = (oid) => (A.ensure().records || []).filter(r => r.outlet === oid && r.status === 'submitted').length;
+const lateTasks = (oid) => H.state.data.tasks.filter(t => t.outlet === oid && t.status !== 'done' && t.status !== 'verified' && (t.dueDate ? t.dueDate < H.demoDate : t.critical)).length;
+const openTasks = (oid) => H.state.data.tasks.filter(t => t.outlet === oid && !['done', 'verified'].includes(t.status)).length;
+const readiness = (oid) => { const c = H.state.data.checklists?.[oid]; if (!c) return null; const items = Object.values(c).filter(Array.isArray).flat(); if (!items.length) return null; return Math.round(items.filter(i => i.done).length / items.length * 100); };
+const FLAG = { sat: 95, acc: 90, mt: 2 }; /* ambang demo, bukan target perusahaan */
+
+/* ---------- 1. Ringkasan Strategis Owner ---------- */
+function owner(v) {
+  const rows = outlets().map(o => per(o.id, () => {
+    const rev = model('revenue'), pnl = model('pnl'), sat = model('satisfaction'), w = model('waste'), mt = model('maintenance');
+    const revenue = card(rev, 'total'), profit = card(pnl, 'profit'), revP = card(pnl, 'revenue');
+    const margin = revP ? profit / revP * 100 : null, s = card(sat, 'satisfaction'), acc = card(w, 'accuracy'), mo = card(mt, 'open');
+    const cases = openCases(o.id).length, late = lateTasks(o.id), pend = pendingRecords(o.id), ready = readiness(o.id);
+    const why = [];
+    if (s !== null && s < FLAG.sat) why.push(['Kepuasan di bawah ' + FLAG.sat + '%', 'op-analytics-satisfaction']);
+    if (acc !== null && acc < FLAG.acc) why.push(['Akurasi stok di bawah ' + FLAG.acc + '%', 'op-analytics-waste']);
+    if (mo !== null && mo > FLAG.mt) why.push([mo + ' maintenance terbuka', 'op-analytics-maintenance']);
+    if (cases) why.push([cases + ' case tamu terbuka', 'op-cases']);
+    if (late) why.push([late + ' tugas lewat tenggat', 'op-tasks']);
+    if (pend) why.push([pend + ' data menunggu verifikasi', 'op-analytics-' + (A.visibleDefinitions()[0]?.id || 'revenue')]);
+    return { o, revenue, margin, s, acc, mo, cases, late, pend, ready, why };
+  }));
+  const attention = rows.filter(r => r.why.length);
+  return head(v) + kpis([
+    ['Outlet perlu perhatian', `${attention.length} / ${rows.length}`, 'aturan demo, bukan target', attention.length ? 'warn' : 'good'],
+    ['Case tamu terbuka', String(rows.reduce((a, r) => a + r.cases, 0)), 'dari Hospitality Case'],
+    ['Tugas lewat tenggat', String(rows.reduce((a, r) => a + r.late, 0)), 'dari Team & Tasks'],
+    ['Data menunggu verifikasi', String(rows.reduce((a, r) => a + r.pend, 0)), 'belum masuk laporan'],
+  ]) + section('Perlu perhatian dan keputusan', 'Setiap alasan membuka workspace atau dashboard sumbernya. Ambang: kepuasan &lt; 95%, akurasi stok &lt; 90%, maintenance terbuka &gt; 2 (demo).',
+    attention.length ? `<div class="st-attn">${attention.map(r => `<div class="st-attn-row"><b>${e(r.o.name)}</b><div class="row wrap">${r.why.map(([t, h]) => `<a class="st-chip" href="#${e(h)}">${e(t)}</a>`).join('')}</div></div>`).join('')}</div>` : '<div class="empty">Tidak ada outlet yang melewati ambang demo pada periode ini.</div>')
+  + section('Ringkasan per outlet', 'Angka dari dashboard sumber yang sama. Margin = net profit ÷ revenue pada dashboard Profit &amp; Loss (belum direkonsiliasi Finance).',
+    table(['Outlet', 'Revenue', 'Margin P&amp;L', 'Kepuasan', 'Akurasi stok', 'Maint. terbuka', 'Readiness hari ini', 'Case', 'Tugas telat'],
+      rows.map(r => [`<b>${e(r.o.name)}</b>`, show(r.revenue !== null ? H.compact(r.revenue) : null, 'tanpa data'), show(pct(r.margin), 'belum ada P&L'), show(pct(r.s), 'tanpa feedback'), show(pct(r.acc), 'tanpa opname'), show(num(r.mo), 'tanpa data'), show(r.ready === null ? null : r.ready + '%', 'checklist belum ada'), String(r.cases), String(r.late)])),
+    dashLink('revenue', 'Revenue') + dashLink('pnl', 'P&L') + pageLink('race', 'Buka RACE'))
+  + `<p class="small muted st-foot">Status data: angka hanya dari catatan terverifikasi pada filter aktif. Tidak ada skor gabungan; prioritas tetap diputuskan Owner/Manager di RACE.</p>`;
+}
+
+/* ---------- 2. X-score Performa Tim ---------- */
+const DEPTS = [['reception', 'Receptionist'], ['therapist', 'Therapist'], ['attendant', 'Attendant'], ['security', 'Security']];
+function xscore(v) {
+  const recs = (A.ensure().records || []).filter(r => r.status === 'verified' && ['competency', 'grooming'].includes(r.group));
+  const scope = outlets(), mine = role() === 'head' ? DEPTS.filter(d => d[0] === H.user().dept) : DEPTS;
+  const rows = [];
+  scope.forEach(o => mine.forEach(([d, label]) => {
+    const team = H.state.data.team.filter(t => t.outlet === o.id && t.dept === d).length;
+    const ev = recs.filter(r => r.outlet === o.id && (r.values?.department === d || String(r.values?.department || '').toLowerCase().includes(label.toLowerCase().slice(0, 5))));
+    const comp = ev.filter(r => r.group === 'competency').length, groom = ev.filter(r => r.group === 'grooming').length;
+    rows.push([`<b>${e(o.name)}</b>`, e(label), String(team), `${comp} kompetensi · ${groom} grooming`, H.badge('Belum ditetapkan', 'gray'), NA('kontrak STRACON belum disahkan'), H.badge(comp || groom ? 'Bukti sebagian' : 'Belum ada bukti', comp || groom ? 'gold' : 'gray')]);
+  }));
+  return head(v) + `<div class="notice st-notice"><div><strong>Skor belum ditampilkan.</strong><p>X-score hanya sah bila kontrak STRACON (indikator, arah target, bobot, sumber) telah disahkan. Tampilan ini menyiapkan jalur klik dan coverage bukti tanpa menghitung rata-rata nilai individu. Indikator di luar tugas seseorang menjadi N/A, bukan nol.</p></div></div>`
+  + section('Jalur penelusuran', '', `<div class="st-path">${['Seluruh outlet', 'Outlet', 'Departemen / tim', 'Individu', 'Indikator kontrak', 'Record pekerjaan & verifikasi'].map((s, i) => `<span>${i + 1}. ${e(s)}</span>`).join('<b>→</b>')}</div>`)
+  + section('Coverage bukti per outlet dan departemen', 'Bukti = catatan kompetensi dan grooming terverifikasi pada periode filter. Supervisor tetap satu outlet; Head hanya departemennya.',
+    table(['Outlet', 'Departemen', 'Tim aktif', 'Bukti tersedia', 'Kontrak', 'X-score', 'Status'], rows), dashLink('competency', 'Team Competency') + dashLink('grooming', 'Grooming') + pageLink('race', 'Buka RACE / STRACON'))
+  + section('Contoh struktur kontrak (bahan diskusi)', 'Belum berisi bobot atau target. Diisi setelah Owner mengesahkan kontrak per outlet/departemen/individu.',
+    table(['Komponen', 'Contoh indikator', 'Sumber', 'Bobot / target'], [
+      ['Outcome', 'Revenue service per terapis', 'POS (engine)', NA('menunggu kontrak')],
+      ['Mutu layanan', 'Feedback terverifikasi per kunjungan', 'Feedback / case', NA('menunggu kontrak')],
+      ['Penjaga mutu', 'Grooming & SOP compliance', 'Grooming / checklist', NA('menunggu kontrak')],
+      ['Kompetensi', 'Penilaian instrumen per peran', 'Team Competency', NA('menunggu kontrak')],
+    ]));
+}
+
+/* ---------- 3. Kapasitas & Perencanaan Terapis ---------- */
+const REASONS = ['Terapis berskill tidak tersedia', 'Ruang / bed penuh', 'Di luar jam operasional', 'Durasi tidak muat slot', 'Lainnya'];
+const OUTCOMES = ['Terlayani di jam lain', 'Terlayani di outlet lain', 'Tidak terlayani'];
+const ensureDemand = () => {
+  const d = H.state.data; if (Array.isArray(d.unmetDemand)) return d.unmetDemand;
+  d.unmetDemand = [
+    { id: 'REQ-DEMO-001', outlets: ['CTR', 'SHT'], date: '2026-10-18', slot: '15:00', duration: 90, treatment: 'Balinese Massage (demo)', pax: 2, skill: 'Couple · 2 terapis', reason: REASONS[0], alternative: 'Ditawarkan 17:00 dan Shanti', outcome: OUTCOMES[1], by: 'reception-CTR', demo: true },
+    { id: 'REQ-DEMO-002', outlets: ['CTR'], date: '2026-10-21', slot: '16:30', duration: 120, treatment: 'Signature Ritual (demo)', pax: 1, skill: 'Signature', reason: REASONS[3], alternative: 'Ditawarkan 60 menit', outcome: OUTCOMES[2], by: 'reception-CTR', demo: true },
+    { id: 'REQ-DEMO-003', outlets: ['TRL'], date: '2026-10-25', slot: '14:00', duration: 60, treatment: 'Foot Reflexology (demo)', pax: 3, skill: 'Reflexology', reason: REASONS[1], alternative: 'Ditawarkan 15:30', outcome: OUTCOMES[0], by: 'reception-TRL', demo: true },
+  ];
+  return d.unmetDemand;
+};
+function capacity(v) {
+  const list = ensureDemand(), scope = outlets().map(o => o.id);
+  const shown = list.filter(r => r.outlets.some(o => scope.includes(o)));
+  const rows = outlets().map(o => per(o.id, () => {
+    const m = model('capacity');
+    const rooms = H.state.data.rooms.filter(r => r.outlet === o.id).length, ther = H.state.data.team.filter(t => t.outlet === o.id && t.dept === 'therapist');
+    const onShift = ther.filter(t => !/absen|off|izin|sakit/i.test(t.status || '')).length, book = H.state.data.bookings.filter(b => b.outlet === o.id).length;
+    const req = list.filter(r => r.outlets.includes(o.id)), lost = req.filter(r => r.outcome === OUTCOMES[2] && r.outlets[r.outlets.length - 1] === o.id).length;
+    return [`<b>${e(o.name)}</b>`, String(rooms), `${onShift} / ${ther.length}`, String(book), show(num(card(m, 'daily-utility'), 1) && num(card(m, 'daily-utility'), 1) + ' jam', 'tanpa data'), show(num(card(m, 'treatments-per-therapist'), 2), 'tanpa data'), `${req.length} · ${lost} tidak terlayani`];
+  }));
+  const byReason = REASONS.map(r => [r, shown.filter(x => x.reason === r).length]).filter(x => x[1]);
+  const canLog = ['manager', 'assistant', 'supervisor'].includes(role());
+  return head(v) + `<div class="notice st-notice"><div><strong>Belum ada rekomendasi jumlah rekrutmen.</strong><p>Utility bulanan tanpa pembilang/penyebut waktu tidak cukup. Rekomendasi butuh permintaan tidak terpenuhi yang tercatat per slot dan skill. Kapasitas ruang dan kapasitas terapis adalah batas yang berbeda.</p></div></div>`
+  + section('Kapasitas per outlet', 'Ruang, terapis bertugas hari ini dan booking dari data operasional; utility dari dashboard Capacity &amp; Productivity (satuan jam).',
+    table(['Outlet', 'Ruang', 'Terapis bertugas', 'Booking hari ini', 'Utility / hari', 'Treatment / terapis / hari', 'Permintaan tak terpenuhi'], rows), dashLink('capacity', 'Capacity & Productivity') + pageLink('rooms', 'Room & Facility') + pageLink('therapist', 'Therapist Workspace'))
+  + section('Permintaan tidak terpenuhi', 'Satu permintaan yang dicoba di beberapa outlet tetap satu request. Terlayani di outlet lain bukan kehilangan jaringan. Pada produksi dicatat di Reservation/POS.',
+    `${byReason.length ? `<div class="row wrap st-reasons">${byReason.map(([r, n]) => `<span class="st-chip">${e(r)} · ${n}</span>`).join('')}</div>` : ''}` +
+    table(['Request', 'Outlet dicoba', 'Slot / durasi / pax', 'Treatment / skill', 'Alasan', 'Alternatif', 'Hasil'], shown.map(r => [`<b>${e(r.id)}</b><small>${e(r.date)}</small>`, e(r.outlets.map(H.outletName).join(' → ')), `${e(r.slot)} · ${e(r.duration)} mnt · ${e(r.pax)} pax`, `${e(r.treatment)}<small>${e(r.skill)}</small>`, e(r.reason), e(r.alternative || '—'), H.badge(r.outcome, r.outcome === OUTCOMES[2] ? 'red' : r.outcome === OUTCOMES[1] ? 'blue' : 'green')])),
+    canLog ? `<button class="btn btn-sm btn-primary" data-act="strategic-demand">+ Catat permintaan (demo)</button>` : '')
+  + section('Skenario tindakan (dibandingkan, bukan otomatis)', 'Tambahan pegawai tidak membantu bila kendalanya ruang atau permintaan.',
+    table(['Pilihan', 'Mengatasi kendala', 'Bukti yang dibutuhkan'], [
+      ['Geser shift', 'Terapis kurang pada jam ramai', 'Permintaan per slot + roster'], ['Latih skill tertentu', 'Skill tidak tersedia', 'Request per skill'],
+      ['Penugasan lintas outlet berizin', 'Kekurangan sementara', 'Roster lintas outlet + izin HRD'], ['Buka slot / jam', 'Di luar jam operasional', 'Request di luar jam'],
+      ['Perbaiki readiness ruang', 'Ruang tidak siap', 'Room & Facility + maintenance'], ['Tambah terapis', 'Kekurangan berulang setelah opsi lain', 'Semua bukti di atas + biaya HRD/Finance'],
+    ].map(r => r.map(x => e(x)))));
+}
+H.actions['strategic-demand'] = () => {
+  if (!['manager', 'assistant', 'supervisor'].includes(role())) return H.toast('Pencatatan permintaan oleh Reception/Supervisor sesuai lingkup.');
+  const os = outlets();
+  H.modal('Catat permintaan tidak terpenuhi (demo)', `<form data-form="strategicDemand" class="stack"><p class="notice">Simulasi lokal. Di produksi dicatat sekali pada Reservation/POS. Tanpa nama tamu.</p>
+  <div class="grid-2"><label class="field">Outlet<select name="outlet" required>${os.map(o => `<option value="${o.id}">${e(o.name)}</option>`).join('')}</select></label><label class="field">Tanggal<input type="date" name="date" required value="${e(H.ui.analyticsTo || '2026-10-31')}"></label></div>
+  <div class="grid-2"><label class="field">Slot<input type="time" name="slot" required value="15:00"></label><label class="field">Durasi (menit)<input type="number" name="duration" min="15" step="15" required value="60"></label></div>
+  <div class="grid-2"><label class="field">Treatment<input name="treatment" required minlength="3" maxlength="80"></label><label class="field">Pax<input type="number" name="pax" min="1" max="20" required value="1"></label></div>
+  <label class="field">Skill yang dibutuhkan<input name="skill" required minlength="3" maxlength="60"></label>
+  <label class="field">Alasan<select name="reason">${REASONS.map(r => `<option>${e(r)}</option>`).join('')}</select></label>
+  <label class="field">Alternatif yang ditawarkan<input name="alternative" maxlength="120"></label>
+  <label class="field">Hasil<select name="outcome">${OUTCOMES.map(r => `<option>${e(r)}</option>`).join('')}</select></label>
+  <button class="btn btn-primary" type="submit">Simpan</button></form>`);
+};
+H.forms.strategicDemand = (fd) => {
+  try {
+    const o = String(fd.get('outlet'));
+    if (!outlets().some(x => x.id === o)) throw new Error('Outlet di luar lingkup akun.');
+    const r = { id: 'REQ-' + Date.now().toString(36).toUpperCase(), outlets: [o], date: String(fd.get('date')), slot: String(fd.get('slot')), duration: Number(fd.get('duration')), treatment: String(fd.get('treatment') || '').trim(), pax: Number(fd.get('pax')), skill: String(fd.get('skill') || '').trim(), reason: String(fd.get('reason')), alternative: String(fd.get('alternative') || '').trim(), outcome: String(fd.get('outcome')), by: H.user().id, demo: true };
+    if (r.treatment.length < 3 || r.skill.length < 3 || !(r.duration > 0) || !(r.pax > 0) || !REASONS.includes(r.reason) || !OUTCOMES.includes(r.outcome)) throw new Error('Lengkapi treatment, skill, durasi dan pax.');
+    ensureDemand().push(r); H.log('UNMET_DEMAND_DEMO', r.id, r.reason, o); H.save(); H.closeModal(); H.render(); H.toast(r.id + ' tercatat (demo).');
+  } catch (er) { H.toast(er.message); }
+};
+
+/* ---------- 4. Customer Focus & Hospitality ---------- */
+function customer(v) {
+  const scope = outlets().map(o => o.id);
+  const cases = (H.cases ? H.cases.guest() : []).filter(c => scope.includes(c.outlet));
+  const open = cases.filter(c => !['selesai', 'diverifikasi'].includes(c.caseState));
+  const pr = (c) => (c.priority === 'Kritis' ? 0 : 1) + (H.cases.sla(c)?.fin === 'overdue' ? -0.5 : 0);
+  const waitVerify = cases.filter(c => c.caseState === 'selesai').length;
+  const ret = per(H.state.outletId, () => model('retention'));
+  const total = card(ret, 'total'), rep = card(ret, 'repeat');
+  const upcoming = H.state.data.bookings.filter(b => scope.includes(b.outlet) && !/selesai|done|paid|cancel/i.test(b.status || '')).length;
+  return head(v) + kpis([
+    ['Case tamu terbuka', String(open.length), 'termasuk dibuka ulang', open.length ? 'warn' : 'good'],
+    ['Lewat SLA selesai', String(open.filter(c => H.cases.sla(c)?.fin === 'overdue').length), `SLA ${H.cases.SLA.resolveH} jam (draft)`],
+    ['Recovery menunggu verifikasi', String(waitVerify), 'verifier ≠ PIC'],
+    ['Booking mendatang', String(upcoming), 'konteks layanan hari ini'],
+  ]) + section('Antrean tindakan Hospitality', 'Urutan: prioritas kritis, lalu SLA yang terlewat. Satu kejadian = satu case; respons lain ditautkan ke case yang sama.',
+    table(['Case', 'Outlet', 'Kategori 7P', 'Status', 'SLA respons / selesai', 'PIC'], open.sort((a, b) => pr(a) - pr(b)).map(c => { const s = H.cases.sla(c) || {}; const L = { met: 'Tepat', late: 'Lewat', overdue: 'Lewat · berjalan', running: 'Berjalan' }; return [`<button class="st-link" data-act="case-open" data-id="${e(c.id)}">${e(c.id)}</button><small>${e(c.title)}</small>`, e(H.outletName(c.outlet)), e(c.category7P || '—'), H.badge((H.cases.STATES[c.caseState] || [c.caseState])[0], (H.cases.STATES[c.caseState] || [0, 'gray'])[1]), `${e(L[s.resp] || '—')} / ${e(L[s.fin] || '—')}`, e(c.pic ? H.accountName(c.pic) : 'Belum ditetapkan')]; }), 'Tidak ada case tamu terbuka pada lingkup ini.'),
+    pageLink('cases', 'Buka Hospitality Case') + dashLink('satisfaction', 'Customer Satisfaction'))
+  + section('Retensi: tiga metrik terpisah', 'Returning share dihitung dari dashboard Rebooking. Rebooking conversion dan cohort retention membutuhkan identitas kunjungan dari POS/CRM, tidak direkayasa dari total harian.',
+    table(['Metrik', 'Nilai', 'Sumber'], [
+      ['Returning share', show(total ? pct(rep / total * 100) : null, 'tanpa data tamu'), 'Rebooking Customer (repeat ÷ total tamu)'],
+      ['Rebooking conversion', NA('butuh booking berikutnya per kunjungan (POS)'), 'POS / Reservation'],
+      ['Cohort retention', NA('butuh identitas tamu & window evaluasi (CRM)'), 'Sales / CRM'],
+    ]), dashLink('retention', 'Rebooking Customer'))
+  + `<p class="small muted st-foot">Sales tetap pemilik Reservation Center dan CRM. Refund, price override dan pengecualian memerlukan izin khusus. Tidak ada WA/email yang dikirim dari sini.</p>`;
+}
+
+/* ---------- 5. HPP & Profitabilitas Treatment ---------- */
+function hpp(v) {
+  const scope = outlets().map(o => o.id), map = {};
+  H.state.data.bookings.filter(b => scope.includes(b.outlet)).forEach(b => { const k = b.treatment || '—'; map[k] = map[k] || { n: 0, rev: 0, min: 0 }; map[k].n++; map[k].rev += Number(b.value) || 0; map[k].min += Number(b.duration) || 0; });
+  const rows = Object.entries(map).sort((a, b) => b[1].rev - a[1].rev).map(([t, x]) => [`<b>${e(t)}</b>`, String(x.n), H.compact(x.rev), num(x.min / x.n) + ' mnt', NA('recipe belum ada'), NA('movement per treatment belum ada'), NA('basis alokasi Finance')]);
+  return head(v) + `<div class="notice st-notice"><div><strong>Belum ada angka HPP resmi.</strong><p>Recipe standar, pemakaian per treatment, valuasi stok dan basis biaya tenaga kerja belum tersedia di sumber yang diaudit. Tampilan ini menyiapkan alur dan lapisan biaya; angka diisi setelah Finance menetapkan kebijakan costing (HPP-001).</p></div></div>`
+  + section('Lapisan biaya yang dibedakan', 'Satu biaya tidak ditempatkan di HPP sekaligus OPEX tanpa rekonsiliasi. Pemakaian per shift tidak diberi label aktual per treatment.',
+    table(['Lapisan', 'Maksud', 'Contoh sumber', 'Status'], [
+      ['HPP standar', 'Biaya menurut recipe/SOP yang disahkan', 'Qty standar BHP × unit cost, durasi & labor basis', H.badge('Recipe belum ada', 'gray')],
+      ['Biaya aktual tertelusur', 'Biaya yang benar-benar terhubung ke treatment', 'Movement Inventory, interval treatment, komisi', H.badge('Belum per treatment', 'gray')],
+      ['Alokasi outlet', 'Biaya bersama outlet dengan basis disahkan', 'Linen/laundry, utilities, ruang, depresiasi', H.badge('Basis belum disahkan', 'gray')],
+      ['Alokasi pusat', 'Beban bersama perusahaan', 'Office/HRD/marketing sesuai cost pool', H.badge('Basis belum disahkan', 'gray')],
+    ].map(r => [`<b>${e(r[0])}</b>`, e(r[1]), e(r[2]), r[3]])))
+  + section('Treatment pada lingkup ini', 'Volume, revenue dan durasi dari booking demo. Kolom biaya tetap kosong sampai sumber sah tersedia.',
+    table(['Treatment', 'Volume', 'Revenue booking', 'Durasi rata-rata', 'HPP standar', 'Biaya aktual', 'Alokasi'], rows), pageLink('budget', 'Budget 7P') + pageLink('inventory', 'Inventory'))
+  + section('Alur drilldown yang direncanakan', '', `<div class="st-path">${['Pilih treatment / durasi / outlet / periode', 'Revenue & volume', 'Komponen biaya', 'Standar vs aktual / alokasi', 'Penyebab variance', 'Stock movement, time evidence, jurnal'].map((s, i) => `<span>${i + 1}. ${e(s)}</span>`).join('<b>→</b>')}</div>`)
+  + `<p class="small muted st-foot">Akses costing hanya Manager/Assistant dan Finance. Cost per treatment dan kelompok kecil dijaga agar tidak membuka gaji individu lewat hitung balik.</p>`;
+}
+
+/* ---------- 6. Kesehatan Keuangan & Budget Outlet ---------- */
+function finance(v) {
+  const rows = outlets().map(o => per(o.id, () => {
+    const p = model('pnl'), w = model('waste');
+    const rev = card(p, 'revenue'), ex = card(p, 'expense'), pr = card(p, 'profit'), va = card(p, 'variance'), ws = card(w, 'total-waste');
+    return [`<b>${e(o.name)}</b>`, show(rev !== null ? H.compact(rev) : null, 'tanpa P&L'), show(ex !== null ? H.compact(ex) : null, 'tanpa P&L'), show(pr !== null ? H.compact(pr) : null, 'tanpa P&L'), show(rev ? pct(pr / rev * 100) : null, 'tanpa revenue'), show(rev && ex !== null ? pct(ex / rev * 100) : null, 'tanpa revenue'), show(rev && ws !== null ? pct(ws / rev * 100, 2) : null, 'tanpa waste'), show(va !== null ? H.compact(va) : null, 'tanpa target')];
+  }));
+  return head(v) + `<div class="notice st-notice"><div><strong>Indikator tanpa skor tunggal.</strong><p>Label "sehat" dan bobot skor menunggu pengesahan Owner/Finance. Cash flow, current ratio, quick ratio dan rasio kewajiban hanya tampil di konsolidasi perusahaan bila neraca tersedia; angka perusahaan tidak dibagi ke outlet.</p></div></div>`
+  + section('Indikator per outlet', 'Dari dashboard Profit &amp; Loss dan Waste &amp; Accuracy pada filter aktif. Margin belum direkonsiliasi Finance.',
+    table(['Outlet', 'Revenue', 'Expense', 'Net profit', 'Margin', 'Biaya ÷ revenue', 'Waste ÷ revenue', 'Selisih ke target'], rows), dashLink('pnl', 'Profit & Loss') + dashLink('waste', 'Waste & Accuracy'))
+  + section('Budget dan likuiditas', 'Approved budget, commitment, actual dan forecast mempunyai arti berbeda dan dikelola di Budget 7P / Finance.',
+    table(['Indikator', 'Status', 'Pemilik'], [
+      ['Approved budget · commitment · actual', 'Lihat Budget 7P (sumber yang sama)', 'Finance'],
+      ['Forecast & pacing ke target', NA('forecast belum disahkan'), 'Finance'],
+      ['Gap BEP', NA('basis biaya tetap belum ditetapkan'), 'Finance'],
+      ['Cash flow · current / quick ratio', NA('konsolidasi perusahaan saja'), 'Finance'],
+    ].map(r => [`<b>${e(r[0])}</b>`, r[1].startsWith('<') ? r[1] : e(r[1]), e(r[2])])), pageLink('budget', 'Buka Budget 7P'))
+  + `<p class="small muted st-foot">Catatan audit: selisih antara income − total expenses dan kolom net profit referensi belum memiliki bridge. Profit resmi tidak diganti dengan pengurangan kasar; Finance perlu menguraikan alokasi/adjustment.</p>`;
+}
+
+const RENDER = { owner, xscore, capacity, customer, hpp, finance };
+
+/* ---------- ikhtisar ---------- */
+function overview() {
+  const vs = visibleViews();
+  return `<div class="st-head"><div><span class="st-eyebrow">DASHBOARD LIBRARY · DASHBOARD STRATEGIS</span><p class="st-q">Sudut pandang keputusan dari sumber yang sama dengan 14 Dashboard Kinerja.</p></div>${H.badge('Bahan desain A03 Bab 07', 'gray')}</div>
+  <div class="st-grid">${vs.map(v => `<a class="st-tile" href="#${PREFIX}${v.id}"><span class="st-eyebrow">${String(VIEWS.indexOf(v) + 1).padStart(2, '0')}</span><b>${e(v.title)}</b><p>${e(v.q)}</p>${H.badge(STATUS[v.status][0], STATUS[v.status][1])}</a>`).join('')}</div>
+  <p class="small muted st-foot">Jumlah dan penamaan tampilan masih bahan diskusi Owner; bukan enam modul baru. Workspace Ambidex &amp; RACE tetap tempat kerja, STRACON menetapkan kontrak KPI.</p>`;
+}
+
+H.pages.strategic = {
+  title: 'Dashboard Strategis',
+  phase: 'F-OP02 / F-OP10',
+  subtitle: () => 'Ringkasan keputusan dari sumber Dashboard Kinerja, case, tugas dan budget. Data sintetis.',
+  contract: 'Opsi A03 Bab 07: komposisi dari sumber dan komponen yang sama. Tidak ada engine skor kedua, rumus HPP, bobot X-score atau skor kesehatan keuangan resmi. Ambang "perlu perhatian" adalah demo. Integrasi POS/CRM/Finance/HRD dan kontrak STRACON tetap harus divalidasi.',
+  render() {
+    const id = H.ui.strategicId;
+    if (!id) return overview();
+    const v = VIEWS.find(x => x.id === id);
+    if (!v || !canView(id)) { const u = H.user(); return `<section class="card opx-denied" role="alert"><div class="card-head"><div><h2 class="card-title">Tidak berwenang</h2><p class="muted small">${e(u.name)} · ${e(u.title)} tidak memiliki akses ke "${e(v ? v.title : id)}" pada matriks akses demo.</p></div>${H.badge('Ditolak', 'red')}</div></section>`; }
+    A.ensure(); H.casesEnsure && H.casesEnsure();
+    return `<div class="st-page">${RENDER[id](v)}</div>`;
+  },
+};
+H.strategic = { PREFIX, VIEWS, canView, visibleViews, STATUS };
+})();
+
+;
 /* HAWK ERP · Portal Operational (NP-OP01 + Addendum A01, prototype Owner v1.1) — DATA DEMO / SIMULASI.
    Satu shell: sidebar, topbar, pemilih portal (logo HAWK) dan ID/EN tetap milik hawk-live (app.js + hawk.css).
    Modul halaman berasal dari prototype Owner (hawk-live/ops/ops-*.js, namespace window.OPX) dan dirender ke dalam #view
@@ -12673,7 +13147,11 @@ const esc = HL.esc;
 const OPEN = ['roadmap', 'validation', 'demo'];
 const POS_URL = H.existingPosUrl;
 const routeOf = (p) => p === 'demo' ? 'ops-dx' : 'op-' + p;
-const pageOf = (r) => r === 'ops-dx' ? 'demo' : (r && r.startsWith('op-') ? r.slice(3) : null);
+const DASH = 'op-analytics-'; /* rute submenu Dashboard Library: #op-analytics-<id dashboard> */
+const dashOf = (r) => r && r.startsWith(DASH) ? r.slice(DASH.length) : null;
+const STRAT = 'op-strategic-'; /* Dashboard Strategis (A03 Bab 07) di Dashboard Library: #op-strategic-<id> */
+const stratOf = (r) => r && r.startsWith(STRAT) ? r.slice(STRAT.length) : null;
+const pageOf = (r) => r === 'ops-dx' ? 'demo' : dashOf(r) ? 'analytics' : stratOf(r) ? 'strategic' : (r && r.startsWith('op-') ? r.slice(3) : null);
 const allowed = (p) => OPEN.includes(p) || H.has(p);
 const firstAllowed = () => H.navItems.find(v => v[0] !== 'pos' && H.has(v[0]))?.[0] || 'roadmap';
 H.allowed = allowed;
@@ -12692,7 +13170,7 @@ H.goPage = (id) => {
   if (!H.pages[id]) id = 'dashboard';
   if (!allowed(id)) { H.toast('Menu ini tidak termasuk akses akun demo Anda.'); id = firstAllowed(); }
   H.state.page = id; H.ui.mobileOpen = false; H.save();
-  const want = '#' + routeOf(id);
+  const want = '#' + (id === 'analytics' && H.dashRoute ? H.dashRoute() : routeOf(id));
   if (location.hash.split('?')[0] !== want) location.hash = want; else H.mountPage();
 };
 
@@ -12737,7 +13215,13 @@ function roleChip(u) {
 function syncNav() {
   const nav = document.getElementById('nav');
   if (!nav) return;
-  nav.querySelectorAll('a[href^="#op-"]').forEach(a => { const p = pageOf(a.getAttribute('href').slice(1)); if (p && !OPEN.includes(p)) a.hidden = !H.has(p); });
+  nav.querySelectorAll('a[href^="#op-"]').forEach(a => { const r = a.getAttribute('href').slice(1), p = pageOf(r), d = dashOf(r); if (p && !OPEN.includes(p)) a.hidden = !H.has(p) || (!!d && !!H.analytics && !H.analytics.canViewDashboard(d)) || (!!stratOf(r) && !!H.strategic && !H.strategic.canView(stratOf(r))); });
+  /* submenu Dashboard Library aktif = dashboard yang sedang dibuka (juga lewat rute lama #op-analytics) */
+  const r = HL.parseHash().id;
+  if (r === 'op-analytics' || dashOf(r)) {
+    const want = '#' + (H.dashRoute ? H.dashRoute() : r);
+    nav.querySelectorAll(`a[href^="#${DASH}"]`).forEach(a => { const on = a.getAttribute('href') === want; a.classList.toggle('cur', on); if (on) { a.setAttribute('aria-current', 'page'); const sec = a.closest('.nav-sec'); if (sec && !sec.classList.contains('open')) { sec.classList.add('open'); sec.querySelector('.nav-sec-btn')?.setAttribute('aria-expanded', 'true'); } } else a.removeAttribute('aria-current'); });
+  }
   nav.querySelectorAll(`a[href="${POS_URL}"]`).forEach(a => { a.hidden = !H.has('pos'); });
   nav.querySelectorAll('.nav-sec').forEach(sec => { sec.hidden = ![...sec.querySelectorAll('.nav-grp-kids a')].some(a => !a.hidden); });
 }
@@ -12792,6 +13276,46 @@ const register = (p) => {
   HL.REGISTRY[routeOf(p)] = fn;
 };
 Object.keys(H.pages).forEach(register);
+if (H.analytics && H.pages.analytics) {
+  const A = H.analytics, defOf = (id) => (A.definitions || []).find(d => d.id === id);
+  H.dashRoute = () => { const v = A.visibleDefinitions ? A.visibleDefinitions() : (A.definitions || []); const id = v.find(d => d.id === H.ui.analyticsId)?.id || v[0]?.id; return id ? DASH + id : routeOf('analytics'); };
+  (A.definitions || []).forEach(d => {
+    const fn = () => {
+      H.ui = H.ui || {};
+      if (A.canViewDashboard(d.id)) {
+        if (H.ui.analyticsId !== d.id) { H.ui.analyticsId = d.id; H.ui.analyticsTab = 'dashboard'; H.ui.analyticsQuery = ''; }
+        H.ui.analyticsDenied = null;
+      } else H.ui.analyticsDenied = d.id;
+      queueMicrotask(H.mountPage);
+      return `<div class="opx" id="opx-root" data-page="analytics" data-dash="${esc(d.id)}"><p class="muted small">Memuat dashboard…</p></div>`;
+    };
+    fn.title = () => d.title;
+    fn.purpose = () => esc(d.description || '');
+    fn.code = () => PHASE('analytics');
+    HL.REGISTRY[DASH + d.id] = fn;
+  });
+  register('analytics');
+  if (H.strategic && H.pages.strategic) {
+    const sBase = HL.REGISTRY[routeOf('strategic')];
+    HL.REGISTRY[routeOf('strategic')] = Object.assign((...a) => { H.ui.strategicId = null; return sBase(...a); }, sBase);
+    H.strategic.VIEWS.forEach(v => {
+      const fn = () => { H.ui = H.ui || {}; H.ui.strategicId = v.id; queueMicrotask(H.mountPage); return `<div class="opx" id="opx-root" data-page="strategic" data-strategic="${esc(v.id)}"><p class="muted small">Memuat dashboard…</p></div>`; };
+      fn.title = () => v.title; fn.purpose = () => esc(v.q); fn.code = () => PHASE('strategic');
+      HL.REGISTRY[STRAT + v.id] = fn;
+    });
+  }
+  const regBase = HL.REGISTRY[routeOf('analytics')];
+  HL.REGISTRY[routeOf('analytics')] = Object.assign((...a) => { H.ui.analyticsDenied = null; return regBase(...a); }, regBase);
+  /* dashboard di luar RBAC akun aktif: tampilkan penolakan, bukan dashboard lain */
+  const base = H.pages.analytics.render.bind(H.pages.analytics);
+  H.pages.analytics.render = () => {
+    const dn = H.ui && H.ui.analyticsDenied;
+    if (dn && dashOf(HL.parseHash().id) === dn) { const u = H.user(); return `<section class="card opx-denied" role="alert"><div class="card-head"><div><h2 class="card-title">Tidak berwenang</h2><p class="muted small">${esc(u.name)} · ${esc(u.title)} tidak memiliki akses ke dashboard “${esc(defOf(dn)?.title || dn)}” pada matriks akses demo.</p></div>${H.badge('Ditolak', 'red')}</div><p class="small">Pilih dashboard lain di submenu Dashboard Library. Akses frontend ini hanya simulasi; pembatasan sebenarnya diverifikasi di backend.</p></section>`; }
+    return base();
+  };
+  /* tombol lama "analytics-open" kini berpindah lewat submenu/rute yang sama */
+  H.actions['analytics-open'] = (el) => { if (!H.has('analytics')) return; if (!A.canViewDashboard(el.dataset.id)) return H.toast('Dashboard tidak termasuk lingkup akun ini.'); location.hash = '#' + DASH + el.dataset.id; };
+}
 
 /* sidebar: urutan dan grup prototype v1.1; nomor fase tampil sebagai kode.
    Keputusan Owner A03: Dashboard Kinerja berada di grup sendiri "Dashboard Library" (14 laporan = pemilih internal,
@@ -12800,11 +13324,21 @@ const items = [['ops-dx', 'Demo Experience Center', 'DX-OPS', 'ready']];
 const NAV = H.navItems.filter(v => v[0] !== 'analytics');
 const AN = H.navItems.find(v => v[0] === 'analytics');
 if (AN) { const at = NAV.findIndex((v, i) => i > 0 && v[4]); NAV.splice(at < 0 ? NAV.length : at, 0, [AN[0], AN[1], AN[2], AN[3], 'DASHBOARD LIBRARY']); }
+/* NP-OP01 UI Navigation Amendment (Aji 23 Nov 2026): Dashboard Library = menu expandable di sidebar utama; 14 dashboard
+   menjadi submenu langsung (satu klik membuka dashboard di area konten). Panel navigasi krem di dalam halaman dihapus.
+   Sumber data, rumus, filter, entry, verifikasi dan insight tetap milik halaman Dashboard Kinerja yang sama. */
+const DEFS = (H.analytics && H.analytics.definitions) || [];
 NAV.forEach(([id, title, , num, group]) => {
   if (group) items.push(['-', group === 'DASHBOARD LIBRARY' ? 'Dashboard Library' : group.charAt(0) + group.slice(1).toLowerCase()]);
   if (id === 'pos') items.push([POS_URL, 'POS & Receptionist', 'F-OP03', 'ready']);
+  else if (id === 'analytics' && DEFS.length) {
+    DEFS.forEach(d => items.push([DASH + d.id, d.navLabel || d.title, PHASE(id), 'ready']));
+    /* Owner 23 Nov 2026: dashboard tambahan (opsi strategis A03 Bab 07) ikut di Dashboard Library sebagai sub-grup */
+    if (H.strategic && H.pages.strategic) { items.push([routeOf('strategic'), H.pages.strategic.title, PHASE('strategic'), 'ready']); H.strategic.VIEWS.forEach(v => items.push([STRAT + v.id, v.nav, PHASE('strategic'), 'ready', '', true])); }
+  }
   else items.push([routeOf(id), title, PHASE(id), 'ready']);
 });
+if (DEFS.length) items.push([routeOf('analytics'), H.pages.analytics?.title || 'Dashboard Kinerja', PHASE('analytics'), 'hidden']);
 items.push(['-', 'Developer handoff'], ['op-roadmap', 'Peta 12 Fase', PHASE('roadmap'), 'ready'], ['op-validation', 'Validation Lab', PHASE('validation'), 'ready']);
 items.push(['op-pos', 'POS & Receptionist · gateway', 'F-OP03', 'hidden'], ['pos', 'Operational & POS (sandbox lintas portal)', 'F4-07', 'hidden'], ['inventory', 'Inventory (sandbox lama)', '', 'hidden']);
 HL.PORTALS.Operational.desc = 'Kendali outlet, POS & Receptionist, Daily Operations, tugas, ruang, inventory, RACE dan budget';
@@ -12868,11 +13402,113 @@ window.addEventListener('storage', (e) => { if (e.key !== H.storeKey) return; tr
 })();
 
 ;
+/* HAWK 5 Portal · "Ganti role DEMO" dari tombol akun kanan atas (seperti app 60 NV Finance).
+   Klik chip akun → daftar akun demo portal aktif → klik satu nama = langsung masuk sebagai akun itu (bukan login).
+   - Operational: akun OPX (Manager, Assistant, Hospitality, lalu per outlet: Supervisor, Head, staf) → aksi account-select yang sudah ada.
+   - Commercial / Sales: persona tim dari Demo Experience Center portal itu + Owner → role + persona demo.
+   - HRD dan portal lain: opsi "Role demo" yang sudah ada di sidebar (HRD = akun bernama dari hrd-accounts.js).
+   UI-ONLY SIMULATION: tanpa password, kredensial, SSO atau akun produksi. Mode embed (frame Demo Center) tidak diubah. */
+(function () {
+'use strict';
+const H = window.HL;
+if (!H || new URLSearchParams(location.search).get('embed') === '1') return;
+const esc = H.esc;
+const portal = () => document.body.dataset.portal || H.prefs.portal;
+const ini = (n) => String(n || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const OWNER = { id: 'owner', name: 'Owner', role: 'owner', title: 'Owner / Eksekutif' };
+
+/* ---------- penyedia daftar akun per portal ---------- */
+function opsProvider() {
+  const O = window.OPX; if (!O || !Array.isArray(O.accounts) || typeof O.user !== 'function') return null;
+  const cur = O.user().id, row = (a) => ({ id: a.id, name: a.name, sub: a.title + ' · ' + (a.outlet ? O.outletName(a.outlet) : 'Semua outlet'), av: a.initials, cur: a.id === cur });
+  const groups = [{ label: 'Manajemen Operational', items: O.accounts.filter(a => !a.outlet).map(row) }];
+  (O.outlets || []).forEach(o => { const items = O.accounts.filter(a => a.outlet === o.id).map(row); if (items.length) groups.push({ label: O.outletName(o.id), items }); });
+  return { groups, pick: (id) => O.actions['account-select']({ dataset: { id } }) };
+}
+const labOf = () => H.DXLAB && Object.values(H.DXLAB.LABS || {}).find(l => l.portal === portal());
+function personaOf(lab) {
+  const list = [OWNER, ...lab.team.map(lab.P).filter(Boolean)];
+  const p = list.find(x => x.id === H.prefs.persona && x.role === H.prefs.role);
+  return { list, cur: p || list.find(x => x.role === H.prefs.role) || null };
+}
+function teamProvider() {
+  const lab = labOf(); if (!lab) return null;
+  const { list, cur } = personaOf(lab);
+  const row = (p) => ({ id: p.id, name: lab.name ? lab.name(p) : p.name, sub: p.title, av: ini(p.name), cur: !!cur && cur.id === p.id });
+  return { groups: [{ label: 'Tim ' + portal(), items: list.filter(p => p !== OWNER).map(row) }, { label: 'Pimpinan', items: [row(OWNER)] }],
+    pick: (id) => { const p = list.find(x => x.id === id); if (!p) return; H.prefs.role = p.role; H.prefs.persona = p.id; H.prefs.member = p.member || undefined; H.savePrefs(); H.render('Akun demo: ' + p.name); } };
+}
+function selectProvider() {
+  const sel = document.getElementById('role'); if (!sel || !sel.options.length) return null;
+  const row = (o) => { const [name, ...rest] = o.textContent.split(' · '); return { id: o.value, name, sub: rest.join(' · ') || 'Role demo', av: ini(name), cur: o.value === sel.value }; };
+  const groups = [], loose = [...sel.children].filter(c => c.tagName === 'OPTION');
+  if (loose.length) groups.push({ label: 'Role demo ' + (portal() || ''), items: loose.map(row) });
+  sel.querySelectorAll('optgroup').forEach(g => groups.push({ label: g.label, items: [...g.querySelectorAll('option')].map(row) }));
+  return { groups, pick: (v) => { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); } };
+}
+const provider = () => (portal() === 'Operational' && opsProvider()) || (['Commercial', 'Sales'].includes(portal()) && teamProvider()) || selectProvider();
+
+/* ---------- chip Commercial / Sales menampilkan persona aktif ---------- */
+function paintChip() {
+  if (!['Commercial', 'Sales'].includes(portal())) return;
+  const lab = labOf(); if (!lab) return;
+  const { cur } = personaOf(lab); if (!cur) return;
+  const n = document.getElementById('role-name'), av = document.getElementById('role-av'), sm = n && n.parentElement.querySelector('small');
+  if (n) n.textContent = cur.name; if (sm) sm.textContent = cur.title; if (av) av.textContent = ini(cur.name);
+}
+/* pilihan Role demo di sidebar = role generik → lepaskan persona lama sebelum app merender */
+document.addEventListener('change', (e) => { if (e.target && e.target.id === 'role' && ['Commercial', 'Sales'].includes(portal())) { H.prefs.persona = null; H.prefs.member = undefined; } }, true);
+
+/* ---------- popover ---------- */
+let pop = null, chip = null;
+const close = (focus) => { if (!pop || !pop.classList.contains('on')) return; pop.classList.remove('on'); if (chip) chip.setAttribute('aria-expanded', 'false'); if (focus && chip) chip.focus(); };
+function open() {
+  const pv = provider(); if (!pv) return;
+  pop.innerHTML = `<div class="pop-head"><span aria-hidden="true">👥</span> Ganti role DEMO <span class="badge demo rs-pill">bukan login</span></div>`
+    + pv.groups.filter(g => g.items.length).map(g => `<div class="rs-grp" role="presentation">${esc(g.label)}</div>` + g.items.map(it => `<div class="pop-item ${it.cur ? 'cur' : ''}" role="menuitemradio" aria-checked="${it.cur}" tabindex="-1" data-rs="${esc(it.id)}"><span class="av">${esc(it.av || ini(it.name))}</span><span><b>${esc(it.name)}</b><br><span class="tiny muted">${esc(it.sub)}</span></span></div>`).join('')).join('')
+    + `<div class="pop-item tiny muted rs-note">Tidak ada password/kredensial. Ganti role hanya untuk demo; data tetap sandbox di browser ini.</div>`;
+  pop._pick = pv.pick;
+  pop.classList.add('on'); chip.setAttribute('aria-expanded', 'true');
+  const r = chip.getBoundingClientRect(), w = Math.min(360, window.innerWidth - 20);
+  pop.style.width = w + 'px'; pop.style.top = (r.bottom + 8) + 'px'; pop.style.left = Math.max(10, Math.min(window.innerWidth - w - 10, r.right - w)) + 'px';
+  (pop.querySelector('.pop-item.cur') || pop.querySelector('[data-rs]'))?.focus();
+  pop.querySelector('.pop-item.cur')?.scrollIntoView({ block: 'nearest' });
+}
+function choose(el) { const pick = pop._pick, id = el.dataset.rs; close(false); if (pick) pick(id); setTimeout(paintChip, 0); }
+
+function mount() {
+  chip = document.querySelector('.topbar .role-chip'); if (!chip || chip.dataset.rs) return;
+  chip.dataset.rs = '1'; chip.setAttribute('role', 'button'); chip.tabIndex = 0;
+  chip.setAttribute('aria-haspopup', 'menu'); chip.setAttribute('aria-expanded', 'false'); chip.title = 'Ganti role DEMO';
+  chip.setAttribute('aria-label', 'Akun demo aktif. Klik untuk ganti role DEMO');
+  pop = document.createElement('div'); pop.className = 'pop rs-pop'; pop.id = 'hl-role-pop'; pop.setAttribute('role', 'menu'); pop.setAttribute('aria-label', 'Ganti role DEMO');
+  document.body.appendChild(pop);
+  chip.addEventListener('click', (e) => { e.stopPropagation(); pop.classList.contains('on') ? close(false) : open(); });
+  chip.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); open(); } });
+  pop.addEventListener('click', (e) => { e.stopPropagation(); const it = e.target.closest('[data-rs]'); if (it) choose(it); });
+  pop.addEventListener('keydown', (e) => {
+    const items = [...pop.querySelectorAll('[data-rs]')], i = items.indexOf(document.activeElement);
+    if (e.key === 'Escape') { e.preventDefault(); close(true); }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const n = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]; if (n) n.focus(); }
+    else if ((e.key === 'Enter' || e.key === ' ') && i >= 0) { e.preventDefault(); choose(items[i]); }
+  });
+  document.addEventListener('click', () => close(false));
+  window.addEventListener('resize', () => close(false));
+  window.addEventListener('hashchange', () => close(false));
+  const view = document.getElementById('view'); if (view) new MutationObserver(paintChip).observe(view, { childList: true });
+  paintChip();
+}
+H.roleSwitcher = { open: () => { mount(); open(); }, close, provider };
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+
+;
 /* Kamus EN untuk isi layar hawk-live (frasa persis → English). Dimuat sebelum i18n.js.
    Tambah baris baru di sini saat layar diterjemahkan lebih jauh; teks yang belum ada tetap Bahasa Indonesia. */
 window.HAWK_I18N_EN = Object.assign(window.HAWK_I18N_EN || {}, {
   /* ===== Operational (NP-OP01 v1.1) ===== */
-  'Satu sumber entri': 'Single source of entry', 'Lihat semua 14': 'View all 14', 'Spreadsheet sumber Looker': 'Looker source spreadsheet', 'Cara isi sekarang': 'How it is filled today', 'Rumus Looker': 'Looker formula', 'Target / kode ekspektasi': 'Target / expectation code', 'Satu titik entri di HAWK OS': 'Single entry point in HAWK OS', 'Cara': 'Method', 'Otomatis': 'Automatic', 'Entri sekali per kejadian': 'Entered once per event', 'Data induk': 'Master data', 'Sudah ada': 'Available', 'Ditambah di build ini': 'Added in this build', 'Butuh backend': 'Needs backend', 'Keputusan Owner': 'Owner decision', 'Sisa gap:': 'Remaining gap:', 'Simulasi · struktur saja, tanpa data asli': 'Simulation · structure only, no real data', 'Treatment / terapis / hari': 'Treatments / therapist / day', 'Urgensi respons': 'Response urgency', 'Mulai dikerjakan': 'Work started', 'Dikerjakan oleh (internal / vendor)': 'Done by (internal / vendor)', 'Kategori 7P': '7P category', 'Karyawan terkait (Employee ID demo)': 'Related employee (demo Employee ID)', 'Referensi kunjungan POS (demo)': 'POS visit reference (demo)', 'Target revenue room harian (demo, definisi sheet 05)': 'Daily room revenue target (demo, sheet 05 definition)', 'Rencana': 'Plan', 'Bukti existing': 'Existing evidence', 'K · Kode backend': 'K · Backend code', 'P · UI POS existing': 'P · Existing POS UI', 'D · Demo': 'D · Demo', 'X · Tidak ditemukan': 'X · Not found', '0 integrasi teruji': '0 tested integrations', 'Dashboard Library': 'Dashboard Library', 'Hospitality Case': 'Hospitality Case', 'Hospitality Case Workbench': 'Hospitality Case Workbench', 'Buka case': 'Open case', 'Buka case Hospitality': 'Open Hospitality case', 'Case tamu terbuka': 'Open guest cases', 'Lewat SLA': 'Past SLA', 'Menunggu verifikasi': 'Awaiting verification', 'Aging tertua': 'Oldest aging', 'Feedback perlu tindak lanjut': 'Feedback needing follow-up', 'Daftar case': 'Case list', 'Terbuka': 'Open', 'Baru & triase': 'New & triage', 'Ditangani': 'Handling', 'Selesai & diverifikasi': 'Resolved & verified', 'Semua': 'All', 'Tepat SLA': 'Within SLA', 'Berjalan': 'Running', 'Triase': 'Triage', 'Diverifikasi': 'Verified', 'Dibuka ulang': 'Reopened', 'Menunggu tamu': 'Waiting for guest', 'Selesai · menunggu verifikasi': 'Resolved · awaiting verification', '11 skenario · 6 peran · Pandu Saya': '11 scenarios · 6 roles · Guide Me', 'Treatment → feedback → Hospitality case': 'Treatment → feedback → Hospitality case', 'Waste & stock opname': 'Waste & stock count', 'Koreksi data & data kosong': 'Data correction & empty data', 'Jumlah treatment (POS)': 'Treatment count (POS)', 'Rendah': 'Low', 'Sedang': 'Medium', 'Tinggi': 'High', 'Darurat': 'Emergency',
+  'Satu sumber entri': 'Single source of entry', 'Lihat semua 14': 'View all 14', 'Spreadsheet sumber Looker': 'Looker source spreadsheet', 'Cara isi sekarang': 'How it is filled today', 'Rumus Looker': 'Looker formula', 'Target / kode ekspektasi': 'Target / expectation code', 'Satu titik entri di HAWK OS': 'Single entry point in HAWK OS', 'Cara': 'Method', 'Otomatis': 'Automatic', 'Entri sekali per kejadian': 'Entered once per event', 'Data induk': 'Master data', 'Sudah ada': 'Available', 'Ditambah di build ini': 'Added in this build', 'Butuh backend': 'Needs backend', 'Keputusan Owner': 'Owner decision', 'Sisa gap:': 'Remaining gap:', 'Simulasi · struktur saja, tanpa data asli': 'Simulation · structure only, no real data', 'Treatment / terapis / hari': 'Treatments / therapist / day', 'Urgensi respons': 'Response urgency', 'Mulai dikerjakan': 'Work started', 'Dikerjakan oleh (internal / vendor)': 'Done by (internal / vendor)', 'Kategori 7P': '7P category', 'Karyawan terkait (Employee ID demo)': 'Related employee (demo Employee ID)', 'Referensi kunjungan POS (demo)': 'POS visit reference (demo)', 'Target revenue room harian (demo, definisi sheet 05)': 'Daily room revenue target (demo, sheet 05 definition)', 'Rencana': 'Plan', 'Bukti existing': 'Existing evidence', 'K · Kode backend': 'K · Backend code', 'P · UI POS existing': 'P · Existing POS UI', 'D · Demo': 'D · Demo', 'X · Tidak ditemukan': 'X · Not found', '0 integrasi teruji': '0 tested integrations', 'Dashboard Library': 'Dashboard Library', 'Hospitality Case': 'Hospitality Case', 'Hospitality Case Workbench': 'Hospitality Case Workbench', 'Buka case': 'Open case', 'Buka case Hospitality': 'Open Hospitality case', 'Case tamu terbuka': 'Open guest cases', 'Lewat SLA': 'Past SLA', 'Menunggu verifikasi': 'Awaiting verification', 'Aging tertua': 'Oldest aging', 'Feedback perlu tindak lanjut': 'Feedback needing follow-up', 'Daftar case': 'Case list', 'Terbuka': 'Open', 'Baru & triase': 'New & triage', 'Ditangani': 'Handling', 'Selesai & diverifikasi': 'Resolved & verified', 'Semua': 'All', 'Tepat SLA': 'Within SLA', 'Berjalan': 'Running', 'Triase': 'Triage', 'Diverifikasi': 'Verified', 'Dibuka ulang': 'Reopened', 'Menunggu tamu': 'Waiting for guest', 'Selesai · menunggu verifikasi': 'Resolved · awaiting verification', '11 skenario · 6 peran · Pandu Saya': '11 scenarios · 6 roles · Guide Me',
+  '12 skenario · 6 peran · Pandu Saya': '12 scenarios · 6 roles · Guide Me', 'Treatment → feedback → Hospitality case': 'Treatment → feedback → Hospitality case', 'Waste & stock opname': 'Waste & stock count', 'Koreksi data & data kosong': 'Data correction & empty data', 'Jumlah treatment (POS)': 'Treatment count (POS)', 'Rendah': 'Low', 'Sedang': 'Medium', 'Tinggi': 'High', 'Darurat': 'Emergency',
   'Gudang & Stok BHP': 'Warehouse & consumables stock', 'Stok gudang outlet': 'Outlet warehouse stock', 'Harus order': 'To order', 'Order semua BHP yang perlu': 'Order all needed consumables', 'Permintaan barang (MRF / PO)': 'Item requests (MRF / PO)', 'Order sekarang': 'Order now', 'Menunggu Supervisor': 'Awaiting Supervisor', 'Setujui': 'Approve', 'Tolak': 'Reject',
   'Kendali outlet': 'Outlet control', 'Pelaksanaan': 'Execution', 'Kinerja & kontrol': 'Performance & control', 'Developer handoff': 'Developer handoff',
   'Peta 12 Fase': '12-phase map', 'Lingkup outlet': 'Outlet scope', 'Semua outlet': 'All outlets', 'Notifikasi': 'Notifications', '▶ Panduan demo': '▶ Demo guide',
