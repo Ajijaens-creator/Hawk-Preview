@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-24T03:31:18.964Z">
+<meta name="hawk-standalone" content="2026-11-24T03:43:04.398Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Preview lima portal</title>
 <style>
@@ -5606,6 +5606,39 @@ const requests = () => table(['ID', 'Campaign', 'Pos 7P', 'Nominal', 'Status', '
 const bookingRows = (rows, actions = false) => table(['Booking', 'Lead', 'Slot', 'Nilai', 'Status', ...(actions ? ['Aksi'] : [])], rows.map(b => [b.id, b.lead || '—', b.slot, rp(b.amount), b.status, ...(actions ? [
   ({ confirmed: () => button('checkin', 'Check-in', b.id) + ' ' + button('cancel', 'Batalkan', b.id), 'checked-in': () => button('complete', 'Selesaikan', b.id), completed: () => button('pay', 'Bayar', b.id), paid: () => b.payout ? 'Perlu penyesuaian Finance' : button('refund', 'Refund', b.id) })[b.status]?.() || '—'
 ] : [])]));
+/* NP-HAWK-SALES-DR-001 · F5-01 Export Excel & PDF. Membaca baris yang sama dengan tabel "Booking referral"
+   (F5-01 tidak punya filter atau pagination). Kolom & urutan = bookingRows tanpa kolom Aksi. Hanya membaca state. */
+const referralRows = () => state.bookings.filter(b => b.partner);
+const DR_COLS = [['Booking', b => b.id], ['Lead', b => b.lead || '', b => b.lead || '—'], ['Slot', b => String(b.slot)], ['Nilai', b => b.amount, b => rp(b.amount)], ['Status', b => b.status]];
+let drBusy = false;
+const driverExportBtns = () => {
+  const off = !referralRows().length || drBusy ? ' disabled aria-disabled="true"' : '';
+  const tip = !referralRows().length ? ' title="Belum ada booking referral untuk diekspor"' : '';
+  return `<div class="actions" role="group" aria-label="Ekspor Booking referral"><button type="button" class="btn ghost sm" data-dr-export="xlsx"${off}${tip}>Export Excel</button><button type="button" class="btn ghost sm" data-dr-export="pdf"${off}${tip}>Export PDF</button></div>`;
+};
+/* aksi opsional di kanan header halaman (sejajar judul); hanya terisi untuk route yang terdaftar */
+const HEAD_ACTIONS = { driver: driverExportBtns };
+const witaDate = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Makassar', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+function driverExport(fmt) {
+  if (!window.HLX) throw new Error('utilitas ekspor tidak termuat');
+  const rows = referralRows();
+  if (!rows.length) throw new Error('belum ada booking referral');
+  const headers = DR_COLS.map(c => c[0]);
+  const raw = rows.map(b => DR_COLS.map(c => c[1](b)));
+  const shown = rows.map(b => DR_COLS.map(c => String((c[2] || c[1])(b) ?? '')));
+  const file = `Driver_Referral_${witaDate()}`, table = 'Booking referral';
+  const meta = [['Data', 'DATA DEMO / SIMULASI'], ['Partner', `${state.partner.id} · ${state.partner.name}`], ['Filter', 'Tidak ada filter di F5-01 · semua booking referral'], ['Jumlah baris', String(rows.length)], ['Diekspor', HLX.nowWita()]];
+  if (fmt === 'xlsx') {
+    const widths = headers.map((h, i) => Math.min(40, Math.max(10, h.length + 2, ...shown.map(r => r[i].length + 2))));
+    const bytes = HLX.xlsx([{ name: table, rows: [headers, ...raw], widths }, { name: 'Info', rows: [['HAWK ERP · F5-01 Driver & Referral'], ['Tabel', table], ...meta], widths: [16, 60] }]);
+    HLX.download(file + '.xlsx', bytes, HLX.XLSX_MIME);
+    window.__drLastExport = { format: 'xlsx', rows: rows.length, file: file + '.xlsx', headers };
+    return `Excel dibuat: ${rows.length} baris · ${file}.xlsx`;
+  }
+  HLX.printTable({ title: `HAWK ERP · F5-01 Driver & Referral · ${table}`, meta, headers, rows: shown, foot: 'Data demo / simulasi. Ekspor tidak mengubah booking, status, atau komisi.' });
+  window.__drLastExport = { format: 'pdf', rows: rows.length, file: file + '.pdf', headers };
+  return `Laporan PDF disiapkan: ${rows.length} baris · pilih "Simpan sebagai PDF" di dialog cetak (${file}.pdf).`;
+}
 const budget = () => { const t = HAWK.totals(state); return metrics([['Pagu 7P', rp(state.budget)], ['Komitmen', rp(t.committed)], ['Realisasi', rp(t.actual)], ['Sisa', rp(t.remaining)]]) + card('Realisasi dan komitmen', bar('Realisasi', rp(t.actual), t.actual / state.budget) + bar('Komitmen', rp(t.committed), t.committed / state.budget) + `<p class="muted">Sisa = pagu − komitmen − realisasi. CMP-001 juga tampil sebagai baris budget Giant Spa Ubud Agustus 2026 di ${link('commercial-drill?metric=budget&outlet=ubud', 'Executive Summary')}.</p>`); };
 const requestForm = () => `<form class="workflow-form" data-submit="request"><label>Nominal pengajuan (Rp)<input name="amount" type="number" min="1" step="1" required value="2000000"></label><button class="btn">Ajukan MRF</button></form>`;
 const bookingForm = (mode = 'client') => {
@@ -5979,7 +6012,7 @@ function render(message = '', error = false) {
   const it0 = itemOf(id), cOv = REGISTRY[id]?.code?.(params);
   const it = it0 && cOv ? Object.assign([...it0], { 2: cOv }) : it0;
   document.title = `HAWK ERP · ${titleOf(id)}`;
-  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${(REGISTRY[id]?.purpose?.(params) || PURPOSE[id]) ? `<p>${REGISTRY[id]?.purpose?.(params) || PURPOSE[id]}</p>` : ''}</div>${REGISTRY[id]?.actions ? `<div class="actions">${REGISTRY[id].actions(params)}</div>` : ''}</header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
+  view.innerHTML = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#bridge">HAWK ERP</a><span>›</span><span>${portal || 'Demo integrasi'}</span>${it && it[2] ? `<span>›</span><span>${it[2]}</span>` : ''}</nav><header class="page-head">${it && it[2] ? `<span class="nv-tag">${it[2]}</span>` : ''}<div><h1 tabindex="-1">${titleOf(id)}</h1>${(REGISTRY[id]?.purpose?.(params) || PURPOSE[id]) ? `<p>${REGISTRY[id]?.purpose?.(params) || PURPOSE[id]}</p>` : ''}</div>${HEAD_ACTIONS[id] ? HEAD_ACTIONS[id](params) : ''}${REGISTRY[id]?.actions ? `<div class="actions" role="group" aria-label="Ekspor ${titleOf(id)}">${REGISTRY[id].actions(params)}</div>` : ''}</header>${it ? phaseBanner(it[2], it[3]) : ''}<p class="status" role="${error ? 'alert' : 'status'}"></p>` + screen(id, params);
   view.querySelector('.status').textContent = message;
   if (error) view.querySelector('.status').classList.add('error');
   setNav(false); renderRole();
@@ -6052,6 +6085,20 @@ view.addEventListener('click', (e) => {
   const input = { ...control.dataset }; delete input.action; delete input.after;
   if (control.dataset.text) input.action = control.dataset.text;
   apply(control.dataset.action, input, control.dataset.after);
+});
+view.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-dr-export]');
+  if (!b || b.disabled || drBusy) return;
+  const fmt = b.dataset.drExport;
+  drBusy = true;
+  view.querySelectorAll('[data-dr-export]').forEach(x => { x.disabled = true; x.setAttribute('aria-busy', 'true'); });
+  b.textContent = 'Menyiapkan…';
+  setTimeout(() => {
+    let msg, err = false;
+    try { msg = driverExport(fmt); } catch (error) { msg = `Ekspor gagal: ${error.message}. File tidak dibuat.`; err = true; window.__drLastExport = { format: fmt, rows: 0, file: null, error: error.message }; }
+    drBusy = false;
+    render(msg, err);
+  }, 30);
 });
 window.addEventListener('hashchange', () => { render(); view.querySelector('h1').focus(); });
 window.addEventListener('storage', (e) => { if (e.key === KEY) { try { state = JSON.parse(e.newValue) || HAWK.fresh(); } catch (er) { state = HAWK.fresh(); } render(); } });
