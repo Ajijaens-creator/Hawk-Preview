@@ -48,7 +48,7 @@ const UAT = {
 
   /* ---------------- struktur Demo Center ---------------- */
   const meta = await ev(() => ({ n: OPX.demo.scenarios.length, steps: OPX.demo.scenarios.reduce((a, s) => a + s.steps.length, 0), owner: OPX.demo.ownerTour.steps.length, ownerSep: !OPX.demo.scenarios.some(s => s.id === OPX.demo.ownerTour.id) }));
-  ok('F-OP11 sebelas skenario / 55 langkah (8 A02 + 3 A03)', meta.n === 11 && meta.steps === 55, `${meta.n} skenario · ${meta.steps} langkah`);
+  ok('F-OP11 dua belas skenario / 60 langkah (8 A02 + 4 A03)', meta.n === 12 && meta.steps === 60, `${meta.n} skenario · ${meta.steps} langkah`);
   ok('F-OP11 Owner tour sembilan langkah, terpisah dari skenario', meta.owner === 9 && meta.ownerSep);
   ok('F-OP11 halaman Demo Center berlabel per portal Operational', /OPERATIONAL/i.test(await p.textContent('#opx-root .dx-hero')));
   await shot('G4-V01-demo-center', true);

@@ -72,6 +72,12 @@ _old = "issues=H.scope(H.state.data.issues)"
 assert js.count(_old) == 1
 js = js.replace(_old, "issues=(H.visibleIssues?H.visibleIssues():H.scope(H.state.data.issues))", 1)
 
+# NP-OP01 UI Navigation Amendment (Aji 2026-11-23): 14 dashboard menjadi submenu sidebar "Dashboard Library"
+# (hawk-live/ops-shell.js). Panel navigasi krem di dalam halaman dihapus; area konten memakai lebar penuh.
+_m = re.search(r'<aside class="an-report-nav".*?</aside>', js, re.S)
+assert _m and js.count('<aside class="an-report-nav"') == 1
+js = js[:_m.start()] + js[_m.end():]
+
 head = '/* HAWK Operational · module "{n}" — diadaptasi dari paket Owner A02 v1.2 (tools/ops-from-prototype.py). DATA DEMO / SIMULASI. */\n'
 for chunk in js.split('/*@@OPXMODULE ')[1:]:
     n, body = chunk.split('@@*/', 1)

@@ -45,7 +45,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ?
   ok('Supervisor Ubud hanya melihat case outlet sendiri', await ev(() => OPX.cases.guest().every(c => c.outlet === 'CTR')));
 
   /* ---------- DX-OP09: treatment → feedback → case → verifikasi ---------- */
-  ok('Skenario baru DX-OP09..11 terdaftar (8 A02 + 3 A03)', await ev(() => ['guest-case', 'waste-opname', 'correction'].every(id => OPX.demo.getScenario(id)) && OPX.demo.scenarios.length === 11));
+  ok('Skenario baru DX-OP09..11 terdaftar (8 A02 + 3 A03)', await ev(() => ['guest-case', 'waste-opname', 'correction'].every(id => OPX.demo.getScenario(id)) && OPX.demo.scenarios.length === 12));
   await as('mgr-eni'); await ev(() => { OPX.state.outletId = 'CTR'; OPX.save(); });
   ok('DX-OP09 tersedia di Ubud', await ev(() => OPX.demo.availability('guest-case', 'CTR').ok), await ev(() => OPX.demo.availability('guest-case', 'CTR').reason));
   await ev(() => OPX.demo.start('guest-case', 'CTR')); await p.waitForTimeout(300);

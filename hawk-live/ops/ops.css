@@ -1165,3 +1165,50 @@ body.opx-page .side-field{display:none}
 .case-drawer .case-links { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
 .case-drawer .case-timeline { margin: 4px 0 0; padding-left: 18px; font-size: 13px; display: grid; gap: 6px; }
 .case-drawer .case-step { border-top: 1px solid var(--line, #e6e3dc); padding-top: 10px; }
+
+/* NP-OP01 UI Navigation Amendment (Aji 23 Nov 2026): Dashboard Library pindah ke submenu sidebar utama.
+   Panel navigasi krem di dalam halaman dihapus, area dashboard memakai lebar penuh. Judul dan deskripsi
+   dashboard tampil di header halaman (rute #op-analytics-<id>), jadi tidak diulang di dalam kartu. */
+.opx .an-workspace { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1700px) { .opx .an-workspace { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1320px) { .opx .an-workspace { grid-template-columns: minmax(0, 1fr); } }
+#opx-root[data-dash] .an-report-heading h2, #opx-root[data-dash] .an-report-heading p { display: none; }
+#opx-root[data-dash] .an-report-heading { align-items: center; }
+#nav .nav-items a.cur[href^="#op-analytics-"] { box-shadow: inset 3px 0 0 var(--gold, #C99A2E); color: var(--champagne, #E5C66A); font-weight: 600; }
+
+/* Dashboard Strategis (A03 Bab 07) di Dashboard Library: komposisi dari sumber yang sama, data sintetis */
+.st-page { display: grid; gap: 16px; }
+.st-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.st-eyebrow { display: block; font-size: 11px; letter-spacing: .12em; font-weight: 700; color: var(--gold-dark, #A67C1F); }
+.st-q { margin: 4px 0 0; font-size: 18px; font-weight: 600; color: var(--ink, #1A1A1A); }
+.st-meta, .st-foot { margin: 0; }
+.st-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.st-kpi { background: #fff; border: 1px solid var(--line, #e6e3dc); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; }
+.st-kpi small { font-size: 12px; color: var(--muted, #6b6b6b); }
+.st-kpi strong { font-size: 26px; line-height: 1.1; }
+.st-kpi span { font-size: 12px; color: var(--muted, #6b6b6b); }
+.st-kpi.warn { border-color: #e4a250; box-shadow: inset 3px 0 0 #e4a250; }
+.st-kpi.good { box-shadow: inset 3px 0 0 #2f7d4f; }
+.st-card .card-head { gap: 12px; flex-wrap: wrap; }
+.st-table td small { display: block; color: var(--muted, #6b6b6b); font-size: 12px; }
+.st-na { color: var(--muted, #6b6b6b); }
+.st-na small { font-size: 11px; }
+.st-attn { display: grid; gap: 10px; }
+.st-attn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 10px 12px; border: 1px solid #f0e2c0; background: #fffaf0; border-radius: 12px; }
+.st-attn-row > b { min-width: 180px; }
+.st-chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: #fbf2d9; color: #6b4e12; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #ecd9a6; }
+a.st-chip:hover { background: #f5e4b5; }
+.st-reasons { margin-bottom: 10px; gap: 6px; }
+.st-path { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
+.st-path span { padding: 6px 10px; border-radius: 10px; background: #f7f7f5; border: 1px solid var(--line, #e6e3dc); }
+.st-path b { color: var(--gold, #C99A2E); }
+.st-notice { margin: 0; }
+.st-link { background: none; border: 0; padding: 0; color: var(--gold-dark, #A67C1F); font-weight: 700; cursor: pointer; text-decoration: underline; }
+.st-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 14px 0; }
+.st-tile { display: grid; gap: 6px; align-content: start; padding: 16px; border-radius: 14px; border: 1px solid var(--line, #e6e3dc); background: #fff; color: inherit; text-decoration: none; }
+.st-tile:hover { border-color: var(--gold, #C99A2E); box-shadow: 0 4px 16px #4b371012; }
+.st-tile b { font-size: 16px; }
+.st-tile p { margin: 0; font-size: 13px; color: var(--muted, #6b6b6b); }
+@media (max-width: 1100px) { .st-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .st-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .st-kpis, .st-grid { grid-template-columns: minmax(0, 1fr); } .st-attn-row > b { min-width: 0; } .st-q { font-size: 16px; } }
+#nav .nav-items a.cur[href^="#op-strategic"] { box-shadow: inset 3px 0 0 var(--gold, #C99A2E); color: var(--champagne, #E5C66A); font-weight: 600; }

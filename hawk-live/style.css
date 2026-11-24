@@ -567,3 +567,15 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   #hl-print td.nw { white-space: nowrap; } /* ID, tanggal, angka pendek tidak dipatah */
   #hl-print .hl-print-foot { margin-top: 8px; font-size: 8.5pt; color: #333; }
 }
+.field-error { color: var(--bad); font-weight: 600; margin: 6px 0; flex-basis: 100%; }
+/* ---------- Ganti role DEMO dari chip akun kanan atas (role-switcher.js) ---------- */
+.topbar .role-chip[data-rs] { user-select: none; }
+.topbar .role-chip[data-rs]:hover { border-color: var(--gold, #c99a2e); }
+.topbar .role-chip[data-rs]:focus-visible { outline: 2px solid var(--champagne, #e5c66a); outline-offset: 2px; }
+.topbar .role-chip[data-rs]::after { content: '⌄'; color: var(--champagne, #e5c66a); font-size: 12px; margin-left: 2px; }
+.rs-pop { color: #1a1a1a; }
+.rs-pop .rs-pill { margin-left: auto; }
+.rs-pop .rs-grp { padding: 8px 14px 4px; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--bronze, #8b6914); background: #faf8f2; border-bottom: 1px solid var(--line-2, #eee9dc); }
+.rs-pop .pop-item:focus-visible { outline: 2px solid var(--gold, #c99a2e); outline-offset: -2px; }
+.rs-pop .rs-note { cursor: default; }
+@media (max-width: 720px) { .topbar .role-chip[data-rs]::after { display: none; } }

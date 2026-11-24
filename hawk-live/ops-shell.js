@@ -13,7 +13,11 @@ const esc = HL.esc;
 const OPEN = ['roadmap', 'validation', 'demo'];
 const POS_URL = H.existingPosUrl;
 const routeOf = (p) => p === 'demo' ? 'ops-dx' : 'op-' + p;
-const pageOf = (r) => r === 'ops-dx' ? 'demo' : (r && r.startsWith('op-') ? r.slice(3) : null);
+const DASH = 'op-analytics-'; /* rute submenu Dashboard Library: #op-analytics-<id dashboard> */
+const dashOf = (r) => r && r.startsWith(DASH) ? r.slice(DASH.length) : null;
+const STRAT = 'op-strategic-'; /* Dashboard Strategis (A03 Bab 07) di Dashboard Library: #op-strategic-<id> */
+const stratOf = (r) => r && r.startsWith(STRAT) ? r.slice(STRAT.length) : null;
+const pageOf = (r) => r === 'ops-dx' ? 'demo' : dashOf(r) ? 'analytics' : stratOf(r) ? 'strategic' : (r && r.startsWith('op-') ? r.slice(3) : null);
 const allowed = (p) => OPEN.includes(p) || H.has(p);
 const firstAllowed = () => H.navItems.find(v => v[0] !== 'pos' && H.has(v[0]))?.[0] || 'roadmap';
 H.allowed = allowed;
@@ -32,7 +36,7 @@ H.goPage = (id) => {
   if (!H.pages[id]) id = 'dashboard';
   if (!allowed(id)) { H.toast('Menu ini tidak termasuk akses akun demo Anda.'); id = firstAllowed(); }
   H.state.page = id; H.ui.mobileOpen = false; H.save();
-  const want = '#' + routeOf(id);
+  const want = '#' + (id === 'analytics' && H.dashRoute ? H.dashRoute() : routeOf(id));
   if (location.hash.split('?')[0] !== want) location.hash = want; else H.mountPage();
 };
 
@@ -77,7 +81,13 @@ function roleChip(u) {
 function syncNav() {
   const nav = document.getElementById('nav');
   if (!nav) return;
-  nav.querySelectorAll('a[href^="#op-"]').forEach(a => { const p = pageOf(a.getAttribute('href').slice(1)); if (p && !OPEN.includes(p)) a.hidden = !H.has(p); });
+  nav.querySelectorAll('a[href^="#op-"]').forEach(a => { const r = a.getAttribute('href').slice(1), p = pageOf(r), d = dashOf(r); if (p && !OPEN.includes(p)) a.hidden = !H.has(p) || (!!d && !!H.analytics && !H.analytics.canViewDashboard(d)) || (!!stratOf(r) && !!H.strategic && !H.strategic.canView(stratOf(r))); });
+  /* submenu Dashboard Library aktif = dashboard yang sedang dibuka (juga lewat rute lama #op-analytics) */
+  const r = HL.parseHash().id;
+  if (r === 'op-analytics' || dashOf(r)) {
+    const want = '#' + (H.dashRoute ? H.dashRoute() : r);
+    nav.querySelectorAll(`a[href^="#${DASH}"]`).forEach(a => { const on = a.getAttribute('href') === want; a.classList.toggle('cur', on); if (on) { a.setAttribute('aria-current', 'page'); const sec = a.closest('.nav-sec'); if (sec && !sec.classList.contains('open')) { sec.classList.add('open'); sec.querySelector('.nav-sec-btn')?.setAttribute('aria-expanded', 'true'); } } else a.removeAttribute('aria-current'); });
+  }
   nav.querySelectorAll(`a[href="${POS_URL}"]`).forEach(a => { a.hidden = !H.has('pos'); });
   nav.querySelectorAll('.nav-sec').forEach(sec => { sec.hidden = ![...sec.querySelectorAll('.nav-grp-kids a')].some(a => !a.hidden); });
 }
@@ -132,6 +142,46 @@ const register = (p) => {
   HL.REGISTRY[routeOf(p)] = fn;
 };
 Object.keys(H.pages).forEach(register);
+if (H.analytics && H.pages.analytics) {
+  const A = H.analytics, defOf = (id) => (A.definitions || []).find(d => d.id === id);
+  H.dashRoute = () => { const v = A.visibleDefinitions ? A.visibleDefinitions() : (A.definitions || []); const id = v.find(d => d.id === H.ui.analyticsId)?.id || v[0]?.id; return id ? DASH + id : routeOf('analytics'); };
+  (A.definitions || []).forEach(d => {
+    const fn = () => {
+      H.ui = H.ui || {};
+      if (A.canViewDashboard(d.id)) {
+        if (H.ui.analyticsId !== d.id) { H.ui.analyticsId = d.id; H.ui.analyticsTab = 'dashboard'; H.ui.analyticsQuery = ''; }
+        H.ui.analyticsDenied = null;
+      } else H.ui.analyticsDenied = d.id;
+      queueMicrotask(H.mountPage);
+      return `<div class="opx" id="opx-root" data-page="analytics" data-dash="${esc(d.id)}"><p class="muted small">Memuat dashboard…</p></div>`;
+    };
+    fn.title = () => d.title;
+    fn.purpose = () => esc(d.description || '');
+    fn.code = () => PHASE('analytics');
+    HL.REGISTRY[DASH + d.id] = fn;
+  });
+  register('analytics');
+  if (H.strategic && H.pages.strategic) {
+    const sBase = HL.REGISTRY[routeOf('strategic')];
+    HL.REGISTRY[routeOf('strategic')] = Object.assign((...a) => { H.ui.strategicId = null; return sBase(...a); }, sBase);
+    H.strategic.VIEWS.forEach(v => {
+      const fn = () => { H.ui = H.ui || {}; H.ui.strategicId = v.id; queueMicrotask(H.mountPage); return `<div class="opx" id="opx-root" data-page="strategic" data-strategic="${esc(v.id)}"><p class="muted small">Memuat dashboard…</p></div>`; };
+      fn.title = () => v.title; fn.purpose = () => esc(v.q); fn.code = () => PHASE('strategic');
+      HL.REGISTRY[STRAT + v.id] = fn;
+    });
+  }
+  const regBase = HL.REGISTRY[routeOf('analytics')];
+  HL.REGISTRY[routeOf('analytics')] = Object.assign((...a) => { H.ui.analyticsDenied = null; return regBase(...a); }, regBase);
+  /* dashboard di luar RBAC akun aktif: tampilkan penolakan, bukan dashboard lain */
+  const base = H.pages.analytics.render.bind(H.pages.analytics);
+  H.pages.analytics.render = () => {
+    const dn = H.ui && H.ui.analyticsDenied;
+    if (dn && dashOf(HL.parseHash().id) === dn) { const u = H.user(); return `<section class="card opx-denied" role="alert"><div class="card-head"><div><h2 class="card-title">Tidak berwenang</h2><p class="muted small">${esc(u.name)} · ${esc(u.title)} tidak memiliki akses ke dashboard “${esc(defOf(dn)?.title || dn)}” pada matriks akses demo.</p></div>${H.badge('Ditolak', 'red')}</div><p class="small">Pilih dashboard lain di submenu Dashboard Library. Akses frontend ini hanya simulasi; pembatasan sebenarnya diverifikasi di backend.</p></section>`; }
+    return base();
+  };
+  /* tombol lama "analytics-open" kini berpindah lewat submenu/rute yang sama */
+  H.actions['analytics-open'] = (el) => { if (!H.has('analytics')) return; if (!A.canViewDashboard(el.dataset.id)) return H.toast('Dashboard tidak termasuk lingkup akun ini.'); location.hash = '#' + DASH + el.dataset.id; };
+}
 
 /* sidebar: urutan dan grup prototype v1.1; nomor fase tampil sebagai kode.
    Keputusan Owner A03: Dashboard Kinerja berada di grup sendiri "Dashboard Library" (14 laporan = pemilih internal,
@@ -140,11 +190,21 @@ const items = [['ops-dx', 'Demo Experience Center', 'DX-OPS', 'ready']];
 const NAV = H.navItems.filter(v => v[0] !== 'analytics');
 const AN = H.navItems.find(v => v[0] === 'analytics');
 if (AN) { const at = NAV.findIndex((v, i) => i > 0 && v[4]); NAV.splice(at < 0 ? NAV.length : at, 0, [AN[0], AN[1], AN[2], AN[3], 'DASHBOARD LIBRARY']); }
+/* NP-OP01 UI Navigation Amendment (Aji 23 Nov 2026): Dashboard Library = menu expandable di sidebar utama; 14 dashboard
+   menjadi submenu langsung (satu klik membuka dashboard di area konten). Panel navigasi krem di dalam halaman dihapus.
+   Sumber data, rumus, filter, entry, verifikasi dan insight tetap milik halaman Dashboard Kinerja yang sama. */
+const DEFS = (H.analytics && H.analytics.definitions) || [];
 NAV.forEach(([id, title, , num, group]) => {
   if (group) items.push(['-', group === 'DASHBOARD LIBRARY' ? 'Dashboard Library' : group.charAt(0) + group.slice(1).toLowerCase()]);
   if (id === 'pos') items.push([POS_URL, 'POS & Receptionist', 'F-OP03', 'ready']);
+  else if (id === 'analytics' && DEFS.length) {
+    DEFS.forEach(d => items.push([DASH + d.id, d.navLabel || d.title, PHASE(id), 'ready']));
+    /* Owner 23 Nov 2026: dashboard tambahan (opsi strategis A03 Bab 07) ikut di Dashboard Library sebagai sub-grup */
+    if (H.strategic && H.pages.strategic) { items.push([routeOf('strategic'), H.pages.strategic.title, PHASE('strategic'), 'ready']); H.strategic.VIEWS.forEach(v => items.push([STRAT + v.id, v.nav, PHASE('strategic'), 'ready', '', true])); }
+  }
   else items.push([routeOf(id), title, PHASE(id), 'ready']);
 });
+if (DEFS.length) items.push([routeOf('analytics'), H.pages.analytics?.title || 'Dashboard Kinerja', PHASE('analytics'), 'hidden']);
 items.push(['-', 'Developer handoff'], ['op-roadmap', 'Peta 12 Fase', PHASE('roadmap'), 'ready'], ['op-validation', 'Validation Lab', PHASE('validation'), 'ready']);
 items.push(['op-pos', 'POS & Receptionist · gateway', 'F-OP03', 'hidden'], ['pos', 'Operational & POS (sandbox lintas portal)', 'F4-07', 'hidden'], ['inventory', 'Inventory (sandbox lama)', '', 'hidden']);
 HL.PORTALS.Operational.desc = 'Kendali outlet, POS & Receptionist, Daily Operations, tugas, ruang, inventory, RACE dan budget';
