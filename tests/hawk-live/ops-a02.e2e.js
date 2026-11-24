@@ -37,8 +37,8 @@ const HELPERS = () => {
   /* ---------------- struktur ---------------- */
   const defs = await ev(() => T.A().definitions.map(d => [d.id, d.title]));
   ok('14 dashboard dalam urutan referensi + 13 kelompok sumber bersama', defs.length === 14 && (await ev(() => Object.keys(T.A().schemas).length)) === 13, defs.map(d => d[1]).join(' · '));
-  ok('Dashboard Kinerja di grup sendiri "Dashboard Library", tepat setelah grup Kendali outlet', await ev(() => { const sec = [...document.querySelectorAll('#nav .nav-sec')]; const i = sec.findIndex(x => /Dashboard Library/.test(x.querySelector('.nav-sec-btn').textContent)); return i === 1 && /Kendali outlet/i.test(sec[0].querySelector('.nav-sec-btn').textContent) && [...sec[i].querySelectorAll('a')].map(a => a.getAttribute('href')).join() === '#op-analytics'; }));
-  ok('Hanya satu menu laporan (14 laporan = pemilih internal)', (await visibleNav()).filter(h => /analytics/.test(h)).length === 1);
+  ok('Dashboard Kinerja di grup sendiri "Dashboard Library", tepat setelah grup Kendali outlet', await ev(() => { const sec = [...document.querySelectorAll('#nav .nav-sec')]; const i = sec.findIndex(x => /Dashboard Library/.test(x.querySelector('.nav-sec-btn').textContent)); return i === 1 && /Kendali outlet/i.test(sec[0].querySelector('.nav-sec-btn').textContent) && [...sec[i].querySelectorAll('a[href^="#op-analytics-"]')].map(a => a.getAttribute('href')).join() === T.A().definitions.map(d => '#op-analytics-' + d.id).join(); }));
+  ok('Amandemen navigasi 23 Nov: 14 dashboard = 14 submenu Dashboard Library (tanpa pemilih internal)', (await visibleNav()).filter(h => /analytics/.test(h)).length === 14);
   ok('Command Center, Demo Center, RACE, Budget, Communication, Team & Access tetap ada', ['#op-dashboard', '#ops-dx', '#op-race', '#op-budget', '#op-communication', '#op-settings'].every(async h => (await visibleNav()).includes(h)));
   ok('POS & Receptionist tetap ke POS existing (tab baru)', await ev(u => { const a = document.querySelector(`#nav a[href="${u}"]`); return !!a && a.target === '_blank'; }, POS));
 
@@ -128,7 +128,7 @@ const HELPERS = () => {
 
   /* ---------------- Demo Center A02 ---------------- */
   await go('ops-dx');
-  ok('Demo Center: 11 skenario (8 A02 + 3 A03) / 6 peran / 55 langkah, DX-OP08 tersedia', await ev(() => { const c = OPX.demo.counts(); return c.scenarios === 11 && c.roles === 6 && c.steps === 55 && OPX.demo.getScenario('dashboard-source')?.code === 'DX-OP08'; }));
+  ok('Demo Center: 12 skenario (8 A02 + 4 A03) / 6 peran / 60 langkah, DX-OP08 tersedia', await ev(() => { const c = OPX.demo.counts(); return c.scenarios === 12 && c.roles === 6 && c.steps === 60 && OPX.demo.getScenario('dashboard-source')?.code === 'DX-OP08'; }));
 
   /* ---------------- regresi Command Center & POS ---------------- */
   await go('op-dashboard'); ok('Command Center tetap tersedia', /Command Center/.test(await p.textContent('.page-head h1')));

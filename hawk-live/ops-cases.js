@@ -30,6 +30,7 @@ const isLead = () => LEAD.includes(u().role);
 const visible = () => H.scope(H.state.data.issues).filter(i => isLead() || u().role === 'supervisor' || i.dept === u().dept || i.reporter === u().id || i.pic === u().id);
 const isOpen = (i) => i.status !== 'resolved' && !['closed', 'done'].includes(i.status);
 H.cases = { SLA, P7, STATES, visible, open: () => visible().filter(isOpen), guest: () => visible().filter(i => i.kind === 'guest') };
+H.cases.sla = (c) => sla(c); /* dipakai Dashboard Strategis (Customer Focus) */
 H.visibleIssues = visible; /* dipakai Command Center & Communication Hub (patch generator) */
 
 const hours = (a, b) => (new Date(b || NOW()) - new Date(a)) / 36e5;
