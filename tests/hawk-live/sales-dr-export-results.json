@@ -1,0 +1,252 @@
+{
+ "at": "2026-11-24T03:25:55.859Z",
+ "pass": 49,
+ "fail": 0,
+ "out": [
+  {
+   "name": "TC-01 Tombol Export Excel & PDF ada di header halaman (kanan atas, sejajar judul)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-01 Desktop: tombol rata kanan header, sebaris judul",
+   "ok": true,
+   "info": "{\"right\":0,\"top\":10,\"left\":true}"
+  },
+  {
+   "name": "TC-01 Label tombol tepat",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-10 Tabel kosong: kedua tombol disabled",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol export hanya di F5-01 (tidak ada di #sales)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol export hanya di F5-01 (tidak ada di #reservation)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol export hanya di F5-01 (tidak ada di #commission)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Tombol export hanya di F5-01 (tidak ada di #pos)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-19 Kartu driver tampil (Perjanjian belum disetujui)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-19 Status driver Aktif setelah aktivasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-20 Dropdown Slot HAWK berisi slot kosong",
+   "ok": true,
+   "info": "11.00,13.00,15.00"
+  },
+  {
+   "name": "TC-21 Konfirmasi booking membuat 2 booking referral",
+   "ok": true,
+   "info": "[[\"BK-002\",\"13.00\",\"confirmed\"],[\"BK-003\",\"11.00\",\"confirmed\"]]"
+  },
+  {
+   "name": "TC-10 Ada data: tombol aktif",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-02 File .xlsx terunduh dengan nama Driver_Referral_YYYY-MM-DD.xlsx (tanggal WITA)",
+   "ok": true,
+   "info": "Driver_Referral_2026-11-24.xlsx"
+  },
+  {
+   "name": "TC-02 File .xlsx valid (dibuka openpyxl), sheet Booking referral + Info",
+   "ok": true,
+   "info": "['Booking referral', 'Info'] 3 5"
+  },
+  {
+   "name": "TC-04 Kolom & urutan = tabel existing",
+   "ok": true,
+   "info": "Booking|Lead|Slot|Nilai|Status"
+  },
+  {
+   "name": "TC-15 Jumlah baris = tabel layar (2)",
+   "ok": true,
+   "info": "2 vs 2"
+  },
+  {
+   "name": "TC-06 Semua booking referral ikut, booking non-referral tidak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-04 Isi sel sama dengan layar",
+   "ok": true,
+   "info": "[[\"BK-002\",\"\",\"13.00\",750000,\"paid\"],[\"BK-003\",\"\",\"11.00\",750000,\"confirmed\"]]"
+  },
+  {
+   "name": "TC-13 Nilai tersimpan sebagai angka = nilai sumber",
+   "ok": true,
+   "info": "750000"
+  },
+  {
+   "name": "TC-04 Slot tetap teks (13.00, bukan 13)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-04 Status mentah seperti layar (paid, confirmed)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Sheet Info: judul modul, DATA DEMO, WITA, jumlah baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-17 Tidak ada field internal (komisi, payout, sumber, kanal)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pesan sukses tampil",
+   "ok": true,
+   "info": "Excel dibuat: 2 baris · Driver_Referral_2026-11-24.xlsx"
+  },
+  {
+   "name": "TC-08 Satu tabel → satu sheet data (+ Info)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-03 PDF: dialog cetak dibuka (Simpan sebagai PDF), tabel 2 baris",
+   "ok": true,
+   "info": "rows 2"
+  },
+  {
+   "name": "TC-09 PDF: judul modul + nama tabel, header kolom",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-03 PDF: nilai berformat rupiah seperti layar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-03 Mode cetak dilepas setelah cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "Pesan PDF tampil",
+   "ok": true,
+   "info": "Laporan PDF disiapkan: 2 baris · pilih \"Simpan sebagai PDF\" di dialog cetak (Driver_Referral_2026-11-24.pdf)."
+  },
+  {
+   "name": "TC-23/24/25 Export Excel + PDF tidak mengubah state (booking, status, komisi, payout)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-11 Loading: teks \"Menyiapkan…\" & semua tombol disabled + aria-busy",
+   "ok": true,
+   "info": "{\"txt\":\"Menyiapkan…\",\"dis\":true,\"dl\":1,\"prints\":1}"
+  },
+  {
+   "name": "TC-11 Klik ganda tidak membuat file kedua",
+   "ok": true,
+   "info": "{\"txt\":\"Menyiapkan…\",\"dis\":true,\"dl\":1,\"prints\":1}"
+  },
+  {
+   "name": "TC-11 Tombol aktif kembali setelah selesai",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-12 Error: pesan jelas (role=alert), tidak ada file",
+   "ok": true,
+   "info": "Ekspor gagal: simulasi. File tidak dibuat."
+  },
+  {
+   "name": "TC-14 47 baris diekspor (tanpa pagination)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-18 Excel: teks diawali = diberi awalan ' (anti formula)",
+   "ok": true,
+   "info": "'=HYPERLINK(\"htt"
+  },
+  {
+   "name": "TC-18 Excel: teks diawali + diberi awalan '",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-18 Excel: tidak ada elemen formula <f>",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-14 PDF 47 baris, header tabel berulang tiap halaman (thead)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-18 PDF: HTML di-escape (tidak ada <b> mentah)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-14 CSS cetak: header tabel berulang & baris tidak terpotong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-24/27 Commission Review: komisi 10% booking referral = Rp 75.000",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-25 Pembayaran komisi tetap lewat Finance (bukan dari export)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-22 Tabel Booking referral tetap tampil status paid",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-26 Navigasi portal Sales: menu Driver & Referral ada",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-29 Mobile 390px: tombol terlihat di bawah judul, tanpa overlap & tanpa scroll horizontal",
+   "ok": true,
+   "info": "{\"ow\":false,\"below\":true,\"inside\":true}"
+  },
+  {
+   "name": "Tidak ada error konsol/JS",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
