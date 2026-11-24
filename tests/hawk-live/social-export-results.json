@@ -1,0 +1,257 @@
+{
+ "at": "2026-11-24T03:43:47.531Z",
+ "pass": 50,
+ "fail": 0,
+ "out": [
+  {
+   "name": "T01 calendar: Export Excel & PDF di header, sejajar & kanan judul",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 inbox: Export Excel & PDF di header, sejajar & kanan judul",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 analytics: Export Excel & PDF di header, sejajar & kanan judul",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 units: Export Excel & PDF di header, sejajar & kanan judul",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 Layar lain tidak mendapat tombol header (KOL)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Calendar: nama file Social_Media_Publishing_Calendar_YYYYMMDD",
+   "ok": true,
+   "info": "Social_Media_Publishing_Calendar_20261124.xlsx"
+  },
+  {
+   "name": "T02 Calendar: satu workbook, sheet Ringkasan + Jadwal + Info",
+   "ok": true,
+   "info": "Ringkasan status|Jadwal publikasi|Info"
+  },
+  {
+   "name": "T02 Ringkasan status = chip layar",
+   "ok": true,
+   "info": "Published · 1 | Scheduled / Upcoming · 2 | Overdue · 0 | Draft · 0"
+  },
+  {
+   "name": "T02 Jadwal: jumlah baris = layar",
+   "ok": true,
+   "info": "3/3"
+  },
+  {
+   "name": "T02 Jadwal: waktu, akun, platform, status, post ID sama dengan layar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Header kolom Waktu (WITA)…Post ID",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Info: periode aktif, platform, grafik tidak tersedia, WITA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 File .xlsx valid (openpyxl)",
+   "ok": true,
+   "info": "['Ringkasan status', 'Jadwal publikasi', 'Info']"
+  },
+  {
+   "name": "T03 Hari Ini: 2 Scheduled tetap ada, Published 0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T03 Filter platform TikTok → 1 jadwal (PUB-003)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T04 Pilihan belum diterapkan tidak memengaruhi export (masih Bulan Ini, semua platform, 3 baris)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Inbox: nama file & sheet",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Inbox: jumlah percakapan = layar (5)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Inbox: Masuk, Dari, Pesan sama dengan layar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Inbox: status CONV-005 Disembunyikan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Inbox: tidak ada field tersembunyi (ID CONV-, ACC-, utm)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Inbox kosong → kedua tombol disabled",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Analytics: sheet KPI platform, Top content, Publish vs aset, Info",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 KPI per platform = kartu layar (reach, interactions, followers, kunjungan, akun)",
+   "ok": true,
+   "info": "[[\"Instagram\",\"2026-08\",298000,23800],[\"TikTok\",\"2026-08\",241000,19800],[\"Facebook\",\"2026-08\",38000,1500]]"
+  },
+  {
+   "name": "T06 ER (%) = interactions ÷ reach",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Top content = tabel layar",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 PDF Analytics: 3 bagian (KPI, Top content, Publish vs aset)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Analytics lintas bulan: tombol tetap aktif (Top content)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Lintas bulan: tidak ada sheet KPI platform, catatan dijelaskan",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Units: baris = layar, angka sama",
+   "ok": true,
+   "info": "[[\"Jaens Spa\",4,61000,3700,3110],[\"Jaens Essence\",1,9600,260,210]]"
+  },
+  {
+   "name": "T07 Units: nama file",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Units lintas bulan → disabled",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Units tanpa data (Juni) → disabled",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF calendar: dialog cetak, 2 bagian, judul, periode, thead",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF inbox: dialog cetak, 1 bagian, judul, periode, thead",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF analytics: dialog cetak, 3 bagian, judul, periode, thead",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF units: dialog cetak, 1 bagian, judul, periode, thead",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 PDF Calendar: KPI ringkasan status + tabel jadwal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Excel: teks diawali = disimpan utuh sebagai teks bergaya quotePrefix",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Excel: handle @akun utuh tanpa apostrof",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Excel: tidak ada elemen formula",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 PDF: HTML di-escape",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T10 Klik ganda hanya menghasilkan 1 file",
+   "ok": true,
+   "info": "1"
+  },
+  {
+   "name": "T11 Ekspor tidak mengubah data demo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Terapkan masih bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Reset filter masih bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Alihkan ke Sales masih bekerja",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Export mengikuti status terbaru (Dialihkan ke Sales + lead)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 Mobile 390px: tombol terlihat, tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T13 Tidak ada error konsol/JS",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
