@@ -106,14 +106,38 @@
     },
   };
 
-  /* ---------- NV-33 Supplier Master ---------- */
+  /* ---------- NV-33 Supplier Master ----------
+     NP-HAWK-FIN-NV33-001: filter kategori (single select, dinamis dari master supplier, A–Z) + Search existing (AND),
+     Reset, jumlah hasil terpisah, empty state. State filter di ctx.L (memori halaman, hilang saat reload). */
+  const supCat = (c) => (typeof c === 'string' ? c.trim() : ''); // kategori kosong / bukan teks = tanpa kategori
+  const supCatKey = (c) => supCat(c).toLowerCase(); // "Linen" dan " linen" = satu kategori
+  const supCats = (list) => {
+    const m = new Map();
+    list.forEach((x) => { const k = supCatKey(x.cat); if (k && !m.has(k)) m.set(k, supCat(x.cat)); });
+    return [...m.entries()].sort((a, b) => a[1].localeCompare(b[1], 'id', { sensitivity: 'base' }));
+  };
+  const supRowText = (x) => (x.name + ' ' + x.cat).toLowerCase(); // aturan Search existing (tidak diubah)
+  const supMatch = (rowText, catKey, L) => rowText.includes((L.q || '').toLowerCase()) && (!L.cat || catKey === L.cat);
+  const supCountText = (n, total) => `Menampilkan ${n} dari ${total} supplier`;
+  const supApply = (L) => {
+    const rows = document.querySelectorAll('#sup-list tr[data-row]');
+    let n = 0;
+    rows.forEach((r) => { const on = supMatch(r.dataset.row, r.dataset.cat, L); r.style.display = on ? '' : 'none'; if (on) n++; });
+    const c = document.getElementById('sup-count');
+    if (c) c.textContent = supCountText(n, rows.length);
+    const e = document.getElementById('sup-empty');
+    if (e) e.style.display = rows.length && !n ? '' : 'none';
+  };
   V[33] = {
     render(ctx) {
       const { s, L } = ctx;
       const cur = L.t || 'list';
       const list = s.suppliers;
+      const cats = supCats(list);
+      if (L.cat && !cats.some(([k]) => k === L.cat)) L.cat = ''; // kategori tersimpan sudah tidak ada → Semua kategori
+      const shown = list.filter((x) => supMatch(supRowText(x), supCatKey(x.cat), L)).length;
       return `${ui.tabs('t', [['list', 'Daftar supplier', list.length], ['perf', 'Kinerja supplier']], cur)}
-        ${cur === 'list' ? `<div class="card"><input class="inp" placeholder="Cari supplier / kategori…" data-in="flt" style="max-width:360px;margin-bottom:10px">${ui.table(
+        ${cur === 'list' ? `<div class="card"><div class="row" style="margin-bottom:10px;align-items:center"><input class="inp" placeholder="Cari supplier / kategori…" data-in="flt" value="${esc(L.q || '')}" style="max-width:360px" aria-label="Cari supplier / kategori"><select class="inp" id="sup-cat" data-ch="supCat" style="max-width:240px" aria-label="Kategori supplier"><option value="">Semua kategori</option>${cats.map(([k, label]) => `<option value="${esc(k)}" ${k === L.cat ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select><button class="btn sm ghost" data-a="supReset" id="sup-reset">Reset</button><span class="small muted" id="sup-count" aria-live="polite" style="margin-left:auto">${supCountText(shown, list.length)}</span></div><div id="sup-list">${ui.table(
           [
             { h: 'Kode', f: (x) => ui.id(x.id) },
             { h: 'Nama', f: (x) => `<b>${esc(x.name)}</b><div class="tiny muted">${esc(x.city)}</div>` },
@@ -125,15 +149,27 @@
             { h: 'Status', f: (x) => ui.status(x.status) },
           ],
           list,
-          { rowAttr: (x) => `data-row="${esc((x.name + ' ' + x.cat).toLowerCase())}"` }
-        )}<p class="tiny muted" style="margin:8px 0 0">Master supplier = <b>Cards</b> di HAWK (kolom CARD) ${ui.intBadge('TO VERIFY')}. Data supplier fiktif (DEMO).</p></div>`
+          {
+            rowAttr: (x) => `data-row="${esc(supRowText(x))}" data-cat="${esc(supCatKey(x.cat))}"${supMatch(supRowText(x), supCatKey(x.cat), L) ? '' : ' style="display:none"'}`,
+            foot: list.length ? `<td colspan="8" class="empty" id="sup-empty" ${shown ? 'style="display:none"' : ''}>Supplier tidak ditemukan</td>` : '',
+          }
+        )}</div><p class="tiny muted" style="margin:8px 0 0">Master supplier = <b>Cards</b> di HAWK (kolom CARD) ${ui.intBadge('TO VERIFY')}. Data supplier fiktif (DEMO).</p></div>`
         : `<div class="grid g-1-2"><div class="card" style="text-align:center"><h3>Rata-rata kinerja supplier</h3>${ui.gauge(U.sum(list, (x) => x.rating) / list.length / 5, 'skor / 5')}<b style="font-size:24px">${U.num(U.sum(list, (x) => x.rating) / list.length, 1)} / 5</b></div>
           <div class="card"><h3>On-time delivery & rating</h3>${list.map((x) => `<div class="row" style="padding:6px 0;flex-wrap:nowrap"><span class="small" style="width:220px">${esc(x.name)}</span><div style="flex:1">${ui.bar(x.onTime, x.onTime >= 0.9 ? 'ok' : 'warn')}</div><span class="small num" style="width:60px">${U.pct(x.onTime)}</span></div>`).join('')}</div></div>`}`;
     },
     actions: {
-      flt(el) {
-        const v = el.value.toLowerCase();
-        document.querySelectorAll('tr[data-row]').forEach((r) => (r.style.display = r.dataset.row.includes(v) ? '' : 'none'));
+      flt(el, ctx) {
+        ctx.L.q = el.value;
+        supApply(ctx.L);
+      },
+      supCat(el, ctx) {
+        ctx.L.cat = el.value;
+        supApply(ctx.L);
+      },
+      supReset(el, ctx) {
+        ctx.L.q = '';
+        ctx.L.cat = '';
+        ctx.rerender();
       },
     },
   };

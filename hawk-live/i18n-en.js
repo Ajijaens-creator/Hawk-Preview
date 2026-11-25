@@ -273,5 +273,7 @@ window.HAWK_I18N_EN = Object.assign(window.HAWK_I18N_EN || {}, {
   'Rata-rata waktu per tahap': 'Average time per stage', 'PFHI — komponen': 'PFHI — components', 'Minta update': 'Request update', 'Eskalasi': 'Escalate', 'Catat alasan *': 'Record reason *', 'Selesaikan': 'Resolve',
   'Lihat perjalanan ›': 'View journey ›', 'Heatmap aging × tahap': 'Aging × stage heatmap', '<1 hari': '<1 day', '>3 hari': '>3 days', 'Tren tepat waktu': 'On-time trend', 'Tepat janji': 'On promise',
   'Alasan keterlambatan': 'Delay reasons', 'Pesanan dalam filter': 'Orders in filter', 'Barang': 'Goods', 'Terpenuhi': 'Fulfilled', 'Tahap aktif': 'Active stage', 'Umur': 'Age', 'Perjalanan ›': 'Journey ›',
-  'Kebijakan SLA': 'SLA policy', 'Berisiko ≥': 'At risk ≥', 'Tagihan terbuka': 'Open invoices', 'Lainnya': 'Other'
+  'Kebijakan SLA': 'SLA policy', 'Berisiko ≥': 'At risk ≥', 'Tagihan terbuka': 'Open invoices', 'Lainnya': 'Other',
+  /* ===== Finance NV-33 Supplier Master (NP-HAWK-FIN-NV33-001) ===== */
+  'Supplier tidak ditemukan': 'Supplier not found', 'Kategori supplier': 'Supplier category', 'Cari supplier / kategori…': 'Search supplier / category…'
 });
