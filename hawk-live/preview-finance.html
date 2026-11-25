@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-25T05:41:48.337Z">
+<meta name="hawk-standalone" content="2026-11-25T06:23:23.960Z">
 <meta name="robots" content="noindex, nofollow">
 <title>HAWK ERP · Finance</title>
 <style>
@@ -1814,6 +1814,11 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .rs-pop .pop-item:focus-visible { outline: 2px solid var(--gold, #c99a2e); outline-offset: -2px; }
 .rs-pop .rs-note { cursor: default; }
 @media (max-width: 720px) { .topbar .role-chip[data-rs]::after { display: none; } }
+/* HRD F7-NV05 Slip Gaji: Search + tombol X (NP-HAWK-HRD-F7-001) */
+#view .hr-pay-search .hr-search-box input[type=search] { padding-right: 32px; }
+.hr-pay-search input[type=search]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+.hr-search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 50%; background: transparent; color: var(--ink-2); font-size: 18px; line-height: 1; cursor: pointer; }
+.hr-search-clear:hover, .hr-search-clear:focus-visible { background: var(--line); color: var(--ink); }
 
 </style>
 <link rel="stylesheet" href="ops/ops.css">
@@ -7874,8 +7879,13 @@ function slips(params) {
   }
   const ls = HR7.batchLines(h, P).filter(l => inScope(l, params.scope) && (!params.pay || (b?.payments?.[l.emp]?.status || (b?.status === 'Dikunci' ? 'Siap Bayar' : 'Belum siap')) === params.pay));
   const st = (l) => b?.payments?.[l.emp]?.status || (b?.status === 'Dikunci' ? 'Siap Bayar' : 'Belum siap');
-  return demo() + perBar('hrd-pay-slip', params) + `<form id="filters" class="filters" aria-label="Filter slip"><input type="hidden" name="period" value="${P}">${scopeSel(params)}<label>Status bayar<select name="pay"><option value="">Semua</option>${['Siap Bayar', 'Sudah Bayar', 'Sebagian', 'Gagal', 'Belum siap'].map(s => `<option ${params.pay === s ? 'selected' : ''}>${s}</option>`).join('')}</select></label><button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
-    (ls.length ? card(`Slip · ${ls.length} orang · total THP ${rp(HR7.totals(ls).thp)}`, `<p><button type="button" class="btn ghost sm" data-action="hr:noop-download" disabled title="Simulasi">Unduh massal slip (simulasi, Manager HRD)</button> · Slip tidak tetap: ${chip('Insentif pelatih Hot Stone · SLP-NT-2611-01', 'planned')}</p>` + table(['Karyawan', 'Outlet', 'Bruto', 'Potongan', 'Take-home pay', 'Status bayar'], ls.slice(0, 60).map(l => [link('hrd-pay-slip' + qs({ emp: l.emp, period: P }), `${esc(l.name)} · ${l.emp}`), esc(HR.locName(l.loc)), rp(l.gross), rp(l.dedT), rp(l.thp), chip(st(l), st(l) === 'Sudah Bayar' ? 'ready' : ['Gagal', 'Sebagian'].includes(st(l)) ? 'bad' : 'planned')])) + (ls.length > 60 ? `<p class="muted small">Menampilkan 60 dari ${ls.length}; filter cakupan untuk mempersempit.</p>` : '') + '<p class="muted small">Siap Bayar tidak otomatis menjadi Sudah Bayar; status bayar butuh referensi bukti bank.</p>') : `<section class="card hr-empty"><h2>Tidak ada slip</h2><p>Tidak ada slip untuk filter ini.</p><button type="button" class="btn" data-action="filter-reset">Reset filter</button></section>`);
+  /* Search (NP-HAWK-HRD-F7-001): nama / Employee ID atas seluruh baris hasil Cakupan + Status bayar; ringkasan tetap dari ls */
+  const qRaw = (params.q || '').trim(), q = qRaw.toLowerCase();
+  const shown = q ? ls.filter(l => `${l.name} ${l.emp}`.toLowerCase().includes(q)) : ls;
+  const search = `<label class="hr-search hr-pay-search">Search<span class="hr-search-box"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" name="q" value="${esc(qRaw)}" placeholder="Cari nama / ID..." autocomplete="off" spellcheck="false" data-live-search>${qRaw ? '<button type="button" class="hr-search-clear" data-search-clear aria-label="Hapus kata pencarian">×</button>' : ''}</span></label>`;
+  return demo() + perBar('hrd-pay-slip', params) + `<form id="filters" class="filters" aria-label="Filter slip"><input type="hidden" name="period" value="${P}">${scopeSel(params)}<label>Status bayar<select name="pay"><option value="">Semua</option>${['Siap Bayar', 'Sudah Bayar', 'Sebagian', 'Gagal', 'Belum siap'].map(s => `<option ${params.pay === s ? 'selected' : ''}>${s}</option>`).join('')}</select></label>${search}<button type="button" class="btn ghost" data-action="filter-reset">Reset</button></form>` +
+    (ls.length && !shown.length ? `<section class="card hr-empty"><h2>Data karyawan tidak ditemukan</h2><p>Tidak ada karyawan dengan nama atau ID "${esc(qRaw)}" pada filter ini.</p></section>` :
+    ls.length ? card(`Slip · ${ls.length} orang · total THP ${rp(HR7.totals(ls).thp)}${q ? ` · ${shown.length} hasil pencarian` : ''}`, `<p><button type="button" class="btn ghost sm" data-action="hr:noop-download" disabled title="Simulasi">Unduh massal slip (simulasi, Manager HRD)</button> · Slip tidak tetap: ${chip('Insentif pelatih Hot Stone · SLP-NT-2611-01', 'planned')}</p>` + table(['Karyawan', 'Outlet', 'Bruto', 'Potongan', 'Take-home pay', 'Status bayar'], shown.slice(0, 60).map(l => [link('hrd-pay-slip' + qs({ emp: l.emp, period: P }), `${esc(l.name)} · ${l.emp}`), esc(HR.locName(l.loc)), rp(l.gross), rp(l.dedT), rp(l.thp), chip(st(l), st(l) === 'Sudah Bayar' ? 'ready' : ['Gagal', 'Sebagian'].includes(st(l)) ? 'bad' : 'planned')])) + (shown.length > 60 ? `<p class="muted small">Menampilkan 60 dari ${shown.length}; filter cakupan atau Search untuk mempersempit.</p>` : '') + '<p class="muted small">Siap Bayar tidak otomatis menjadi Sudah Bayar; status bayar butuh referensi bukti bank.</p>') : `<section class="card hr-empty"><h2>Tidak ada slip</h2><p>Tidak ada slip untuk filter ini.</p><button type="button" class="btn" data-action="filter-reset">Reset filter</button></section>`);
 }
 
 /* ---------- NV06 Kasbon & Reimburse ---------- */
@@ -8010,6 +8020,13 @@ register('hrd-budget', only(budget, 'agg'), () => 'Dashboard People Budgeting');
 register('hrd-bud-plan', only(plan, 'agg'), () => 'Rencana Anggaran & Alokasi Divisi');
 register('hrd-bud-sim', only(sim, 'agg'), (p) => p.id || 'Simulasi Rekrutmen & Outlet Baru');
 register('hrd-bud-trend', only(trend, 'agg'), () => 'Tren Bulanan & Kurva S');
+/* NV05 Search: tombol X hanya menghapus kata pencarian; Cakupan, Status bayar dan periode tetap */
+document.addEventListener('click', (e) => {
+  const b = e.target.closest?.('[data-search-clear]'); if (!b || !b.form) return;
+  const { id } = H.parseHash(), data = Object.fromEntries(new FormData(b.form));
+  H.go(id, { ...data, q: '' }, true);
+  document.querySelector('#filters [data-live-search]')?.focus();
+});
 })();
 
 ;

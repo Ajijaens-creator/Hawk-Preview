@@ -1,0 +1,146 @@
+{
+ "pass": 28,
+ "fail": 0,
+ "out": [
+  {
+   "name": "TC-01 Search setelah filter terakhir (Status bayar) dan sebelum Reset, label & placeholder sesuai NV, ikon kiri, tinggi = dropdown",
+   "ok": true,
+   "info": "Cakupan → Status bayar → Search → Reset · h 36/36"
+  },
+  {
+   "name": "TC-02 Nama lengkap",
+   "ok": true,
+   "info": "Putu Ari: 1 baris"
+  },
+  {
+   "name": "TC-03 Sebagian nama",
+   "ok": true,
+   "info": "\"Put\" → 15"
+  },
+  {
+   "name": "TC-04 Employee ID lengkap",
+   "ok": true,
+   "info": "EMP-0001"
+  },
+  {
+   "name": "TC-05 Sebagian Employee ID",
+   "ok": true,
+   "info": "\"0001\" → 1"
+  },
+  {
+   "name": "TC-06 Huruf besar/kecil sama",
+   "ok": true,
+   "info": "15 = 15"
+  },
+  {
+   "name": "TC-07 Hasil diperbarui otomatis saat mengetik, tanpa klik/Enter, fokus tetap",
+   "ok": true,
+   "info": "60 → 1"
+  },
+  {
+   "name": "TC-07b Enter tidak mengirim form / memuat ulang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-08 Search mengikuti Cakupan",
+   "ok": true,
+   "info": "Spa Ubud: 30 → 3"
+  },
+  {
+   "name": "TC-09 Search mengikuti Status bayar",
+   "ok": true,
+   "info": "Sudah Bayar + \"Putu\": 60 → 14"
+  },
+  {
+   "name": "TC-10 Search dengan kedua filter aktif",
+   "ok": true,
+   "info": "29 → 3"
+  },
+  {
+   "name": "TC-11 Tombol X hanya menghapus Search; Cakupan & Status bayar tetap",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-15 Setelah Search dihapus, daftar kembali sesuai filter aktif",
+   "ok": true,
+   "info": "29 = 29"
+  },
+  {
+   "name": "TC-12 Reset mengembalikan semua filter termasuk Search",
+   "ok": true,
+   "info": "#hrd-pay-slip"
+  },
+  {
+   "name": "TC-13 Hasil kosong → \"Data karyawan tidak ditemukan\"",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-14 Ringkasan (jumlah orang & total THP) tidak berubah karena Search",
+   "ok": true,
+   "info": "Slip · 158 orang · total THP Rp 557.750.000 · 1 hasil pencarian"
+  },
+  {
+   "name": "TC-16 Spasi di-trim; karakter khusus ( [ .* \\ % ? dan HTML tidak menimbulkan error/eksekusi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "TC-17a Tanpa Search: batas tampil 60 baris tetap seperti semula",
+   "ok": true,
+   "info": "158 orang, 60 tampil"
+  },
+  {
+   "name": "TC-17b Search menjangkau seluruh baris (termasuk di luar 60 pertama)",
+   "ok": true,
+   "info": "59 hasil, 59 di luar 60 pertama"
+  },
+  {
+   "name": "REG NV01 Dashboard Payroll tanpa Search dan kartu tetap",
+   "ok": true,
+   "info": "158 · Rp557,8 jt · Rp612,8 jt · Dikunci"
+  },
+  {
+   "name": "REG Klik hasil membuka slip per orang",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "RBAC finance-manager: Slip Gaji tetap ditolak, Search tidak membuka data",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "RBAC owner: Slip Gaji tetap ditolak, Search tidak membuka data",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "RBAC hrd-ops: Slip Gaji tetap ditolak, Search tidak membuka data",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "RESP desktop 1440px tanpa scroll horizontal",
+   "ok": true,
+   "info": "scrollWidth 1440 · baris filter 1 · lebar Search 340"
+  },
+  {
+   "name": "RESP tablet 900px tanpa scroll horizontal",
+   "ok": true,
+   "info": "scrollWidth 900 · baris filter 1 · lebar Search 340"
+  },
+  {
+   "name": "RESP mobile 390px tanpa scroll horizontal",
+   "ok": true,
+   "info": "scrollWidth 390 · baris filter 3 · lebar Search 366"
+  },
+  {
+   "name": "Tanpa error console",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
