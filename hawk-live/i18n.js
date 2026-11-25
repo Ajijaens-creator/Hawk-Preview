@@ -117,7 +117,8 @@
     [/^Direktori · halaman (\d+) dari (\d+)$/, (m, a, b) => `Directory · page ${a} of ${b}`],
     [/^(.+) · halaman (\d+)\/(\d+)$/, (m, a, b, c) => `${tr(a) || a} · page ${b}/${c}`],
     [/^↑ (.+) vs bulan lalu$/, (m, a) => `↑ ${a} vs last month`],
-    [/^↓ (.+) vs bulan lalu$/, (m, a) => `↓ ${a} vs last month`]
+    [/^↓ (.+) vs bulan lalu$/, (m, a) => `↓ ${a} vs last month`],
+    [/^Menampilkan (\d+) dari (\d+) supplier$/, (m, a, b) => `Showing ${a} of ${b} suppliers`] /* NV-33 (NP-HAWK-FIN-NV33-001) */
   ];
   /* gabungan "A · B · C": terjemahkan tiap bagian yang dikenal */
   const bySegments = (s) => {
