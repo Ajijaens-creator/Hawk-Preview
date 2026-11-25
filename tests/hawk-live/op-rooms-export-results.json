@@ -1,0 +1,312 @@
+{
+ "at": "2026-11-25T05:42:10.827Z",
+ "pass": 61,
+ "fail": 0,
+ "out": [
+  {
+   "name": "T01 all: Export Excel & PDF di kanan tab status, satu baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 ready: Export Excel & PDF di kanan tab status, satu baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 occupied: Export Excel & PDF di kanan tab status, satu baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 cleaning: Export Excel & PDF di kanan tab status, satu baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 maintenance: Export Excel & PDF di kanan tab status, satu baris",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T01 Label tombol \"Export Excel\" dan \"Export PDF\"",
+   "ok": true,
+   "info": "Export Excel|Export PDF"
+  },
+  {
+   "name": "T02 Nama file Room_Facility_Semua_outlet_Semua_ruang_YYYYMMDD.xlsx",
+   "ok": true,
+   "info": "Room_Facility_Semua_outlet_Semua_ruang_20261125.xlsx"
+  },
+  {
+   "name": "T02 Workbook: sheet Room & Facility + Info",
+   "ok": true,
+   "info": "Room & Facility|Info"
+  },
+  {
+   "name": "T02 Header kolom sesuai inventaris field",
+   "ok": true,
+   "info": "No|Ruang|Outlet|Tipe|Kapasitas|Status|Keterangan status|Last cleaning|Next booking (WITA)|Catatan operasional"
+  },
+  {
+   "name": "T02 Jumlah baris = kartu di layar (24)",
+   "ok": true,
+   "info": "24/24"
+  },
+  {
+   "name": "T02 Ruang, outlet·tipe, status, last cleaning, next booking sama dengan kartu",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Tipe & kapasitas dipisah (Couple / 2 pax)",
+   "ok": true,
+   "info": "Couple|2 pax"
+  },
+  {
+   "name": "T02 Catatan operasional: nilai asli, kosong → —",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Tanpa ID ruang / lastBy (field tersembunyi)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Nomor urut tanpa duplikasi",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 Info: filter outlet & status, pengguna, waktu WITA, label demo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T02 File .xlsx valid (openpyxl): 25 baris × 10 kolom",
+   "ok": true,
+   "info": "['Room & Facility', 'Info'] 25 10"
+  },
+  {
+   "name": "T03 Ready: hanya status Ready, jumlah = kartu",
+   "ok": true,
+   "info": "12/12"
+  },
+  {
+   "name": "T03 Ready: nama file memuat status",
+   "ok": true,
+   "info": "Room_Facility_Semua_outlet_Ready_20261125.xlsx"
+  },
+  {
+   "name": "T03 Occupied: hanya status Occupied, jumlah = kartu",
+   "ok": true,
+   "info": "4/4"
+  },
+  {
+   "name": "T03 Occupied: nama file memuat status",
+   "ok": true,
+   "info": "Room_Facility_Semua_outlet_Occupied_20261125.xlsx"
+  },
+  {
+   "name": "T03 Cleaning: hanya status Cleaning, jumlah = kartu",
+   "ok": true,
+   "info": "4/4"
+  },
+  {
+   "name": "T03 Cleaning: nama file memuat status",
+   "ok": true,
+   "info": "Room_Facility_Semua_outlet_Cleaning_20261125.xlsx"
+  },
+  {
+   "name": "T03 Maintenance: hanya status Maintenance, jumlah = kartu",
+   "ok": true,
+   "info": "4/4"
+  },
+  {
+   "name": "T03 Maintenance: nama file memuat status",
+   "ok": true,
+   "info": "Room_Facility_Semua_outlet_Maintenance_20261125.xlsx"
+  },
+  {
+   "name": "T04 Outlet Shanti: 6 ruang, semuanya Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T04 Info filter outlet = Shanti",
+   "ok": true,
+   "info": "Room_Facility_Shanti_Semua_ruang_20261125.xlsx"
+  },
+  {
+   "name": "T04 Shanti + Ready: hanya ruang Ready Shanti",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 PDF: dialog cetak dipanggil sekali",
+   "ok": true,
+   "info": "1"
+  },
+  {
+   "name": "T05 PDF: judul HAWK, filter Shanti/Ready, pengguna, waktu WITA, label demo",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 PDF: data sama dengan Excel (3 baris, kolom sama)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 PDF: named page op-rooms aktif saat cetak, dibersihkan sesudahnya",
+   "ok": true,
+   "info": "op-rooms|true|false|"
+  },
+  {
+   "name": "T05 PDF Semua ruang: 24 baris",
+   "ok": true,
+   "info": "24"
+  },
+  {
+   "name": "T06 PDF A4 landscape (842 × 595 pt)",
+   "ok": true,
+   "info": "841.92x594.96"
+  },
+  {
+   "name": "T06 Nomor halaman \"Halaman 1 / N\" di tiap halaman",
+   "ok": true,
+   "info": "pages=2"
+  },
+  {
+   "name": "T06 Semua 24 ruang tercetak (tidak terpotong)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Tab tanpa data: empty state tetap tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Export Excel & PDF disabled",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T07 Aksi langsung pada data kosong: tidak ada file / cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 asm-tika: tombol tampil",
+   "ok": true,
+   "info": "2"
+  },
+  {
+   "name": "T08 hosp-jro-okta: tombol tampil",
+   "ok": true,
+   "info": "2"
+  },
+  {
+   "name": "T08 spv-CTR: tombol tidak tampil",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "name": "T08 head-attendant-CTR: tombol tidak tampil",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "name": "T08 attendant-CTR: tombol tidak tampil",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "name": "T08 reception-SHT: tombol tidak tampil",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "name": "T08 Supervisor memanggil aksi langsung: ditolak, tanpa file / cetak",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 Supervisor tetap melihat kartu outletnya (6 ruang Ubud Center)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Tika · Ubud Center: hanya 6 ruang Ubud Center",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Pengguna di file = Tika · Assistant Operational Manager",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T10 Catatan \"=HYPERLINK(...)\" tetap teks utuh, gaya quotePrefix, tanpa <f>",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 localStorage sebelum = sesudah ekspor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Audit log tidak bertambah",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Tidak ada request jaringan selama ekspor",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 State awal sesi tidak berubah oleh seluruh ekspor (vs muat pertama)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 Filter Ready tetap bekerja (12 kartu)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 Modal Detail & readiness terbuka",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 Simpan status demo tetap bekerja (Room 04 → Cleaning)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 Ekspor mengikuti status terbaru",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 portal.html#op-rooms: tombol tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T13 Mobile 390px: kedua tombol terlihat, tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T14 Tidak ada error konsol/JS",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}
