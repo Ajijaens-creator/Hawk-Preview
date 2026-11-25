@@ -1212,3 +1212,7 @@ a.st-chip:hover { background: #f5e4b5; }
 @media (max-width: 1100px) { .st-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .st-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .st-kpis, .st-grid { grid-template-columns: minmax(0, 1fr); } .st-attn-row > b { min-width: 0; } .st-q { font-size: 16px; } }
 #nav .nav-items a.cur[href^="#op-strategic"] { box-shadow: inset 3px 0 0 var(--gold, #C99A2E); color: var(--champagne, #E5C66A); font-weight: 600; }
+/* NP-HAWK-OP-FOP06-001 · tombol Export Excel / PDF Room & Facility, sejajar tab status di kanan */
+.opx .op-export{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.opx .op-export .btn[disabled]{opacity:.45;cursor:not-allowed}
+@media(max-width:650px){.opx .op-export{margin-left:0;width:100%}.opx .op-export .btn{flex:1;justify-content:center}}

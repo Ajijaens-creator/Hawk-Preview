@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="hawk-standalone" content="2026-11-24T03:43:04.487Z">
+<meta name="hawk-standalone" content="2026-11-25T05:41:48.408Z">
 <meta name="robots" content="noindex, nofollow">
 <title>Karier JAENS · Lowongan</title>
 <style>
@@ -1796,6 +1796,11 @@ a.kpi:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   #hl-print .hl-print-kpis dt { font-size: 8.5pt; color: #444; }
   #hl-print .hl-print-kpis dd { margin: 0; font-weight: 700; }
   #hl-print .hl-print-foot { margin-top: 8px; font-size: 8.5pt; color: #333; }
+}
+/* NP-HAWK-OP-FOP06-001 · named page khusus laporan Room & Facility: nomor halaman (Chromium 131+); PDF portal lain tidak berubah */
+@media print {
+  @page oprooms { size: A4 landscape; margin: 12mm 12mm 14mm; @bottom-right { content: "Halaman " counter(page) " / " counter(pages); font: 8pt system-ui, sans-serif; color: #555; } @bottom-left { content: "HAWK ERP · Room & Facility · DATA DEMO / SIMULASI"; font: 8pt system-ui, sans-serif; color: #555; } }
+  body.hl-printing #hl-print[data-report="op-rooms"] { page: oprooms; }
 }
 .field-error { color: var(--bad); font-weight: 600; margin: 6px 0; flex-basis: 100%; }
 /* ---------- Ganti role DEMO dari chip akun kanan atas (role-switcher.js) ---------- */
