@@ -1216,3 +1216,11 @@ a.st-chip:hover { background: #f5e4b5; }
 .opx .op-export{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
 .opx .op-export .btn[disabled]{opacity:.45;cursor:not-allowed}
 @media(max-width:650px){.opx .op-export{margin-left:0;width:100%}.opx .op-export .btn{flex:1;justify-content:center}}
+/* NP-HAWK-OP-REVENUE-001 · Diagram 02 Revenue Category (hanya .an-donut-category, donut lain tidak terpengaruh) */
+.opx .an-donut-category .an-donut-legend-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.opx .an-donut-category .an-donut-row small{white-space:nowrap}
+.opx .an-donut-warn{margin:8px 0 0;padding:7px 10px;border-radius:8px;background:#fbefe7;color:#8a3b22;font-size:11px;line-height:1.45}
+.opx .an-donut-sim{margin:8px 0 0;font-size:10.5px;line-height:1.45;color:#8c836f}
+.opx .an-donut-sim b{display:inline-block;margin-right:6px;padding:1px 6px;border-radius:4px;background:#f6ead2;color:#8a5a12;font-size:9.5px;letter-spacing:.04em}
+@media(max-width:760px){.opx .an-donut-category{grid-template-columns:1fr}.opx .an-donut-category .an-donut-legend-2{grid-template-columns:1fr 1fr;padding-bottom:6px}}
+@media(max-width:380px){.opx .an-donut-category .an-donut-legend-2{grid-template-columns:1fr}}
