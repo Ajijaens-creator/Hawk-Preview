@@ -51,7 +51,19 @@
     if(c.type==='donut') return '';
     return `<div class="an-chart-legend">${(c.series||[]).map((s,i)=>`<button class="an-legend-item" data-act="analytics-detail" ${attr(id,c.id,`data-series="${E(s.name)}"`)}><i style="background:${colour(s,i)}"></i>${E(s.name)}</button>`).join('')}</div>`;
   }
+  /* NP-HAWK-OP-REVENUE-001 · varian opt-in (c.variant==='category'), hanya dipakai Diagram 02 Revenue Category.
+     Donut lain tetap memakai jalur bawaan di bawah. Nilai negatif tidak di-clamp diam-diam: tampil apa adanya + peringatan. */
+  function categoryDonut(c,id){
+    const raw=(c.series?.[0]?.values||[]).map(v=>valid(v)?num(v):null),total=raw.reduce((a,b)=>a+(b===null?0:b),0);
+    const negatives=raw.map((v,i)=>v!==null&&v<0?c.categories[i]:null).filter(Boolean),drawTotal=raw.reduce((a,b)=>a+(b>0?b:0),0);
+    const color=i=>c.colors?.[i]||palette[i%palette.length],share=v=>v===null||!(total>0)?'—':(v/total*100).toLocaleString('id-ID',{maximumFractionDigits:1})+'%';
+    let offset=0;const ring=2*Math.PI*74;
+    const segments=drawTotal>0?raw.map((v,i)=>{if(!(v>0))return '';const l=v/drawTotal*ring;const out=`<circle cx="116" cy="116" r="74" fill="none" stroke="${color(i)}" stroke-width="45" stroke-dasharray="${l.toFixed(3)} ${(ring-l).toFixed(3)}" stroke-dashoffset="${(-offset).toFixed(3)}" transform="rotate(-90 116 116)"><title>${E(c.categories[i])}: ${E(format(v,c.unit))} (${E(share(v))})</title></circle>`;offset+=l;return out;}).join(''):'';
+    const warn=[negatives.length?`Nilai negatif pada ${negatives.join(', ')} (refund melebihi penjualan) ditampilkan apa adanya dan tidak digambar pada lingkaran.`:'',total>0?'':'Total revenue nol atau negatif pada filter ini, sehingga persentase tidak dihitung.'].filter(Boolean);
+    return `<div class="an-donut-layout an-donut-category"><button class="an-visual-button" data-act="analytics-detail" ${attr(id,c.id)} aria-label="Buka detail ${E(c.title)}"><svg class="an-donut" viewBox="0 0 232 232" role="img" aria-label="${E(c.title)}"><circle cx="116" cy="116" r="74" fill="none" stroke="#f1f0e9" stroke-width="45"/>${segments}<text x="116" y="109" class="an-svg-center">${E(short(total,c.unit))}</text><text x="116" y="130" class="an-svg-caption">${E(c.centerLabel||'Total')}</text></svg></button><div class="an-donut-legend an-donut-legend-2">${raw.map((v,i)=>`<button class="an-donut-row" data-act="analytics-detail" ${attr(id,c.id,`data-category="${E(c.categories[i])}"`)}><i style="background:${color(i)}"></i><span>${E(c.categories[i])}</span><strong>${E(share(v))}</strong><small>${E(v===null?'—':format(v,c.unit))}</small></button>`).join('')}</div></div>${warn.length?`<p class="an-donut-warn" role="status">${E(warn.join(' '))}</p>`:''}${c.simulated?'<p class="an-donut-sim"><b>SIMULASI</b> Package, Gift Card (redeem) dan Member belum tersedia di sumber POS; pembagian kategori dibuat dari transaksi demo. Total sama dengan kartu Total revenue.</p>':''}`;
+  }
   function donut(c,id){
+    if(c.variant==='category')return categoryDonut(c,id);
     const vals=(c.series?.[0]?.values||[]).map(v=>valid(v)?Math.max(0,num(v)):null),total=vals.reduce((a,b)=>a+num(b),0);
     if(!total)return '<div class="an-empty-chart"><strong>Total nol pada periode ini</strong><p>Komposisi tidak dapat dihitung saat penyebut nol. Nilai nol tetap berbeda dari data yang belum tersedia.</p></div>';
     let offset=0; const ring=2*Math.PI*74;

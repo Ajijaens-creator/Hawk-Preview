@@ -1,0 +1,112 @@
+{
+ "at": "2026-11-28T05:37:00.349Z",
+ "pass": 21,
+ "fail": 0,
+ "out": [
+  {
+   "name": "T01 Urutan diagram tetap (D01 trend, D02 kategori, D03 outlet)",
+   "ok": true,
+   "info": "service-trend,revenue-composition,revenue-outlet"
+  },
+  {
+   "name": "T02 Diagram 02 berjudul \"Revenue Category\" dengan label DIAGRAM 02",
+   "ok": true,
+   "info": "DIAGRAM 02 · Revenue Category"
+  },
+  {
+   "name": "T03 5 kategori urut Service, Package, Product, Gift Card, Member",
+   "ok": true,
+   "info": "Service,Package,Product,Gift Card,Member"
+  },
+  {
+   "name": "T04 Warna sesuai spesifikasi (data, legend, segmen)",
+   "ok": true,
+   "info": "#095B32,#E5A34B,#B53F3E,#AEC363,#65839E"
+  },
+  {
+   "name": "T05 Tengah donut = total + label \"Total Revenue\"",
+   "ok": true,
+   "info": "465,2 jt | Total Revenue"
+  },
+  {
+   "name": "T06 Legend 2 kolom di desktop, menampilkan nominal dan %",
+   "ok": true,
+   "info": "2 kolom"
+  },
+  {
+   "name": "T07 Label SIMULASI terlihat karena Package/Gift Card/Member belum ada di sumber",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T08 Tanpa NaN / undefined / Infinity di Diagram 02",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T09 Total Diagram 02 = kartu Total revenue = baseline, 4 kombinasi outlet/periode",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T10 Diagram 03 identik dengan baseline main d9b003f (judul, tipe, seri, warna, nilai)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 DOM Diagram 03 tetap: DIAGRAM 03, \"Revenue by outlet\", legend Service/Retail, tanpa elemen Revenue Category",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T12 Detail: tabel 5 kategori + Total Revenue, baris yang diklik disorot, aturan pengakuan GC/Member tampil",
+   "ok": true,
+   "info": "Gift Card · Total Revenue\tRp 465,2 jt\t100%\t248"
+  },
+  {
+   "name": "T13 Insight memakai konteks kategori dan tidak menilai baik/buruk kategori",
+   "ok": true,
+   "info": "Insight · Revenue Category\nInsight simulasi · belum terhubung AI\nKomposisi / dis"
+  },
+  {
+   "name": "T14 Ringkasan insight Diagram 03 tetap generik",
+   "ok": true,
+   "info": "✦ Insight simulasi\nStandar belum ditetapkan\n\nNilai ditampilk"
+  },
+  {
+   "name": "T15 Donut lain tetap memakai renderer bawaan (tanpa varian kategori, caption lama)",
+   "ok": true,
+   "info": "profit-contribution:total demo, expense-outlet:total demo, online-outlet:total demo, offline-outlet:total demo, review-source:total demo, maintenance-status:total demo, maintenance-outlet:total demo, grading-status:total demo, document-contribution:total demo"
+  },
+  {
+   "name": "T16 Supervisor Ubud: Diagram 02 hanya data outletnya, total = baseline Ubud",
+   "ok": true,
+   "info": "100180000"
+  },
+  {
+   "name": "T17 Periode tanpa data: empty state, tanpa NaN dan tanpa pembagian nol",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T18 Kategori bernilai nol tetap tampil di legend (Rp0 / 0%) dan label SIMULASI hilang bila data sudah terpetakan",
+   "ok": true,
+   "info": "Service 91,9% Rp 92,1 jt | Package 0% Rp 0 | Product 8,1% Rp 8,1 jt | Gift Card 0% Rp 0 | Member 0% Rp 0"
+  },
+  {
+   "name": "T19 Nilai negatif tidak di-clamp: tampil negatif + peringatan, total tetap = kartu",
+   "ok": true,
+   "info": "-Rp 500.000 · total 99305000"
+  },
+  {
+   "name": "T20 Mobile 390px: tanpa scroll horizontal, legend tetap di dalam kartu",
+   "ok": true,
+   "info": "{\"over\":false,\"inside\":true}"
+  },
+  {
+   "name": "T21 Tidak ada error konsol/JS",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

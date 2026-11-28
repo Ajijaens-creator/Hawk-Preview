@@ -266,6 +266,25 @@
   function grouped(rows,key,fn){const keys=[...new Set(rows.map(key))].sort();return {keys,values:keys.map(k=>fn(rows.filter(r=>key(r)===k)))};}
   const latestByOutlet=rows=>H.outlets.map(o=>rows.filter(r=>r.outlet===o.id).sort((a,b)=>b.date.localeCompare(a.date)||b.createdAt.localeCompare(a.createdAt))[0]).filter(Boolean);
   const table=(columns,rows)=>({columns,rows});
+  /* NP-HAWK-OP-REVENUE-001 · Diagram 02 Revenue Category (khusus widget revenue-composition).
+     Pakai values.revenueCategory bila sumber sudah memetakannya; selain itu Retail→Product (D2) dan record Service
+     dibagi deterministik ke Service/Package/Gift Card/Member sebagai SIMULASI. Total = Total revenue (tanpa transaksi tambahan). */
+  const REVENUE_CATEGORIES=[['Service','#095B32'],['Package','#E5A34B'],['Product','#B53F3E'],['Gift Card','#AEC363'],['Member','#65839E']];
+  const hashRef=s=>{let h=0;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))>>>0;return h;};
+  A.revenueCategory=row=>{
+    const given=row?.values?.revenueCategory;
+    if(REVENUE_CATEGORIES.some(c=>c[0]===given))return {category:given,simulated:false};
+    if(row?.values?.category==='Retail')return {category:'Product',simulated:false};
+    const b=hashRef(row?.values?.invoiceRef||row?.id)%20;
+    return {category:b<12?'Service':b<16?'Package':b<19?'Gift Card':'Member',simulated:true};
+  };
+  function revenueCategoryChart(rows){
+    const amt=x=>n(x.values.amount),tagged=rows.map(x=>({row:x,...A.revenueCategory(x)}));
+    const names=REVENUE_CATEGORIES.map(c=>c[0]);
+    const values=names.map(cat=>rows.length?tagged.filter(t=>t.category===cat).reduce((a,t)=>a+amt(t.row),0):null);
+    const counts=names.map(cat=>tagged.filter(t=>t.category===cat).length);
+    return chart('revenue-composition','Revenue Category','donut','currency',names,[{name:'Revenue category',values}],{variant:'category',colors:REVENUE_CATEGORIES.map(c=>c[1]),centerLabel:'Total Revenue',counts,simulated:tagged.some(t=>t.simulated)});
+  }
   A.model=id=>{
     const d=A.definitions.find(x=>x.id===id);if(!d)return {cards:[],charts:[],table:table([],[]),sourceCount:0,verifiedCount:0};
     if(!A.canViewDashboard(id))return {id,title:d.title,cards:[],charts:[],table:table([],[]),sourceCount:0,verifiedCount:0,accessDenied:true};
@@ -276,7 +295,7 @@
       const service=r.filter(x=>x.values.category==='Service'),retail=r.filter(x=>x.values.category==='Retail'),dates=new Set(r.map(x=>x.date)).size;
       m.cards=[card('total','Total revenue',r.length?total('amount'):null,'currency','higher'),card('service','Revenue service',r.length?sum(service,x=>v(x,'amount')):null,'currency','higher'),card('retail','Revenue retail',r.length?sum(retail,x=>v(x,'amount')):null,'currency','higher'),card('daily','Avg/day service',dates?sum(service,x=>v(x,'amount'))/dates:null,'currency','higher','Rerata hari dengan data demo; definisi hari operasional perlu kontrak.')];
       const trend=grouped(service,x=>x.date,rr=>sum(rr,x=>v(x,'amount')));
-      m.charts=[chart('service-trend','Revenue service trend','line','currency',trend.keys,[{name:'Revenue service',values:trend.values}],{width:'full',direction:'higher',metricKey:'service'}),makeOutletChart('revenue-composition','Revenue composition','donut','currency',r,rr=>sum(rr,x=>v(x,'amount'))),chart('revenue-outlet','Revenue by outlet','stacked','currency',outletSeries(r,()=>0).map(x=>x.label),['Service','Retail'].map(cat=>({name:cat,values:outletSeries(r,rr=>sum(rr.filter(x=>x.values.category===cat),x=>v(x,'amount'))).map(x=>x.value)})),{orientation:'horizontal',metricKey:'total',direction:'higher'})];
+      m.charts=[chart('service-trend','Revenue service trend','line','currency',trend.keys,[{name:'Revenue service',values:trend.values}],{width:'full',direction:'higher',metricKey:'service'}),revenueCategoryChart(r),chart('revenue-outlet','Revenue by outlet','stacked','currency',outletSeries(r,()=>0).map(x=>x.label),['Service','Retail'].map(cat=>({name:cat,values:outletSeries(r,rr=>sum(rr.filter(x=>x.values.category===cat),x=>v(x,'amount'))).map(x=>x.value)})),{orientation:'horizontal',metricKey:'total',direction:'higher'})];
       const finance=A.records('finance');m.table=table([col('outlet','Outlet'),col('service','Service','currency'),col('retail','Retail','currency'),col('total','Total','currency'),col('target','Target demo','currency'),col('achievement','Pencapaian demo','percent')],outletSeries(r,rr=>rr).map(o=>{const amount=sum(o.value,x=>v(x,'amount')),target=sum(finance.filter(x=>x.outlet===o.id),x=>v(x,'revenueTarget'));return {outlet:o.label,service:sum(o.value.filter(x=>x.values.category==='Service'),x=>v(x,'amount')),retail:sum(o.value.filter(x=>x.values.category==='Retail'),x=>v(x,'amount')),total:amount,target:target||null,achievement:pct(amount,target)};}));
       m.outletCards=m.table.rows.map(row=>({outlet:row.outlet,label:row.outlet,actual:row.total,target:row.target,unit:'currency',achievement:row.achievement}));
     }else if(id==='pnl'){
