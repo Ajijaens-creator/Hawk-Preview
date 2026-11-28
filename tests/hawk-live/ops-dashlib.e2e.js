@@ -25,9 +25,9 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ?
 
   await go('op-dashboard'); await ev(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(500);
   await as('mgr-eni'); await go('op-dashboard');
-  const defs = await ev(() => OPX.analytics.definitions.map(d => [d.id, d.title, d.navLabel]));
+  const defs = await ev(() => OPX.analytics.definitions.filter(d => !OPX.analytics.isNavHidden(d.id)).map(d => [d.id, d.title, d.navLabel])); /* NP-HAWK-OP-DASHBOARD-002: D09/D10 disembunyikan dari menu */
   ok('Dashboard Library = menu expandable di sidebar utama', await ev(() => !!([...document.querySelectorAll('#nav .nav-sec .nav-sec-btn')].find(b => /Dashboard Library/.test(b.textContent))?.hasAttribute('aria-expanded'))));
-  ok('14 dashboard = submenu langsung, urutan referensi', (await links()).join() === defs.map(d => 'op-analytics-' + d[0]).join(), String((await links()).length));
+  ok('12 dashboard (tanpa D09/D10) = submenu langsung, urutan referensi', (await links()).join() === defs.map(d => 'op-analytics-' + d[0]).join(), String((await links()).length));
   ok('Label submenu = label dashboard', await ev((ds) => ds.every(([id, , nl]) => document.querySelector(`#nav a[href="#op-analytics-${id}"]`)?.textContent.includes(nl)), defs));
 
   /* acceptance: satu klik pada submenu membuka dashboard, tanpa daftar navigasi kedua */
@@ -38,7 +38,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ?
     const s = await state();
     if (s.h1 !== title || s.id !== id || s.cur.join() !== '#op-analytics-' + id || s.aside || s.inner || !(s.cards || s.charts)) miss.push(id + JSON.stringify(s));
   }
-  ok('Satu klik membuka masing-masing 14 dashboard, submenu aktif ter-highlight, tanpa panel navigasi kedua', miss.length === 0, miss.slice(0, 2).join(' | '));
+  ok('Satu klik membuka masing-masing 12 dashboard, submenu aktif ter-highlight, tanpa panel navigasi kedua', miss.length === 0, miss.slice(0, 2).join(' | '));
   ok('Highlight gold pada submenu aktif', await ev(() => { const a = document.querySelector('#nav a.cur[href^="#op-analytics-"]'); return !!a && /201, 154, 46/.test(getComputedStyle(a).boxShadow); }));
   const w = await ev(() => ({ main: document.querySelector('.an-report-main').getBoundingClientRect().width, view: document.getElementById('opx-root').getBoundingClientRect().width }));
   ok('Area dashboard memakai lebar penuh konten', w.main >= w.view - 60, JSON.stringify(w));
@@ -72,7 +72,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ?
   /* RBAC: sidebar hanya dashboard yang diizinkan; Supervisor terkunci satu outlet */
   for (const id of ['spv-CTR', 'hosp-jro-okta', 'reception-CTR', 'attendant-CTR']) {
     await as(id); await go('op-dashboard');
-    const allowed = await ev(() => OPX.has('analytics') ? OPX.analytics.visibleDefinitions().map(d => 'op-analytics-' + d.id) : []);
+    const allowed = await ev(() => OPX.has('analytics') ? OPX.analytics.navDefinitions().map(d => 'op-analytics-' + d.id) : []);
     const shown = await links();
     ok(`RBAC ${id}: submenu = dashboard yang diizinkan (${allowed.length})`, shown.join() === allowed.join(), shown.length + ' tampil');
     if (id === 'spv-CTR') ok('Supervisor terkunci pada satu outlet', await ev(() => { const s = document.getElementById('outlet-select'); return s.disabled && s.options.length === 1 && OPX.state.outletId === OPX.user().outlet; }));
@@ -89,7 +89,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ?
   ok('Mobile: pilih submenu menutup drawer dan membuka dashboard', await ev(() => !document.getElementById('sidebar').classList.contains('on') && OPX.ui.analyticsId === 'capacity'));
   let over = [];
   for (const [id] of defs) { await go('op-analytics-' + id); const o = await ev(() => document.documentElement.scrollWidth - window.innerWidth); if (o > 1) over.push(id + '+' + o); }
-  ok('Mobile 390px: 14 dashboard tanpa scroll horizontal', over.length === 0, over.join(' '));
+  ok('Mobile 390px: 12 dashboard tanpa scroll horizontal', over.length === 0, over.join(' '));
   await go('op-analytics-revenue'); await shot('DL-02-mobile-revenue');
   ok('Tanpa error konsol', errors.length === 0, errors.slice(0, 3).join(' | '));
   await browser.close();

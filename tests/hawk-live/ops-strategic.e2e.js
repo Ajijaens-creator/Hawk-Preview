@@ -24,7 +24,7 @@ const ok = (name, cond, info = '') => { if (!cond) fail++; console.log(`${cond ?
   await as('mgr-eni'); await go('op-dashboard');
   const views = await ev(() => OPX.strategic.VIEWS.map(v => [v.id, v.title]));
   ok('Enam opsi prioritas A03 Bab 07', views.length === 6, views.map(v => v[1]).join(' · '));
-  ok('Dashboard Strategis berada di dalam Dashboard Library, setelah 14 dashboard', await ev(() => { const s = [...document.querySelectorAll('#nav .nav-sec')].find(x => /Dashboard Library/.test(x.querySelector('.nav-sec-btn').textContent)); const hs = [...s.querySelectorAll('a')].map(a => a.getAttribute('href')); return hs.length === 21 && hs.slice(0, 14).every(h => h.startsWith('#op-analytics-')) && hs[14] === '#op-strategic' && hs.slice(15).every(h => h.startsWith('#op-strategic-')); }));
+  ok('Dashboard Strategis berada di dalam Dashboard Library, setelah 12 dashboard (D09/D10 disembunyikan, NP-HAWK-OP-DASHBOARD-002)', await ev(() => { const s = [...document.querySelectorAll('#nav .nav-sec')].find(x => /Dashboard Library/.test(x.querySelector('.nav-sec-btn').textContent)); const hs = [...s.querySelectorAll('a')].map(a => a.getAttribute('href')); return hs.length === 19 && hs.slice(0, 12).every(h => h.startsWith('#op-analytics-')) && hs[12] === '#op-strategic' && hs.slice(13).every(h => h.startsWith('#op-strategic-')); }));
   ok('Manager melihat 6 tampilan + ikhtisar', (await links()).length === 7);
 
   /* satu klik per tampilan, tanpa NaN/undefined, submenu aktif */
