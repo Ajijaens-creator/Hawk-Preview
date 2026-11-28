@@ -153,6 +153,12 @@
     return s.roles.includes(H.user().role) && (H.user().role!=='head'||s.departments.includes(H.user().dept));
   };
   A.visibleDefinitions=()=>A.definitions.filter(d=>A.canViewDashboard(d.id));
+  /* NP-HAWK-OP-DASHBOARD-002 (Aji 28 Nov 2026): dashboard yang disembunyikan dari SEMUA navigasi Operational (sidebar,
+     penghitung, shortcut). Hanya visibilitas menu: definisi, rute, data, entry/verifikasi, RBAC dan akses URL langsung tetap.
+     Reaktivasi: kosongkan daftar ini ([]) → dashboard kembali ke posisi semula. */
+  A.NAV_HIDDEN=['tripadvisor','maintenance'];
+  A.isNavHidden=id=>A.NAV_HIDDEN.includes(id);
+  A.navDefinitions=()=>A.visibleDefinitions().filter(d=>!A.isNavHidden(d.id));
   A.records=(group,approvedOnly=true)=>{
     const state=A.ensure(),from=H.ui.analyticsFrom||'2026-10-01',to=H.ui.analyticsTo||'2026-10-31',u=H.user();
     if(!A.schemas[group]||(!management.includes(u.role)&&!A.definitions.some(d=>d.group===group&&A.canViewDashboard(d.id))))return [];

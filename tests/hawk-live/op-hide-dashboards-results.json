@@ -1,0 +1,107 @@
+{
+ "at": "2026-11-28T07:11:15.840Z",
+ "pass": 20,
+ "fail": 0,
+ "out": [
+  {
+   "name": "T01 A.NAV_HIDDEN = tripadvisor, maintenance; 14 definisi & id tetap; rute tetap terdaftar",
+   "ok": true,
+   "info": "[true,true]"
+  },
+  {
+   "name": "T02 Item menu D09/D10 berstatus \"hidden\" (mekanisme arsip yang sudah ada); data historis tetap ada",
+   "ok": true,
+   "info": "records 16/160"
+  },
+  {
+   "name": "T03 35 akun demo (semua role): D09/D10 tidak tampil di menu, sisa menu = akses existing tanpa baris kosong",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T04 Akses (RBAC) per role tidak berubah: Manager/Asst/Hosp/Spv 14, Head Reception 9, Head Attendant 5, Reception 7, Attendant 3, Security 2 …",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T05 Penghitung = jumlah dashboard di menu per akun (tanpa angka 12 di-hardcode)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T06 Manager: 12 dashboard dalam urutan relatif semula",
+   "ok": true,
+   "info": "12 item"
+  },
+  {
+   "name": "T07 Counter Revenue \"DASHBOARD / 01 DARI 12\"",
+   "ok": true,
+   "info": "DASHBOARD / 01 DARI 12"
+  },
+  {
+   "name": "T08 Urutan navigasi: Handling Complain → Grading FO (08 → 09 DARI 12)",
+   "ok": true,
+   "info": "DASHBOARD / 08 DARI 12 → grading"
+  },
+  {
+   "name": "T09 Grading FO berfungsi: \"09 DARI 12\", diagram tampil",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T10 Grup Dashboard Library tanpa placeholder/label tersembunyi untuk D09/D10",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T11 Manager URL langsung Maintenance: dashboard tetap lengkap, counter \"TIDAK DITAMPILKAN DI MENU\", tidak ada menu lain yang tersorot",
+   "ok": true,
+   "info": "{\"h1\":\"Maintenance Performance\",\"cards\":4,\"charts\":3,\"cur\":0}"
+  },
+  {
+   "name": "T12 Tab \"Data & verifikasi\" D10 tetap berfungsi lewat URL langsung",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T13 URL langsung: Reception tetap bisa membuka Tripadvisor, Therapist tetap ditolak untuk Maintenance (sama dengan sebelum)",
+   "ok": true,
+   "info": "{\"rt\":{\"h1\":\"Tripadvisor Performance\",\"charts\":4},\"th\":{\"crumb\":\"\",\"charts\":0}}"
+  },
+  {
+   "name": "T14 Tidak ada link/shortcut ke D09/D10 di 36 halaman Operational (termasuk Dashboard Strategis)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T15 Dashboard Strategis tetap tersedia di menu dan memakai data maintenance (KPI tetap dihitung)",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T16 Kartu portal Operational tidak lagi menghitung D09/D10",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T17 Mobile 390px: counter 01 DARI 12, tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T18 Tablet 820px: counter 09 DARI 12, tanpa scroll horizontal",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "T19 Reaktivasi (NAV_HIDDEN = []): 14 menu kembali, Tripadvisor di posisi 09 DARI 14",
+   "ok": true,
+   "info": "DASHBOARD / 09 DARI 14"
+  },
+  {
+   "name": "T20 Tidak ada error konsol/JS",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

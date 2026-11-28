@@ -85,7 +85,7 @@ function syncNav() {
   /* submenu Dashboard Library aktif = dashboard yang sedang dibuka (juga lewat rute lama #op-analytics) */
   const r = HL.parseHash().id;
   if (r === 'op-analytics' || dashOf(r)) {
-    const want = '#' + (H.dashRoute ? H.dashRoute() : r);
+    const want = '#' + (dashOf(r) && H.analytics?.isNavHidden?.(dashOf(r)) ? r : H.dashRoute ? H.dashRoute() : r); /* NP-HAWK-OP-DASHBOARD-002: dashboard tersembunyi tidak menyorot menu lain */
     nav.querySelectorAll(`a[href^="#${DASH}"]`).forEach(a => { const on = a.getAttribute('href') === want; a.classList.toggle('cur', on); if (on) { a.setAttribute('aria-current', 'page'); const sec = a.closest('.nav-sec'); if (sec && !sec.classList.contains('open')) { sec.classList.add('open'); sec.querySelector('.nav-sec-btn')?.setAttribute('aria-expanded', 'true'); } } else a.removeAttribute('aria-current'); });
   }
   nav.querySelectorAll(`a[href="${POS_URL}"]`).forEach(a => { a.hidden = !H.has('pos'); });
@@ -144,7 +144,7 @@ const register = (p) => {
 Object.keys(H.pages).forEach(register);
 if (H.analytics && H.pages.analytics) {
   const A = H.analytics, defOf = (id) => (A.definitions || []).find(d => d.id === id);
-  H.dashRoute = () => { const v = A.visibleDefinitions ? A.visibleDefinitions() : (A.definitions || []); const id = v.find(d => d.id === H.ui.analyticsId)?.id || v[0]?.id; return id ? DASH + id : routeOf('analytics'); };
+  H.dashRoute = () => { const v = A.navDefinitions ? A.navDefinitions() : A.visibleDefinitions ? A.visibleDefinitions() : (A.definitions || []); const id = v.find(d => d.id === H.ui.analyticsId)?.id || v[0]?.id; return id ? DASH + id : routeOf('analytics'); };
   (A.definitions || []).forEach(d => {
     const fn = () => {
       H.ui = H.ui || {};
@@ -198,7 +198,7 @@ NAV.forEach(([id, title, , num, group]) => {
   if (group) items.push(['-', group === 'DASHBOARD LIBRARY' ? 'Dashboard Library' : group.charAt(0) + group.slice(1).toLowerCase()]);
   if (id === 'pos') items.push([POS_URL, 'POS & Receptionist', 'F-OP03', 'ready']);
   else if (id === 'analytics' && DEFS.length) {
-    DEFS.forEach(d => items.push([DASH + d.id, d.navLabel || d.title, PHASE(id), 'ready']));
+    DEFS.forEach(d => items.push([DASH + d.id, d.navLabel || d.title, PHASE(id), H.analytics.isNavHidden && H.analytics.isNavHidden(d.id) ? 'hidden' : 'ready'])); /* NP-HAWK-OP-DASHBOARD-002: A.NAV_HIDDEN */
     /* Owner 23 Nov 2026: dashboard tambahan (opsi strategis A03 Bab 07) ikut di Dashboard Library sebagai sub-grup */
     if (H.strategic && H.pages.strategic) { items.push([routeOf('strategic'), H.pages.strategic.title, PHASE('strategic'), 'ready']); H.strategic.VIEWS.forEach(v => items.push([STRAT + v.id, v.nav, PHASE('strategic'), 'ready', '', true])); }
   }

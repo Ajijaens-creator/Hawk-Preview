@@ -67,10 +67,10 @@ function owner(v) {
     const why = [];
     if (s !== null && s < FLAG.sat) why.push(['Kepuasan di bawah ' + FLAG.sat + '%', 'op-analytics-satisfaction']);
     if (acc !== null && acc < FLAG.acc) why.push(['Akurasi stok di bawah ' + FLAG.acc + '%', 'op-analytics-waste']);
-    if (mo !== null && mo > FLAG.mt) why.push([mo + ' maintenance terbuka', 'op-analytics-maintenance']);
+    if (mo !== null && mo > FLAG.mt) why.push([mo + ' maintenance terbuka', A.isNavHidden && A.isNavHidden('maintenance') ? null : 'op-analytics-maintenance']); /* NP-HAWK-OP-DASHBOARD-002: tanpa link bila D10 disembunyikan */
     if (cases) why.push([cases + ' case tamu terbuka', 'op-cases']);
     if (late) why.push([late + ' tugas lewat tenggat', 'op-tasks']);
-    if (pend) why.push([pend + ' data menunggu verifikasi', 'op-analytics-' + (A.visibleDefinitions()[0]?.id || 'revenue')]);
+    if (pend) why.push([pend + ' data menunggu verifikasi', 'op-analytics-' + ((A.navDefinitions || A.visibleDefinitions)()[0]?.id || 'revenue')]);
     return { o, revenue, margin, s, acc, mo, cases, late, pend, ready, why };
   }));
   const attention = rows.filter(r => r.why.length);
@@ -80,7 +80,7 @@ function owner(v) {
     ['Tugas lewat tenggat', String(rows.reduce((a, r) => a + r.late, 0)), 'dari Team & Tasks'],
     ['Data menunggu verifikasi', String(rows.reduce((a, r) => a + r.pend, 0)), 'belum masuk laporan'],
   ]) + section('Perlu perhatian dan keputusan', 'Setiap alasan membuka workspace atau dashboard sumbernya. Ambang: kepuasan &lt; 95%, akurasi stok &lt; 90%, maintenance terbuka &gt; 2 (demo).',
-    attention.length ? `<div class="st-attn">${attention.map(r => `<div class="st-attn-row"><b>${e(r.o.name)}</b><div class="row wrap">${r.why.map(([t, h]) => `<a class="st-chip" href="#${e(h)}">${e(t)}</a>`).join('')}</div></div>`).join('')}</div>` : '<div class="empty">Tidak ada outlet yang melewati ambang demo pada periode ini.</div>')
+    attention.length ? `<div class="st-attn">${attention.map(r => `<div class="st-attn-row"><b>${e(r.o.name)}</b><div class="row wrap">${r.why.map(([t, h]) => h ? `<a class="st-chip" href="#${e(h)}">${e(t)}</a>` : `<span class="st-chip">${e(t)}</span>`).join('')}</div></div>`).join('')}</div>` : '<div class="empty">Tidak ada outlet yang melewati ambang demo pada periode ini.</div>')
   + section('Ringkasan per outlet', 'Angka dari dashboard sumber yang sama. Margin = net profit ÷ revenue pada dashboard Profit &amp; Loss (belum direkonsiliasi Finance).',
     table(['Outlet', 'Revenue', 'Margin P&amp;L', 'Kepuasan', 'Akurasi stok', 'Maint. terbuka', 'Readiness hari ini', 'Case', 'Tugas telat'],
       rows.map(r => [`<b>${e(r.o.name)}</b>`, show(r.revenue !== null ? H.compact(r.revenue) : null, 'tanpa data'), show(pct(r.margin), 'belum ada P&L'), show(pct(r.s), 'tanpa feedback'), show(pct(r.acc), 'tanpa opname'), show(num(r.mo), 'tanpa data'), show(r.ready === null ? null : r.ready + '%', 'checklist belum ada'), String(r.cases), String(r.late)])),
